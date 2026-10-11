@@ -8,18 +8,6 @@ default_install_hook_types:
   - commit-msg
 
 repos:
-  # OMN-20940: deployment and lab configuration never lives in a shipped
-  # repository. This hook runs the same check, at the same omniclaude commit,
-  # as the required CI context public-repo-hygiene / deployment-config (the
-  # caller .github/workflows/public-repo-hygiene.yml), so the local and CI
-  # verdicts cannot diverge. It matches by shape: no vocabulary, no token,
-  # no OMNI_HOME, and it runs on a fork.
-  - repo: https://github.com/OmniNode-ai/omniclaude
-    rev: 0c9f9146d8dd0446fc5c10952aa57247b3a880ae
-    hooks:
-      - id: deployment-config
-        require_serial: true
-
   - repo: local
     hooks:
       - id: sanitize-commit-message
