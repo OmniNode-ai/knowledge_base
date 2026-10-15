@@ -14,7 +14,7 @@ superseded_by: []
 
 ## Context
 
-Adversarial review of recursive bisection (ADR-0010) raised a fatal-if-unmitigated
+Adversarial review of recursive bisection (ADR-0052) raised a fatal-if-unmitigated
 economics horn: a cold depth-1 bisect pays `C_local(fail) + C_fission + 2·C_local +
 C_compose`, and writing two provably-composing sub-contracts can cost roughly as much as
 solving the whole problem (the fission call must read+reason over the entire problem).
@@ -56,7 +56,7 @@ tier-level only, `node_recall_compute` has zero backends); fleet congestion is r
 the one-shot-at-bounded-complexity claim is measured but bounded (D2 adoption 73.3%,
 ratchet canary 2/2 first-try, graded-ladder saturated — the benchmark could not find
 bounded tasks hard enough to make local fail, which is itself the trigger-discrimination
-risk in ADR-0010).
+risk in ADR-0052).
 
 ## Derived From
 

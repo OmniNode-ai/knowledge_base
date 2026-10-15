@@ -14,7 +14,7 @@ superseded_by: []
 
 ## Context
 
-The central failure mode of recursive decomposition (ADR-0010) is the **composition
+The central failure mode of recursive decomposition (ADR-0052) is the **composition
 fallacy**: two separately-correct halves with a broken seam (mismatched types,
 encoding, or error semantics) pass their individual checks yet fail when joined,
 because nothing executes the seam. Today composition is literal `join()`

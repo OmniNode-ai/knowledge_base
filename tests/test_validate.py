@@ -218,10 +218,10 @@ class TestAdrIdUniqueness:
 
     ``ADRFrontmatter.adr_id`` is a bare ``str`` — nothing rejects two ADRs
     claiming the same value; each validates individually. These tests prove
-    the new ``check_adr_id_uniqueness`` catches that class of defect, and
-    that the narrow, exact-path-set exemption for the one already-known,
-    owner-sign-off-pending collision does not silently widen to cover any
-    other collision (new file, third path, different id).
+    ``check_adr_id_uniqueness`` catches that class of defect with no
+    exemption (OMN-21130 removed the former exact-path-set grandfather for
+    the resolved ADR-0010 collision), that the live repo is clean, and that
+    a duplicate fails the full validate.py run over a fixture tree.
     """
 
     def test_two_distinct_adr_ids_pass(self, repo: Path) -> None:
@@ -252,44 +252,35 @@ class TestAdrIdUniqueness:
         _write(repo, "guides/test-guide.md", GUIDE_FRONTMATTER)
         assert validate.check_adr_id_uniqueness(repo) == []
 
-    def test_known_collision_exact_path_set_is_exempted(self, repo: Path) -> None:
-        a = ADR_FRONTMATTER.replace("ADR-9001", "ADR-KNOWN")
-        b = ADR_FRONTMATTER.replace("ADR-9001", "ADR-KNOWN").replace("Test ADR", "B")
-        _write(repo, "adrs/known-a.md", a)
-        _write(repo, "adrs/known-b.md", b)
-        known = {"ADR-KNOWN": frozenset({"adrs/known-a.md", "adrs/known-b.md"})}
-        assert validate.check_adr_id_uniqueness(repo, known_collisions=known) == []
-
-    def test_known_collision_exemption_does_not_cover_a_third_file(self, repo: Path) -> None:
-        a = ADR_FRONTMATTER.replace("ADR-9001", "ADR-KNOWN")
-        b = ADR_FRONTMATTER.replace("ADR-9001", "ADR-KNOWN").replace("Test ADR", "B")
-        c = ADR_FRONTMATTER.replace("ADR-9001", "ADR-KNOWN").replace("Test ADR", "C")
-        _write(repo, "adrs/known-a.md", a)
-        _write(repo, "adrs/known-b.md", b)
-        _write(repo, "adrs/known-c.md", c)
-        known = {"ADR-KNOWN": frozenset({"adrs/known-a.md", "adrs/known-b.md"})}
-        errors = validate.check_adr_id_uniqueness(repo, known_collisions=known)
-        assert len(errors) == 1
-        assert "known-c.md" in errors[0]
-
-    def test_known_collisions_default_covers_the_live_adr_0010_pair(self) -> None:
-        # Proof against real repo content (AC1): the raw, un-exempted
-        # detection this check is built on genuinely finds today's live
-        # ADR-0010 collision, naming both real paths and the shared id —
-        # this is not only provable against synthetic fixtures.
+    def test_live_repo_has_no_duplicate_adr_ids(self) -> None:
+        # OMN-21130: the check is strict (no exemption), so the live repo
+        # itself must be free of duplicate adr_ids — this fails on the tree
+        # before the ADR-0010 collision is resolved and passes after.
         live_root = Path(__file__).resolve().parent.parent
-        by_id = validate._collect_adr_ids(live_root)
-        colliding = by_id.get("ADR-0010", [])
-        names = {p.name for p in colliding}
-        assert names == {
-            "ADR-0010-adaptive-recursive-contract-bisection.md",
-            "ADR-0010-required-context-parity-ratchet.md",
-        }
-        # And it is exactly the pair the default allowlist exempts by path —
-        # proving the exemption is scoped to precisely this known defect,
-        # not a blanket suppression.
-        rel = frozenset(str(p.relative_to(live_root)) for p in colliding)
-        assert validate._KNOWN_ADR_ID_COLLISIONS["ADR-0010"] == rel
+        assert validate.check_adr_id_uniqueness(live_root) == []
+
+    def test_duplicate_adr_id_fixture_fails_full_validate(self, repo: Path) -> None:
+        # OMN-21130: a duplicate adr_id must fail the WHOLE validate.py run,
+        # not only the focused check — run as a subprocess with --root over a
+        # fixture tree, exactly the way CI invokes the script.
+        import subprocess
+        import sys
+
+        _write(repo, "adrs/ADR-9001-first.md", ADR_FRONTMATTER)
+        dup = ADR_FRONTMATTER.replace("Test ADR", "Duplicate Test ADR")
+        _write(repo, "adrs/ADR-9001-second.md", dup)
+
+        script = Path(validate.__file__).resolve()
+        completed = subprocess.run(
+            [sys.executable, str(script), "--root", str(repo)],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        assert completed.returncode == 1, completed.stdout + completed.stderr
+        assert "duplicate adr_id 'ADR-9001'" in completed.stdout
+        assert "ADR-9001-first.md" in completed.stdout
+        assert "ADR-9001-second.md" in completed.stdout
 
 
 class TestNamingConvention:
