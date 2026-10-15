@@ -2,15 +2,18 @@
 type: adr
 status: proposed
 date: "2026-07-06"
-title: "ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)"
-adr_id: ADR-0010
+title: "ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)"
+adr_id: ADR-0052
 topics: [rsd, decomposition, delegation, local-first, contracts, micro-factories]
 refs: []
 supersedes: []
 superseded_by: []
 ---
 
-# ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)
+# ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)
+
+> Former id: ADR-0010. Renumbered after an adr_id collision;
+> ADR-0010-required-context-parity-ratchet.md keeps the original id.
 
 ## Context
 

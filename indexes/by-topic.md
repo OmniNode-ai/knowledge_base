@@ -621,9 +621,9 @@ Knowledge base artifacts grouped by topic.
 
 ## contracts
 
-- **[ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0010-adaptive-recursive-contract-bisection.md)** (adr)
 - **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](adrs/ADR-0016-one-contract-configured-pilot.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
+- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 - **[Technical Design: OmniNode Platform Architecture](architecture/omninode-architecture-technical-design.md)** (architecture)
 - **[Wire Schema Contract Specification](architecture/wire-schema-contract-spec.md)** (architecture)
 - **[Channel runtime foundation — core contracts and routing backbone](plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan)
@@ -770,16 +770,16 @@ Knowledge base artifacts grouped by topic.
 
 ## decomposition
 
-- **[ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0010-adaptive-recursive-contract-bisection.md)** (adr)
+- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 
 ## delegation
 
 - **[ADR-0008: Delegation Config Authority and Budget-Aware Tier Cost](adrs/ADR-0008-delegation-config-authority-and-budget-aware-tier-cost.md)** (adr)
 - **[ADR-0009: Complexity-Aware Delegation Routing](adrs/ADR-0009-complexity-aware-delegation-routing.md)** (adr)
-- **[ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0010-adaptive-recursive-contract-bisection.md)** (adr)
 - **[ADR-0014: Factory Economics — Frontier Fissions, Locals Build, Regenerate-Don't-Debug](adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** (adr)
 - **[ADR-0018: Delegation Ladder Acceptance = Escalating-Complexity Graded Benchmark, Local Floor to Paid-Cloud Ceiling](adrs/ADR-0018-delegation-graded-benchmark-ladder.md)** (adr)
 - **[ADR-0048: Local LLM Delegation with 2-Clean-Run Quality Gate](adrs/ADR-0048-delegation-orchestrator-quality-gate.md)** (adr)
+- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 - **[Delegation Architecture](architecture/delegation-architecture.md)** (architecture)
 - **[Delegation Dispatch Architecture](architecture/delegation-dispatch.md)** (architecture)
 - **[Delegation Routing Contract](architecture/delegation-routing-contract.md)** (architecture)
@@ -1641,9 +1641,9 @@ Knowledge base artifacts grouped by topic.
 
 ## local-first
 
-- **[ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0010-adaptive-recursive-contract-bisection.md)** (adr)
 - **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr)
 - **[ADR-0018: Delegation Ladder Acceptance = Escalating-Complexity Graded Benchmark, Local Floor to Paid-Cloud Ceiling](adrs/ADR-0018-delegation-graded-benchmark-ladder.md)** (adr)
+- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 
 ## local-llm
 
@@ -1742,7 +1742,7 @@ Knowledge base artifacts grouped by topic.
 
 ## micro-factories
 
-- **[ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0010-adaptive-recursive-contract-bisection.md)** (adr)
+- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 
 ## migration
 
@@ -2890,11 +2890,11 @@ Knowledge base artifacts grouped by topic.
 
 ## rsd
 
-- **[ADR-0010: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0010-adaptive-recursive-contract-bisection.md)** (adr)
 - **[ADR-0011: Name the Discipline RSD = Recursive System Design](adrs/ADR-0011-rsd-recursive-system-design-naming.md)** (adr)
 - **[ADR-0012: Seams Are First-Class — Seam-Tests-First, Tree-Shaped PRs, Seam-Scoped Testing](adrs/ADR-0012-seams-first-class.md)** (adr)
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr)
 - **[ADR-0014: Factory Economics — Frontier Fissions, Locals Build, Regenerate-Don't-Debug](adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** (adr)
+- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 
 ## rule-7a
 

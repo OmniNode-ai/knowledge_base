@@ -26,7 +26,7 @@ The operator then overrode that ruling by fiat within the same session.
 ## Decision
 
 **RSD now means "Recursive System Design"** — the umbrella discipline for the entire
-adaptive-decomposition design (ADR-0010 and its refinements). The acronym is
+adaptive-decomposition design (ADR-0052 and its refinements). The acronym is
 deliberately reclaimed (its third use in company history). This **operator fiat
 OVERRIDES the synthesis doc's §5 do-not-reuse ruling** — an operator decision outranks
 a synthesis ruling. Historical docs stay as written. The live Risk-Surface-Dependency
