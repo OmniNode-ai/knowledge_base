@@ -162,9 +162,9 @@ that predicts real incremental spend, not a per-call dollar figure.
 - **Delete Vertex / non-default providers from the contract.** Rejected (this was
   an earlier, us-centric conclusion now overturned): the product must support all
   providers; only the tenant-specific *binding* leaves git, not the capability.
-- **Keep ANTHROPIC_API_KEY as the committed ceiling default.** Rejected: violates
-  the OAuth-only platform policy and bakes our metered-API choice into every
-  tenant's default.
+- **Keep ANTHROPIC_API_KEY as the committed ceiling default.** Rejected: bakes a
+  metered-API provider choice into every tenant's default; customers bring their
+  own provider keys.
 
 ---
 

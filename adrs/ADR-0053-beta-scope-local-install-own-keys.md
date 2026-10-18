@@ -22,8 +22,8 @@ disagreed about what a beta user can reach: the quickstart said the hosted servi
 public address, while the cloud guide described a live production API. A reader, or an AI
 agent reading on someone's behalf, could not tell from this knowledge base what the beta is.
 
-This record states the beta's scope as of its date. It does not rewrite ADR-0021, which
-stays as the historical record of the July plan.
+This record states the beta's scope as of its date. ADR-0021 is withdrawn: it was an internal
+work-priority record, and only a pointer to this record remains under its number.
 
 ## Decision
 
@@ -49,11 +49,11 @@ The beta is the **local install**, run on the user's own machine:
 
 ## Alternatives Considered
 
-1. Keep ADR-0021 as the beta record. Rejected: its deadline passed in July, it names
-   internal workstreams a reader cannot look up, and it describes a hosted-platform beta that
+1. Keep ADR-0021 as the beta record. Rejected: its deadline passed in July, it
+   described internal workstreams a reader cannot look up, and it describes a hosted-platform beta that
    is not the one shipping.
-2. Rewrite ADR-0021 in place. Rejected: the decision ledger keeps what was decided when it
-   was decided. A newer record supersedes an older one; it does not edit it.
+2. Rewrite ADR-0021 in place. Rejected: it was a work-priority ordering, not an architecture
+   decision, so it is withdrawn and this record carries the beta scope.
 3. Include the hosted service in the beta. Rejected for now: a beta user should not depend on
    a service whose account path is waitlist-gated.
 

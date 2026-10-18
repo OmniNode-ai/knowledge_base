@@ -38,9 +38,8 @@ factory history replays deterministically; the control plane is binary pass/fail
 PARAMETERS via projections** (the `roi_overlay` read-at-decision-time pattern) and never
 acquires a steering wheel. Scar-tissue requirements are baked in: per-worker rate budgets
 and fail-loud stall detection (the swept-but-zero-output
-guard). Doctrine symmetry: games must be live non-deterministic LLMs (ADR-0015);
-control must be deterministic state flow — non-determinism where you want emergence,
-determinism where you need truth.
+guard). Doctrine symmetry: control must be deterministic state flow, and
+non-determinism belongs only where emergence is wanted; determinism is for what must be true.
 
 ## Alternatives Considered
 

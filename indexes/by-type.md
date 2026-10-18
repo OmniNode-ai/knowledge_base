@@ -63,12 +63,9 @@ Knowledge base artifacts grouped by type.
 - **[ADR-0012: Seams Are First-Class — Seam-Tests-First, Tree-Shaped PRs, Seam-Scoped Testing](../adrs/ADR-0012-seams-first-class.md)** — proposed
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** — proposed
 - **[ADR-0014: Factory Economics — Frontier Fissions, Locals Build, Regenerate-Don't-Debug](../adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** — proposed
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** — proposed
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** — proposed
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** — proposed
 - **[ADR-0019: No Self-Authored Evidence — OCC Companions From Autogen or Independent Verifier Only](../adrs/ADR-0019-no-self-authored-evidence.md)** — proposed
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** — proposed
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** — superseded
+- **[ADR-0021 (withdrawn): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** — superseded. Withdrawn. This was an internal work-priority record, not an architecture decision. The current beta scope is in ADR-0053.
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** — proposed
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** — proposed
 - **[ADR-0022: Shift Defect-Detection Left + OCC Evidence-Only Fast-Lane (WS-E Build-Efficiency)](../adrs/ADR-0022-shift-left-and-occ-evidence-only-fast-lane.md)** — proposed
@@ -192,31 +189,22 @@ Knowledge base artifacts grouped by type.
 
 ## Plan
 
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** — historical
 - **[Gap investigation series](../plans/2026-03-01-gap-investigation-series.md)** — historical
 - **[Future enhancements for ONEX change control](../plans/2026-03-03-onex-change-control-future-enhancements.md)** — historical
 - **[Dashboard health model refinements — not_applicable status and probe semantics](../plans/2026-03-16-dashboard-health-model-refinements.md)** — historical
 - **[Compose required-env coverage guard](../plans/2026-03-18-compose-required-env-coverage-guard.md)** — historical
 - **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** — historical
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** — historical
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** — historical
 - **[Package install CLI and channel-adapter scaffold generator](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** — historical
 - **[Test-driven ticket-pipeline iteration loop](../plans/2026-04-01-test-driven-pipeline-iteration-loop.md)** — historical
 - **[Plugin cache freshness — preventing stale plugin deployments](../plans/2026-04-02-plugin-cache-freshness.md)** — completed
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** — historical
 - **[Platform readiness gap closure plan](../plans/2026-04-07-platform-readiness-gap-closure.md)** — historical
 - **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** — historical
 - **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** — historical
 - **[Fix onex run-node to publish to contract-declared topics](../plans/2026-05-02-run-node-contract-topic-resolution.md)** — completed
 - **[Canary-to-routing feedback loop](../plans/2026-05-11-canary-routing-feedback-loop.md)** — historical
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** — historical
 - **[Escalation proof corpus — specification](../plans/2026-07-02-escalation-proof-corpus-spec.md)** — historical
 - **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** — historical
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** — historical
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** — active
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** — active
-- **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** — active
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** — active
+- **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** — historical
 
 ## Guide
 
@@ -436,11 +424,10 @@ Knowledge base artifacts grouped by type.
 - **[Repowise Freshness Receipt](../runbooks/repowise-freshness-receipt.md)** — current
 - **[Vendored Node Migration Runbook](../runbooks/vendored-node-migrations.md)** — current
 - **[Volume Config Drift Gate + Re-seed Procedure](../runbooks/volume-config-drift-and-reseed.md)** — current
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** — current
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** — current
 - **[Market Node Deployment Runbook](../runbooks/market-node-deployment.md)** — current
 - **[Application database cutover receipts](../runbooks/application-database-cutover-receipts.md)** — current
 - **[Apply Migrations Runbook](../runbooks/apply-migrations.md)** — current
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** — current
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** — current
 - **[omnibase_compat Release](../runbooks/omnibase-compat-release.md)** — current
 - **[Starting OmniMemory Services](../runbooks/omnimemory-starting-memory-services.md)** — current

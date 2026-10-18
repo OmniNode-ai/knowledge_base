@@ -198,3 +198,77 @@ class TestLowercaseTicketIds:
 
     def test_omnibase_and_omni_prefixed_words_pass(self) -> None:
         assert _findings("omnibase-core and omnimarket and omn-XXXX") == []
+
+
+class TestRedactionPlaceholderInTitles:
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "# <ticket>: Fix the thing",
+            "## Why <ticket> exists",
+            'title: "<ticket> follow-on"',
+        ],
+    )
+    def test_placeholder_in_title_or_heading_blocks(self, text: str) -> None:
+        _assert_blocked_as(text, "Redaction placeholder")
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "A ticket reference is replaced by `<ticket>` when a page is published.",
+            "# Runbook titles name the capability",
+            'title: "Application database cutover receipts"',
+        ],
+    )
+    def test_placeholder_defined_in_prose_passes(self, text: str) -> None:
+        assert _findings(text) == []
+
+
+class TestListedPersonNames:
+    def test_listed_name_blocks_when_a_names_file_is_configured(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        names = tmp_path / "names.txt"
+        names.write_text("# synthetic list\nZanzibar Quill\nQuillen\n", encoding="utf-8")
+        monkeypatch.setenv("ONEX_SANITIZATION_NAMES_FILE", str(names))
+        _assert_blocked_as("Reviewed with Zanzibar Quill last week.", "Listed person name")
+        _assert_blocked_as("branch quillen/fix-docs", "Listed person name")
+
+    def test_listed_name_inside_a_longer_word_passes(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        names = tmp_path / "names.txt"
+        names.write_text("Quillen\n", encoding="utf-8")
+        monkeypatch.setenv("ONEX_SANITIZATION_NAMES_FILE", str(names))
+        assert _findings("The quillenoid widget renders a Quillenesque badge.") == []
+
+    def test_no_names_file_means_no_listed_name_rule(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.delenv("ONEX_SANITIZATION_NAMES_FILE", raising=False)
+        assert _findings("Reviewed with Zanzibar Quill last week.") == []
+
+    def test_missing_names_file_is_ignored(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("ONEX_SANITIZATION_NAMES_FILE", str(tmp_path / "absent.txt"))
+        assert _findings("Reviewed with Zanzibar Quill last week.") == []
+
+
+class TestGateSourceTreeHygiene:
+    """The gate's own tests and scripts must not publish what the gate refuses.
+
+    The artifact walk does not cover ``tests/`` or ``scripts/``: their fixtures
+    legitimately spell forbidden shapes with synthetic values. Real private
+    repository names are the exception, and nothing in these trees may spell one.
+    """
+
+    def test_tests_and_scripts_spell_no_private_repository_name(self) -> None:
+        from sanitization_patterns import SANITIZATION_PATTERNS
+
+        rules = [p for p, desc in SANITIZATION_PATTERNS if desc == "Private repo name"]
+        assert rules, "the private-repo-name rules must exist"
+        root = Path(__file__).resolve().parent.parent
+        offenders: list[str] = []
+        for tree in ("tests", "scripts"):
+            for path in sorted((root / tree).rglob("*.py")):
+                for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                    if any(rule.search(line) for rule in rules):
+                        offenders.append(f"{path.relative_to(root)}:{lineno}")
+        assert offenders == [], f"private repository names spelled in the gate's own tree: {offenders}"
+        probe = "see " + "knowledge_base" + "-internal for details"
+        assert any(rule.search(probe) for rule in rules), "positive control: the rules must catch a private slug"

@@ -16,7 +16,6 @@ torn down to **zero containers** between sessions — and bringing a fully cold
 lane up is materially harder than the documented "recreate the runtime services"
 warm path.
 
-Ticket: **<ticket>** (parent epic <ticket>).
 Evidence baseline: `.onex_state/runtime-e2e-2026-06-21/02-dev-deploy/`.
 
 > **Scope (corrected — see "Partially cold governed lanes" below).**
@@ -106,7 +105,7 @@ cd "$OMNI_HOME"
 bash ./omnibase_infra/scripts/pull-all.sh
 ```
 
-The build is gated by the **sibling lock-pin preflight** (<ticket>): every
+The build is gated by the **sibling lock-pin preflight**: every
 vendored sibling's version/SHA must match `omnimarket/uv.lock`. If a sibling
 drifted from the lock (e.g. an OCC receipt PR merged after the lock was last
 written), `stage_workspace.sh` aborts with exit 3. The correct fix is to advance
@@ -215,7 +214,7 @@ Run from the lane host (or the deploy runner) against the governed lane's compos
 project:
 
 ```bash
-ONEX_DEPLOY_REASON="<ticket>: repair partially-cold stability lane — <what is missing>" \
+ONEX_DEPLOY_REASON="repair partially-cold stability lane — <what is missing>" \
 OMNI_HOME="$OMNI_HOME" \
 OMNIBASE_INFRA_COMPOSE_PROJECT=omnibase-infra-stability-test \
 BUILD_SOURCE=workspace \
@@ -244,7 +243,7 @@ and get a `SUCCESS` receipt. Then regenerate the lane block in the workspace
 
 ---
 
-## Known cold-DB caveat (out of scope for <ticket>)
+## Known cold-DB caveat (out of scope for this runbook)
 
 On a **truly cold DB**, the forward-migration one-shot can fail on a migration
 that does `CREATE OR REPLACE VIEW` with reordered columns (Postgres forbids

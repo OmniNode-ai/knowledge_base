@@ -11,7 +11,10 @@ and the commit-message / PR-text gate share exactly one list of patterns.
 
 from __future__ import annotations
 
+import os
 import re
+from functools import lru_cache
+from pathlib import Path
 
 # The only repositories under the ``OmniNode-ai`` org that are public. A URL
 # naming any other slug is a private-repo leak. This is an explicit allowlist,
@@ -75,6 +78,17 @@ _AGENT_DIRECTIVE = r"(?i:\bfor\s+claude\b)\**\s*:|REQUIRED SUB-SKILL|(?i:\bpass 
 # is a repository file, not a memory citation, so a preceding ``/`` exempts it.
 _AGENT_MEMORY = r"(?<![/\w])(?:feedback|project)_[a-z0-9_]+\.md\b|(?i:\bproject memory\b)"
 
+# A redaction placeholder standing in for a ticket id inside a title or a
+# heading. A body sentence may still show the token to define it; a title that
+# reads ``<ticket>: ...`` looks like documentation with the content cut out.
+_PLACEHOLDER_IN_TITLE = r"^(?:#{1,6}\s|\s*title:).*<ticket>"
+
+# Names the operator keeps in a file outside the repository, one per line. The
+# repository cannot hold the list, so the gate reads the path from this
+# environment variable when it is set (a CI secret, or a file on a developer
+# machine) and refuses any line that spells a listed name as a whole word.
+NAMES_FILE_ENV = "ONEX_SANITIZATION_NAMES_FILE"
+
 SANITIZATION_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     # Case-insensitive so a ticket id inside a branch name or slug is caught;
     # the digit requirement keeps ``omn-XXXX`` placeholders and words such as
@@ -98,8 +112,33 @@ SANITIZATION_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(_AGENT_DIRECTIVE), "Agent-addressed directive"),
     (re.compile(_AGENT_MEMORY), "Agent-memory citation"),
     (re.compile(r"\bomninode-runner-\d+"), "CI runner container name"),
+    (re.compile(_PLACEHOLDER_IN_TITLE), "Redaction placeholder in a title or heading"),
     (re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"), "Email address pattern"),
 ]
+
+
+@lru_cache(maxsize=4)
+def _listed_names_pattern(path: str) -> re.Pattern[str] | None:
+    """Compile the names file at ``path`` into one whole-word pattern, or None."""
+    try:
+        raw = Path(path).read_text(encoding="utf-8")
+    except OSError:
+        return None
+    names = sorted({line.strip() for line in raw.splitlines() if line.strip() and not line.startswith("#")})
+    if not names:
+        return None
+    return re.compile(r"(?i)(?<![A-Za-z0-9])(?:" + "|".join(re.escape(n) for n in names) + r")(?![A-Za-z0-9])")
+
+
+def _active_patterns() -> list[tuple[re.Pattern[str], str]]:
+    patterns = list(SANITIZATION_PATTERNS)
+    names_file = os.environ.get(NAMES_FILE_ENV)
+    if names_file:
+        listed = _listed_names_pattern(names_file)
+        if listed is not None:
+            patterns.append((listed, "Listed person name"))
+    return patterns
+
 
 _ALLOWLIST_PATTERN = re.compile(r"#\s*sanitization-ok:\s*(.+)")
 
@@ -126,10 +165,11 @@ def scan_text(text: str, *, label: str = "text", honor_allowlist: bool = True) -
             if _ALLOWLIST_PATTERN.search(line):
                 allowlisted_lines.add(i)
 
+    patterns = _active_patterns()
     for i, line in enumerate(lines, 1):
         if i in allowlisted_lines:
             continue
-        for pattern, description in SANITIZATION_PATTERNS:
+        for pattern, description in patterns:
             if pattern.search(line):
                 errors.append(f"{label}:{i}: {description} — matches '{pattern.pattern}'")
                 break  # one error per line
