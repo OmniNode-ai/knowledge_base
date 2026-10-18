@@ -13,7 +13,7 @@ refs:
 
 # Delegation Routing Contract
 
-> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. Two corrections applied during migration: the example backend block below cited `cloud-sonnet`/`cloud-haiku` — both deleted from the live contract because the org holds no Anthropic API key (Claude Code access is OAuth-only; `resolve_api_key('llm.anthropic.api_key')` returns `None` in every lane) — and the tier-escalation section named a 3-tier ladder ending in `frontier_api`, when the live `routing_tiers.yaml` declares 4 tiers ending in a `claude`-named ceiling slot. Both corrections are confirmed directly against `src/omnimarket/configs/{bifrost_delegation,routing_tiers}.yaml`.
+> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. Two corrections applied during migration: the example backend block below cited `cloud-sonnet`/`cloud-haiku` — neither of which is in the live contract — and the tier-escalation section named a 3-tier ladder ending in `frontier_api`, when the live `routing_tiers.yaml` declares 4 tiers ending in a `claude`-named ceiling slot. Both corrections are confirmed directly against `src/omnimarket/configs/{bifrost_delegation,routing_tiers}.yaml`.
 
 The delegation routing contract is declared in two files under
 `src/omnimarket/configs/`:

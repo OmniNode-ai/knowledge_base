@@ -13,7 +13,7 @@ refs:
 
 # Delegation Dispatch Architecture
 
-> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. The escalation tier ladder below was corrected during migration: the source document described a 3-tier ladder (`local` / `cheap_cloud` / `frontier_api`) ending in Claude Sonnet and Claude Haiku backends. Both Anthropic backends were removed from the live routing contract before this migration — the org holds no Anthropic API key (Claude Code access is OAuth-only), so `resolve_api_key('llm.anthropic.api_key')` returns `None` in every lane and the tier terminated `no_routable_backend_for_task` on every escalation. The live ladder is 4 tiers, confirmed against `src/omnimarket/configs/routing_tiers.yaml`.
+> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. The escalation tier ladder below was corrected during migration: the source document described a 3-tier ladder (`local` / `cheap_cloud` / `frontier_api`), and the live ladder is 4 tiers, confirmed against `src/omnimarket/configs/routing_tiers.yaml`. Every backend beyond the local tier is reached with the caller's own provider key (BYOK); OmniNode does not supply a key or sell inference.
 
 OmniMarket's delegation path routes a caller's prompt to the cheapest capable
 backend and escalates automatically when quality gates fail.

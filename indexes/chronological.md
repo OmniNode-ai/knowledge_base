@@ -12,10 +12,7 @@ All knowledge base artifacts sorted by date.
 ## 2026-09
 
 - **[Supported Platforms](../guides/supported-platforms.md)** (guide) — 2026-09-30
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan) — 2026-09-28
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan) — 2026-09-27
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** (plan) — 2026-09-27
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan) — 2026-09-26
 - **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** (guide) — 2026-09-23
 - **[Drift Control System — Design](../architecture/drift-control-system.md)** (architecture) — 2026-09-02
 - **[Architecture Overview - omnibase_core](../architecture/omnibase-core-overview.md)** (architecture) — 2026-09-02
@@ -291,7 +288,6 @@ All knowledge base artifacts sorted by date.
 - **[Repository Registry](../reference/repository-registry.md)** (reference) — 2026-08-25
 - **[Standard Documentation Layout](../reference/standard-doc-layout.md)** (reference) — 2026-08-25
 - **[Typed-Metadata Policy](../reference/typed-metadata-policy.md)** (reference) — 2026-08-25
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook) — 2026-08-24
 - **[Adding a Hook Handler](../guides/adding-a-hook-handler.md)** (guide) — 2026-08-19
 - **[Adding a Skill](../guides/adding-a-skill.md)** (guide) — 2026-08-19
 - **[Adding an Agent](../guides/adding-an-agent.md)** (guide) — 2026-08-19
@@ -303,7 +299,7 @@ All knowledge base artifacts sorted by date.
 - **[Market Node Deployment Runbook](../runbooks/market-node-deployment.md)** (runbook) — 2026-07-30
 - **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr) — 2026-07-29
 - **[ADR-0027: One Application Database with Contract-Classified Domains](../adrs/ADR-0027-one-application-database-domain-separation.md)** (adr) — 2026-07-29
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook) — 2026-07-27
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook) — 2026-07-27
 - **[ONEX Current Node Architecture](../architecture/current-node-architecture.md)** (architecture) — 2026-07-21
 - **[Dead Letter Queue (DLQ) Message Format](../architecture/dlq-message-format.md)** (architecture) — 2026-07-21
 - **[Event Bus Integration Guide](../architecture/event-bus-integration.md)** (architecture) — 2026-07-21
@@ -325,19 +321,15 @@ All knowledge base artifacts sorted by date.
 - **[Vendored Node Migration Runbook](../runbooks/vendored-node-migrations.md)** (runbook) — 2026-07-21
 - **[Volume Config Drift Gate + Re-seed Procedure](../runbooks/volume-config-drift-and-reseed.md)** (runbook) — 2026-07-21
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](../adrs/ADR-0010-required-context-parity-ratchet.md)** (adr) — 2026-07-10
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** (plan) — 2026-07-10
 - **[ADR-0022: Shift Defect-Detection Left + OCC Evidence-Only Fast-Lane (WS-E Build-Efficiency)](../adrs/ADR-0022-shift-left-and-occ-evidence-only-fast-lane.md)** (adr) — 2026-07-07
 - **[ADR-0023: Remove the onex_change_control Merge Queue](../adrs/ADR-0023-remove-occ-merge-queue.md)** (adr) — 2026-07-07
 - **[ADR-0011: Name the Discipline RSD = Recursive System Design](../adrs/ADR-0011-rsd-recursive-system-design-naming.md)** (adr) — 2026-07-06
 - **[ADR-0012: Seams Are First-Class — Seam-Tests-First, Tree-Shaped PRs, Seam-Scoped Testing](../adrs/ADR-0012-seams-first-class.md)** (adr) — 2026-07-06
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr) — 2026-07-06
 - **[ADR-0014: Factory Economics — Frontier Fissions, Locals Build, Regenerate-Don't-Debug](../adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** (adr) — 2026-07-06
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr) — 2026-07-06
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** (adr) — 2026-07-06
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr) — 2026-07-06
 - **[ADR-0019: No Self-Authored Evidence — OCC Companions From Autogen or Independent Verifier Only](../adrs/ADR-0019-no-self-authored-evidence.md)** (adr) — 2026-07-06
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** (adr) — 2026-07-06
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr) — 2026-07-06
+- **[ADR-0021 (withdrawn): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr) — 2026-07-06
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** (adr) — 2026-07-06
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr) — 2026-07-06
 - **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** (plan) — 2026-07-05
@@ -367,7 +359,6 @@ All knowledge base artifacts sorted by date.
 ## 2026-05
 
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** (architecture) — 2026-05-31
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** (plan) — 2026-05-29
 - **[Authoritative Projections Own Truth](../doctrine/authoritative-projections-own-truth.md)** (doctrine) — 2026-05-23
 - **[Canonical Reducers Win](../doctrine/canonical-reducers-win.md)** (doctrine) — 2026-05-23
 - **[Contracts Define Reality](../doctrine/contracts-define-reality.md)** (doctrine) — 2026-05-23
@@ -405,15 +396,12 @@ All knowledge base artifacts sorted by date.
 - **[ADR-0004: Registry-Owned Consumer Surface](../adrs/ADR-0004-registry-owned-consumer-surface.md)** (adr) — 2026-04-23
 - **[ADR-0051: Sibling Plugin Strategy (omnigemini, omnimemory, omniintelligence)](../adrs/ADR-0051-sibling-plugin-strategy.md)** (adr) — 2026-04-23
 - **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** (plan) — 2026-04-11
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** (plan) — 2026-04-07
 - **[Platform readiness gap closure plan](../plans/2026-04-07-platform-readiness-gap-closure.md)** (plan) — 2026-04-07
 - **[Plugin cache freshness — preventing stale plugin deployments](../plans/2026-04-02-plugin-cache-freshness.md)** (plan) — 2026-04-02
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan) — 2026-04-01
 - **[Package install CLI and channel-adapter scaffold generator](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** (plan) — 2026-04-01
 - **[Test-driven ticket-pipeline iteration loop](../plans/2026-04-01-test-driven-pipeline-iteration-loop.md)** (plan) — 2026-04-01
 ## 2026-03
 
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** (plan) — 2026-03-31
 - **[ADR-0001: Dependabot PR Approval Remains Manual](../adrs/ADR-0001-dependabot-approval-manual.md)** (adr) — 2026-03-25
 - **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** (plan) — 2026-03-24
 - **[Compose required-env coverage guard](../plans/2026-03-18-compose-required-env-coverage-guard.md)** (plan) — 2026-03-18
@@ -423,7 +411,6 @@ All knowledge base artifacts sorted by date.
 - **[Gap investigation series](../plans/2026-03-01-gap-investigation-series.md)** (plan) — 2026-03-01
 ## 2026-02
 
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** (plan) — 2026-02-28
 - **[Cross-Repo Merge Dependency Graph](../reference/merge-dependency-graph.md)** (reference) — 2026-02-24
 - **[(historical) Agent Routing Before and After the Event-Driven Migration](../architecture/routing-architecture-comparison.md)** (architecture) — 2026-02-20
 - **[Testing Guide](../guides/omniclaude-testing-guide.md)** (guide) — 2026-02-20

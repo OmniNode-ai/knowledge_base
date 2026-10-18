@@ -19,7 +19,7 @@ repos:
           owner/author fields, profanity, agent-addressed directives,
           agent-memory citations, or CI runner container names. Reuses the
           forbidden-pattern list from scripts/sanitization_patterns.py.
-        entry: python scripts/check_text_sanitization.py --commit-msg-file
+        entry: python3 scripts/check_text_sanitization.py --commit-msg-file
         language: system
         stages: [commit-msg]
       - id: strip-ai-coauthor-trailer

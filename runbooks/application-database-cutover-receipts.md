@@ -9,7 +9,7 @@ refs: []
 
 # Application database cutover receipts
 
-<ticket> provides proof mechanics for one-application-database family cutovers.
+This runbook provides proof mechanics for one-application-database family cutovers.
 It does not activate a writer, change a DSN, apply a grant or policy, or authorize a
 live cutover. Each coherent relation family is registered and stopped independently.
 

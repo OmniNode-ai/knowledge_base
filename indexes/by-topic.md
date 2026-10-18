@@ -129,7 +129,6 @@ Knowledge base artifacts grouped by topic.
 ## archetypes
 
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr)
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** (adr)
 - **[Node Archetypes Reference](../reference/onex-node-archetypes.md)** (reference)
 
 ## architecture
@@ -243,7 +242,7 @@ Knowledge base artifacts grouped by topic.
 
 ## beta-launch
 
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0021 (withdrawn): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 - **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr)
 
 ## bifrost
@@ -280,10 +279,6 @@ Knowledge base artifacts grouped by topic.
 ## bringup
 
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](../runbooks/cold-lane-full-bringup.md)** (runbook)
-
-## broker-acl
-
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 
 ## build-efficiency
 
@@ -353,12 +348,6 @@ Knowledge base artifacts grouped by topic.
 ## change-control
 
 - **[Future enhancements for ONEX change control](../plans/2026-03-03-onex-change-control-future-enhancements.md)** (plan)
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
-
-## channels
-
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan)
 
 ## chaos
 
@@ -386,10 +375,7 @@ Knowledge base artifacts grouped by topic.
 - **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** (plan)
 - **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** (plan)
 - **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** (plan)
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** (plan)
 - **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** (plan)
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** (plan)
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 - **[Async Hang Debugging Guide](../guides/async-hang-debugging.md)** (guide)
 - **[CI Test Strategy](../guides/omnibase-infra-ci-test-strategy.md)** (guide)
 - **[CI Documentation Validation Setup](../reference/ci-validation-setup.md)** (reference)
@@ -421,7 +407,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Handler Classification: omnibase_core File I/O Services (Epic 3 — Ticket 3.4)](../architecture/onex-handler-classification-file-io-services.md)** (architecture)
 - **[Mixin Classification Reference](../architecture/onex-mixin-classification.md)** (architecture)
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** (plan)
 
 ## claude
 
@@ -610,12 +595,10 @@ Knowledge base artifacts grouped by topic.
 
 ## contracts
 
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](../adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** (architecture)
 - **[Wire Schema Contract Specification](../architecture/wire-schema-contract-spec.md)** (architecture)
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan)
 - **[Package install CLI and channel-adapter scaffold generator](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** (plan)
 - **[Fix onex run-node to publish to contract-declared topics](../plans/2026-05-02-run-node-contract-topic-resolution.md)** (plan)
 - **[Authoring Governance YAML Artifacts](../guides/authoring-governance-yaml-artifacts.md)** (guide)
@@ -773,7 +756,6 @@ Knowledge base artifacts grouped by topic.
 - **[Delegation Dispatch Architecture](../architecture/delegation-dispatch.md)** (architecture)
 - **[Delegation Routing Contract](../architecture/delegation-routing-contract.md)** (architecture)
 - **[OmniMarket Delegation Routing Boundary](../architecture/omnimarket-delegation-routing-boundary.md)** (architecture)
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** (plan)
 - **[Escalation proof corpus — specification](../plans/2026-07-02-escalation-proof-corpus-spec.md)** (plan)
 - **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** (plan)
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** (plan)
@@ -838,9 +820,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr)
 - **[Compute Plugin Determinism](../architecture/omnibase-infra-compute-plugin-determinism.md)** (architecture)
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 
 ## dev-lane
 
@@ -848,9 +827,7 @@ Knowledge base artifacts grouped by topic.
 
 ## developer-experience
 
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** (plan)
 - **[Plugin cache freshness — preventing stale plugin deployments](../plans/2026-04-02-plugin-cache-freshness.md)** (plan)
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** (plan)
 
 ## developer-guide
 
@@ -905,7 +882,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Dead Letter Queue (DLQ) Message Format](../architecture/dlq-message-format.md)** (architecture)
 - **[DLQ Quarantine Ownership Semantics](../reference/omnibase-infra-dlq-quarantine-ownership.md)** (reference)
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
 - **[Dead Letter Queue (DLQ) Replay Guide](../runbooks/omnibase-infra-dlq-replay.md)** (runbook)
 
 ## doc-layout
@@ -958,7 +934,6 @@ Knowledge base artifacts grouped by topic.
 ## drift
 
 - **[Gap investigation series](../plans/2026-03-01-gap-investigation-series.md)** (plan)
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 - **[Volume Config Drift Gate + Re-seed Procedure](../runbooks/volume-config-drift-and-reseed.md)** (runbook)
 
 ## drift-control
@@ -1048,10 +1023,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[OmniMemory Environment Variables](../reference/omnimemory-environment-variables.md)** (reference)
 
-## epics
-
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** (plan)
-
 ## error
 
 - **[ONEX Error Handling Best Practices](../guides/onex-error-handling-best-practices.md)** (guide)
@@ -1140,10 +1111,6 @@ Knowledge base artifacts grouped by topic.
 - **[Evidence Is a First-Class Output](../doctrine/evidence-is-first-class-output.md)** (doctrine)
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** (architecture)
 
-## evolutionary-search
-
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr)
-
 ## example
 
 - **[Security Considerations for Example Contracts](../guides/onex-example-contract-security.md)** (guide)
@@ -1162,10 +1129,6 @@ Knowledge base artifacts grouped by topic.
 - **[Execution Shape Examples](../architecture/onex-execution-shape-examples.md)** (architecture)
 - **[Execution Corpus Guide](../guides/onex-execution-corpus.md)** (guide)
 
-## fail-closed
-
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** (plan)
-
 ## fail-fast
 
 - **[ADR-0046: Fail-Fast Routing — No Silent Fallback to general-purpose](../adrs/ADR-0046-no-fallback-routing.md)** (adr)
@@ -1179,10 +1142,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[ADR-0044: Event Fan-Out Strategy and App-Owned Event Catalogs](../adrs/ADR-0044-event-fan-out-and-app-owned-catalogs.md)** (adr)
 
-## fault
-
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
-
 ## file
 
 - **[Handler Classification: omnibase_core File I/O Services (Epic 3 — Ticket 3.4)](../architecture/onex-handler-classification-file-io-services.md)** (architecture)
@@ -1192,17 +1151,9 @@ Knowledge base artifacts grouped by topic.
 
 - **[Build Your First Node](../guides/omnibase-core-first-node.md)** (guide)
 
-## fixture
-
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
-
 ## flow
 
 - **[Envelope Flow Architecture](../architecture/onex-envelope-flow-architecture.md)** (architecture)
-
-## formal-methods
-
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
 
 ## format
 
@@ -1237,8 +1188,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0005: Dispatch Lifecycle Canonical Source](../adrs/ADR-0005-dispatch-lifecycle-canonical.md)** (adr)
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr)
 - **[Pure FSM Reducer Pattern](../architecture/onex-pure-fsm-reducer-pattern.md)** (architecture)
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
 
 ## fsm-snapshots
 
@@ -1290,17 +1239,12 @@ Knowledge base artifacts grouped by topic.
 
 - **[Dual-Binding Test Cases — the Harness Convention](../reference/dual-binding-cases.md)** (reference)
 
-## golden-fixtures
-
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr)
-
 ## governance
 
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](../adrs/ADR-0010-required-context-parity-ratchet.md)** (adr)
 - **[ADR-0035: Status Taxonomy and Categorical Organization](../adrs/ADR-0035-status-taxonomy-and-categorical-organization.md)** (adr)
 - **[Drift Control System — Design](../architecture/drift-control-system.md)** (architecture)
 - **[Future enhancements for ONEX change control](../plans/2026-03-03-onex-change-control-future-enhancements.md)** (plan)
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** (plan)
 - **[Authoring Governance YAML Artifacts](../guides/authoring-governance-yaml-artifacts.md)** (guide)
 - **[ONEX Change Control — Decision Log](../reference/onex-change-control-decision-log.md)** (reference)
 
@@ -1385,7 +1329,6 @@ Knowledge base artifacts grouped by topic.
 - **[Compliance Enforcement Architecture](../architecture/compliance-enforcement-architecture.md)** (architecture)
 - **[Context Enrichment Pipeline Architecture](../architecture/context-enrichment-pipeline.md)** (architecture)
 - **[Hook Data Flow Architecture](../architecture/hook-data-flow.md)** (architecture)
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** (plan)
 - **[Adding a Hook Handler](../guides/adding-a-hook-handler.md)** (guide)
 - **[Adding a Custom PostToolUse Handler](../guides/adding-a-posttooluse-handler.md)** (guide)
 - **[Claude Code PostToolUse updatedToolOutput Shape](../reference/claude-code-posttooluse-output-shape.md)** (reference)
@@ -1443,10 +1386,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Ingestion and Interpretation Are Separate](../doctrine/ingestion-and-interpretation-separate.md)** (doctrine)
 
-## inject
-
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
-
 ## injection
 
 - **[Container-Based Dependency Injection](../architecture/omnibase-infra-container-dependency-injection.md)** (architecture)
@@ -1455,7 +1394,7 @@ Knowledge base artifacts grouped by topic.
 ## install
 
 - **[Supported Platforms](../guides/supported-platforms.md)** (guide)
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook)
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook)
 
 ## installation
 
@@ -1547,10 +1486,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[ADR-0009: Complexity-Aware Delegation Routing](../adrs/ADR-0009-complexity-aware-delegation-routing.md)** (adr)
 
-## learning-loop
-
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr)
-
 ## lease
 
 - **[Lease Management Pattern](../architecture/onex-lease-management-pattern.md)** (architecture)
@@ -1561,23 +1496,14 @@ Knowledge base artifacts grouped by topic.
 
 ## llm
 
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr)
 - **[ADR-0049: Three-Tier Agent Routing (LLM → Fuzzy → Explicit)](../adrs/ADR-0049-three-tier-agent-routing.md)** (adr)
 - **[LLM Infrastructure Architecture](../architecture/llm-infrastructure.md)** (architecture)
 - **[ADR-009: LLM Cost Tracking at the Infrastructure Layer](../reference/omnibase-infra-adr-llm-cost-tracking-spi.md)** (reference)
 - **[LLM Endpoint Service Level Objectives](../reference/omnibase-infra-llm-endpoint-slo.md)** (reference)
 
-## llm-backends
-
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** (plan)
-
 ## llm-navigation
 
 - **[AGENT.md Template](../reference/agent-md-template.md)** (reference)
-
-## llm-pilots
-
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr)
 
 ## llm-routing
 
@@ -1594,7 +1520,6 @@ Knowledge base artifacts grouped by topic.
 
 ## local-first
 
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr)
 - **[ADR-0018: Delegation Ladder Acceptance = Escalating-Complexity Graded Benchmark, Local Floor to Paid-Cloud Ceiling](../adrs/ADR-0018-delegation-graded-benchmark-ladder.md)** (adr)
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
 
@@ -1656,11 +1581,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[OmniMemory PII Handling](../guides/omnimemory-pii-handling.md)** (guide)
 
-## merge
-
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
-
 ## merge-gates
 
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](../adrs/ADR-0010-required-context-parity-ratchet.md)** (adr)
@@ -1673,8 +1593,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](../adrs/ADR-0010-required-context-parity-ratchet.md)** (adr)
 - **[ADR-0023: Remove the onex_change_control Merge Queue](../adrs/ADR-0023-remove-occ-merge-queue.md)** (adr)
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** (plan)
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 
 ## merge-sweep
 
@@ -1811,7 +1729,7 @@ Knowledge base artifacts grouped by topic.
 - **[Node Registration Orchestrator](../reference/omnibase-infra-node-registration-orchestrator.md)** (reference)
 - **[Node Archetypes Reference](../reference/onex-node-archetypes.md)** (reference)
 - **[Market Node Deployment Runbook](../runbooks/market-node-deployment.md)** (runbook)
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook)
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook)
 - **[Vendored Node Migration Runbook](../runbooks/vendored-node-migrations.md)** (runbook)
 
 ## node-archetypes
@@ -1840,11 +1758,6 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMarket Node Metadata Reference](../reference/omnimarket-node-metadata.md)** (reference)
 - **[OmniMarket node_ticket_pipeline](../reference/omnimarket-node-ticket-pipeline.md)** (reference)
 - **[OmniMemory Handler Reuse Matrix](../reference/omnimemory-handler-reuse-matrix.md)** (reference)
-
-## non-determinism
-
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr)
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr)
 
 ## nondeterminism
 
@@ -2080,10 +1993,9 @@ Knowledge base artifacts grouped by topic.
 - **[Application database cutover receipts](../runbooks/application-database-cutover-receipts.md)** (runbook)
 - **[Apply Migrations Runbook](../runbooks/apply-migrations.md)** (runbook)
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](../runbooks/cold-lane-full-bringup.md)** (runbook)
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
 - **[Judge Compose Profile](../runbooks/judge-compose-profile.md)** (runbook)
 - **[Market Node Deployment Runbook](../runbooks/market-node-deployment.md)** (runbook)
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook)
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook)
 - **[Agent Actions Consumer - Operational Runbook](../runbooks/omnibase-infra-agent-actions-consumer.md)** (runbook)
 - **[Database Index Monitoring Runbook](../runbooks/omnibase-infra-database-index-monitoring.md)** (runbook)
 - **[Dead Letter Queue (DLQ) Replay Guide](../runbooks/omnibase-infra-dlq-replay.md)** (runbook)
@@ -2320,7 +2232,7 @@ Knowledge base artifacts grouped by topic.
 
 ## package
 
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook)
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook)
 
 ## packaging
 
@@ -2384,10 +2296,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[OmniMemory PII Handling](../guides/omnimemory-pii-handling.md)** (guide)
 
-## pilot
-
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** (adr)
-
 ## pipeline
 
 - **[Pipeline Runner and Hook Registry Guide](../guides/onex-pipeline-hook-registry.md)** (guide)
@@ -2407,7 +2315,7 @@ Knowledge base artifacts grouped by topic.
 ## planning
 
 - **[ADR-0007: Canonical Skills Migration Plan](../adrs/ADR-0007-skills-canonical-plan.md)** (adr)
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0021 (withdrawn): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
 ## platform-readiness
 
@@ -2448,11 +2356,6 @@ Knowledge base artifacts grouped by topic.
 - **[Adding a Custom PostToolUse Handler](../guides/adding-a-posttooluse-handler.md)** (guide)
 - **[Claude Code PostToolUse updatedToolOutput Shape](../reference/claude-code-posttooluse-output-shape.md)** (reference)
 
-## pr-lifecycle
-
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
-
 ## practices
 
 - **[Pydantic Best Practices](../guides/omnibase-infra-pydantic-best-practices.md)** (guide)
@@ -2476,10 +2379,6 @@ Knowledge base artifacts grouped by topic.
 ## prevention
 
 - **[Dict[str, Any] Prevention Guide](../architecture/onex-dict-str-any-prevention.md)** (architecture)
-
-## prioritization
-
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
 ## privacy
 
@@ -2507,8 +2406,6 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMarket Projection API Materialization](../architecture/omnimarket-projection-api-materialization.md)** (architecture)
 - **[Ingestion Is Not Interpretation](../pivots/PIVOT-0001-ingestion-is-not-interpretation.md)** (pivot)
 - **[Reducers Own State Progression](../pivots/PIVOT-0004-reducers-own-state-progression.md)** (pivot)
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 - **[Building on the ONEX runtime](../guides/getting-started-local.md)** (guide)
 
 ## projection-authority
@@ -2534,10 +2431,6 @@ Knowledge base artifacts grouped by topic.
 ## proof-class
 
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** (adr)
-
-## propagation
-
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** (plan)
 
 ## protocol
 
@@ -2658,10 +2551,6 @@ Knowledge base artifacts grouped by topic.
 - **[DoD Receipt Locations](../reference/dod-receipt-locations.md)** (reference)
 - **[Application database cutover receipts](../runbooks/application-database-cutover-receipts.md)** (runbook)
 
-## reconcile
-
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
-
 ## reconnect
 
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** (runbook)
@@ -2740,10 +2629,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[omniclaude Repo Charter](../architecture/omniclaude-repo-charter.md)** (architecture)
 
-## repo-hygiene
-
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** (plan)
-
 ## repositories
 
 - **[Repository Registry](../reference/repository-registry.md)** (reference)
@@ -2793,10 +2678,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](../adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 
-## roadmap
-
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
-
 ## root-cause
 
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** (adr)
@@ -2809,8 +2690,6 @@ Knowledge base artifacts grouped by topic.
 - **[(historical) Event-Driven Agent Routing Proposal](../architecture/event-driven-routing-proposal.md)** (architecture)
 - **[Operation Routing Pattern](../architecture/omnibase-infra-operation-routing.md)** (architecture)
 - **[(historical) Agent Routing Before and After the Event-Driven Migration](../architecture/routing-architecture-comparison.md)** (architecture)
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** (plan)
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan)
 - **[Canary-to-routing feedback loop](../plans/2026-05-11-canary-routing-feedback-loop.md)** (plan)
 
 ## rsd
@@ -2820,10 +2699,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr)
 - **[ADR-0014: Factory Economics — Frontier Fissions, Locals Build, Regenerate-Don't-Debug](../adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** (adr)
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
-
-## rule-7a
-
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** (adr)
 
 ## rules
 
@@ -2843,7 +2718,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0003: Registration Runtime / Registry Boundary](../adrs/ADR-0003-registration-runtime-registry-boundary.md)** (adr)
 - **[ONEX Architecture Overview](../architecture/onex-runtime-overview.md)** (architecture)
 - **[Repository Map and Runtime Concepts](../architecture/repository-map-and-runtime-concepts.md)** (architecture)
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan)
 - **[Fix onex run-node to publish to contract-declared topics](../plans/2026-05-02-run-node-contract-topic-resolution.md)** (plan)
 - **[Combining Deployment Tiers](../guides/combining-deployment-tiers.md)** (guide)
 - **[Building on the ONEX runtime](../guides/getting-started-local.md)** (guide)
@@ -2985,14 +2859,13 @@ Knowledge base artifacts grouped by topic.
 
 ## skill
 
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook)
+- **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook)
 
 ## skills
 
 - **[ADR-0006: Skill Liveness Validator Home](../adrs/ADR-0006-skill-liveness-validator-home.md)** (adr)
 - **[ADR-0007: Canonical Skills Migration Plan](../adrs/ADR-0007-skills-canonical-plan.md)** (adr)
 - **[Skill Lifecycle: When a Skill Stays in omniclaude vs. Moves to omnimarket](../architecture/omniclaude-skill-lifecycle.md)** (architecture)
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** (plan)
 - **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** (plan)
 - **[Adding a Skill](../guides/adding-a-skill.md)** (guide)
 - **[Authoring an ONEX Skill](../guides/authoring-an-onex-skill.md)** (guide)
@@ -3048,12 +2921,6 @@ Knowledge base artifacts grouped by topic.
 ## status-taxonomy
 
 - **[ADR-0035: Status Taxonomy and Categorical Organization](../adrs/ADR-0035-status-taxonomy-and-categorical-organization.md)** (adr)
-
-## steel-onslaught
-
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** (adr)
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** (adr)
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr)
 
 ## storybook
 
@@ -3185,10 +3052,6 @@ Knowledge base artifacts grouped by topic.
 ## timeout
 
 - **[Effect Timeout Behavior](../architecture/onex-effect-timeout-behavior.md)** (architecture)
-
-## tla-plus
-
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
 
 ## tooling
 
@@ -3354,7 +3217,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0050: AI-Slop Checker Rule Set v1.0](../adrs/ADR-0050-ai-slop-checker-rule-set-v1.md)** (adr)
 - **[Compose required-env coverage guard](../plans/2026-03-18-compose-required-env-coverage-guard.md)** (plan)
 - **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** (plan)
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** (plan)
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** (plan)
 
 ## valkey
@@ -3372,7 +3234,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** (adr)
 - **[Completion Requires Durable Evidence](../pivots/PIVOT-0003-completion-requires-durable-evidence.md)** (pivot)
 - **[Platform readiness gap closure plan](../plans/2026-04-07-platform-readiness-gap-closure.md)** (plan)
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 - **[Verification Doctrine](../reference/omniclaude-verification-doctrine.md)** (reference)
 
 ## version
@@ -3418,10 +3279,6 @@ Knowledge base artifacts grouped by topic.
 ## workflow
 
 - **[REGISTRATION WORKFLOW](../architecture/registration-workflow.md)** (architecture)
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** (plan)
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** (plan)
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** (plan)
 - **[Registration Workflow Integration Tests](../guides/omnibase-infra-registration-workflow-integration-tests.md)** (guide)
 
 ## workflow-state

@@ -27,15 +27,15 @@ The delegation-ladder acceptance test is an **escalating-complexity graded bench
 across the existing local ladder including the 5090/4090 AI-PC rungs**, replacing the smoke
 test. **Tier separation (floor < ceiling) is the acceptance criterion** — the benchmark
 passes only if graded results genuinely separate the rungs. The **paid-cloud ceiling is
-INCLUDED, not deferred**: the ladder tops out at a paid-cloud rung = **GLM (Zhipu, paid API
-key) + OpenRouter FREE models only** (no paid OpenRouter spend), above the local 27B (4090)
+INCLUDED, not deferred**: the ladder tops out at a paid-cloud rung = **a paid-cloud
+provider reached with the caller's own key**, above the local 27B (4090)
 / 35B (5090) / 284B rungs. Separation must span local-floor → paid-cloud-ceiling.
 
 ## Alternatives Considered
 
 1. Flat smoke test (fixture-content replay). Rejected: tautological, zero real rungs, no separation signal — the exact failure this decision corrects.
 2. "Option B" forced-tier harness (force each tier, compare) as the acceptance mechanism. Not chosen: the graded escalating-complexity benchmark across the real ladder is the acceptance vehicle; separation is the criterion.
-3. Defer the paid-cloud ceiling (local-only ladder). Rejected by operator correction 2026-07-04 — an earlier session wrongly recorded "deferred, not chosen"; that was never the operator's call. The ceiling is a paid rung (GLM + OpenRouter-free), included.
+3. Defer the paid-cloud ceiling (local-only ladder). Rejected: the ceiling is a paid-cloud rung, included.
 
 ## Consequences
 

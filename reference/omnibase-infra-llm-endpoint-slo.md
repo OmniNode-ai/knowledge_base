@@ -12,7 +12,7 @@ refs: []
 # LLM Endpoint Service Level Objectives
 
 This document defines Service Level Objectives (SLOs) for the distributed LLM endpoints
-used by ONEX infrastructure. Endpoints are hosted on two machines and serve different
+used by ONEX infrastructure. Endpoints can be hosted on separate machines and serve different
 model tiers. Calibration methodology follows the same principles as the E2E registration
 performance baselines (see ADR-004).
 
@@ -20,18 +20,16 @@ performance baselines (see ADR-004).
 
 ## Endpoint Inventory
 
-| Environment Variable | Host | Port | Model | Status |
-|---------------------|------|------|-------|--------|
-| `LLM_CODER_URL` | `<onex-host>` (GPU server) | 8000 | Qwen3-Coder-30B-A3B-Instruct AWQ-4bit | Running |
-| `LLM_CODER_FAST_URL` | `<onex-host>` (GPU server) | 8001 | Qwen3-14B-AWQ | Running |
-| `LLM_EMBEDDING_URL` | `<onex-host>` (GPU server) | 8100 | Alibaba-NLP/gte-Qwen2-1.5B-instruct | Running |
-| `LLM_DEEPSEEK_R1_URL` | `<onex-host>` (reasoning host) | 8101 | DeepSeek-R1-Distill-Qwen-32B-bf16 | Running |
-| `LLM_SMALL_URL` | `<onex-host>` (lightweight host) | — | Qwen2.5-Coder-7B-Instruct MLX-4bit | Not provisioned |
+An example topology. Each endpoint is configured through the environment variable shown; host and port are whatever a self-hoster binds.
 
-Hardware:
-- GPU server (`$LLM_CODER_URL`, `$LLM_CODER_FAST_URL`, `$LLM_EMBEDDING_URL`): Linux GPU server — coder (ports 8000, 8001) + embeddings (port 8100)
-- Reasoning host (`$LLM_DEEPSEEK_R1_URL`): Mac Studio M2 Ultra — reasoning (port 8101)
-- Lightweight host (`$LLM_SMALL_URL`): MacBook Air M4 — lightweight/portable; no live endpoint has been provisioned as of this refresh
+| Environment Variable | Role | Example port | Model |
+|---------------------|------|------|-------|
+| `LLM_CODER_URL` | long-context coder | 8000 | Qwen3-Coder-30B-A3B-Instruct AWQ-4bit |
+| `LLM_CODER_FAST_URL` | mid-tier routing and classification | 8001 | Qwen3-14B-AWQ |
+| `LLM_EMBEDDING_URL` | embeddings | 8100 | Alibaba-NLP/gte-Qwen2-1.5B-instruct |
+| `LLM_DEEPSEEK_R1_URL` | reasoning | 8101 | DeepSeek-R1-Distill-Qwen-32B-bf16 |
+
+An optional small-model endpoint (`LLM_SMALL_URL`) can be added the same way; no SLO is set for it here.
 
 ---
 
@@ -48,17 +46,15 @@ response stream. Measured at P95 under single-request load from the development 
 | `LLM_CODER_FAST_URL` (port 8001) | 40K tokens | 800ms | 1500ms | Mid-tier routing and classification |
 | `LLM_EMBEDDING_URL` (port 8100) | N/A | 200ms | 400ms | Batch of 32 texts |
 | `LLM_DEEPSEEK_R1_URL` (port 8101) | 32K tokens | 3000ms | 6000ms | Reasoning model; async-preferred |
-| `LLM_SMALL_URL` (not provisioned) | — | — | — | No live endpoint; SLOs cannot be set until one is stood up |
 
 ### Throughput (tokens/second, generation phase)
 
 | Endpoint | Sustained tok/s | Burst tok/s | Notes |
 |----------|----------------|-------------|-------|
-| `LLM_CODER_URL` | 80 | 150 | RTX 5090, chunked prefill enabled |
-| `LLM_CODER_FAST_URL` | 60 | 120 | RTX 4090 |
+| `LLM_CODER_URL` | 80 | 150 | chunked prefill enabled |
+| `LLM_CODER_FAST_URL` | 60 | 120 | |
 | `LLM_EMBEDDING_URL` | 5000 embeddings/s | — | Measured at dim=4096 |
-| `LLM_DEEPSEEK_R1_URL` | 40 | 80 | Metal acceleration, M2 Ultra |
-| `LLM_SMALL_URL` | — | — | Not provisioned; MLX-4bit, M4 |
+| `LLM_DEEPSEEK_R1_URL` | 40 | 80 | Metal acceleration |
 
 ### Availability
 

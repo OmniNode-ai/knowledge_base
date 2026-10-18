@@ -8,7 +8,7 @@ topics: [delegation, ci, gates, model-tiering]
 
 # Delegation → CI-integration design (WS-D / D4)
 
-**Author:** WS-D/D4 design lane (agent).
+**Author:** OmniNode Team.
 **Date:** 2026-07-05.
 **Status:** DESIGN — this document is the spec; no code lands from this PR (docs-only).
 **Driver:** the canonical rolling plan `ROLLING_SEVEN_DAY_PLAN.md` §2 WS-D/D4 (operator directive 2026-07-05) + §0 operating rules.

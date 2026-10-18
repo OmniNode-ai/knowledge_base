@@ -2,7 +2,7 @@
 type: runbook
 status: current
 date: "2026-07-27"
-title: "Node-skill package co-install (omnimarket) — <ticket>"
+title: "Node-skill package co-install (omnimarket) "
 topics: [omnibase-infra, node, skill, package, install]
 refs: []
 ---
@@ -12,7 +12,7 @@ SPDX-FileCopyrightText: 2025 OmniNode.ai Inc.
 SPDX-License-Identifier: MIT
 -->
 
-# Node-skill package co-install (omnimarket) — <ticket>
+# Node-skill package co-install (omnimarket)
 
 ## Symptom
 
@@ -59,8 +59,8 @@ composes market; it does not depend on it.
 > (published PyPI wheels ≤0.4.6 pin `omnibase-core<0.45.0` / `spi<0.22.0`; a `uv
 > lock` against the dev rev hits the circular back-reference). But even if those
 > pins were clean, the co-install would remain the correct mechanism because of
-> the layering boundary above. <ticket> already cleaned omnimarket's `[tool.uv]`
-> overrides (`omnibase-core>=0.46.1`), so the pinned rev below carries clean
+> the layering boundary above. omnimarket's `[tool.uv]`
+> overrides are already cleaned (`omnibase-core>=0.46.1`), so the pinned rev below carries clean
 > metadata.
 
 ## The co-install (operator-run — mutates the venv)
@@ -78,10 +78,10 @@ scripts/install-node-skill-package.sh --execute /path/to/venv/bin/python
 OMNIMARKET_REF=<newer-sha> scripts/install-node-skill-package.sh --execute
 ```
 
-The ref is **resolved dynamically** (<ticket>) from omnimarket's live `dev` HEAD
+The ref is **resolved dynamically** from omnimarket's live `dev` HEAD
 via `git ls-remote`, falling back to the local canonical clone at
 `$OMNI_HOME/omnimarket` when offline. A hand-edited SHA literal here goes stale
-the moment `omnimarket@dev` advances past it — that staleness was the <ticket>
+the moment `omnimarket@dev` advances past it — that staleness was the
 recurrence mechanism (see "Recurrence and the drift guard" below). Set
 `OMNIMARKET_REF=<sha>` to pin an exact rev for reproducibility or offline use;
 that override always wins outright.
@@ -102,24 +102,24 @@ $ onex skill merge_sweep --inventory-only   # resolves (no 'Unknown node')
 $ onex skill session --help                 # resolves (no 'Unknown node')
 ```
 
-## Recurrence and the drift guard (<ticket>)
+## Recurrence and the drift guard
 
-The co-install above fixed the venv once (<ticket>, 2026-07-02) and then
-silently drifted back to a stale, non-git install within days (<ticket>,
-2026-07-06): something re-installed `omnimarket` from PyPI instead of the
+The co-install above fixed the venv once (2026-07-02) and then
+silently drifted back to a stale, non-git install within days
+(2026-07-06): something re-installed `omnimarket` from PyPI instead of the
 canonical git-source co-install. Two compounding facts make this recur unless
 guarded against:
 
 1. **PyPI is not a fallback path.** omnimarket's last published PyPI release
    predates fixes that already merged to `dev` by weeks, and the newest
    published release is outright uninstallable (it pins a sibling package
-   version that was never published — <ticket>). There is no PyPI version of
+   version that was never published). There is no PyPI version of
    omnimarket that is ever "correct" here; only the git-source co-install is.
 2. **Nothing re-asserted the venv's install state.** The install script is
    operator-run once; nothing re-checked that the venv still matched the
    git-pinned install afterward.
 
-Fact (1) is a separate release-pipeline lane (<ticket>). This runbook covers
+Fact (1) is a separate release-pipeline concern. This runbook covers
 the venv-side guard for fact (2), split detect/repair per CLAUDE.md's
 "enforcement, not detection" rule:
 
@@ -134,8 +134,8 @@ the venv-side guard for fact (2), split detect/repair per CLAUDE.md's
   command below — it never re-installs anything itself.
 
   Wired on **all three** dispatch surfaces that can reach an omnimarket-provided
-  node: `onex skill` (<ticket>), `onex node` / `onex run` (<ticket>), and
-  `onex delegate` (<ticket> — `node_delegate_skill_orchestrator` is
+  node: `onex skill`, `onex node` / `onex run`, and
+  `onex delegate` (`node_delegate_skill_orchestrator` is
   omnimarket-provided, and this surface previously had no guard at all, so a
   drifted venv surfaced as a bare contract-resolution failure). Each surface
   binds `--omni-home` to the `$OMNI_HOME` envvar; that binding is load-bearing,

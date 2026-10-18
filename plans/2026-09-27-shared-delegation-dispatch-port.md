@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-09-27"
 title: "Shared delegation dispatch port: one protocol, one model, validators that read only their own repo"
 topics: [delegation, protocol-layering, validators, pre-commit-hooks]

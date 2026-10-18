@@ -2401,15 +2401,10 @@ repos:
         correctness_status: broken
         verification_evidence: >-
           Source document's "Escalation gate sequence" section named a
-          3-tier ladder (local / cheap_cloud / frontier_api) ending in
-          Claude Sonnet and Claude Haiku backends. Confirmed against
-          src/omnimarket/configs/routing_tiers.yaml (omnimarket@dev) that the
-          live ladder is 4 tiers (local, cheap_cloud, cheap_frontier, claude)
-          and that both Anthropic backends were removed — the org holds no
-          Anthropic API key (Claude Code access is OAuth-only), so
-          resolve_api_key('llm.anthropic.api_key') returns None in every
-          lane, per the file's own changelog comment recording the prior
-          Anthropic-backend removal. Corrected before publication.
+          3-tier ladder (local / cheap_cloud / frontier_api). Confirmed
+          against src/omnimarket/configs/routing_tiers.yaml (omnimarket@dev)
+          that the live ladder is 4 tiers (local, cheap_cloud,
+          cheap_frontier, claude). Corrected before publication.
         pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
         cutover_state: moved
       - source_path: docs/architecture/delegation-routing-contract.md
