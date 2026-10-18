@@ -8,8 +8,6 @@ topics: [routing, canary, model-scoring, reducers]
 
 # Canary-to-Routing Feedback Loop Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan phase-by-phase.
-
 **Goal:** Close the feedback loop between canary grading results and routing policy decisions so that model scores from canary runs automatically update the routing engine's model rankings.
 
 **Architecture:** The canary orchestrator already publishes `adr-canary-completed` events containing `ModelCanaryReport` with per-model scores. The `routing_outcomes` and `capability_scores` tables already exist (migrations 060, 066). The gap is a reducer that subscribes to canary-completed events and materializes scores into these tables, plus wiring the routing policy engine to read from `capability_scores` instead of requiring static scores as input.

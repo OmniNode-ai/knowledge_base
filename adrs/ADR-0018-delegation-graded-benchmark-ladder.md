@@ -57,10 +57,9 @@ ceiling is INCLUDED"), with the frontier-saturation follow-up in §3 item 10.
 ## Evidence
 
 Hand-driven ADR canary batch (2026-07-06). Source is a dated
-operator decision + explicit 2026-07-04 operator correction; aligns with project memory
-`feedback_delegation_graded_benchmarks.md` (escalating tiers that separate rungs; flat
-smoke tests are worthless).
+operator decision + explicit 2026-07-04 operator correction: benchmark tiers must
+escalate so that they separate the rungs; flat smoke tests do not.
 
 ## Related Doctrine
 
-- LOCAL-FIRST MANDATE (`feedback_local_first_mandatory.md`) — local models run everything they can; escalate only on a graded failure.
+- Local-first mandate — local models run everything they can; escalate only on a graded failure.

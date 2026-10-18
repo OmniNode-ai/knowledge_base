@@ -87,5 +87,5 @@ same session 2026-07-06. State-of-the-art evidence is file-grounded in the sourc
 
 ## Related Doctrine
 
-- LOCAL-FIRST MANDATE (`feedback_local_first_mandatory.md`) — the attempt runs on the local tier first; escalate off local only on a graded failure.
+- Local-first mandate — the attempt runs on the local tier first; escalate off local only on a graded failure.
 - OmniNode deterministic-truth doctrine — the root re-verify and execution oracle keep "contract passes" a proven fact, not a heuristic claim.

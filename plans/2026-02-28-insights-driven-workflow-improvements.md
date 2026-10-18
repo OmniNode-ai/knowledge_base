@@ -8,8 +8,6 @@ topics: [workflow, skills, developer-experience, epics]
 
 # Insights-Driven Workflow Improvements Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task.
-
 **Goal:** Implement the top four workflow improvements surfaced by the /insights report to reduce wrong-approach friction, enable epic checkpoint/resume, add uv lock advisory warnings, and codify epic failure recovery strategies
 
 **Architecture:** Four independent deliverables across two surfaces: (1) documentation edits to `omniclaude/CLAUDE.md` and skill SKILL.md files, and (2) a Python change to `bash_guard.py` with TDD. Each deliverable is self-contained and can be committed independently. All changes target the `omniclaude` repo and belong in a worktree before committing.

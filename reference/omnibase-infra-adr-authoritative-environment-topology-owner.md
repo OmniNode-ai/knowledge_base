@@ -38,8 +38,9 @@ schema domains, NOLOGIN owner names, workload-principal names, explicit grant
 declarations, and DSN environment-variable names. They contain no credentials or DSN
 values.
 
-Docker database bindings under `docker/catalog/` and Kubernetes database/secret
-bindings under `omninode_infra/k8s/` are generated or parity-validated projections.
+Docker database bindings under `docker/catalog/` and the Kubernetes database/secret
+bindings in the hosted-cloud deployment repository (private) are generated or
+parity-validated projections.
 The Kubernetes secret-ownership manifest remains authoritative for credential
 synchronization only; it does not own database, schema, or principal semantics.
 

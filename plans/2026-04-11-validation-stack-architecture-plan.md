@@ -9,7 +9,7 @@ topics: [validation, ci, architecture, gates]
 # Validation Stack Architecture — Implementation Plan
 
 **Design doc:** `docs/design/validation-stack-architecture.md`
-**Extends:** `docs/plans/2026-04-11-vacuous-green-prevention-gate-plan.md` (vggp plan, 16 tasks — do NOT re-implement those tasks here)
+**Extends:** `docs/plans/2026-04-11-vacuous-green-prevention-gate-plan.md` (vggp plan, 16 tasks; this plan does not repeat them)
 **Status:** Ready for ticketization
 
 ---

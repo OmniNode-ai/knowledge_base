@@ -50,8 +50,10 @@ row_schema:
   owner:
     required: true
     description: >-
-      Accountable person for the correctness of the migrated content. Not the
-      person who runs the move — the person answerable for whether it is true.
+      Accountable role or team for the correctness of the migrated content
+      (for example docs-maintainers). Not whoever runs the move — the role
+      answerable for whether it is true. Never a person's name: this file is
+      public, and the sanitization gate refuses a name in this field.
   sensitivity:
     required: true
     one_of: [public, needs-review, restricted]
@@ -246,7 +248,7 @@ repos:
       - source_path: docs/decisions/ADR-006-receipt-consolidation.md
         bucket: A
         destination: adrs/ADR-0028-receipt-type-consolidation.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -259,7 +261,7 @@ repos:
       - source_path: docs/decisions/adr-2026-04-28-skill-liveness-validator-home.md
         bucket: A
         destination: adrs/ADR-0006-skill-liveness-validator-home.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -276,7 +278,7 @@ repos:
       - source_path: docs/decisions/adr-2026-04-28-dispatch-lifecycle-canonical.md
         bucket: A
         destination: adrs/ADR-0005-dispatch-lifecycle-canonical.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -292,7 +294,7 @@ repos:
       - source_path: docs/decisions/adr-2026-06-24-model-b-failing-rollup-enforcement.md
         bucket: A
         destination: adrs/ADR-0029-model-b-failing-rollup-validator-enforcement.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -306,7 +308,7 @@ repos:
       - source_path: docs/decisions/ADR-001-protocol-based-di-architecture.md
         bucket: A
         destination: adrs/ADR-0030-protocol-based-di-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -323,7 +325,7 @@ repos:
       - source_path: docs/decisions/ADR-002-field-limit-constants.md
         bucket: A
         destination: adrs/ADR-0031-centralized-field-limit-constants.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -336,7 +338,7 @@ repos:
       - source_path: docs/decisions/ADR-003-reducer-output-exception-consistency.md
         bucket: A
         destination: adrs/ADR-0032-reducer-output-exception-consistency.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -352,7 +354,7 @@ repos:
       - source_path: docs/decisions/ADR-004-registration-trigger-architecture.md
         bucket: A
         destination: adrs/ADR-0033-registration-trigger-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -371,7 +373,7 @@ repos:
       - source_path: docs/decisions/ADR-005-core-infra-dependency-boundary.md
         bucket: A
         destination: adrs/ADR-0034-core-infra-dependency-boundary.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -394,7 +396,7 @@ repos:
       - source_path: docs/decisions/ADR-006-status-taxonomy.md
         bucket: A
         destination: adrs/ADR-0035-status-taxonomy-and-categorical-organization.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -410,7 +412,7 @@ repos:
       - source_path: docs/decisions/ADR-007-context-mutability-design-decision.md
         bucket: A
         destination: adrs/ADR-0036-context-mutability-design-decision.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -424,7 +426,7 @@ repos:
       - source_path: docs/decisions/ADR-012-VALIDATOR-ERROR-HANDLING.md
         bucket: A
         destination: adrs/ADR-0037-validator-error-handling-modelonexerror.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -438,7 +440,7 @@ repos:
       - source_path: docs/decisions/RISK-009-ci-workflow-modification-risk.md
         bucket: A
         destination: adrs/ADR-0038-ci-workflow-modification-risk.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -460,7 +462,7 @@ repos:
       - source_path: docs/decisions/ADR_BEST_PRACTICES.md
         bucket: A
         destination: adrs/README.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -479,7 +481,7 @@ repos:
       - source_path: docs/decisions/README.md
         bucket: A
         destination: adrs/README.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -494,7 +496,7 @@ repos:
       - source_path: docs/standards/AGENT_MD_TEMPLATE.md
         bucket: A
         destination: reference/agent-md-template.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -508,7 +510,7 @@ repos:
       - source_path: docs/standards/CI_CD_STANDARDS.md
         bucket: A
         destination: reference/ci-cd-standards.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -532,7 +534,7 @@ repos:
       - source_path: docs/standards/CI_VALIDATION_SETUP.md
         bucket: A
         destination: reference/ci-validation-setup.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -546,7 +548,7 @@ repos:
       - source_path: docs/standards/MERGE_DEPENDENCY_GRAPH.md
         bucket: A
         destination: reference/merge-dependency-graph.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -560,7 +562,7 @@ repos:
       - source_path: docs/standards/onex_terminology.md
         bucket: A
         destination: reference/onex-terminology.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -588,7 +590,7 @@ repos:
       - source_path: docs/standards/onex_topic_taxonomy.md
         bucket: A
         destination: reference/onex-topic-taxonomy.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -604,7 +606,7 @@ repos:
       - source_path: docs/standards/STANDARD_DOC_LAYOUT.md
         bucket: A
         destination: reference/standard-doc-layout.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -630,7 +632,7 @@ repos:
       - source_path: docs/troubleshooting/ASYNC_HANG_DEBUGGING.md
         bucket: A
         destination: guides/async-hang-debugging.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -690,7 +692,7 @@ repos:
       - source_path: docs/architecture/CURRENT_NODE_ARCHITECTURE.md
         bucket: A
         destination: architecture/current-node-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -701,7 +703,7 @@ repos:
       - source_path: docs/architecture/DLQ_MESSAGE_FORMAT.md
         bucket: A
         destination: architecture/dlq-message-format.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -712,7 +714,7 @@ repos:
       - source_path: docs/architecture/EVENT_BUS_INTEGRATION_GUIDE.md
         bucket: A
         destination: architecture/event-bus-integration.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -723,7 +725,7 @@ repos:
       - source_path: docs/architecture/EVENT_STREAMING_TOPICS.md
         bucket: A
         destination: architecture/event-streaming-topics.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -734,7 +736,7 @@ repos:
       - source_path: docs/architecture/LLM_INFRASTRUCTURE.md
         bucket: A
         destination: architecture/llm-infrastructure.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -745,7 +747,7 @@ repos:
       - source_path: docs/architecture/MESSAGE_DISPATCH_ENGINE.md
         bucket: A
         destination: architecture/message-dispatch-engine.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -756,7 +758,7 @@ repos:
       - source_path: docs/architecture/REGISTRATION_WORKFLOW.md
         bucket: A
         destination: architecture/registration-workflow.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -767,7 +769,7 @@ repos:
       - source_path: docs/architecture/SHARED_ENUM_OWNERSHIP.md
         bucket: A
         destination: architecture/shared-enum-ownership.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -778,7 +780,7 @@ repos:
       - source_path: docs/architecture/SNAPSHOT_PUBLISHING.md
         bucket: A
         destination: architecture/snapshot-publishing.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -789,7 +791,7 @@ repos:
       - source_path: docs/architecture/TOPIC_CATALOG_ARCHITECTURE.md
         bucket: A
         destination: architecture/topic-catalog-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -800,7 +802,7 @@ repos:
       - source_path: docs/architecture/MCP_SERVICE_ARCHITECTURE.md
         bucket: A
         destination: architecture/mcp-service-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -819,7 +821,7 @@ repos:
       - source_path: docs/architecture/overview.md
         bucket: A
         destination: architecture/onex-runtime-overview.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -835,7 +837,7 @@ repos:
       - source_path: docs/guides/registration-example.md
         bucket: A
         destination: guides/registration-example.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -846,7 +848,7 @@ repos:
       - source_path: docs/guides/HANDLER_AUTHORING_GUIDE.md
         bucket: A
         destination: guides/handler-authoring-guide.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -861,7 +863,7 @@ repos:
       - source_path: docs/guides/MCP_INTEGRATION_GUIDE.md
         bucket: A
         destination: guides/mcp-integration-guide.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -877,7 +879,7 @@ repos:
       - source_path: docs/runbooks/repowise-freshness-receipt.md
         bucket: A
         destination: runbooks/repowise-freshness-receipt.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -888,7 +890,7 @@ repos:
       - source_path: docs/runbooks/vendored-node-migrations.md
         bucket: A
         destination: runbooks/vendored-node-migrations.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -897,20 +899,24 @@ repos:
         pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
         cutover_state: pointer-live
       - source_path: docs/runbooks/worktree-reaper-two-layer-gc.md
-        bucket: A
-        destination: runbooks/worktree-reaper-two-layer-gc.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Migrated byte-identical (no content edits). Zero sanitization-
-          pattern hits on rescan.
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/application-database-cutover-receipts.md
         bucket: A
         destination: runbooks/application-database-cutover-receipts.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -922,7 +928,7 @@ repos:
         cutover_state: pointer-live
       - source_path: docs/runbooks/application-migration-ledger.md
         bucket: D
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -942,35 +948,39 @@ repos:
           it does not host receipts or evidence snapshots.
         cutover_state: not-started
       - source_path: docs/runbooks/bulk-pr-operations.md
-        bucket: A
-        destination: runbooks/bulk-pr-operations.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged).
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/c2-git-mirror-egress-rollout.md
-        bucket: A
-        destination: runbooks/c2-git-mirror-egress-rollout.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged).
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/cold-lane-full-bringup.md
         bucket: A
         destination: runbooks/cold-lane-full-bringup.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -981,39 +991,39 @@ repos:
         pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
         cutover_state: pointer-live
       - source_path: docs/runbooks/pypi-cache-egress-rollout.md
-        bucket: A
-        destination: runbooks/pypi-cache-egress-rollout.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged); internal host
-          references replaced with the established `<onex-host>` placeholder
-          token.
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/runner-dns-cache-rollout.md
-        bucket: A
-        destination: runbooks/runner-dns-cache-rollout.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged); internal host
-          references replaced with the established `<onex-host>` placeholder
-          token.
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/managed-staging-canary-teardown-rollback.md
         bucket: C
         destination: private-internal-kb
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
@@ -1028,7 +1038,7 @@ repos:
       - source_path: docs/runbooks/judge-compose-profile.md
         bucket: A
         destination: runbooks/judge-compose-profile.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1039,7 +1049,7 @@ repos:
       - source_path: docs/runbooks/volume-config-drift-and-reseed.md
         bucket: A
         destination: runbooks/volume-config-drift-and-reseed.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1050,7 +1060,7 @@ repos:
       - source_path: docs/runbooks/managed-staging-canary-postgres-provisioning.md
         bucket: C
         destination: private-internal-kb
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
@@ -1063,24 +1073,24 @@ repos:
           parameterized.
         cutover_state: not-started
       - source_path: docs/runbooks/stability-test-runtime-lane.md
-        bucket: A
-        destination: runbooks/stability-test-runtime-lane.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged); secrets-
-          manager vendor name genericized (prose-only mentions, not code/CLI
-          identifiers).
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/fault-inject-fixture-dlq-offset-withholding.md
         bucket: A
         destination: runbooks/fault-inject-fixture-dlq-offset-withholding.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1093,7 +1103,7 @@ repos:
       - source_path: docs/runbooks/gateway-lane-deploy.md
         bucket: C
         destination: private-internal-kb
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
@@ -1109,7 +1119,7 @@ repos:
       - source_path: docs/runbooks/node-skill-package-install.md
         bucket: A
         destination: runbooks/node-skill-package-install.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1120,54 +1130,54 @@ repos:
         pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
         cutover_state: pointer-live
       - source_path: docs/runbooks/runner-disk-admission-gate.md
-        bucket: A
-        destination: runbooks/runner-disk-admission-gate.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged); internal host
-          references replaced with the established `<onex-host>` placeholder
-          token.
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/runner-fleet-listener-liveness.md
-        bucket: A
-        destination: runbooks/runner-fleet-listener-liveness.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged); internal host
-          references replaced with the established `<onex-host>` placeholder
-          token.
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/stability-lane-refresh.md
-        bucket: A
-        destination: runbooks/stability-lane-refresh.md
-        owner: Jonah Gray
-        sensitivity: public
+        bucket: C
+        destination: private-internal-kb
+        owner: docs-maintainers
+        sensitivity: restricted
         correctness_status: current
         verification_evidence: >-
-          Internal ticket citation(s) replaced with the `<ticket>`
-          placeholder (the sanitization guard forbids the literal
-          identifier; the parenthetical context next to each citation was
-          left intact so the substantive claim is unchanged); internal host
-          references replaced with the established `<onex-host>` placeholder
-          token.
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: pointer-live
+          Reclassified from bucket A to bucket C and removed from the public
+          knowledge base, 2026-10-18: this is an operations record for
+          OmniNode's own CI runner fleet and agent lanes (container names,
+          incident narrative, in-execution status), not a procedure a
+          self-hoster runs against their own deployment. The README charter
+          excludes our own operations from this repository.
+        triage_verdict: DO_NOT_MIGRATE
+        cutover_state: not-started
       - source_path: docs/runbooks/apply-migrations.md
         bucket: A
         destination: runbooks/apply-migrations.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1180,7 +1190,7 @@ repos:
       - source_path: docs/runbooks/market-node-deployment.md
         bucket: A
         destination: runbooks/market-node-deployment.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1196,7 +1206,7 @@ repos:
       - source_path: docs/architecture/CIRCUIT_BREAKER_THREAD_SAFETY.md
         bucket: A
         destination: architecture/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1213,7 +1223,7 @@ repos:
       - source_path: docs/architecture/CONFIG_DISCOVERY.md
         bucket: A
         destination: architecture/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1230,7 +1240,7 @@ repos:
       - source_path: docs/architecture/HANDLER_PROTOCOL_DRIVEN_ARCHITECTURE.md
         bucket: A
         destination: architecture/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1243,7 +1253,7 @@ repos:
       - source_path: docs/guides/INFISICAL_SECRETS_GUIDE.md  # sanitization-ok: real repo-relative filename, cited for drift-guard tracking of a quarantined row
         bucket: A
         destination: guides/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1256,7 +1266,7 @@ repos:
       - source_path: docs/runbooks/emergency-runtime-refresh.md
         bucket: A
         destination: runbooks/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1271,7 +1281,7 @@ repos:
       - source_path: docs/runbooks/release-train-lab.md
         bucket: A
         destination: runbooks/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1286,7 +1296,7 @@ repos:
       - source_path: docs/runbooks/managed-staging-aug5-readiness-rollback-packet.md
         bucket: A
         destination: runbooks/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1303,7 +1313,7 @@ repos:
       - source_path: docs/runbooks/managed-staging-one-tenant-contract-freeze.md
         bucket: A
         destination: runbooks/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1314,7 +1324,7 @@ repos:
       - source_path: docs/runbooks/managed-staging-candidate-isolation-compatibility-proof.md
         bucket: A
         destination: runbooks/ (not yet migrated)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: needs-review
         correctness_status: hygiene-risk
         verification_evidence: >-
@@ -1325,7 +1335,7 @@ repos:
       - source_path: docs/runbooks/managed-staging-proof-kit/fields.yaml
         bucket: B
         destination: stays-in-repo
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1338,7 +1348,7 @@ repos:
       - source_path: docs/architecture/README.md
         bucket: B
         destination: stays-in-repo (rewritten nav index)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1351,7 +1361,7 @@ repos:
       - source_path: docs/guides/README.md
         bucket: B
         destination: stays-in-repo (rewritten nav index)
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1363,7 +1373,7 @@ repos:
       - source_path: docs/standards/STANDARD_DOC_LAYOUT.md
         bucket: A
         destination: reference/standard-doc-layout.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1417,7 +1427,7 @@ repos:
       - source_path: docs/architecture/ONEX_FOUR_NODE_ARCHITECTURE.md
         bucket: A
         destination: architecture/omnimemory-four-node-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1434,7 +1444,7 @@ repos:
       - source_path: docs/architecture/ARCH_002_KAFKA_ABSTRACTION.md
         bucket: A
         destination: architecture/omnimemory-arch-002-kafka-abstraction.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1453,7 +1463,7 @@ repos:
       - source_path: docs/runtime/RUNTIME_PLUGINS.md
         bucket: A
         destination: reference/omnimemory-runtime-plugins.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1477,7 +1487,7 @@ repos:
       - source_path: docs/architecture/MEMORY_DATA_OWNERSHIP.md
         bucket: A
         destination: reference/omnimemory-memory-data-ownership.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1496,7 +1506,7 @@ repos:
       - source_path: docs/migrations/MARKET_MIGRATION_BOUNDARY.md
         bucket: A
         destination: guides/omnimemory-market-migration-boundary.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1525,7 +1535,7 @@ repos:
       - source_path: docs/pii_handling.md
         bucket: A
         destination: guides/omnimemory-pii-handling.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         triage_verdict: MIGRATE_AS_IS
         sensitivity: public
         correctness_status: current
@@ -1551,7 +1561,7 @@ repos:
       - source_path: docs/environment_variables.md
         bucket: A
         destination: reference/omnimemory-environment-variables.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         triage_verdict: CORRECT_THEN_MIGRATE
         sensitivity: public
         correctness_status: stale
@@ -1574,7 +1584,7 @@ repos:
       - source_path: docs/handler_reuse_matrix.md
         bucket: A
         destination: reference/omnimemory-handler-reuse-matrix.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         triage_verdict: CORRECT_THEN_MIGRATE
         sensitivity: public
         correctness_status: stale
@@ -1608,7 +1618,7 @@ repos:
       - source_path: docs/PERFORMANCE_TESTING.md
         bucket: A
         destination: guides/omnimemory-performance-testing.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         triage_verdict: CORRECT_THEN_MIGRATE
         sensitivity: public
         correctness_status: stale
@@ -1636,7 +1646,7 @@ repos:
       - source_path: docs/runbooks/STARTING_MEMORY_SERVICES.md
         bucket: A
         destination: runbooks/omnimemory-starting-memory-services.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         triage_verdict: GENERICIZE_THEN_MIGRATE
         sensitivity: public
         correctness_status: current
@@ -1673,7 +1683,7 @@ repos:
       - source_path: .serena/memories/project_overview.md
         bucket: A
         destination: deleted-not-migrated
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: DELETE
@@ -1690,7 +1700,7 @@ repos:
       - source_path: .serena/memories/suggested_commands.md
         bucket: A
         destination: deleted-not-migrated
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         triage_verdict: DELETE
@@ -1707,7 +1717,7 @@ repos:
       - source_path: docs/INDEX.md
         bucket: A
         destination: deleted-not-migrated
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: DELETE
@@ -1750,7 +1760,7 @@ repos:
       - source_path: docs/architecture/AGENT_ROUTING_ARCHITECTURE.md
         bucket: A
         destination: architecture/agent-routing-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1763,7 +1773,7 @@ repos:
       - source_path: docs/architecture/charter.md
         bucket: A
         destination: architecture/omniclaude-repo-charter.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1774,7 +1784,7 @@ repos:
       - source_path: docs/architecture/COMPLIANCE_ENFORCEMENT_ARCHITECTURE.md
         bucket: A
         destination: architecture/compliance-enforcement-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1789,7 +1799,7 @@ repos:
       - source_path: docs/architecture/CONTEXT_ENRICHMENT_PIPELINE.md
         bucket: A
         destination: architecture/context-enrichment-pipeline.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1800,7 +1810,7 @@ repos:
       - source_path: docs/architecture/DELEGATION_ARCHITECTURE.md
         bucket: A
         destination: architecture/delegation-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1816,7 +1826,7 @@ repos:
       - source_path: docs/architecture/EMIT_DAEMON_ARCHITECTURE.md
         bucket: A
         destination: architecture/emit-daemon-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1828,7 +1838,7 @@ repos:
       - source_path: docs/architecture/EVENT_DRIVEN_ROUTING_PROPOSAL.md
         bucket: A
         destination: architecture/event-driven-routing-proposal.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -1845,7 +1855,7 @@ repos:
       - source_path: docs/architecture/HOOK_DATA_FLOW.md
         bucket: A
         destination: architecture/hook-data-flow.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1861,7 +1871,7 @@ repos:
       - source_path: docs/architecture/LLM_ROUTING_ARCHITECTURE.md
         bucket: A
         destination: architecture/llm-routing-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1874,7 +1884,7 @@ repos:
       - source_path: docs/architecture/ROUTING_ARCHITECTURE_COMPARISON.md
         bucket: A
         destination: architecture/routing-architecture-comparison.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -1887,7 +1897,7 @@ repos:
       - source_path: docs/architecture/SERVICE-BOUNDARIES.md
         bucket: A
         destination: architecture/service-boundaries.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1906,7 +1916,7 @@ repos:
       - source_path: docs/architecture/skill-lifecycle.md
         bucket: A
         destination: architecture/omniclaude-skill-lifecycle.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1919,7 +1929,7 @@ repos:
       - source_path: docs/guides/ADDING_A_HOOK_HANDLER.md
         bucket: A
         destination: guides/adding-a-hook-handler.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1933,7 +1943,7 @@ repos:
       - source_path: docs/guides/ADDING_A_SKILL.md
         bucket: A
         destination: guides/adding-a-skill.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1945,7 +1955,7 @@ repos:
       - source_path: docs/guides/ADDING_AN_AGENT.md
         bucket: A
         destination: guides/adding-an-agent.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1959,7 +1969,7 @@ repos:
       - source_path: docs/guides/TESTING_GUIDE.md
         bucket: A
         destination: guides/omniclaude-testing-guide.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1970,7 +1980,7 @@ repos:
       - source_path: docs/standards/CI_CD_STANDARDS.md
         bucket: A
         destination: reference/omniclaude-ci-cd-standards.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -1988,7 +1998,7 @@ repos:
       - source_path: docs/standards/EVENT_ENVELOPE_FIELD_NAMES.md
         bucket: A
         destination: reference/event-envelope-field-names.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -1999,7 +2009,7 @@ repos:
       - source_path: docs/standards/STANDARD_DOC_LAYOUT.md
         bucket: A
         destination: reference/standard-doc-layout.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2015,7 +2025,7 @@ repos:
       - source_path: docs/standards/TEST_DISCIPLINE.md
         bucket: A
         destination: reference/omniclaude-test-discipline.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2028,7 +2038,7 @@ repos:
       - source_path: docs/standards/VERIFICATION_DOCTRINE.md
         bucket: A
         destination: reference/omniclaude-verification-doctrine.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2068,7 +2078,7 @@ repos:
       - source_path: docs/reference/EVENT_SURFACE.md
         bucket: A
         destination: reference/omniintelligence-event-surface.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -2101,7 +2111,7 @@ repos:
       - source_path: docs/reference/DASH_INTEGRATION_TRUTH_BOUNDARY.md
         bucket: A
         destination: "reference/ (not yet migrated — quarantined)"
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -2135,7 +2145,7 @@ repos:
       - source_path: docs/reference/NODE_INVENTORY.md
         bucket: A
         destination: reference/omniintelligence-node-inventory.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2151,7 +2161,7 @@ repos:
       - source_path: docs/architecture/ONEX_FOUR_NODE_ARCHITECTURE.md
         bucket: A
         destination: architecture/omniintelligence-four-node-architecture.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2167,7 +2177,7 @@ repos:
       - source_path: docs/architecture/CODE_PROJECTION_V2.md
         bucket: A
         destination: architecture/omniintelligence-code-projection-v2.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2183,7 +2193,7 @@ repos:
       - source_path: docs/architecture/contract-package-spec.md
         bucket: A
         destination: architecture/omniintelligence-contract-package-spec.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -2203,7 +2213,7 @@ repos:
       - source_path: docs/standards/STANDARD_DOC_LAYOUT.md
         bucket: A
         destination: reference/standard-doc-layout.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2263,7 +2273,7 @@ repos:
       - source_path: docs/standards/receipt_hashing_and_supersession.md
         bucket: A
         destination: reference/receipt-hashing-and-supersession.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -2281,7 +2291,7 @@ repos:
       - source_path: docs/standards/DUAL_BINDING_CASES.md
         bucket: A
         destination: reference/dual-binding-cases.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         verification_evidence: >-
@@ -2296,7 +2306,7 @@ repos:
       - source_path: docs/policy/db-boundary-policy.md
         bucket: A
         destination: reference/db-boundary-policy.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -2314,7 +2324,7 @@ repos:
       - source_path: docs/policy/typed-metadata-policy.md
         bucket: A
         destination: reference/typed-metadata-policy.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -2331,7 +2341,7 @@ repos:
         cutover_state: moved
       - source_path: docs/governance/2026-04-27-required-gates-rollout.md
         bucket: D
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         verification_evidence: >-
@@ -2380,7 +2390,7 @@ repos:
       - source_path: docs/architecture/delegation-dispatch.md
         bucket: A
         destination: architecture/delegation-dispatch.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -2399,7 +2409,7 @@ repos:
       - source_path: docs/architecture/delegation-routing-contract.md
         bucket: A
         destination: architecture/delegation-routing-contract.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -2417,7 +2427,7 @@ repos:
       - source_path: docs/reference/node-catalog.md
         bucket: A
         destination: reference/omnimarket-node-catalog.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: broken
         verification_evidence: >-
@@ -2481,7 +2491,7 @@ repos:
       - source_path: docs/adr/001-typography-system.md
         bucket: A
         destination: adrs/ADR-0039-omnidash-typography-system.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2498,7 +2508,7 @@ repos:
       - source_path: docs/adr/002-storybook-widget-coverage.md
         bucket: A
         destination: adrs/ADR-0040-omnidash-storybook-widget-coverage.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2514,7 +2524,7 @@ repos:
       - source_path: docs/adr/003-baselines-roi-card-stay-bespoke.md
         bucket: A
         destination: adrs/ADR-0041-omnidash-baselines-roi-card-stays-bespoke.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2528,7 +2538,7 @@ repos:
       - source_path: docs/adr/004-cross-renderer-empty-state-gate.md
         bucket: A
         destination: adrs/ADR-0042-omnidash-cross-renderer-typed-empty-state-gate.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2542,7 +2552,7 @@ repos:
       - source_path: docs/adr/005-rjsf-discriminator-union.md
         bucket: A
         destination: adrs/ADR-0043-omnidash-rjsf-discriminated-union-handling.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2556,7 +2566,7 @@ repos:
       - source_path: docs/architecture/composable-frame.md
         bucket: A
         destination: architecture/omnidash-composable-frame.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: CORRECT_THEN_MIGRATE
@@ -2577,7 +2587,7 @@ repos:
       - source_path: docs/development.md
         bucket: A
         destination: guides/omnidash-development.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2593,7 +2603,7 @@ repos:
       - source_path: docs/reference/component-manifest.md
         bucket: A
         destination: reference/omnidash-component-manifest.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: CORRECT_THEN_MIGRATE
@@ -2612,7 +2622,7 @@ repos:
       - source_path: docs/reference/dashboard-definition.md
         bucket: A
         destination: reference/omnidash-dashboard-definition.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2625,7 +2635,7 @@ repos:
       - source_path: src/components/dashboard/README.md
         bucket: A
         destination: architecture/omnidash-component-truth-boundary.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2644,7 +2654,7 @@ repos:
       - source_path: docs/INDEX.md
         bucket: A
         destination: deleted-not-migrated
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: DELETE
@@ -2664,7 +2674,7 @@ repos:
       - source_path: docs/README.md
         bucket: A
         destination: deleted-not-migrated
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: DELETE
@@ -2684,7 +2694,7 @@ repos:
       - source_path: src/components/ui/typography/README.md
         bucket: A
         destination: reference/omnidash-typography-primitives.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2726,7 +2736,7 @@ repos:
       - source_path: docs/README.md
         bucket: A
         destination: reference/omnibase-compat-structural-inventory.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: current
         triage_verdict: MIGRATE_AS_IS
@@ -2753,7 +2763,7 @@ repos:
       - source_path: docs/runbooks/release.md
         bucket: A
         destination: runbooks/omnibase-compat-release.md
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: CORRECT_THEN_MIGRATE
@@ -2780,7 +2790,7 @@ repos:
       - source_path: docs/plans/release-workflow.md
         bucket: A
         destination: deleted-not-migrated
-        owner: Jonah Gray
+        owner: docs-maintainers
         sensitivity: public
         correctness_status: stale
         triage_verdict: DELETE

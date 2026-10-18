@@ -35,10 +35,6 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMarket Cursor Adapter](guides/omnimarket-cursor-adapter.md)** (guide)
 - **[OmniMarket Gemini CLI Adapter](guides/omnimarket-gemini-adapter.md)** (guide)
 
-## admission
-
-- **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook)
-
 ## adr
 
 - **[ADR: Use of Any Type as Pydantic 2.x JsonType Workaround](reference/omnibase-infra-adr-any-type-pydantic-workaround.md)** (reference)
@@ -310,24 +306,14 @@ Knowledge base artifacts grouped by topic.
 - **[Agent Templates for ONEX Node Development](guides/onex-node-building-10-agent-templates.md)** (guide)
 - **[Node Building Guide](guides/onex-node-building-overview.md)** (guide)
 
-## bulk
-
-- **[Bulk PR operations — mandatory throttled path (<ticket>)](runbooks/bulk-pr-operations.md)** (runbook)
-
 ## bus
 
 - **[Event Bus Integration Guide](architecture/event-bus-integration.md)** (architecture)
 - **[Event Bus Operations Runbook](runbooks/omnibase-infra-event-bus-operations.md)** (runbook)
 
-## c2
-
-- **[Git-transport + Actions egress: local mirrors and tool-cache durability — <ticket> C2](runbooks/c2-git-mirror-egress-rollout.md)** (runbook)
-
 ## cache
 
 - **[Cache Tuning for Production Deployment](guides/onex-production-cache-tuning.md)** (guide)
-- **[PyPI pull-through cache (egress) rollout — <ticket> C1](runbooks/pypi-cache-egress-rollout.md)** (runbook)
-- **[Runner-fleet local DNS cache rollout — <ticket>](runbooks/runner-dns-cache-rollout.md)** (runbook)
 
 ## canary
 
@@ -890,10 +876,6 @@ Knowledge base artifacts grouped by topic.
 - **[Protocol Discovery Guide](guides/onex-protocol-discovery.md)** (guide)
 - **[Mixin Discovery API](reference/omnibase-core-mixin-discovery-api.md)** (reference)
 
-## disk
-
-- **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook)
-
 ## dispatch
 
 - **[ADR-0005: Dispatch Lifecycle Canonical Source](adrs/ADR-0005-dispatch-lifecycle-canonical.md)** (adr)
@@ -921,10 +903,6 @@ Knowledge base artifacts grouped by topic.
 - **[DLQ Quarantine Ownership Semantics](reference/omnibase-infra-dlq-quarantine-ownership.md)** (reference)
 - **[Fault-injection fixture — DLQ offset-withholding proof](runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
 - **[Dead Letter Queue (DLQ) Replay Guide](runbooks/omnibase-infra-dlq-replay.md)** (runbook)
-
-## dns
-
-- **[Runner-fleet local DNS cache rollout — <ticket>](runbooks/runner-dns-cache-rollout.md)** (runbook)
 
 ## doc-layout
 
@@ -1014,11 +992,6 @@ Knowledge base artifacts grouped by topic.
 - **[Effect Subcontract Guide](guides/onex-effect-subcontracts.md)** (guide)
 - **[EFFECT Node Tutorial: Build a File Backup System](guides/onex-node-building-04-effect-node-tutorial.md)** (guide)
 - **[NodeEffect Contract Examples](reference/omnibase-core-example-effect-contracts.md)** (reference)
-
-## egress
-
-- **[Git-transport + Actions egress: local mirrors and tool-cache durability — <ticket> C2](runbooks/c2-git-mirror-egress-rollout.md)** (runbook)
-- **[PyPI pull-through cache (egress) rollout — <ticket> C1](runbooks/pypi-cache-egress-rollout.md)** (runbook)
 
 ## emit-daemon
 
@@ -1219,10 +1192,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Fault-injection fixture — DLQ offset-withholding proof](runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
 
-## fleet
-
-- **[Runner fleet listener liveness (<ticket>)](runbooks/runner-fleet-listener-liveness.md)** (runbook)
-
 ## flow
 
 - **[Envelope Flow Architecture](architecture/onex-envelope-flow-architecture.md)** (architecture)
@@ -1275,10 +1244,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](runbooks/cold-lane-full-bringup.md)** (runbook)
 
-## gate
-
-- **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook)
-
 ## gate-check-contract
 
 - **[CI/CD Standards](reference/ci-cd-standards.md)** (reference)
@@ -1306,10 +1271,6 @@ Knowledge base artifacts grouped by topic.
 - **[Getting Started Locally](guides/getting-started-local.md)** (guide)
 - **[Getting Started: Self-Hosting the Full Stack](guides/getting-started-self-hosted.md)** (guide)
 - **[omnibase_spi Quick Start](guides/omnibase-spi-quick-start.md)** (guide)
-
-## git
-
-- **[Git-transport + Actions egress: local mirrors and tool-cache durability — <ticket> C2](runbooks/c2-git-mirror-egress-rollout.md)** (runbook)
 
 ## github-actions
 
@@ -1563,16 +1524,10 @@ Knowledge base artifacts grouped by topic.
 ## lane
 
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](runbooks/cold-lane-full-bringup.md)** (runbook)
-- **[Stability-Lane Refresh (<ticket> / <ticket>)](runbooks/stability-lane-refresh.md)** (runbook)
-- **[Stability-Test Runtime Lane](runbooks/stability-test-runtime-lane.md)** (runbook)
 
 ## last-write-wins
 
 - **[Reducers Own State Progression](pivots/PIVOT-0004-reducers-own-state-progression.md)** (pivot)
-
-## layer
-
-- **[Merge-Triggered Worktree GC — Two-Layer Model (Event-First + Timer-Backstop)](runbooks/worktree-reaper-two-layer-gc.md)** (runbook)
 
 ## layering
 
@@ -1597,14 +1552,6 @@ Knowledge base artifacts grouped by topic.
 ## lifecycle
 
 - **[ADR-0005: Dispatch Lifecycle Canonical Source](adrs/ADR-0005-dispatch-lifecycle-canonical.md)** (adr)
-
-## listener
-
-- **[Runner fleet listener liveness (<ticket>)](runbooks/runner-fleet-listener-liveness.md)** (runbook)
-
-## liveness
-
-- **[Runner fleet listener liveness (<ticket>)](runbooks/runner-fleet-listener-liveness.md)** (runbook)
 
 ## llm
 
@@ -1762,10 +1709,6 @@ Knowledge base artifacts grouped by topic.
 - **[Apply Migrations Runbook](runbooks/apply-migrations.md)** (runbook)
 - **[Vendored Node Migration Runbook](runbooks/vendored-node-migrations.md)** (runbook)
 
-## mirror
-
-- **[Git-transport + Actions egress: local mirrors and tool-cache durability — <ticket> C2](runbooks/c2-git-mirror-egress-rollout.md)** (runbook)
-
 ## mixin
 
 - **[ONEX Mixin Architecture](architecture/onex-mixin-architecture.md)** (architecture)
@@ -1921,7 +1864,6 @@ Knowledge base artifacts grouped by topic.
 - **[ONEX Change Control — Decision Log](reference/onex-change-control-decision-log.md)** (reference)
 - **[ONEX Change Control — Versioning Policy](reference/onex-change-control-versioning-policy.md)** (reference)
 - **[DoD Receipt Hashing, Append-Only, and Supersession](reference/receipt-hashing-and-supersession.md)** (reference)
-- **[Verifying Terminal Claims](runbooks/verify-terminal-claims.md)** (runbook)
 
 ## omnibase-compat
 
@@ -2127,8 +2069,6 @@ Knowledge base artifacts grouped by topic.
 - **[Validation Performance Notes](reference/omnibase-infra-validation-performance-notes.md)** (reference)
 - **[Application database cutover receipts](runbooks/application-database-cutover-receipts.md)** (runbook)
 - **[Apply Migrations Runbook](runbooks/apply-migrations.md)** (runbook)
-- **[Bulk PR operations — mandatory throttled path (<ticket>)](runbooks/bulk-pr-operations.md)** (runbook)
-- **[Git-transport + Actions egress: local mirrors and tool-cache durability — <ticket> C2](runbooks/c2-git-mirror-egress-rollout.md)** (runbook)
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](runbooks/cold-lane-full-bringup.md)** (runbook)
 - **[Fault-injection fixture — DLQ offset-withholding proof](runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook)
 - **[Judge Compose Profile](runbooks/judge-compose-profile.md)** (runbook)
@@ -2138,16 +2078,9 @@ Knowledge base artifacts grouped by topic.
 - **[Database Index Monitoring Runbook](runbooks/omnibase-infra-database-index-monitoring.md)** (runbook)
 - **[Dead Letter Queue (DLQ) Replay Guide](runbooks/omnibase-infra-dlq-replay.md)** (runbook)
 - **[Event Bus Operations Runbook](runbooks/omnibase-infra-event-bus-operations.md)** (runbook)
-- **[PyPI pull-through cache (egress) rollout — <ticket> C1](runbooks/pypi-cache-egress-rollout.md)** (runbook)
 - **[Repowise Freshness Receipt](runbooks/repowise-freshness-receipt.md)** (runbook)
-- **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook)
-- **[Runner-fleet local DNS cache rollout — <ticket>](runbooks/runner-dns-cache-rollout.md)** (runbook)
-- **[Runner fleet listener liveness (<ticket>)](runbooks/runner-fleet-listener-liveness.md)** (runbook)
-- **[Stability-Lane Refresh (<ticket> / <ticket>)](runbooks/stability-lane-refresh.md)** (runbook)
-- **[Stability-Test Runtime Lane](runbooks/stability-test-runtime-lane.md)** (runbook)
 - **[Vendored Node Migration Runbook](runbooks/vendored-node-migrations.md)** (runbook)
 - **[Volume Config Drift Gate + Re-seed Procedure](runbooks/volume-config-drift-and-reseed.md)** (runbook)
-- **[Merge-Triggered Worktree GC — Two-Layer Model (Event-First + Timer-Backstop)](runbooks/worktree-reaper-two-layer-gc.md)** (runbook)
 
 ## omnibase-spi
 
@@ -2324,7 +2257,6 @@ Knowledge base artifacts grouped by topic.
 
 ## operations
 
-- **[Bulk PR operations — mandatory throttled path (<ticket>)](runbooks/bulk-pr-operations.md)** (runbook)
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](runbooks/kafka-reconnect-and-broker-recovery.md)** (runbook)
 - **[Event Bus Operations Runbook](runbooks/omnibase-infra-event-bus-operations.md)** (runbook)
 
@@ -2505,10 +2437,6 @@ Knowledge base artifacts grouped by topic.
 - **[Adding a Custom PostToolUse Handler](guides/adding-a-posttooluse-handler.md)** (guide)
 - **[Claude Code PostToolUse updatedToolOutput Shape](reference/claude-code-posttooluse-output-shape.md)** (reference)
 
-## pr
-
-- **[Bulk PR operations — mandatory throttled path (<ticket>)](runbooks/bulk-pr-operations.md)** (runbook)
-
 ## pr-lifecycle
 
 - **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](plans/2026-09-26-pr-landing-workflow-plan.md)** (plan)
@@ -2663,7 +2591,6 @@ Knowledge base artifacts grouped by topic.
 ## pypi
 
 - **[omnibase_compat Release](runbooks/omnibase-compat-release.md)** (runbook)
-- **[PyPI pull-through cache (egress) rollout — <ticket> C1](runbooks/pypi-cache-egress-rollout.md)** (runbook)
 
 ## pytest
 
@@ -2701,10 +2628,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Event Streams Are Not Authoritative State](pivots/PIVOT-0005-event-streams-are-not-authoritative-state.md)** (pivot)
 
-## reaper
-
-- **[Merge-Triggered Worktree GC — Two-Layer Model (Event-First + Timer-Backstop)](runbooks/worktree-reaper-two-layer-gc.md)** (runbook)
-
 ## receipt
 
 - **[Repowise Freshness Receipt](runbooks/repowise-freshness-receipt.md)** (runbook)
@@ -2722,7 +2645,6 @@ Knowledge base artifacts grouped by topic.
 - **[DoD Check Types](reference/dod-check-types.md)** (reference)
 - **[DoD Receipt Locations](reference/dod-receipt-locations.md)** (reference)
 - **[Application database cutover receipts](runbooks/application-database-cutover-receipts.md)** (runbook)
-- **[Verifying Terminal Claims](runbooks/verify-terminal-claims.md)** (runbook)
 
 ## reconcile
 
@@ -2753,10 +2675,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Authoring an ONEX Skill](guides/authoring-an-onex-skill.md)** (guide)
 - **[Contract.yaml Reference](reference/omnibase-infra-contract-yaml-reference.md)** (reference)
-
-## refresh
-
-- **[Stability-Lane Refresh (<ticket> / <ticket>)](runbooks/stability-lane-refresh.md)** (runbook)
 
 ## registration
 
@@ -2867,11 +2785,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
-## rollout
-
-- **[PyPI pull-through cache (egress) rollout — <ticket> C1](runbooks/pypi-cache-egress-rollout.md)** (runbook)
-- **[Runner-fleet local DNS cache rollout — <ticket>](runbooks/runner-dns-cache-rollout.md)** (runbook)
-
 ## root-cause
 
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** (adr)
@@ -2908,13 +2821,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** (adr)
 - **[Starting OmniMemory Services](runbooks/omnimemory-starting-memory-services.md)** (runbook)
-- **[Verifying Terminal Claims](runbooks/verify-terminal-claims.md)** (runbook)
-
-## runner
-
-- **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook)
-- **[Runner-fleet local DNS cache rollout — <ticket>](runbooks/runner-dns-cache-rollout.md)** (runbook)
-- **[Runner fleet listener liveness (<ticket>)](runbooks/runner-fleet-listener-liveness.md)** (runbook)
 
 ## runners
 
@@ -2932,7 +2838,6 @@ Knowledge base artifacts grouped by topic.
 - **[Getting Started: Self-Hosting the Full Stack](guides/getting-started-self-hosted.md)** (guide)
 - **[OmniMemory Runtime Plugin System](reference/omnimemory-runtime-plugins.md)** (reference)
 - **[ONEX Core Terminology](reference/onex-terminology.md)** (reference)
-- **[Stability-Test Runtime Lane](runbooks/stability-test-runtime-lane.md)** (runbook)
 
 ## runtime-health
 
@@ -3103,8 +3008,6 @@ Knowledge base artifacts grouped by topic.
 ## stability
 
 - **[Contract Stability Specification](architecture/onex-contract-stability-spec.md)** (architecture)
-- **[Stability-Lane Refresh (<ticket> / <ticket>)](runbooks/stability-lane-refresh.md)** (runbook)
-- **[Stability-Test Runtime Lane](runbooks/stability-test-runtime-lane.md)** (runbook)
 
 ## staleness
 
@@ -3221,7 +3124,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Code Coverage Testing](guides/omnibase-core-test-coverage.md)** (guide)
 - **[CI Test Strategy](guides/omnibase-infra-ci-test-strategy.md)** (guide)
-- **[Stability-Test Runtime Lane](runbooks/stability-test-runtime-lane.md)** (runbook)
 
 ## testing
 
@@ -3348,7 +3250,6 @@ Knowledge base artifacts grouped by topic.
 ## two
 
 - **[ADR: Two Handler Systems in omnibase_infra](reference/omnibase-infra-adr-two-handler-systems.md)** (reference)
-- **[Merge-Triggered Worktree GC — Two-Layer Model (Event-First + Timer-Backstop)](runbooks/worktree-reaper-two-layer-gc.md)** (runbook)
 
 ## type
 
@@ -3461,7 +3362,6 @@ Knowledge base artifacts grouped by topic.
 - **[Platform readiness gap closure plan](plans/2026-04-07-platform-readiness-gap-closure.md)** (plan)
 - **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 - **[Verification Doctrine](reference/omniclaude-verification-doctrine.md)** (reference)
-- **[Verifying Terminal Claims](runbooks/verify-terminal-claims.md)** (runbook)
 
 ## version
 
@@ -3519,10 +3419,6 @@ Knowledge base artifacts grouped by topic.
 ## workflows
 
 - **[Connecting to the OmniNode Cloud](guides/connecting-to-the-cloud.md)** (guide)
-
-## worktree
-
-- **[Merge-Triggered Worktree GC — Two-Layer Model (Event-First + Timer-Backstop)](runbooks/worktree-reaper-two-layer-gc.md)** (runbook)
 
 ## wrappers
 

@@ -8,8 +8,6 @@ topics: [integration, drift, auditing, methodology]
 
 # Gap Investigation Series — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task.
-
 **Goal:** Run a four-skill gap investigation series (gap-analysis + pipeline-audit → gap-fix → golden-path-validate) to find and close integration drift across the full platform after restarting the emit daemon.
 
 **Architecture:** Parallel discovery (1a gap-analysis + 1b pipeline-audit) feeds auto-fix (gap-fix), which must produce merged PRs and a confirmed redeploy before live validation (golden-path-validate) runs against the routing pipeline.

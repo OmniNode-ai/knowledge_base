@@ -15,7 +15,6 @@ All knowledge base artifacts sorted by date.
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](plans/2026-09-27-shared-delegation-dispatch-port.md)** (plan) — 2026-09-27
 - **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](plans/2026-09-26-pr-landing-workflow-plan.md)** (plan) — 2026-09-26
 - **[Connecting to the OmniNode Cloud](guides/connecting-to-the-cloud.md)** (guide) — 2026-09-23
-- **[Bulk PR operations — mandatory throttled path (<ticket>)](runbooks/bulk-pr-operations.md)** (runbook) — 2026-09-12
 - **[Drift Control System — Design](architecture/drift-control-system.md)** (architecture) — 2026-09-02
 - **[Architecture Overview - omnibase_core](architecture/omnibase-core-overview.md)** (architecture) — 2026-09-02
 - **[Async Thread Safety Pattern](architecture/omnibase-infra-async-thread-safety.md)** (architecture) — 2026-09-02
@@ -209,7 +208,6 @@ All knowledge base artifacts sorted by date.
 - **[Database Index Monitoring Runbook](runbooks/omnibase-infra-database-index-monitoring.md)** (runbook) — 2026-09-02
 - **[Dead Letter Queue (DLQ) Replay Guide](runbooks/omnibase-infra-dlq-replay.md)** (runbook) — 2026-09-02
 - **[Event Bus Operations Runbook](runbooks/omnibase-infra-event-bus-operations.md)** (runbook) — 2026-09-02
-- **[Verifying Terminal Claims](runbooks/verify-terminal-claims.md)** (runbook) — 2026-09-02
 - **[omnibase_spi Dependency Direction](architecture/omnibase-spi-dependency-direction.md)** (architecture) — 2026-09-01
 - **[ProtocolHandler vs ProtocolEventBus](architecture/omnibase-spi-handler-vs-eventbus.md)** (architecture) — 2026-09-01
 - **[omnibase_spi Architecture Overview](architecture/omnibase-spi-overview.md)** (architecture) — 2026-09-01
@@ -292,16 +290,10 @@ All knowledge base artifacts sorted by date.
 - **[Standard Documentation Layout](reference/standard-doc-layout.md)** (reference) — 2026-08-25
 - **[Typed-Metadata Policy](reference/typed-metadata-policy.md)** (reference) — 2026-08-25
 - **[Fault-injection fixture — DLQ offset-withholding proof](runbooks/fault-inject-fixture-dlq-offset-withholding.md)** (runbook) — 2026-08-24
-- **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook) — 2026-08-24
 - **[Adding a Hook Handler](guides/adding-a-hook-handler.md)** (guide) — 2026-08-19
 - **[Adding a Skill](guides/adding-a-skill.md)** (guide) — 2026-08-19
 - **[Adding an Agent](guides/adding-an-agent.md)** (guide) — 2026-08-19
-- **[Git-transport + Actions egress: local mirrors and tool-cache durability — <ticket> C2](runbooks/c2-git-mirror-egress-rollout.md)** (runbook) — 2026-08-19
-- **[PyPI pull-through cache (egress) rollout — <ticket> C1](runbooks/pypi-cache-egress-rollout.md)** (runbook) — 2026-08-19
-- **[Runner-fleet local DNS cache rollout — <ticket>](runbooks/runner-dns-cache-rollout.md)** (runbook) — 2026-08-19
-- **[Stability-Test Runtime Lane](runbooks/stability-test-runtime-lane.md)** (runbook) — 2026-08-19
 - **[Event-Driven Agent Routing Architecture Proposal](architecture/event-driven-routing-proposal.md)** (architecture) — 2026-08-18
-- **[Runner fleet listener liveness (<ticket>)](runbooks/runner-fleet-listener-liveness.md)** (runbook) — 2026-08-15
 ## 2026-07
 
 - **[Application database cutover receipts](runbooks/application-database-cutover-receipts.md)** (runbook) — 2026-07-31
@@ -328,10 +320,8 @@ All knowledge base artifacts sorted by date.
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](runbooks/cold-lane-full-bringup.md)** (runbook) — 2026-07-21
 - **[Judge Compose Profile](runbooks/judge-compose-profile.md)** (runbook) — 2026-07-21
 - **[Repowise Freshness Receipt](runbooks/repowise-freshness-receipt.md)** (runbook) — 2026-07-21
-- **[Stability-Lane Refresh (<ticket> / <ticket>)](runbooks/stability-lane-refresh.md)** (runbook) — 2026-07-21
 - **[Vendored Node Migration Runbook](runbooks/vendored-node-migrations.md)** (runbook) — 2026-07-21
 - **[Volume Config Drift Gate + Re-seed Procedure](runbooks/volume-config-drift-and-reseed.md)** (runbook) — 2026-07-21
-- **[Merge-Triggered Worktree GC — Two-Layer Model (Event-First + Timer-Backstop)](runbooks/worktree-reaper-two-layer-gc.md)** (runbook) — 2026-07-21
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](adrs/ADR-0010-required-context-parity-ratchet.md)** (adr) — 2026-07-10
 - **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** (plan) — 2026-07-10
 - **[ADR-0022: Shift Defect-Detection Left + OCC Evidence-Only Fast-Lane (WS-E Build-Efficiency)](adrs/ADR-0022-shift-left-and-occ-evidence-only-fast-lane.md)** (adr) — 2026-07-07

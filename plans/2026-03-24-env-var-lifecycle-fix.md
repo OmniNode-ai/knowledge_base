@@ -8,8 +8,6 @@ topics: [configuration, ci, validators, runtime-health]
 
 # Env Var Lifecycle Fix Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan phase-by-phase.
-
 **Goal:** Fix missing env vars, build CI prevention, and add runtime warnings so env var gaps never silently break features again
 
 **Architecture:** Three workstreams -- immediate config fix, per-repo CI validator, omniclaude runtime health check
