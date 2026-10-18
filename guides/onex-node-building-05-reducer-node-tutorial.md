@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "REDUCER Node Tutorial: Build a Pure FSM Metrics Aggregator"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - reducer
-  - tutorial
+topics: [nodes, observability]
 refs: []
 summary: "A tutorial on building a Pure FSM Metrics Aggregator REDUCER node, presented in two approaches: the recommended ModelServiceReducer wrapper and the NodeReducer base class. Explains the FSM-driven architecture, pure state transitions, intent execution, and testing. For intermediate readers who have completed the prerequisites."
 ---

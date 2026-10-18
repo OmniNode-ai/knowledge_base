@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Circuit Breaker Pattern for External Dependencies"
-topics:
-  - omnibase-core
-  - circuit
-  - breaker
-  - pattern
+topics: [architecture]
 refs: []
 ---
 

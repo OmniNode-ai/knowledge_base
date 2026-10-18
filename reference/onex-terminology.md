@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "ONEX Core Terminology"
-topics: [onex, terminology, four-node-architecture, handlers, runtime, projections]
+topics: [governance, handlers, runtime]
 refs: []
 ---
 
@@ -495,13 +495,15 @@ against protocols instead of relying on structural/duck typing.
 
 ## Related Documentation
 
-Cross-references in the original document point to omnibase_core-internal paths
-(`docs/architecture/ONEX_FOUR_NODE_ARCHITECTURE.md`, `docs/architecture/MODEL_INTENT_ARCHITECTURE.md`,
-`docs/architecture/MODEL_ACTION_ARCHITECTURE.md`, `docs/guides/node-building/README.md`,
-`docs/patterns/PURE_FSM_REDUCER_PATTERN.md`, `docs/patterns/LEASE_MANAGEMENT_PATTERN.md`,
-`docs/guides/THREADING.md`) that were not individually migrated as part of this pass — they
-remain in the omnibase_core repository. Consult that repository's `docs/INDEX.md` for current
-locations.
+Current public references:
+
+- [Four node archetypes](../architecture/onex-four-node-architecture.md)
+- [Model intents](../architecture/onex-model-intent-architecture.md)
+- [Model actions](../architecture/onex-model-action-architecture.md)
+- [Node-building guide](../guides/onex-node-building-overview.md)
+- [Pure reducer state machines](../architecture/onex-pure-fsm-reducer-pattern.md)
+- [Lease management](../architecture/onex-lease-management-pattern.md)
+- [Threading](../guides/onex-threading.md)
 
 ---
 

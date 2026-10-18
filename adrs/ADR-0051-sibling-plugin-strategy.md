@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-23"
 title: "ADR-0051: Sibling Plugin Strategy (omnigemini, omnimemory, omniintelligence)"
 adr_id: ADR-0051
-topics: [omniclaude, plugins, distribution]
+topics: [packaging, memory, agent-integrations]
 refs: []
 supersedes: []
 superseded_by: []

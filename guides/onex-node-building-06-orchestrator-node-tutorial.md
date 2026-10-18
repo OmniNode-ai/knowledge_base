@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "ORCHESTRATOR Node Tutorial: Build a Data Processing Pipeline"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - orchestrator
-  - tutorial
+topics: [nodes]
 refs: []
 summary: "A tutorial for building a Data Processing Pipeline Orchestrator that coordinates COMPUTE, EFFECT, and REDUCER nodes in workflows. Covers the rule that ORCHESTRATOR nodes emit events and intents but cannot return typed results, plus branching, execution modes, error handling, and testing. Aimed at advanced readers who have finished the other node tutorials."
 ---

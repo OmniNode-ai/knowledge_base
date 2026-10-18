@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Testing Patterns"
-topics: [omnibase-infra, testing, patterns]
+topics: [testing, runtime]
 refs: []
 ---
 
@@ -333,7 +333,6 @@ When this test fails, pytest displays the full multi-line message, making it eas
 
 ## Related Patterns
 
-- **Error Handling Patterns (internal knowledge base)** - Error classification and context
 - **Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`)** - Request tracing in tests
 - **Container Dependency Injection (`../architecture/omnibase-infra-container-dependency-injection.md`)** - Testing with DI containers
 

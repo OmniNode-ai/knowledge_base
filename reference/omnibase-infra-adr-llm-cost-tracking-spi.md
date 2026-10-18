@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-009: LLM Cost Tracking at the Infrastructure Layer"
-topics: [omnibase-infra, adr, llm, cost]
+topics: [runtime]
 refs: []
 ---
 
@@ -25,8 +25,7 @@ The ONEX platform added LLM inference infrastructure in 0.8.0 with
 `HandlerLlmOpenaiCompatible` and `HandlerLlmOllama` for calling local
 vLLM and Ollama-compatible servers. These handlers perform chat completions
 and embedding requests against the distributed multi-server LLM topology
-(Qwen3-Coder on RTX 5090, Qwen3-14B on RTX 4090, Qwen3-Embedding and
-DeepSeek-R1 on the M2 Ultra).
+(coding, embedding and reasoning models chosen by each deployment).
 
 Once LLM calls were flowing, two questions became pressing:
 

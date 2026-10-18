@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Naming Conventions"
-topics:
-  - omnibase-core
-  - naming
-  - conventions
+topics: [governance]
 refs: []
 ---
 

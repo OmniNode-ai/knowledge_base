@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Contract Patching Guide"
-topics:
-  - omnibase-core
-  - contract
-  - patching
+topics: [contracts]
 refs: []
 ---
 

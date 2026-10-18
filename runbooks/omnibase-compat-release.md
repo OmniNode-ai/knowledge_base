@@ -3,10 +3,7 @@ type: runbook
 status: current
 date: "2026-08-26"
 title: "omnibase_compat Release"
-topics:
-  - omnibase-compat
-  - release
-  - pypi
+topics: [packaging]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-09-02"
 title: "Database Index Monitoring Runbook"
-topics: [omnibase-infra, database, index, monitoring]
+topics: [self-hosting, observability, runtime]
 refs: []
 ---
 
@@ -481,4 +481,3 @@ ALTER TABLE registration_projections SET (
 
 - Database Migrations - Migration versioning and execution
 - Event Bus Operations (`../runbooks/omnibase-infra-event-bus-operations.md`) - Related Kafka event handling
-- Thread Pool Tuning (internal knowledge base) - Connection pool optimization

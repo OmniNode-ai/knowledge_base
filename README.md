@@ -1,11 +1,3 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/omninode-inline-white.png">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/brand/omninode-inline-full-color.svg">
-    <img alt="omninode" src="docs/assets/brand/omninode-inline-full-color.svg" width="420">
-  </picture>
-</p>
-
 # OmniNode Knowledge Base
 
 OmniNode's public documentation: what the platform is, how to use it, and why it is shaped the way it is.
@@ -35,7 +27,7 @@ It is for developers and teams who use coding agents such as Claude Code and wan
 
 **Not yet open:** the hosted service. It is not open to outside users: accounts are granted from a waitlist rather than self-served, and nothing on the shipped path needs it.
 
-**Start with the [Delegation quickstart](guides/onex-plugin-quickstart.md)** (about 15 minutes). The one-page version of this section, with links for each part, is [What OmniNode is, and where it stands](guides/what-is-omninode.md). An AI agent reading this repository can start from [`llms.txt`](llms.txt).
+**Start with the [Delegation quickstart](guides/delegation-quickstart.md)** (about 15 minutes). The one-page version of this section, with links for each part, is [What OmniNode is, and where it stands](guides/what-is-omninode.md). An AI agent reading this repository can start from [`llms.txt`](llms.txt). See [Beta status](reference/beta-status.md) and the [glossary](reference/glossary.md).
 
 ## What this repository is
 
@@ -49,7 +41,7 @@ Two kinds of documentation live here, and telling them apart is what makes the c
 
 ## The charter
 
-This is the **self-hoster's book**: everything needed to run the ONEX platform independently — its principles, its decisions, its architecture, and how to operate it — is documented here, generically and reproducibly. Two things are deliberately excluded: **OmniNode's own cloud deployment topology** (AWS account/cluster internals, deploy pipelines for our specific hybrid infrastructure) and **the public web properties**. Neither is platform architecture; both are our own product operations. Operational journals (narrative work logs) and evidence/receipt artifacts also stay out — a journal's durable insight is promoted into a doctrine or ADR page instead of the journal migrating, and OCC (`onex_change_control`) is the sole evidence authority, so this repository cites outcomes rather than hosting receipts. See [docs-taxonomy.md](docs-taxonomy.md) for the full decision rule.
+This is the **self-hoster's book**: everything needed to run the ONEX platform independently — its principles, its decisions, its architecture, and how to operate it — is documented here, generically and reproducibly. Two things are deliberately excluded: **OmniNode's own cloud deployment topology** (AWS account/cluster internals, deploy pipelines for our specific hybrid infrastructure) and **the public web properties**. Neither is platform architecture; both are our own product operations. Operational journals (narrative work logs) and evidence/receipt artifacts also stay out — a journal's durable insight is promoted into a doctrine or ADR page instead of the journal migrating, and evidence is cited by reference (a PR, a CI run or a receipt in the owning repository), so this repository cites outcomes rather than hosting receipts. See [docs-taxonomy.md](docs-taxonomy.md) for the full decision rule.
 
 The knowledge base is canonical for all external product, platform, architecture, and how-to documentation within that scope.
 
@@ -76,7 +68,7 @@ The rule for deciding where any individual document belongs is written down, not
 
 Migration status (2026-10-17): platform documentation from `omnibase_core`, `omnibase_infra`, `omniclaude`, `omnimarket`, `omnimemory`, `omniintelligence`, `omnidash`, `omnibase_compat` and `onex_change_control` has migrated here, and more than 400 documents are published across the sections above. Per-document state is in [`migration-manifest.yaml`](migration-manifest.yaml).
 
-Its `correctness_status` field records what the source document was found to be when it was audited, not the state of the published page: most documents marked `stale` or `broken` there were corrected before they were published. The published page's own frontmatter `status` is the label to read.
+The public migration manifest contains only redirect and drift-guard inputs. A page's frontmatter records its documentation lifecycle.
 
 ### How to read a page's status
 
@@ -96,7 +88,7 @@ Its `correctness_status` field records what the source document was found to be 
 
 ## Getting Started
 
-**To try OmniNode, start with the [Delegation quickstart](guides/onex-plugin-quickstart.md).** It installs the `onex` tool, runs a first delegation to a model you choose, and shows the receipt, `onex metering`, the local dashboard and the Claude Code plugin, with what you should see at each step.
+**To try OmniNode, start with the [Delegation quickstart](guides/delegation-quickstart.md).** It installs the `onex` tool, runs a first delegation to a model you choose, and shows the receipt, `onex metering`, the local dashboard and the Claude Code plugin, with what you should see at each step.
 
 The beta is the local install: you delegate from your own computer to a model you choose, with no OmniNode account and no OmniNode service ([ADR-0053](adrs/ADR-0053-beta-scope-local-install-own-keys.md)). You bring your own key. Every model call goes to a model you run or to a provider on your own API key, and you pay that provider directly. OmniNode does not sell inference. The hosted service is not part of the beta.
 

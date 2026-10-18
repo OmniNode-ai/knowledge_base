@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "Adding a Custom PostToolUse Handler"
-topics: [omniclaude, hooks, posttooluse, tutorial]
+topics: [handlers, agent-integrations]
 refs: [guides/adding-a-hook-handler.md]
 ---
 

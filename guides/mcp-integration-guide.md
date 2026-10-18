@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-07-21"
 title: "MCP Integration Guide"
-topics: [omnibase-infra, mcp, integration]
+topics: [agent-integrations, runtime]
 refs: []
 ---
 

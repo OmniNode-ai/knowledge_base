@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ONEX Anti-Patterns Documentation"
-topics:
-  - omnibase-core
-  - anti
-  - patterns
+topics: [architecture]
 refs: []
 ---
 

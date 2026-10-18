@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "REDUCER Node Template"
-topics:
-  - omnibase-core
-  - reducer
-  - node
-  - template
+topics: [nodes]
 refs: []
 summary: "A template for the unified REDUCER node pattern, where FSM-driven state transitions are defined in YAML contracts and nodes emit intents rather than direct side effects. Lists output constraints, directory structure, template files, and usage instructions. For developers creating new REDUCER nodes."
 ---
@@ -1427,7 +1423,7 @@ integrations:
 
 Replace the following placeholders throughout all files:
 
-- `{REPOSITORY_NAME}`: Target repository name (e.g., "omniplan")
+- `{REPOSITORY_NAME}`: Target repository name (for example, "your-application")
 - `{DOMAIN}`: Business domain (e.g., "rsd", "finance", "analytics")
 - `{MICROSERVICE_NAME}`: Specific microservice name (e.g., "metrics_aggregator")
 - `{DomainCamelCase}`: Domain in CamelCase (e.g., "RSD", "Finance")

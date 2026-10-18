@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Validation Ownership"
-topics:
-  - omnibase-core
-  - validation
-  - ownership
+topics: [testing]
 refs: []
 ---
 
@@ -71,10 +68,8 @@ uv run onex-validate-links --verbose
 For umbrella/cross-repo validation from a Core environment:
 
 ```bash
-uv run onex-validate-links --verbose --cross-repo-root "$OMNI_HOME"
 ```
 
-`$OMNI_HOME` should point to the local workspace root that contains sibling
 repos. The validator scans Markdown files from the repo where it is invoked and
 uses `--cross-repo-root` to resolve sibling-repo links.
 

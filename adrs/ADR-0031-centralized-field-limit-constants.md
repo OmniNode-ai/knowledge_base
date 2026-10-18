@@ -4,7 +4,7 @@ status: accepted
 date: "2025-12-27"
 title: "ADR-0031: Centralized Field Limit Constants"
 adr_id: ADR-0031
-topics: [omnibase_core, pydantic, validation, constants]
+topics: [contracts, testing]
 refs: []
 supersedes: []
 superseded_by: []

@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Validation Protocol Compliance"
-topics:
-  - omnibase-core
-  - validation
-  - protocol
-  - compliance
+topics: [testing]
 refs: []
 ---
 

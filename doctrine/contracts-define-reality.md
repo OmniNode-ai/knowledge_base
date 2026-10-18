@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Contracts Define Reality"
-topics: [contract-governance]
+topics: [contracts, governance]
 refs:
   - doctrine/ordering-must-be-explicit.md
   - doctrine/cursors-represent-projection-progress.md

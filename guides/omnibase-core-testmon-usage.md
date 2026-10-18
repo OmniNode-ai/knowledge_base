@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "pytest-testmon Usage Guide"
-topics:
-  - omnibase-core
-  - testmon
-  - usage
+topics: [architecture]
 refs: []
 ---
 

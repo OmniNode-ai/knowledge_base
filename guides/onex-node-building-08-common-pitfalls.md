@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Common Pitfalls - What to Avoid When Building Nodes"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - common
-  - pitfalls
+topics: [nodes]
 refs: []
 ---
 
@@ -117,7 +112,7 @@ class BadNode(NodeCompute):
         await self.database.save(result)
 
         # EFFECT: Send email (side effect!)
-        await self.email_service.send("result@example.com", result)  # sanitization-ok: illustrative example value, not a real address
+        await self.email_service.send("reader@example.invalid", result)
 
         return {"result": result}
 ```
@@ -142,7 +137,7 @@ class GoodEffectNode(NodeEffect):
         await self.database.save(result)
 
         # Send email
-        await self.email_service.send("result@example.com", result)  # sanitization-ok: illustrative example value, not a real address
+        await self.email_service.send("reader@example.invalid", result)
 
         return {"status": "saved"}
 ```

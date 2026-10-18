@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Operation Bindings DSL"
-topics:
-  - omnibase-core
-  - operation
-  - bindings
-  - dsl
+topics: [architecture]
 refs: []
 ---
 

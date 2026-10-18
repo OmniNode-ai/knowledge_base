@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-08-19"
 title: "Adding an Agent"
-topics: ["omniclaude", "agents", "how-to"]
+topics: [agent-integrations]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-09-02"
 title: "Event Bus Operations Runbook"
-topics: [omnibase-infra, event, bus, operations]
+topics: [self-hosting, bus, runtime]
 refs: []
 ---
 
@@ -790,7 +790,6 @@ Exponential backoff formula: `delay = base * (2^attempt) * jitter`
 
 ## Related Documentation
 
-- Thread Pool Tuning Runbook (internal knowledge base)
 - Circuit Breaker Implementation
 - Error Recovery Patterns
 - EventBusKafka Source (`../../src/omnibase_infra/event_bus/event_bus_kafka.py`)

@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Lease Management Pattern"
-topics:
-  - omnibase-core
-  - lease
-  - management
-  - pattern
+topics: [architecture]
 refs: []
 ---
 

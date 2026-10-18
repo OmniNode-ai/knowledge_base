@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Mixin Classification Reference"
-topics:
-  - omnibase-core
-  - mixin
-  - classification
+topics: [architecture]
 refs: []
 ---
 

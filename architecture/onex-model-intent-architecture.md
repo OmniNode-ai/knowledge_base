@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ModelIntent Architecture"
-topics:
-  - omnibase-core
-  - model
-  - intent
-  - architecture
+topics: [architecture]
 refs: []
 ---
 
@@ -703,7 +699,7 @@ ModelIntent(
     payload={
         "severity": "WARNING",  # INFO, WARNING, ERROR, CRITICAL
         "message": "Processing time exceeded threshold",
-        "recipients": ["admin@example.com"],  # sanitization-ok: illustrative example value, not a real address
+        "recipients": ["reader@example.invalid"],
         "channel": "email",  # email, slack, pagerduty
     },
     priority=8,

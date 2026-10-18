@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Memory Protocols Guide"
-topics:
-  - omnibase_spi
-  - memory
-  - protocols
+topics: [memory]
 refs: []
 ---
 
@@ -131,7 +128,7 @@ await security_node.validate_access(
 
 # Detect PII in free-text content before persisting it
 pii_result = await security_node.detect_pii(
-    content="Contact: jane.doe@example.com, SSN 123-45-6789",  # sanitization-ok: illustrative example content
+    content="Contact: reader@example.invalid, SSN 123-45-6789",
     detection_threshold=0.8,
 )
 

@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Protocol Discovery Guide"
-topics:
-  - omnibase-core
-  - protocol
-  - discovery
+topics: [architecture]
 refs: []
 ---
 

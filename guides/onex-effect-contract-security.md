@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Security Considerations for Effect Contracts"
-topics:
-  - omnibase-core
-  - effect
-  - contract
-  - security
+topics: [contracts, security]
 refs: []
 ---
 

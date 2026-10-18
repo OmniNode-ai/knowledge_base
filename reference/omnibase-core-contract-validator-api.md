@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Contract Validator API"
-topics:
-  - omnibase-core
-  - contract
-  - validator
-  - api
+topics: [contracts]
 refs: []
 ---
 

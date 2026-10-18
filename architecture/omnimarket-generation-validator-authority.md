@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Generation Validator Authority"
-topics:
-  - omnimarket
-  - generation
-  - validation
+topics: [governance, testing]
 refs: []
 ---
 

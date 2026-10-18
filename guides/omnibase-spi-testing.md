@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Protocol Testing"
-topics:
-  - omnibase_spi
-  - testing
-  - protocols
+topics: [testing]
 refs: []
 ---
 
@@ -216,7 +213,7 @@ async def test_input_validation():
 
     # Test a valid email
     result = await validator.validate_string(
-        value="john@example.com",  # sanitization-ok: illustrative test fixture, not a real address
+        value="reader@example.invalid",
         min_length=1,
         max_length=254,
         pattern=None,

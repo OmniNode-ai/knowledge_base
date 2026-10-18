@@ -13,7 +13,7 @@ Pivots exist because architectures do not fail suddenly. They accumulate pressur
 Key properties:
 - A pivot is about **understanding**, not output. The codebase may or may not change when a pivot is accepted; what always changes is the mental model used to reason about the system.
 - Pivots are **durable**. Once accepted, a pivot remains in the record even if later superseded. The history of understanding is part of the system's history.
-- Pivots are **evidenced**. A pivot without a traceable outcome behind it (an incident record, a test failure, a cited PR or OCC receipt) is a hypothesis, not a pivot. Evidence anchors the pivot to observable system behavior — cited, not hosted here; OCC (`onex_change_control`) is the sole evidence authority.
+- Pivots are **evidenced**. A pivot without a traceable outcome behind it (an incident record, a test failure, a cited PR or receipt) is a hypothesis, not a pivot. Evidence anchors the pivot to observable system behavior — cited, not hosted here; evidence is cited by reference (a PR, a CI run or a receipt in the owning repository).
 
 ---
 
@@ -107,7 +107,7 @@ Use `_template.md` as the starting point. Each section serves a specific purpose
 
 **`Related Incident Analysis`** — A summary, in this pivot's own words, of the pressure events or incident analyses that support it. Cite tickets or outcomes by reference (not internal identifiers); do not host the incident write-up itself here.
 
-**`Evidence`** — Specific, traceable proof that the new model holds, cited by reference: a PR, a CI run, an OCC receipt, a system metric. Evidence should be verifiable — not "we believe the new model is better" but "this cited outcome demonstrates the new model is correct." This section links to proof; it does not reproduce it.
+**`Evidence`** — Specific, traceable proof that the new model holds, cited by reference: a PR, a CI run, a receipt in the owning repository, a system metric. Evidence should be verifiable — not "we believe the new model is better" but "this cited outcome demonstrates the new model is correct." This section links to proof; it does not reproduce it.
 
 **`Consequences`** — What the accepted pivot implies going forward. What work is now required? What previous work may need revisiting? What new constraints apply?
 
@@ -121,7 +121,7 @@ Use `_template.md` as the starting point. Each section serves a specific purpose
 
 **Operational incidents.** An internal postmortem or work session that concludes "our previous model was wrong about X" is a direct pivot candidate. That narrative record stays internal (this repository does not host operational journals); the pivot itself is the durable, public distillation of what changed and why, referenced in the `Related Incident Analysis` section.
 
-**Evidence artifacts.** Integration verification receipts, DoD evidence records, and incident postmortems all serve as pivot evidence, held in OCC (`onex_change_control`) — the sole evidence authority. The `Evidence` section of a pivot should cite these artifacts by reference, not host or reproduce them.
+**Evidence artifacts.** Integration tests and receipts support a pivot. Evidence is cited by reference to a PR, a CI run or a receipt in the owning product repository; the pivot does not reproduce private incident records. See [the evidence pivot](PIVOT-0006-evidence-lives-with-code.md).
 
 **Tickets.** A pivot at `Emerging` or `Accepted` status typically has one or more associated tickets: doctrine updates, ADR authoring, code changes that follow from the new model. Reference these in `Consequences`.
 
@@ -136,3 +136,5 @@ Use `_template.md` as the starting point. Each section serves a specific purpose
 | [PIVOT-0003](PIVOT-0003-completion-requires-durable-evidence.md) | Completion Requires Durable Evidence | accepted | 2026-05-23 |
 | [PIVOT-0004](PIVOT-0004-reducers-own-state-progression.md) | Reducers Own State Progression | accepted | 2026-05-23 |
 | [PIVOT-0005](PIVOT-0005-event-streams-are-not-authoritative-state.md) | Event Streams Are Not Authoritative State | accepted | 2026-05-23 |
+
+- [Evidence lives with the code it proves](PIVOT-0006-evidence-lives-with-code.md)

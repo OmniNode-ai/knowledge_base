@@ -4,7 +4,7 @@ status: accepted
 date: "2026-02-19"
 title: "ADR-0046: Fail-Fast Routing — No Silent Fallback to general-purpose"
 adr_id: ADR-0046
-topics: [omniclaude, agent-routing, fail-fast]
+topics: [agent-integrations]
 refs: []
 supersedes: []
 superseded_by: []

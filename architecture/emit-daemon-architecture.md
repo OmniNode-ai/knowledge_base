@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "Emit Daemon Architecture"
-topics: ["omniclaude", "emit-daemon", "kafka"]
+topics: [bus, agent-integrations]
 refs: []
 ---
 

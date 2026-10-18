@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Mixin YAML Schema Reference"
-topics:
-  - omnibase-core
-  - mixin
-  - development
-  - yaml
-  - schema
+topics: [contracts]
 refs: []
 ---
 

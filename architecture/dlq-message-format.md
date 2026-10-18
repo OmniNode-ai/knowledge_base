@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "Dead Letter Queue (DLQ) Message Format"
-topics: [omnibase-infra, dlq, message, format]
+topics: [runtime]
 refs: []
 ---
 

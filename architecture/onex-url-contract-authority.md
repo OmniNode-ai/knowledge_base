@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "URL Contract Authority"
-topics:
-  - omnibase-core
-  - url
-  - contract
-  - authority
+topics: [contracts, governance]
 refs: []
 ---
 
@@ -146,7 +142,7 @@ Each ONEX repo gets the `check-url-authority` pre-commit hook by pinning the
 repo's `.pre-commit-config.yaml`:
 
 ```yaml
-- repo: https://github.com/OmniNode-ai/omnibase_core  # sanitization-ok: omnibase_core is a public repository
+- repo: https://github.com/OmniNode-ai/omnibase_core
   rev: <sha-of-omnibase_core-that-includes-validator>  # pragma: allowlist secret
   hooks:
     - id: check-stub-implementations

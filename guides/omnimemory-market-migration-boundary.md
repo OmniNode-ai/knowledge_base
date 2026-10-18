@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-08-25"
 title: "OmniMemory → OmniMarket Node Migration Boundary"
-topics:
-  - omnimemory
-  - omnimarket
-  - migration
-  - nodes
+topics: [nodes, self-hosting, governance]
 refs:
   - architecture/omnimemory-four-node-architecture.md
   - reference/omnimemory-memory-data-ownership.md

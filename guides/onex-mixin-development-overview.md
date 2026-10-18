@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Mixin Development Guide"
-topics:
-  - omnibase-core
-  - mixin
-  - development
-  - overview
+topics: [overview]
 refs: []
 ---
 

@@ -4,7 +4,7 @@ status: accepted
 date: "2025-12-15"
 title: "ADR-0036: Context Mutability Design Decision"
 adr_id: ADR-0036
-topics: [omnibase_core, pydantic, immutability, workflow-state, fsm-snapshots]
+topics: [contracts]
 refs: [adrs/ADR-0030-protocol-based-di-architecture.md]
 supersedes: []
 superseded_by: []

@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniMarket Node Catalog"
-topics:
-  - omnimarket
-  - nodes
-  - onex-runtime
+topics: [nodes, runtime]
 refs: []
 ---
 

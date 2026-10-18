@@ -4,7 +4,7 @@ status: accepted
 date: "2026-02-09"
 title: "ADR-0044: Event Fan-Out Strategy and App-Owned Event Catalogs"
 adr_id: ADR-0044
-topics: [omniclaude, events, kafka, event-catalog, fan-out]
+topics: [bus, agent-integrations]
 refs: []
 supersedes: []
 superseded_by: []

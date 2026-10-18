@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "Spawning Sub-Workers from Orchestrator Workers"
-topics: [omniclaude, orchestration, workers, dispatch]
+topics: [nodes, handlers, agent-integrations]
 refs: []
 ---
 

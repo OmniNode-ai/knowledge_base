@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Replay Safety Integration Guide"
-topics:
-  - omnibase-core
-  - replay
-  - safety
-  - integration
+topics: [replay]
 refs: []
 ---
 
@@ -623,7 +619,7 @@ When recording enforcement decisions in the audit trail, be mindful of data sens
 
 ```python
 # Wrong - exposes PII
-context={"user_email": "john.doe@example.com"}  # sanitization-ok: illustrative example value, not a real address
+context={"user_email": "reader@example.invalid"}
 
 # Correct - use hashed/anonymized ID
 context={"user_id": "usr_abc123", "user_hash": hash_pii(email)}

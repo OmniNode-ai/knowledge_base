@@ -3,7 +3,7 @@ type: architecture
 status: superseded
 date: "2026-08-18"
 title: "(historical) Event-Driven Agent Routing Proposal"
-topics: ["omniclaude", "routing", "historical"]
+topics: [agent-integrations]
 refs: []
 summary: "A historical, superseded proposal for migrating agent routing to an event-driven Kafka architecture; the routing migration it describes is complete. The page is kept because the omniclaude routing skill still links to it, and the current design is the Agent Routing Architecture page. Useful as background on the proposal's analysis and plans."
 ---
@@ -138,9 +138,7 @@ Python process exits (cache lost)
 
 **Code Example** (from general-purpose agent instructions):
 ```python
-cd $OMNI_HOME/omniclaude/agents && python3 << 'EOF'
 import sys
-sys.path.insert(0, '$OMNI_HOME/omniclaude/agents/lib')
 from agent_router import AgentRouter
 
 router = AgentRouter()

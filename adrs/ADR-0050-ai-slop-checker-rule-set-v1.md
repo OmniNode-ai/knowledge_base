@@ -4,7 +4,7 @@ status: accepted
 date: "2026-03-02"
 title: "ADR-0050: AI-Slop Checker Rule Set v1.0"
 adr_id: ADR-0050
-topics: [code-quality, validators, ai-slop]
+topics: [architecture]
 refs: []
 supersedes: []
 superseded_by: []

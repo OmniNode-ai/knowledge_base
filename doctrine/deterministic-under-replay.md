@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Systems Must Be Deterministic Under Replay"
-topics: [replay-correctness]
+topics: [replay]
 refs:
   - doctrine/ordering-must-be-explicit.md
   - doctrine/reducers-define-state-progression.md

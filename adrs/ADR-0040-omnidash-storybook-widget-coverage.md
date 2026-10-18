@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-24"
 title: "ADR-0040: Storybook Coverage for Every Dashboard Widget"
 adr_id: ADR-0040
-topics: [omnidash, storybook, testing, accessibility, widgets]
+topics: [dashboard, testing]
 refs: [adrs/ADR-0039-omnidash-typography-system.md, guides/omnidash-development.md]
 supersedes: []
 superseded_by: []

@@ -1,0 +1,397 @@
+---
+type: guide
+status: current
+date: "2026-10-06"
+title: "Delegation quickstart"
+topics: [overview, delegation, packaging]
+refs: []
+summary: "The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed."
+---
+
+<!-- Migrated from omniclaude:QUICKSTART.md on 2026-09-01 -->
+
+# Delegation quickstart
+
+> The hosted service is not open to outside users yet (as of 2026-10-18). The [cloud guide](connecting-to-the-cloud.md) documents its interface for preview; this quickstart uses the local beta.
+
+This guide sets up **delegation** on your own computer: you hand a task to a model you choose,
+and you get back the answer plus a receipt saying which model answered it. The model is either
+one you run yourself or a provider account you pay for (or use for free) on your own key. The
+call goes from your machine to that model directly, never through OmniNode.
+
+It takes about 15 minutes. Every step below says what you should see when it worked.
+
+There are two ways to use it, and both use the same `onex` command-line tool:
+
+- **In a terminal**: `onex delegate "<your task>"`. Steps 1 to 5 set this up and prove it works.
+- **Inside Claude Code**: the `onex@omninode-tools` plugin adds `/onex:delegate`, which runs the
+  same command for you. Step 7 adds it. The plugin ships one skill, `/onex:delegate`, and nothing
+  else: no hooks, no agents.
+
+---
+
+## Before you start
+
+| You need | How to get it |
+|----------|---------------|
+| A supported computer | Apple Silicon Mac or Linux (x86_64, arm64) installs from prebuilt wheels. **Intel Mac: supported by building from source**, which needs a few extra steps; read [Supported platforms](supported-platforms.md) before step 1. |
+| A terminal | macOS: the **Terminal** app (Applications → Utilities). Linux: any shell. |
+| Python 3.12+ and `uv` | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
+| A model to send work to | **Either** an account with a model provider and an API key from it (OpenRouter is the simplest: [openrouter.ai](https://openrouter.ai), and it has free models), **or** a model server you run yourself that speaks the OpenAI chat-completions API (llama.cpp, vLLM, or similar). |
+| Claude Code (only for step 7) | The [Claude Code CLI](https://claude.com/claude-code), signed in. Steps 1 to 6 do not need it. |
+
+You do not need to install Python yourself. The Python that ships with macOS is too old
+(3.9), but that does not matter: the install command in step 1 asks `uv` for Python 3.12, and
+`uv` downloads it for itself if you don't have it. Keep `--python 3.12` in that command: without
+it `uv` picks the newest Python it can find, and on a clean machine the install then fails
+because one of the packages has no prebuilt build for that version yet.
+
+The `uv` installer puts `uv` in `~/.local/bin`, which may not be on your PATH yet. If `uv --version`
+answers `command not found`, run this once, then **close the terminal window and open a new one**:
+
+```bash
+uv tool update-shell
+```
+
+(If that command is not found either, run `export PATH="$HOME/.local/bin:$PATH"` for this window
+and add the same line to your `~/.zshrc` or `~/.bashrc`.)
+
+Check that `uv` is ready: `uv --version` prints a version number.
+
+---
+
+## Step 1 — Install the `onex` tool
+
+> **Intel Mac?** Run `uname -m`. If it prints `x86_64`, do the [Intel macOS from-source
+> setup](supported-platforms.md#intel-macos-build-from-source) first (three Homebrew packages
+> and one environment variable), then come back and run the command below. Skipping it makes the
+> install fail while compiling `cryptography`.
+
+```bash
+uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
+```
+
+This downloads about 175 packages and takes a minute or two. It ends with a line starting
+`Installed` that lists the executables, and that list includes `onex`. The list also carries
+several `check-*` and `validate-*` helper programs; you do not need them.
+
+**If the output ends with a warning that `~/.local/bin` is not on your PATH** (on a new
+machine it usually does), run this once, then **close the terminal window and open a new one**:
+
+```bash
+uv tool update-shell
+```
+
+Check it worked, in the new window:
+
+```bash
+onex --version
+```
+
+It prints `onex version 0.47.x` (or newer). **The first `onex` command can take up to a
+minute** while Python prepares itself (36 seconds on a fresh install in our own test); later ones start faster.
+
+What was installed: `omnibase-core` provides the `onex` command, `omnibase-infra` adds its
+`delegate` subcommand, and `omnimarket` provides the node that does the delegating. All three
+must be in the same environment, which is what the one line above does. There is no source
+checkout to clone and no workspace variable to set. The version floors are the oldest
+releases this guide supports; the command installs the newest published release of each.
+
+To update later: `uv tool upgrade omnibase-core` (it keeps the other two packages).
+
+If you use `pipx` instead of `uv`, the equivalent is
+`pipx install --python 3.12 'omnibase-core>=0.46.8' && pipx inject omnibase-core 'omnibase-infra>=0.38.67' 'omnimarket>=0.4.205'`.
+Do not use `uv run onex ...`: `uv run` uses the environment of whatever project folder you are
+in, so it only works by coincidence. Call the plain `onex` command.
+
+---
+
+## Step 2 — Give this machine its identity (once)
+
+```bash
+onex local init
+```
+
+You should see `local deployment tenant identity (minted)` and a `tenant_id`. Every
+delegation from this machine is recorded against that identity, which is stored under
+`~/.omninode/`. Running it again is safe: it prints `(already present)` and the same id.
+
+---
+
+## Step 3 — Tell `onex` which model to use
+
+`onex` does not guess a model, and it has no endpoint of ours built in. Choose **one** of the
+two options below. If you do not run a model server of your own, use option B; it needs only
+an account with a provider.
+
+<a id="declare-your-model"></a>
+
+### Option A — a model server you run
+
+Create the file `~/.omninode/delegation/bifrost_overrides.yaml` with exactly this shape,
+pointing both entries at your server's chat-completions address. The address must be the
+*complete* path, including `/v1/chat/completions`, not just the host:
+
+```yaml
+# ~/.omninode/delegation/bifrost_overrides.yaml
+backends:
+  - backend_id: local-coder
+    endpoint_url: "http://127.0.0.1:8000/v1/chat/completions"
+    model_name: "<the model id your server reports, e.g. from GET /v1/models>"
+  - backend_id: local-heavy-reasoning
+    endpoint_url: "http://127.0.0.1:8000/v1/chat/completions"
+    model_name: "<the model id your server reports, e.g. from GET /v1/models>"
+```
+
+Both entries can point at the same server and the same model; that is the common case.
+`endpoint_url` and `model_name` are the only two keys you need: they override just those two
+fields of OmniNode's own defaults for the two local rungs `onex delegate` tries first. If you
+also register a provider key (option B), your own model is tried first and your provider is
+used when the local answer does not clear the quality bar.
+
+### Option B — your own provider key (OpenRouter or GLM)
+
+OmniNode's built-in routing already knows how to reach OpenRouter and GLM; you only supply
+your key, once, on this machine.
+
+1. Sign in at [openrouter.ai](https://openrouter.ai), open **Settings → Keys**, create a key,
+   and copy it. An OpenRouter key starts with `sk-or-v1-`.
+2. Pick the OpenRouter model you want your key to run and copy its id from OpenRouter's model
+   page (for example a model whose id ends in `:free`, if you want one that costs nothing).
+   OmniNode does not pick one for you.
+3. Run this command. It asks you to paste the key, then to paste it again to confirm, then asks
+   which model your key should run; paste the model id. The key is never typed on the command
+   line or read from an environment variable:
+
+   ```bash
+   onex secret set llm.openrouter.api_key
+   ```
+
+   **Nothing appears on screen when you paste. That is on purpose, so the key never shows.**
+   The command refuses an empty entry, two entries that differ, and an OpenRouter key that
+   does not start with `sk-or-v1-`, and it never prints what you pasted. It checks the model
+   you named against your key's model list and refuses one the list does not name. To register
+   a key from a script, pipe it in and name the model, because a script cannot be asked:
+   `printf '%s' "$KEY" | onex secret set llm.openrouter.api_key --model <model id>`.
+
+You should see `Stored llm.openrouter.api_key in ...` and
+`Registered it as your openrouter route key: ...`, with a `Model:` line naming the model you
+chose. For GLM, use `llm.glm.api_key` in the same command. GLM has more than one plan, so the
+command sends your key to GLM's own endpoints in a one-token request to find out which plan it
+belongs to (name it with `--plan general_api` to skip that). A GLM Coding Plan key is refused and
+never stored, because that plan's terms bar its use from other tools. `onex secret list` shows the names of the keys this machine holds, never the keys. It lists
+two entries for one key: the name you set, and a second one that looks like
+`cred_localinstall_openrouter_<hex>`. The second is the route reference OmniNode derives from
+your key so delegation can use it; it is expected, and you do not need to set or manage it.
+
+A provider key alone is enough: with no model server declared, `onex delegate` goes straight
+to your provider on your key, on the model you chose. Free OpenRouter models cost nothing, but
+OpenRouter limits how often you can call them. The key is kept in
+a file under `~/.omninode/` that only your user account can read. It is not encrypted, so treat
+that folder like any other file holding a password.
+
+Setting `LLM_<PROVIDER>_API_KEY` in your environment does **not** register a key; a
+delegation never reads a provider key from the environment. Use `onex secret set`.
+
+### If you skip this step
+
+The first delegation refuses before it reaches any model, and says what to do:
+
+```
+[ONEX_CORE_041_INVALID_CONFIGURATION] No local model is declared on this machine: no local
+rung (local-coder, local-heavy-reasoning) has an endpoint. Declare yours in
+~/.omninode/delegation/bifrost_overrides.yaml, e.g. 'backends: [{backend_id:
+local-coder, endpoint_url: http://127.0.0.1:8000/v1/chat/completions, model_name: <served
+model id>}]', or register your own provider key on this machine, then retry.
+```
+
+---
+
+## Step 4 — Run your first delegation
+
+The results are written under `~/.onex_state` in your home folder, whichever folder you run
+it from (see step 5):
+
+```bash
+onex delegate "say hello in one word"
+```
+
+It takes from a few seconds to a minute. You will see a few status lines, then the model's
+answer as plain text, then one summary line starting `onex delegate: model <model>, cost
+<cost>, run <run id>, full receipt <path>/receipt.json`, then a last line starting
+`delegate artifacts:` that lists three files and ends with `state_root=<folder>`. **It worked
+if the answer printed and the command exited 0.** There is no JSON in the default output any more. If the run
+fails, you will see one plain line starting `onex delegate failed:` and the command exits
+non-zero; the `delegate artifacts:` line still lists the three files so you can find the
+receipt. To see the full receipt as JSON, pass `--json`. When the output goes to a file or a pipe
+instead of a terminal, the default is the same: standard output carries the answer and the
+`delegate artifacts:` line, and the status and summary lines go to standard error. See
+[Troubleshooting](#troubleshooting).
+
+---
+
+## Step 5 — Find the answer and the receipt
+
+Each run writes its own folder, `~/.onex_state/runs/<run id>/`, in your home folder, whichever
+folder you ran the command from. The last line of step 4's output names the three files:
+
+| File | What it holds |
+|------|---------------|
+| `result.txt` | The model's answer. |
+| `receipt.json` | The proof of who answered: `backend_id` and `endpoint` name the provider or server, and `model` names the model. `status` is `success` or `failed`. |
+| `run.json` | What you asked for: the prompt and the settings the run used. |
+| `workflow_result.json` | The full result of the run as JSON. The run folder also holds this file, though step 4's last line does not list it. |
+
+`.onex_state` is a hidden folder. `open ~/.onex_state/runs`
+shows it in Finder on macOS (in Finder, Cmd+Shift+. shows hidden folders anywhere). To read the
+newest answer in the terminal:
+
+```bash
+cat "$(ls -td ~/.onex_state/runs/*/ | head -1)result.txt"
+```
+
+### See what your delegations cost and saved
+
+Every run is also recorded on this machine, in the same file that holds your key. The command
+`onex metering` reads those records and prints, for all time by default, how many runs
+there were, the tokens sent and received, what you spent, what the same calls would have cost on
+a baseline model, and the difference, broken out by model:
+
+```bash
+onex metering
+```
+
+Use `--window today` for today only, `--day YYYY-MM-DD` for one specific day, and `--json` for
+output a script can read. A run whose tokens were not measured is counted as unknown, never as
+zero, and the savings line always names the baseline model and prices it was worked out from.
+
+---
+
+## Step 6 — See your runs on the dashboard
+
+`onex metering` prints the totals. The dashboard shows the runs themselves: what you asked,
+which model answered, and the receipt behind each one. It runs on your own machine and reads the
+same records, so nothing leaves it.
+
+```bash
+onex dashboard
+```
+
+The command prints the address it is serving on, for example
+`onex dashboard: http://127.0.0.1:54321/?<token>=<value> (tenant <your tenant id>)`. Open that
+whole address, including the part after `?`, in a browser: it carries an access token minted
+for this start, and a request without it is refused. Each start prints a new one. Leave the command
+running while you use the page, and press Ctrl+C to stop it.
+
+The first run takes a few seconds longer than later ones: it downloads the dashboard's pages
+once and checks them against a checksum this release pins, then keeps them for next time. You
+need no Node and no copy of any OmniNode repository — the `onex` tool from step 1 is enough. If
+the download is damaged or has been altered, the command says so and serves nothing rather than
+serving pages it cannot vouch for.
+
+To choose the address yourself, write an overlay file and pass it. Only a loopback address is
+accepted, because this page is for you and not for your network:
+
+```yaml
+# ~/.omninode/delegation/dashboard.yaml
+dashboard:
+  bind: "127.0.0.1:8765"
+```
+
+```bash
+onex dashboard --overlay ~/.omninode/delegation/dashboard.yaml
+```
+
+The page is empty until something has run. If you have not done step 4 yet, do that first and
+reload.
+
+---
+
+## Step 7 — Use it inside Claude Code (optional)
+
+Open a **new** terminal window first, so Claude Code can find the `onex` command from step 1.
+
+```bash
+# 1. Register the marketplace (one-time; reads directly from GitHub, no local clone needed)
+claude plugin marketplace add OmniNode-ai/omniclaude
+
+# 2. Install the plugin
+claude plugin install onex@omninode-tools
+```
+
+Each command ends with a `✔ Successfully ...` line. Check with `claude plugin list`: it shows
+`onex@omninode-tools` with status `enabled`. Then start Claude Code (`claude`), or restart it if
+it was already open, and type:
+
+```
+/onex:delegate explain what a calendar app needs
+```
+
+Claude asks for permission to run the `onex delegate` command; allow it. It then shows the
+answer as it came back, with no summary added. The model that answered, the cost and the
+receipt are in the result files, written exactly as in step 5 under `~/.onex_state`, whichever
+folder Claude Code was started from, and `onex metering` and `onex dashboard` show them.
+
+---
+
+## The hosted service (not part of the beta)
+
+OmniNode also runs a hosted delegation service that uses a dashboard-issued `onxk_` key. It is
+not part of the beta, and nothing in this guide needs it. Its sign-up is a waitlist: signing up
+registers interest, and accounts are granted by the OmniNode team. Its production API does not
+yet list the delegation routes. [Connecting to the OmniNode Cloud](connecting-to-the-cloud.md)
+says which of its steps work today.
+
+Whichever way you run it, OmniNode does not sell inference. Your work goes to a model you run or
+to a provider on your own key, and you pay that provider directly.
+
+---
+
+## Tier 1 (a model you run) / Tier 2 (a provider on your own key)
+
+The overlay file in step 3 (`~/.omninode/delegation/bifrost_overrides.yaml`) is the composable
+mechanism: it adds or overrides backend entries on top of OmniNode's committed routing
+contract, so the same `onex delegate` command reaches a self-hosted model (Tier 1) or, by
+registering your own provider key with `onex secret set`, a cloud model you pay for directly
+(Tier 2). See [step 3](#step-3--tell-onex-which-model-to-use) for both.
+
+---
+
+## Troubleshooting
+
+| What you see | What it means and what to do |
+|--------------|------------------------------|
+| `command not found: uv` | Install it with `curl -LsSf https://astral.sh/uv/install.sh \| sh`, then run `uv tool update-shell` and open a new terminal window. |
+| `command not found: onex` | The install folder is not on your PATH yet. Run `uv tool update-shell`, close the terminal window and open a new one. If that does not fix it, re-run the step 1 install command. |
+| The command in step 3 seems to hang | It is waiting for you to paste the key. Nothing shows while you paste; paste once and press Return. |
+| `error_message` contains `credential_rejected` and `Missing Authentication header` or `User not found` | The provider refused the key. The text you pasted was not a whole, current key (an OpenRouter key starts with `sk-or-v1-`). Copy it again from the provider's Keys page and re-run the step 3 command with `--force` added (`onex secret set llm.openrouter.api_key --force`); without `--force` it refuses to replace a key already stored. |
+| `error_message` mentions `429` or a rate limit | The provider is limiting how often you can call it (free models are limited). Wait a minute and try again, or add credit to your provider account. |
+| `No local model is declared on this machine` | You have neither registered a provider key nor declared a model server. Do step 3. |
+| `this install has never minted a tenant identity` | Run `onex local init` once (step 2). |
+| `Error: No such command 'delegate'. Did you mean 'gate'?` | Only `omnibase-core` is installed. Re-run the step 1 install command exactly as written. |
+| `Error: Unknown node 'node_delegate_skill_orchestrator'` | `omnimarket` is missing from the environment. Re-run the step 1 install command exactly as written. |
+| `claude plugin install` can't find `onex@omninode-tools` | The marketplace is not registered. Re-run `claude plugin marketplace add OmniNode-ai/omniclaude`; `claude plugin marketplace list` should show `omninode-tools`. |
+| A window asks to install "command line developer tools" | macOS needs Apple's developer tools for `git`, which step 7 uses. Click Install, wait for it to finish, and re-run the command. |
+
+`onex delegate --help` answering is not proof that a delegation works: it answers before
+anything is checked. Step 4 is the real test.
+
+---
+
+## Next Steps
+
+- [What OmniNode is, and where it stands](what-is-omninode.md) — the one-page overview: what ships today, what is in beta, and what is not yet open
+- [Delegation dispatch](../architecture/delegation-dispatch.md) — how a delegation request travels from the command to a model and back
+- [Delegation routing contract](../architecture/delegation-routing-contract.md) — how the model for a run is chosen, and how the overlay file in step 3 changes that choice
+- [Supported platforms](supported-platforms.md) — where the `onex` tool installs, and how on each platform
+- [Doctrine](../doctrine/README.md) — the principles the platform is built on
+- [Building on the ONEX runtime](getting-started-local.md) — for writing your own nodes on the runtime that delegation is built on
+
+## Agent adapters
+
+The Claude Code plugin above is the beta integration. The adapter references describe how other coding agents call the same product nodes; check each adapter's prerequisites before using it.
+
+- [Claude Code](omnimarket-claude-code-adapter.md)
+- [Codex](omnimarket-codex-adapter.md)
+- [Cursor](omnimarket-cursor-adapter.md)
+- [Gemini](omnimarket-gemini-adapter.md)

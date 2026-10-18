@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Ordering Must Be Explicit and Contracted"
-topics: [replay-correctness]
+topics: [replay]
 refs: [doctrine/deterministic-under-replay.md, doctrine/contracts-define-reality.md]
 ---
 

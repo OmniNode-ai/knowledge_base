@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-02-20"
 title: "Testing Guide"
-topics: ["omniclaude", "testing", "how-to"]
+topics: [testing, agent-integrations]
 refs: []
 ---
 

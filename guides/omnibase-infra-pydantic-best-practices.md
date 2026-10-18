@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Pydantic Best Practices"
-topics: [omnibase-infra, pydantic, best, practices]
+topics: [contracts, runtime]
 refs: []
 ---
 

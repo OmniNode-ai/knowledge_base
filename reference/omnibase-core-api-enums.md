@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Enums API Reference - omnibase_core"
-topics:
-  - omnibase-core
-  - api
-  - enums
+topics: [contracts]
 refs: []
 ---
 

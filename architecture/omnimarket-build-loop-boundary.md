@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Build-Loop Migration Boundary"
-topics:
-  - omnimarket
-  - build-loop
-  - migrations
+topics: [self-hosting, governance]
 refs: []
 ---
 

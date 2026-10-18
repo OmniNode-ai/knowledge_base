@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-004: Performance Baseline Thresholds for E2E Tests"
-topics: [omnibase-infra, adr, performance, baseline]
+topics: [testing, evidence, runtime]
 refs: []
 ---
 

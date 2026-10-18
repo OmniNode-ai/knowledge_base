@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Omnibase Core Validation Tools"
-topics:
-  - omnibase-core
-  - validation
-  - framework
+topics: [testing]
 refs: []
 ---
 

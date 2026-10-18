@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ONEX Mixin Architecture"
-topics:
-  - omnibase-core
-  - mixin
-  - architecture
+topics: [architecture]
 refs: []
 ---
 

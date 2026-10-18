@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ONEX Subcontract Package Architecture"
-topics:
-  - omnibase-core
-  - subcontract
-  - architecture
+topics: [packaging, architecture]
 refs: []
 summary: "Describes the ONEX Subcontract Package of specialized contract models for operations such as state machines, aggregation, routing, event handling, and discovery. Covers architectural principles, core and advanced subcontract patterns, testing, performance, and monitoring. For engineers designing or extending subcontracts within the Four-Node Architecture."
 ---

@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Protocol Design Standards"
-topics:
-  - omnibase_spi
-  - protocols
-  - standards
+topics: [architecture]
 refs: []
 ---
 

@@ -4,7 +4,7 @@ status: accepted
 date: "2026-06-18"
 title: "ADR-0042: Cross-Renderer Typed Empty-State Gate"
 adr_id: ADR-0042
-topics: [omnidash, contract-driven-ui, empty-state, eslint, renderers]
+topics: [contracts, dashboard]
 refs: [architecture/omnidash-composable-frame.md, reference/omnidash-component-manifest.md]
 supersedes: []
 superseded_by: []

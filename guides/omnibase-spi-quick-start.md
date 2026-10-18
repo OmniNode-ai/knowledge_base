@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Quick Start"
-topics:
-  - omnibase_spi
-  - getting-started
-  - protocols
+topics: [overview]
 refs: []
 ---
 

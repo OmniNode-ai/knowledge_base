@@ -8,8 +8,19 @@ default_install_hook_types:
   - commit-msg
 
 repos:
+  - repo: https://github.com/OmniNode-ai/omniclaude
+    rev: 0c9f9146d8dd0446fc5c10952aa57247b3a880ae
+    hooks:
+      - id: public-repo-hygiene
   - repo: local
     hooks:
+      - id: sanitize-public-content
+        name: Reject private content throughout the public tree
+        entry: uv run python scripts/validate.py --sanitize-only
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: sanitize-commit-message
         name: Reject private content in commit messages
         description: >-
@@ -19,7 +30,7 @@ repos:
           owner/author fields, profanity, agent-addressed directives,
           agent-memory citations, or CI runner container names. Reuses the
           forbidden-pattern list from scripts/sanitization_patterns.py.
-        entry: python scripts/check_text_sanitization.py --commit-msg-file
+        entry: python3 scripts/check_text_sanitization.py --commit-msg-file
         language: system
         stages: [commit-msg]
       - id: strip-ai-coauthor-trailer

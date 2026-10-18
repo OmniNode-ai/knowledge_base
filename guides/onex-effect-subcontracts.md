@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Effect Subcontract Guide"
-topics:
-  - omnibase-core
-  - effect
-  - subcontracts
+topics: [architecture]
 refs: []
 summary: "Explains effect subcontracts, Pydantic models that declaratively define external I/O operations for EFFECT nodes across HTTP, database, Kafka, and filesystem cases. Covers type-safe configurations, idempotency-aware retries, transaction boundaries, circuit breakers, validation rules, and a migration path. For developers defining I/O behavior in EFFECT nodes."
 ---

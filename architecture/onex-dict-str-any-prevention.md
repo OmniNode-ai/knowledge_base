@@ -3,12 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Dict[str, Any] Prevention Guide"
-topics:
-  - omnibase-core
-  - dict
-  - str
-  - any
-  - prevention
+topics: [architecture]
 refs: []
 ---
 

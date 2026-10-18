@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Generation Pipeline Boundary"
-topics:
-  - omnimarket
-  - generation
-  - onex-runtime
+topics: [governance, runtime]
 refs: []
 ---
 

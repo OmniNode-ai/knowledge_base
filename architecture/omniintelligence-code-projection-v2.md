@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "OmniIntelligence Deterministic Code Projection v2"
-topics:
-  - omniintelligence
-  - code-projection
-  - qdrant
-  - memgraph
+topics: [projections, replay]
 refs: []
 ---
 
@@ -205,26 +201,26 @@ artifact root deterministically reapplies or repairs the projection.
 uv run python -m omniintelligence.code_projection ingest \
   --tenant-id <canonical-tenant-slug> \
   --root <mounted-repository-root> \
-  --repository-id lab/<ticket>/<repository> \
+  --repository-id <repository-id> \
   --path <repository-relative-source-path> \
   --artifact-root <durable-artifact-root>
 
 uv run python -m omniintelligence.code_projection inspect \
   --tenant-id <same-canonical-tenant-slug> \
-  --repository-id lab/<ticket>/<repository> \
+  --repository-id <repository-id> \
   --path <repository-relative-source-path> \
   --artifact-root <same-durable-artifact-root> \
   --symbol <exact-qualified-name>
 
 uv run python -m omniintelligence.code_projection tombstone \
   --tenant-id <same-canonical-tenant-slug> \
-  --repository-id lab/<ticket>/<repository> \
+  --repository-id <repository-id> \
   --path <repository-relative-source-path> \
   --artifact-root <same-durable-artifact-root>
 
 uv run python -m omniintelligence.code_projection search \
   --tenant-id <same-canonical-tenant-slug> \
-  --repository-id lab/<ticket>/<repository> \
+  --repository-id <repository-id> \
   --artifact-root <same-durable-artifact-root> \
   --query <semantic-query> \
   --limit 5

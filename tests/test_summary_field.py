@@ -46,6 +46,14 @@ def test_summary_must_be_a_string(tmp_path: Path) -> None:
     assert _guide_errors(tmp_path, "summary: [not, a, string]\n")
 
 
+def test_topic_vocabulary_rejects_filename_fragments(tmp_path: Path) -> None:
+    assert _guide_errors(tmp_path, "topics: [miscellaneous-filename-fragment]\n")
+
+
+def test_topic_vocabulary_accepts_product_concepts(tmp_path: Path) -> None:
+    assert _guide_errors(tmp_path, "topics: [delegation, contracts, runtime]\n") == []
+
+
 def test_type_index_shows_summary_when_present() -> None:
     artifacts = [
         {

@@ -4,7 +4,7 @@ status: accepted
 date: "2026-02-19"
 title: "ADR-0049: Three-Tier Agent Routing (LLM → Fuzzy → Explicit)"
 adr_id: ADR-0049
-topics: [omniclaude, agent-routing, llm]
+topics: [agent-integrations]
 refs: []
 supersedes: []
 superseded_by: []

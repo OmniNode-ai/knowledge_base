@@ -5,7 +5,7 @@ date: "2026-05-23"
 title: "Reducers Own State Progression"
 observed_date: "2026-01-28"
 confidence: high
-topics: [reducers, state, ordering, replay, last-write-wins, projection]
+topics: [nodes, replay, projections]
 refs:
   - doctrine/reducers-define-state-progression.md
   - doctrine/ordering-must-be-explicit.md

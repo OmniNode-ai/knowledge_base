@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Effect Boundary Testing"
-topics: [omnibase-infra, effect, boundary, testing]
+topics: [testing, governance, runtime]
 refs: []
 ---
 

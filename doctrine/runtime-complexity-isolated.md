@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Runtime Complexity Must Be Isolated"
-topics: [runtime-isolation]
+topics: [runtime]
 refs: [doctrine/evidence-is-first-class-output.md, doctrine/truth-must-be-proven.md, doctrine/ingestion-and-interpretation-separate.md]
 ---
 

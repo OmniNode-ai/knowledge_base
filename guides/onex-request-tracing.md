@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Request Tracing in ONEX"
-topics:
-  - omnibase-core
-  - request
-  - tracing
+topics: [observability]
 refs: []
 ---
 

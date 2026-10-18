@@ -3,9 +3,9 @@ type: guide
 status: current
 date: "2026-10-17"
 title: "What OmniNode is, and where it stands"
-topics: [overview, getting-started, delegation, metering, receipts]
+topics: [overview, delegation]
 refs:
-  - guides/onex-plugin-quickstart.md
+  - guides/delegation-quickstart.md
   - architecture/repository-map-and-runtime-concepts.md
   - architecture/delegation-dispatch.md
   - architecture/delegation-routing-contract.md
@@ -48,7 +48,7 @@ run the model yourself.
    the difference. `onex dashboard` shows each run and its receipt in a browser page served only on
    your own machine.
 
-The [Delegation quickstart](onex-plugin-quickstart.md) walks through all of it in about 15
+The [Delegation quickstart](delegation-quickstart.md) walks through all of it in about 15
 minutes, with what you should see at each step.
 
 ## What ships today
@@ -92,7 +92,7 @@ made on your own provider credential or your own model endpoint. See
 
 | If you want to | Read |
 |---|---|
-| Try delegation | [Delegation quickstart](onex-plugin-quickstart.md) |
+| Try delegation | [Delegation quickstart](delegation-quickstart.md) |
 | See how a delegation is dispatched | [Delegation dispatch](../architecture/delegation-dispatch.md) |
 | See how a model is chosen | [Delegation routing contract](../architecture/delegation-routing-contract.md) |
 | Understand how the repositories fit together | [Repository map and runtime concepts](../architecture/repository-map-and-runtime-concepts.md) |
@@ -100,3 +100,20 @@ made on your own provider credential or your own model endpoint. See
 | Run the full stack yourself | [Self-hosting the full stack](getting-started-self-hosted.md) |
 | Know why the platform is shaped this way | [Doctrine](../doctrine/README.md) |
 | Browse everything | [Guides](README.md), [indexes](../indexes/README.md) |
+
+## Business model boundary
+
+Customers bring their own model endpoints or provider keys. OmniNode does not sell or mark up inference. The platform is open source; only the hosted cloud deployment architecture is private. These are product boundaries, not a statement of pricing for a future hosted offering.
+
+## Five concepts
+
+A **contract** declares the interface; a **node** has one of four archetypes; its **handler** implements behavior; the **bus** carries typed work; a **projection** provides a read model. See [the glossary](../reference/glossary.md).
+
+```mermaid
+flowchart LR
+    Contract --> Node --> Handler --> Bus --> Projection
+```
+
+The design aims for deterministic state transitions ([replay](../doctrine/deterministic-under-replay.md)), inspectable receipts ([evidence](../doctrine/evidence-is-first-class-output.md)), and explicit interfaces ([contracts](../doctrine/contracts-define-reality.md)). Model-independent routing lets users choose their own backends. Those properties are design criteria; measured cost and quality require a published experiment.
+
+Read [Beta status](../reference/beta-status.md) for availability and [the delegation architecture guide](../architecture/delegation.md) for the current design map.

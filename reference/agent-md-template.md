@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "AGENT.md Template"
-topics: [agent-md, llm-navigation, cross-repo-standard]
+topics: [agent-integrations]
 refs: []
 ---
 

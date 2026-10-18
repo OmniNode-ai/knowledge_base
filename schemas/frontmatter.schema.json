@@ -28,10 +28,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -113,10 +137,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -176,10 +224,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -239,10 +311,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -325,10 +421,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -390,10 +510,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -470,10 +614,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -534,10 +702,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },
@@ -598,10 +790,34 @@
           "type": "string"
         },
         "topics": {
-          "default": [],
           "items": {
+            "enum": [
+              "overview",
+              "architecture",
+              "delegation",
+              "contracts",
+              "nodes",
+              "handlers",
+              "runtime",
+              "bus",
+              "projections",
+              "replay",
+              "configuration",
+              "security",
+              "self-hosting",
+              "cloud-api",
+              "dashboard",
+              "testing",
+              "evidence",
+              "governance",
+              "packaging",
+              "observability",
+              "memory",
+              "agent-integrations"
+            ],
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Topics",
           "type": "array"
         },

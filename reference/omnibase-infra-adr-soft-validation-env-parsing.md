@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Soft Validation for Environment Variable Parsing"
-topics: [omnibase-infra, adr, soft, validation]
+topics: [configuration, testing, runtime]
 refs: []
 ---
 

@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ONEX Canonical Execution Shapes"
-topics:
-  - omnibase-core
-  - canonical
-  - execution
-  - shapes
+topics: [governance]
 refs: []
 summary: "Defines the canonical execution shapes for the ONEX Four-Node Architecture, which enforces unidirectional data flow across the four node types. Lists allowed and forbidden patterns, explains why the constraints matter, and gives a decision matrix and enforcement notes. For anyone designing components that must follow these shapes."
 ---

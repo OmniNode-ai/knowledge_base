@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "State Is a Materialized Projection"
-topics: [projection-authority]
+topics: [projections, governance]
 refs:
   - doctrine/authoritative-projections-own-truth.md
   - doctrine/reducers-define-state-progression.md

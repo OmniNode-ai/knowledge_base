@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-23"
 title: "ADR-0003: Registration Runtime / Registry Boundary"
 adr_id: ADR-0003
-topics: [registration, runtime, registry, projections, architecture-boundary]
+topics: [runtime, governance, projections]
 refs:
   - doctrine/authoritative-projections-own-truth.md
   - doctrine/state-is-materialized-projection.md

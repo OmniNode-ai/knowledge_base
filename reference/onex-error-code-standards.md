@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Error Code Standards"
-topics:
-  - omnibase-core
-  - error
-  - code
-  - standards
+topics: [architecture]
 refs: []
 ---
 

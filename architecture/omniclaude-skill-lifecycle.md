@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "Skill Lifecycle: When a Skill Stays in omniclaude vs. Moves to omnimarket"
-topics: ["omniclaude", "skills", "omnimarket"]
+topics: [runtime, agent-integrations]
 refs: []
 ---
 
@@ -13,7 +13,6 @@ refs: []
 **Last verified**: 2026-06-16
 **Owner**: omniclaude (this repo)
 
-**Context plans** (in `omni_home/docs/plans/`):
 - `2026-04-06-omniclaude-extraction-to-omnimarket.md` — extraction implementation plan
 - `2026-04-09-omnimarket-skill-decomposition-design.md` — target domain package structure
 
@@ -151,7 +150,6 @@ Those descriptions belong in omnimarket's node documentation.
 
 When a skill that currently contains logic needs to move:
 
-1. Create the omnimarket node in a worktree under `$OMNI_HOME/omni_worktrees/<ticket>/omnimarket/`
 2. Move the execution logic into the node handler
 3. Add a contract YAML to the node declaring its topics
 4. Replace the skill body in omniclaude with a thin dispatch stub
@@ -159,7 +157,6 @@ When a skill that currently contains logic needs to move:
 6. Ship both PRs in the same Linear ticket
 
 Reference: the April 2026 extraction plan and the skill decomposition design
-(both in `omni_home/docs/plans/`) describe the full target domain structure
 (11 domains, ~80-120 nodes).
 
 ---

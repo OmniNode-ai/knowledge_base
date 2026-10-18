@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Introspection Subcontract Guide"
-topics:
-  - omnibase-core
-  - introspection
-  - subcontract
+topics: [architecture]
 refs: []
 ---
 
@@ -381,7 +378,7 @@ introspection:
   require_authentication: true
   allowed_introspection_sources:
     - "192.0.2.0/24"
-    - "10.0.0.0/8"  # doc-content-ok illustrative RFC1918 CIDR range in a config example, not a host trace
+    - "203.0.113.0/24"  # documentation-only network; configure your own range
   exclude_field_patterns:
     - password
     - secret

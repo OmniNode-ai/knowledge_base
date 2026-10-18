@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Handler Plugin Loader Security Model"
-topics: [omnibase-infra, adr, handler, plugin]
+topics: [handlers, security, packaging]
 refs: []
 ---
 

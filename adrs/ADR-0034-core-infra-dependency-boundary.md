@@ -4,7 +4,7 @@ status: accepted
 date: "2025-12-26"
 title: "ADR-0034: Core-Infra Dependency Boundary"
 adr_id: ADR-0034
-topics: [omnibase_core, dependency-inversion, architecture-boundary, ci-enforcement]
+topics: [governance, packaging, testing]
 refs: [adrs/ADR-0030-protocol-based-di-architecture.md]
 supersedes: []
 superseded_by: []

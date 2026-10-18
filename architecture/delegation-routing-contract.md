@@ -3,17 +3,14 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "Delegation Routing Contract"
-topics:
-  - omnimarket
-  - delegation
-  - llm-routing
+topics: [delegation, contracts]
 refs:
   - architecture/delegation-dispatch.md
 ---
 
 # Delegation Routing Contract
 
-> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. Two corrections applied during migration: the example backend block below cited `cloud-sonnet`/`cloud-haiku` — both deleted from the live contract because the org holds no Anthropic API key (Claude Code access is OAuth-only; `resolve_api_key('llm.anthropic.api_key')` returns `None` in every lane) — and the tier-escalation section named a 3-tier ladder ending in `frontier_api`, when the live `routing_tiers.yaml` declares 4 tiers ending in a `claude`-named ceiling slot. Both corrections are confirmed directly against `src/omnimarket/configs/{bifrost_delegation,routing_tiers}.yaml`.
+> **Public interface review: 2026-10-18.** Customers supply their own model endpoints and provider keys (BYOK). Backend identities, credentials and availability are deployment configuration, not platform-wide facts.
 
 The delegation routing contract is declared in two files under
 `src/omnimarket/configs/`:
@@ -67,8 +64,8 @@ next tier is selected:
 
 1. `local` — on-premises vLLM/SGLang models (lowest cost, highest throughput)
 2. `cheap_cloud` — metered Gemini backends via Google AI Studio and Vertex (moderate cost)
-3. `cheap_frontier` — a genuinely free-tier frontier model via OpenRouter (Qwen3-Coder-480B), available when `OPENROUTER_API_KEY` is configured
-4. `claude` — the ceiling slot. The name is a stable tier identifier that every task class's `escalation_policy.tier_order` keys on; it is **not** a provider claim. This org has no Anthropic key, so the ceiling has been repointed across several HTTP frontier backends over time (Gemini, then GLM direct, then back to Gemini) — always through the canonical HTTP inference path, never a shelled CLI. Check `routing_tiers.yaml`'s changelog comments for the currently pinned backend rather than assuming a fixed provider.
+3. `cheap_frontier` — a configured frontier backend via OpenRouter, available when `OPENROUTER_API_KEY` is configured
+4. `claude` — a historical ceiling-slot identifier, not a fixed provider. The configured backend determines the provider and uses the customer's credential. Read the routing contract for the selected backend, not deployment-specific account history.
 
 Task classes that require capabilities only available on higher tiers skip
 lower tiers that lack those capabilities. For example, a `code_generation`

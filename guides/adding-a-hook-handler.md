@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-08-19"
 title: "Adding a Hook Handler"
-topics: ["omniclaude", "hooks", "how-to"]
+topics: [handlers, agent-integrations]
 refs: []
 ---
 

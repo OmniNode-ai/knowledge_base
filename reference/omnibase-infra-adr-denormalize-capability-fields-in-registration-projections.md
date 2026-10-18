@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-005: Denormalize Capability Fields in Registration Projections"
-topics: [omnibase-infra, adr, denormalize, capability]
+topics: [runtime, projections]
 refs: []
 ---
 

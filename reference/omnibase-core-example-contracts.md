@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Example Contracts"
-topics:
-  - omnibase-core
-  - example
-  - contracts
+topics: [contracts]
 refs: []
 ---
 

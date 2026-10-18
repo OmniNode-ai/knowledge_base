@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Contract System"
-topics:
-  - omnibase-core
-  - contract
-  - system
+topics: [contracts]
 refs: []
 ---
 

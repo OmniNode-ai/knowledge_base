@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Strengthen DSN Validation with urllib.parse"
-topics: [omnibase-infra, adr, dsn, validation]
+topics: [testing, runtime]
 refs: []
 ---
 

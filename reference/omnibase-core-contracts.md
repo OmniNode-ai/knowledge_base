@@ -3,9 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Contract.yaml Reference"
-topics:
-  - omnibase-core
-  - contracts
+topics: [contracts]
 refs: []
 ---
 

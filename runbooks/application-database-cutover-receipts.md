@@ -3,13 +3,13 @@ type: runbook
 status: current
 date: "2026-07-31"
 title: "Application database cutover receipts"
-topics: [omnibase-infra, application, database, cutover, receipts]
+topics: [evidence, runtime]
 refs: []
 ---
 
 # Application database cutover receipts
 
-<ticket> provides proof mechanics for one-application-database family cutovers.
+The cutover workflow provides proof mechanics for one-application-database family cutovers.
 It does not activate a writer, change a DSN, apply a grant or policy, or authorize a
 live cutover. Each coherent relation family is registered and stopped independently.
 

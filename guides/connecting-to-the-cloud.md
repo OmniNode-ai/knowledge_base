@@ -1,16 +1,18 @@
 ---
 type: guide
-status: current
+status: draft
 date: "2026-09-23"
 title: "Connecting to the OmniNode Cloud"
-topics: [cloud, api, authentication, workflows, delegation, getting-started]
+topics: [cloud-api, delegation, overview]
 refs: []
 summary: "How to reach the hosted OmniNode service with the onex cloud client, and which of its steps work today. The hosted service is waitlist-gated and not part of the beta; beta users follow the quickstart instead."
 ---
 
 # Connecting to the OmniNode Cloud
 
-> **Not part of the beta.** The beta is the local install in the [quickstart](onex-plugin-quickstart.md), which needs no account and no OmniNode service ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). The hosted service described here is waitlist-gated: you cannot open an account yourself, and its production API does not yet list the delegation routes. Read the [status table](#availability-of-each-step-stated-honestly) before relying on any step below.
+> The hosted service is not open to outside users yet (as of 2026-10-18); this page documents its interface for preview.
+
+> **Not part of the beta.** The beta is the local install in the [quickstart](delegation-quickstart.md), which needs no account and no OmniNode service ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). The hosted service described here is waitlist-gated: you cannot open an account yourself, and its production API does not yet list the delegation routes. Read the [status table](#availability-of-each-step-stated-honestly) before relying on any step below.
 >
 > In every mode, OmniNode does not sell inference. Model calls go to a model you run or to a provider on your own key, and you pay that provider directly.
 
@@ -36,7 +38,7 @@ Until a local model is declared, `onex delegate` refuses before it reaches any m
 
 ## Whose model, whose key
 
-The hosted service runs orchestration, routing, receipts and metering. It does not sell model access. The model call a hosted run makes is made on your own provider credential, or against your own model endpoint, and OmniNode does not mark up inference. That is the same arrangement as the local path above, with the orchestration moved off your machine.
+The hosted service runs orchestration, routing, receipts and metering. It does not sell model access. The model call a hosted run makes is made on your own provider credential, or against your own model endpoint, and OmniNode does not mark up inference. That is the same arrangement as the local path above, with the orchestration moved off your machine. The platform is open source; only the hosted cloud deployment architecture is private.
 
 ## Use the client, not hand-written HTTP
 
@@ -50,13 +52,13 @@ The steps below are at different levels of readiness. This table is the summary;
 
 | Step | Status |
 |---|---|
-| Create an account | **Live, waitlist-gated.** Signing up joins a list; accounts are granted by the OmniNode team, not self-served. |
-| Sign in to the dashboard | **Live.** |
+| Create an account | **Preview, not open.** Signing up joins a list; accounts are granted by the OmniNode team, not self-served. |
+| Sign in to the dashboard | **Preview, not open.** |
 | Create an API key in the dashboard | **Intended flow described; browser click-through not yet confirmed.** The creation path was recently repaired and the repaired build deployed, but no end-to-end click-through by a signed-in user has been recorded. See the section for what to do if it fails. |
-| Create an API key over the API | **Live.** `POST /v1/api-keys` is advertised by the production API's own OpenAPI document. |
-| Install the client and log in | **Live.** The published `omnimarket` package contributes `onex cloud` to the `onex` CLI. Logging in stores a credential locally and contacts nothing. |
-| Reach the API base URL, unauthenticated health check | **Live, verified.** |
-| Authenticate with an API key or a bearer token | **Live, verified** — both header shapes are accepted by the gateway, and unauthenticated calls are refused. |
+| Create an API key over the API | **Preview, not open.** `POST /v1/api-keys` is advertised by the production API's own OpenAPI document. |
+| Install the client and log in | **Preview, not open.** The published `omnimarket` package contributes `onex cloud` to the `onex` CLI. Logging in stores a credential locally and contacts nothing. |
+| Reach the API base URL, unauthenticated health check | **Preview, not open.** |
+| Authenticate with an API key or a bearer token | **Preview, not open** — both header shapes are accepted by the gateway, and unauthenticated calls are refused. |
 | Delegate a task and read its receipt | **Proven working, not yet advertised on the production API.** The full submit, poll, receipt loop — which is exactly what `onex cloud delegate` performs — has been run end to end against a pre-production build of the same gateway. The production API's OpenAPI document does **not** currently list the workflow routes. Treat this as the intended and proven flow, and confirm availability against the live OpenAPI document before you build on it — see [Check what the API actually offers today](#check-what-the-api-actually-offers-today). |
 
 ---

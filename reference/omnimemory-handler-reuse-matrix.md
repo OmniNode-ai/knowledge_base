@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniMemory Handler Reuse Matrix"
-topics:
-  - omnimemory
-  - handlers
-  - reuse
-  - nodes
+topics: [handlers, memory, nodes]
 refs:
   - architecture/omnimemory-four-node-architecture.md
   - guides/omnimemory-pii-handling.md

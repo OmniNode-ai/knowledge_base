@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "OmniMarket node_ticket_pipeline"
-topics:
-  - omnimarket
-  - nodes
-  - onex-runtime
+topics: [nodes, runtime]
 refs: []
 ---
 

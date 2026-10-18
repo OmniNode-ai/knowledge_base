@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniDash ComponentManifest Schema"
-topics: [omnidash, component-manifest, registry, json-schema, widgets]
+topics: [contracts, dashboard, configuration]
 refs: [reference/omnidash-dashboard-definition.md, architecture/omnidash-composable-frame.md, guides/omnidash-development.md]
 ---
 

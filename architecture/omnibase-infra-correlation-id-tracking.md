@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Correlation ID Tracking"
-topics: [omnibase-infra, correlation, id, tracking]
+topics: [observability, runtime]
 refs: []
 ---
 
@@ -414,6 +414,4 @@ async def traced_operation(
 
 ## Related Patterns
 
-- Error Handling Patterns (internal knowledge base) - Error context with correlation IDs
-- Error Recovery Patterns (internal knowledge base) - Retry logic with correlation tracking
 - Container Dependency Injection (`../architecture/omnibase-infra-container-dependency-injection.md`) - Service resolution patterns

@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Integration Testing Guide - omnibase_core"
-topics:
-  - omnibase-core
-  - integration
-  - testing
+topics: [testing]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Handler Contract Schema Evolution Strategy"
-topics: [omnibase-infra, adr, handler, contract]
+topics: [contracts, handlers, runtime]
 refs: []
 ---
 

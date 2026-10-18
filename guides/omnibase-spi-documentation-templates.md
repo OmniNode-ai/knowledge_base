@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Documentation Templates"
-topics:
-  - omnibase_spi
-  - documentation
-  - templates
+topics: [architecture]
 refs: []
 ---
 

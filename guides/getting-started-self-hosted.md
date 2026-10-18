@@ -3,19 +3,10 @@ type: guide
 status: current
 date: "2026-08-26"
 title: "Getting Started: Self-Hosting the Full Stack"
-topics:
-  - getting-started
-  - self-hosting
-  - docker
-  - kafka
-  - postgres
-  - valkey
-  - runtime
+topics: [self-hosting, runtime, overview]
 refs:
-  - runbooks/cold-lane-full-bringup.md
   - runbooks/apply-migrations.md
   - runbooks/kafka-reconnect-and-broker-recovery.md
-  - runbooks/volume-config-drift-and-reseed.md
 ---
 
 # Getting Started: Self-Hosting the Full Stack
@@ -569,7 +560,7 @@ A warm refresh that assumes the dependencies are up will half-start against a co
 stack and fail in the runtime, not at the dependency that is actually missing. The
 full sequencing — dependency readiness, broker topic provisioning, the migration
 one-shots, and the raised broker-join timeout a cold start needs — is in
-[the cold-lane full bring-up runbook](../runbooks/cold-lane-full-bringup.md).
+the cold-lane full bring-up runbook (historical record withdrawn).
 
 ---
 
@@ -592,10 +583,10 @@ one-shots, and the raised broker-join timeout a cold start needs — is in
 
 ## Related pages
 
-- [Cold-lane full bring-up](../runbooks/cold-lane-full-bringup.md) — cold vs. warm
+- Cold-lane full bring-up (historical record withdrawn) — cold vs. warm
   sequencing in full
 - [Applying migrations](../runbooks/apply-migrations.md) — migration mechanics
 - [Broker reconnect and recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)
   — when the broker drops
-- [Volume config drift and reseed](../runbooks/volume-config-drift-and-reseed.md) —
+- Volume config drift and reseed (historical record withdrawn) —
   when a volume's copy of config diverges from its authority

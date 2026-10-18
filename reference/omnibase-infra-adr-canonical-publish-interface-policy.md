@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Canonical Publish Interface Policy"
-topics: [omnibase-infra, adr, canonical, publish]
+topics: [governance, runtime]
 refs: []
 ---
 

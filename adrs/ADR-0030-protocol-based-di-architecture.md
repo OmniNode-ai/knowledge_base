@@ -4,7 +4,7 @@ status: accepted
 date: "2025-10-30"
 title: "ADR-0030: Protocol-Based Dependency Injection Architecture"
 adr_id: ADR-0030
-topics: [omnibase_core, dependency-injection, protocols, service-registry, architecture]
+topics: [packaging, architecture, runtime]
 refs: []
 supersedes: []
 superseded_by: []

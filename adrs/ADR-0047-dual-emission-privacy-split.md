@@ -4,7 +4,7 @@ status: accepted
 date: "2026-02-19"
 title: "ADR-0047: Dual-Topic Emission for Prompt Privacy"
 adr_id: ADR-0047
-topics: [omniclaude, events, privacy, hooks]
+topics: [bus, security, agent-integrations]
 refs: []
 supersedes: []
 superseded_by: []

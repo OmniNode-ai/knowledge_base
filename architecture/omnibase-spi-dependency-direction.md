@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "omnibase_spi Dependency Direction"
-topics:
-  - omnibase_spi
-  - architecture
-  - import-graph
-  - layering
+topics: [packaging, architecture]
 refs: []
 ---
 

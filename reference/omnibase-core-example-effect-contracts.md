@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "NodeEffect Contract Examples"
-topics:
-  - omnibase-core
-  - example
-  - effect
-  - contracts
+topics: [contracts]
 refs: []
 ---
 
@@ -358,7 +354,7 @@ body_template: |
 input_data = ModelEffectInput(
     operation_data={
         "user_id": "usr_12345",
-        "email": "john@example.com",  # sanitization-ok: illustrative example value, not a real address
+        "email": "reader@example.invalid",
         "display_name": "John Smith"
     }
 )
@@ -402,7 +398,7 @@ from omnibase_core.models import ModelEffectInput
 # NOTE: Load sensitive values from environment, never hardcode tokens
 input_data = ModelEffectInput(
     operation_data={
-        "email": "john.smith@example.com",  # sanitization-ok: illustrative example value, not a real address
+        "email": "reader@example.invalid",
         "display_name": "John Smith",
         "auth_token": os.environ.get("API_AUTH_TOKEN"),  # Load from secure env
     }
@@ -616,7 +612,7 @@ async def test_http_api_call_contract(container):
     # Test input
     input_data = ModelEffectInput(
         operation_data={
-            "email": "test@example.com",  # sanitization-ok: illustrative example value, not a real address
+            "email": "reader@example.invalid",
             "display_name": "Test User"
         }
     )

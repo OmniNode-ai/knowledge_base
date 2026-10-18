@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-26"
 title: "Dashboard Component Truth Boundary"
-topics: [omnidash, doctrine, projections, truth-boundary, widgets]
+topics: [dashboard, governance, projections]
 refs: [architecture/omnidash-composable-frame.md, doctrine/authoritative-projections-own-truth.md, doctrine/state-is-materialized-projection.md]
 ---
 

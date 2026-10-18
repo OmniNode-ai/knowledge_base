@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniDash DashboardDefinition Schema"
-topics: [omnidash, dashboard-definition, schema, layout, widgets]
+topics: [contracts, dashboard]
 refs: [reference/omnidash-component-manifest.md, architecture/omnidash-composable-frame.md]
 ---
 

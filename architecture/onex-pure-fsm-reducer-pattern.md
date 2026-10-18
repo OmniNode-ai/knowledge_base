@@ -3,12 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Pure FSM Reducer Pattern"
-topics:
-  - omnibase-core
-  - pure
-  - fsm
-  - reducer
-  - pattern
+topics: [nodes]
 refs: []
 summary: "Defines the Pure FSM Reducer pattern, in which Reducer nodes operate as deterministic, side-effect-free state transformation machines following δ(state, action) → (new_state, intents). Covers requirements, intent emission, benefits, anti-patterns, migration from impure reducers, and testing. For anyone implementing NodeReducer classes."
 ---

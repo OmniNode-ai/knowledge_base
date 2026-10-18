@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Type System"
-topics:
-  - omnibase-core
-  - type
-  - system
+topics: [architecture]
 refs: []
 ---
 

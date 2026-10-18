@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Handler Contract Guide"
-topics:
-  - omnibase-core
-  - handler
-  - contracts
+topics: [contracts, handlers]
 refs: []
 ---
 

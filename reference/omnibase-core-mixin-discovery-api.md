@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Mixin Discovery API"
-topics:
-  - omnibase-core
-  - mixin
-  - discovery
-  - api
+topics: [architecture]
 refs: []
 ---
 

@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "OmniMarket node_golden_chain_sweep"
-topics:
-  - omnimarket
-  - nodes
-  - onex-runtime
+topics: [nodes, runtime]
 refs: []
 ---
 

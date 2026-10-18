@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Node Registration Orchestrator"
-topics: [omnibase-infra, node, registration, orchestrator]
+topics: [nodes, runtime]
 refs: []
 ---
 

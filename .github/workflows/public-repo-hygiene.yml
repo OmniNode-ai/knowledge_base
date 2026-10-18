@@ -13,10 +13,7 @@
 # private address, an operator machine path, a private repository name, and
 # internal-KB prose in a public README.
 #
-# mode: report. The gate records every finding and exits 0, so it lands without
-# blocking unrelated PRs on a repository that carries pre-existing residue. It
-# flips to enforce when that residue is FIXED -- never by moving it into
-# .public-repo-hygiene.yaml.
+# Whole-tree enforcement refuses any remaining private-content finding.
 #
 # Layer (a) reads .public-repo-hygiene.yaml at this repo's root; the gate
 # refuses to run without it rather than treating an absent config as an empty
@@ -46,5 +43,5 @@ jobs:
   public-repo-hygiene:
     uses: OmniNode-ai/omniclaude/.github/workflows/public-repo-hygiene-reusable.yml@0c9f9146d8dd0446fc5c10952aa57247b3a880ae
     with:
-      mode: report
+      mode: enforce
     secrets: inherit

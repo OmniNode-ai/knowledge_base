@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Integration Testing"
-topics: [omnibase-infra, integration, testing]
+topics: [testing, runtime]
 refs: []
 ---
 

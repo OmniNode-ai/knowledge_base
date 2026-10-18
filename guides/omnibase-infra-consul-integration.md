@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Consul Integration Patterns"
-topics: [omnibase-infra, consul, integration]
+topics: [runtime]
 refs: []
 ---
 
@@ -383,9 +383,6 @@ config = ModelConsulHandlerConfig(
 ## Related Documentation
 
 - Circuit Breaker Implementation (`../guides/omnibase-infra-circuit-breaker-implementation.md`)
-- Error Handling Patterns (internal knowledge base)
-- Error Recovery Patterns (internal knowledge base)
-- Security Patterns (internal knowledge base)
 - Registration Workflow
 - [HashiCorp Consul API Docs](https://developer.hashicorp.com/consul/api-docs)
 

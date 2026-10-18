@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Fail Fast and Loud"
-topics: [failure-handling]
+topics: [architecture]
 refs:
   - doctrine/degrade-safely.md
   - doctrine/evidence-is-first-class-output.md

@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Skill, Package, and Node Boundaries"
-topics:
-  - omnimarket
-  - onex-runtime
-  - ownership
+topics: [nodes, packaging, agent-integrations]
 refs: []
 ---
 

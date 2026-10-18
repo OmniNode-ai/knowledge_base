@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "ONEX Current Node Architecture"
-topics: [omnibase-infra, current, node]
+topics: [nodes, runtime]
 refs: []
 ---
 

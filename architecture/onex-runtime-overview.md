@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "ONEX Architecture Overview"
-topics: [omnibase-infra, onex, runtime, overview]
+topics: [overview, runtime]
 refs: []
 ---
 

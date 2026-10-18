@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "ARCH-002: Kafka Abstraction Rule (OmniMemory)"
-topics:
-  - omnimemory
-  - kafka
-  - event-bus
-  - architecture
+topics: [bus, memory, architecture]
 refs:
   - architecture/omnimemory-four-node-architecture.md
 ---

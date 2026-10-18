@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Service Wrappers - Pre-Composed Production-Ready Node Classes"
-topics:
-  - omnibase-core
-  - service
-  - wrappers
+topics: [nodes]
 refs: []
 ---
 

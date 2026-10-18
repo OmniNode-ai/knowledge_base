@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: EnumMessageCategory vs EnumNodeOutputType Distinction"
-topics: [omnibase-infra, adr, enum, message]
+topics: [contracts, runtime]
 refs: []
 ---
 

@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Projection API Materialization"
-topics:
-  - omnimarket
-  - projection
-  - database
+topics: [projections]
 refs: []
 ---
 

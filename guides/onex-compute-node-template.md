@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "COMPUTE Node Template"
-topics:
-  - omnibase-core
-  - compute
-  - node
-  - template
+topics: [nodes]
 refs: []
 ---
 
@@ -365,7 +361,7 @@ class TestHandlerValidation:
             }
         ]
         result = await handler.handle(
-            {"user_id": "u1", "email": "a@b.com"},  # sanitization-ok: illustrative example value, not a real address
+            {"user_id": "u1", "email": "reader@example.invalid"},
             rules,
             input_envelope_id=uuid4(),
             correlation_id=uuid4(),

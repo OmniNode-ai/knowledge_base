@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "OmniIntelligence Contract Package Specification"
-topics:
-  - omniintelligence
-  - contract-yaml
-  - event-bus
-  - auto-wiring
+topics: [contracts, packaging, bus]
 refs:
   - reference/omniintelligence-event-surface.md
 ---

@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "Service Ownership & Boundaries"
-topics: ["omniclaude", "service-boundaries", "omniintelligence"]
+topics: [agent-integrations]
 refs: []
 ---
 
@@ -962,7 +962,6 @@ curl ${QDRANT_URL}/collections/code_patterns | jq '.result.points_count'
 ## Related Documentation
 
 - **Shared Infrastructure**: `~/.claude/CLAUDE.md` (PostgreSQL, Kafka, remote server topology)
-- **omniclaude Architecture**: `$OMNI_HOME/omniclaude/CLAUDE.md` (agents, routing, manifest injection)
 - **Event-Driven Routing**: `docs/architecture/EVENT_DRIVEN_ROUTING_PROPOSAL.md`
 - **Agent Traceability**: `docs/observability/AGENT_TRACEABILITY.md`
 

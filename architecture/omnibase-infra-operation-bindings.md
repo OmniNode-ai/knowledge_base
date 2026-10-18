@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Operation Bindings: Declarative Handler Parameter Resolution"
-topics: [omnibase-infra, operation, bindings]
+topics: [handlers, runtime]
 refs: []
 ---
 
@@ -380,7 +380,5 @@ operation_bindings:
 
 ## See Also
 
-- **Error Handling Patterns (internal knowledge base)** -- Error context and `BindingResolutionError`
 - **Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`)** -- Request tracing with `correlation_id`
 - **Operation Routing (`../architecture/omnibase-infra-operation-routing.md`)** -- Contract-driven operation dispatch
-- **Dispatcher Resilience (internal knowledge base)** -- Dispatcher-owned resilience patterns

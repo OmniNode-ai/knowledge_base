@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "OmniMemory Runtime Plugin System"
-topics:
-  - omnimemory
-  - runtime
-  - kafka
-  - plugin-lifecycle
+topics: [runtime, packaging, memory]
 refs:
   - architecture/omnimemory-four-node-architecture.md
   - architecture/omnimemory-arch-002-kafka-abstraction.md

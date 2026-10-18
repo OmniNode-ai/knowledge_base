@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Model Validation Demo: Support Ticket Classification"
-topics:
-  - omnibase-core
-  - model
-  - validation
-  - demo
+topics: [testing]
 refs: []
 ---
 

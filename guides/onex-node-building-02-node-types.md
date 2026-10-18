@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Node Types"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - types
+topics: [nodes]
 refs: []
 summary: "Introduces the four fundamental ONEX node types and the handler delegation pattern, where thin node shells leave business logic to handlers. Details each node type's allowed and forbidden outputs, with a decision matrix, flowchart, and service wrapper guidance. For readers learning which node type to use."
 ---

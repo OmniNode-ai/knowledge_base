@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Parallel Testing Architecture and Resource Management"
-topics:
-  - omnibase-core
-  - parallel
-  - testing
+topics: [testing]
 refs: []
 ---
 

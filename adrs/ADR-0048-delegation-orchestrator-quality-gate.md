@@ -4,7 +4,7 @@ status: accepted
 date: "2026-02-19"
 title: "ADR-0048: Local LLM Delegation with 2-Clean-Run Quality Gate"
 adr_id: ADR-0048
-topics: [omniclaude, delegation, quality-gate, local-llm]
+topics: [delegation, testing, agent-integrations]
 refs: []
 supersedes: []
 superseded_by: []

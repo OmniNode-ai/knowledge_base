@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Two Handler Systems in omnibase_infra"
-topics: [omnibase-infra, adr, two, handler]
+topics: [handlers, runtime]
 refs: []
 ---
 

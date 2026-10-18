@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "Snapshot Publishing Architecture"
-topics: [omnibase-infra, snapshot, publishing]
+topics: [runtime]
 refs: []
 ---
 

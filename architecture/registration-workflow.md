@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "REGISTRATION WORKFLOW"
-topics: [omnibase-infra, registration, workflow]
+topics: [runtime]
 refs: []
 ---
 

@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Pydantic Best Practices for ONEX"
-topics:
-  - omnibase-core
-  - pydantic
-  - best
-  - practices
+topics: [contracts]
 refs: []
 ---
 

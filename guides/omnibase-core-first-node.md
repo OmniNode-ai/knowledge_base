@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Build Your First Node"
-topics:
-  - omnibase-core
-  - first
-  - node
+topics: [nodes]
 refs: []
 ---
 

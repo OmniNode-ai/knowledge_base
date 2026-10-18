@@ -96,7 +96,7 @@ Cross-references in `refs:` must point to files that exist in this repository. T
 
 ### Your PR text is scanned, not just your files
 
-The `sanitize-text` job applies the same forbidden-pattern list to the PR title, the PR body, and every commit message in the PR. It does **not** honor the `# sanitization-ok:` marker, so a leak in PR text cannot be self-exempted.
+The `sanitize-text` job applies the same forbidden-pattern list to the PR title, the PR body, and every commit message in the PR. It does **not** honor author-written sanitization annotations, so a leak in PR text cannot be self-exempted.
 
 The practical consequence: **do not put an internal ticket identifier in a PR title, body, or commit message here.** This is a public repository and it deliberately carries no ticket references; linkage belongs in the internal tracker. A PR that names a ticket fails CI, and the fix is to remove the reference, never to work around the gate.
 
@@ -131,3 +131,7 @@ uv run pytest tests/ -v
 uv run ruff check scripts/ tests/
 uv run ruff format scripts/ tests/
 ```
+
+## Topic vocabulary
+
+Use at most three relevant product concepts from the frontmatter schema. The controlled topics are: `overview`, `architecture`, `delegation`, `contracts`, `nodes`, `handlers`, `runtime`, `bus`, `projections`, `replay`, `configuration`, `security`, `self-hosting`, `cloud-api`, `dashboard`, `testing`, `evidence`, `governance`, `packaging`, `observability`, `memory`, `agent-integrations`. Filename fragments and workstream codes are not topics. The validator refuses unknown topics and the generated topic index reads these authored tags.

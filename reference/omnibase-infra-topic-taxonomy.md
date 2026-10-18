@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Infrastructure Topic Taxonomy"
-topics: [omnibase-infra, topic, taxonomy]
+topics: [bus, runtime]
 refs: []
 ---
 
@@ -216,7 +216,6 @@ assert not result.is_valid  # True — missing onex prefix and kind
 
 | Topic | Document |
 |-------|----------|
-| Terminology (topic suffix vs. full topic) | ONEX_TERMINOLOGY.md (internal knowledge base) |
 | E2E infrastructure (topic provisioning in tests) | ../testing/INTEGRATION_TESTING.md |
 | Topic source file | `src/omnibase_infra/topics/platform_topic_suffixes.py` |
 | Topic spec model | `src/omnibase_infra/topics/model_topic_spec.py` |

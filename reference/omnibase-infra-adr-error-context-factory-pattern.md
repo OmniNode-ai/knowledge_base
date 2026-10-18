@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Error Context Factory Pattern with `with_correlation`"
-topics: [omnibase-infra, adr, error, context]
+topics: [runtime]
 refs: []
 ---
 

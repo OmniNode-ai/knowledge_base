@@ -3,14 +3,14 @@ type: architecture
 status: deprecated
 date: "2026-06-20"
 title: "(historical) Delegation Bridge Architecture, Hook-Driven"
-topics: ["omniclaude", "delegation", "local-llm"]
+topics: [delegation, agent-integrations]
 refs: []
 summary: "Historical. Describes a hook-driven delegation bridge that is no longer wired. For current delegation read Delegation Dispatch Architecture and Delegation Routing Contract."
 ---
 
 # (historical) Delegation Bridge Architecture, Hook-Driven
 
-> **Deprecated: the bridge described here is not wired.** For how delegation works today, read [Delegation Dispatch Architecture](delegation-dispatch.md) and [Delegation Routing Contract](delegation-routing-contract.md); to run it, follow the [quickstart](../guides/onex-plugin-quickstart.md).
+> **Deprecated: the bridge described here is not wired.** For how delegation works today, read [Delegation Dispatch Architecture](delegation-dispatch.md) and [Delegation Routing Contract](delegation-routing-contract.md); to run it, follow the [quickstart](../guides/delegation-quickstart.md).
 
 **Key changes**: delegation flags removed (unconditional bridge), bridge wired, topic alignment, bridge handler removed, dead bridge invocation removed from `user-prompt-submit.sh`
 

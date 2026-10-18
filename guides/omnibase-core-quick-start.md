@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Quick Start Guide"
-topics:
-  - omnibase-core
-  - quick
-  - start
+topics: [architecture]
 refs: []
 ---
 

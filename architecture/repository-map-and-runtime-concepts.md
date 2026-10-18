@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-28"
 title: "Repository Map and Runtime Concepts"
-topics: [omnibase-core, omnibase-spi, omnibase-infra, omnibase-compat, runtime, overview]
+topics: [runtime, overview, packaging]
 refs: []
 ---
 
@@ -53,10 +53,10 @@ omnibase_compat  ->  omnibase_core  ->  omnibase_spi  ->  omnibase_infra
 
 | Package | Owns | Must not own |
 |---|---|---|
-| `omnibase_compat` | Wire DTOs, enums, and primitives shared across repositories. Zero upstream runtime dependencies. | Business logic, persistence, implementation adapters. It is a staging area with expiry discipline, not a permanent home. |
-| `omnibase_core` | The platform vocabulary: domain models, the four node archetypes, contract resolution, validators, the command-line surface. | Transport libraries. A build-time guard rejects any core module importing a transport client. |
-| `omnibase_spi` | Runtime-checkable protocol definitions — the interfaces implementations must satisfy. Imports core for the model types those signatures mention. | Implementations, and any import of the implementation layer. |
-| `omnibase_infra` | Concrete implementations: the event bus, the runtime host, persistence, the dispatch path, and a large node population. | Nothing below it may import it. |
+| [`omnibase_compat`](https://github.com/OmniNode-ai/omnibase_compat) | Wire DTOs, enums, and primitives shared across repositories. Zero upstream runtime dependencies. | Business logic, persistence, implementation adapters. It is a staging area with expiry discipline, not a permanent home. |
+| [`omnibase_core`](https://github.com/OmniNode-ai/omnibase_core) | The platform vocabulary: domain models, the four node archetypes, contract resolution, validators, the command-line surface. | Transport libraries. A build-time guard rejects any core module importing a transport client. |
+| [`omnibase_spi`](https://github.com/OmniNode-ai/omnibase_spi) | Runtime-checkable protocol definitions — the interfaces implementations must satisfy. Imports core for the model types those signatures mention. | Implementations, and any import of the implementation layer. |
+| [`omnibase_infra`](https://github.com/OmniNode-ai/omnibase_infra) | Concrete implementations: the event bus, the runtime host, persistence, the dispatch path, and a large node population. | Nothing below it may import it. |
 
 Two properties make this checkable rather than aspirational:
 
@@ -73,18 +73,15 @@ Above the substrate sit the repositories carrying product behaviour. These are n
 
 | Repository | Owns | Connects by |
 |---|---|---|
-| `omnimarket` | Marketplace and product logic. The largest node population on the platform — routing, delegation, classification, evaluation, and the capability catalogue. | Consumes core models and spi protocols; runs on the infra runtime; reached over the bus. |
-| `omniclaude` | The coding-agent boundary: thin shims, hooks, and agent-facing contracts. | Shims dispatch to nodes. Business logic does not accumulate here — it belongs in the node that owns the capability. |
-| `omniintelligence` | Intelligence capabilities: intent, drift, and review nodes. | Nodes on the bus, like any other node population. |
-| `omnimemory` | Document ingestion and semantic retrieval. | Nodes on the bus; provider integrations sit behind protocol-shaped adapters. |
-| `omnidash` | The dashboard — a composable widget surface. | Renders **projections**. User interface only. |
-| `omniweb` | The public web property. | Independent of the runtime data path. |
-| `onex_change_control` | Governance and drift detection — the evidence authority. | Nothing depends on it. Shapes it needs are relocated to their proper home rather than imported back out of it. |
+| [`omnimarket`](https://github.com/OmniNode-ai/omnimarket) | Marketplace and product logic. The largest node population on the platform — routing, delegation, classification, evaluation, and the capability catalogue. | Consumes core models and spi protocols; runs on the infra runtime; reached over the bus. |
+| [`omniclaude`](https://github.com/OmniNode-ai/omniclaude) | The coding-agent boundary: thin shims, hooks, and agent-facing contracts. | Shims dispatch to nodes. Business logic does not accumulate here — it belongs in the node that owns the capability. |
+| [`omniintelligence`](https://github.com/OmniNode-ai/omniintelligence) | Intelligence capabilities: intent, drift, and review nodes. | Nodes on the bus, like any other node population. |
+| [`omnimemory`](https://github.com/OmniNode-ai/omnimemory) | Document ingestion and semantic retrieval. | Nodes on the bus; provider integrations sit behind protocol-shaped adapters. |
+| [`omnidash`](https://github.com/OmniNode-ai/omnidash) | The dashboard — a composable widget surface. | Renders **projections**. User interface only. |
 
 Two rules about this tier are worth stating explicitly, because both are frequently violated by newcomers:
 
 - **`omniclaude` is shims and contracts only.** A shim that grows a decision tree has taken ownership of logic belonging in a node. Reusable capability moves out.
-- **Nothing depends on `onex_change_control`.** It observes and records; it is not a library.
 
 ### Where a new artifact belongs
 
@@ -217,3 +214,7 @@ A reader who has absorbed this document can, without assistance:
 - Write the canonical handler signature and say what the shared runtime adapter is responsible for.
 - Explain why two repositories that never import each other still exchange messages at runtime.
 - Given a field missing from the dashboard, name the layer to investigate first.
+
+## Published packages
+
+The local delegation install uses [omnibase-core](https://pypi.org/project/omnibase-core/) and [omnimarket](https://pypi.org/project/omnimarket/). Follow the [quickstart](../guides/delegation-quickstart.md) for the supported installation command.

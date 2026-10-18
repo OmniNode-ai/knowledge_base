@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Effect Timeout Behavior"
-topics:
-  - omnibase-core
-  - effect
-  - timeout
-  - behavior
+topics: [architecture]
 refs: []
 ---
 

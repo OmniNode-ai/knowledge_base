@@ -3,14 +3,7 @@ type: guide
 status: current
 date: "2026-08-26"
 title: "Combining Deployment Tiers"
-topics:
-  - getting-started
-  - local
-  - self-hosting
-  - cloud
-  - event-bus
-  - runtime
-  - configuration
+topics: [self-hosting, runtime, configuration]
 refs:
   - guides/getting-started-local.md
   - guides/getting-started-self-hosted.md

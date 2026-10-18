@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Models API Reference - omnibase_core"
-topics:
-  - omnibase-core
-  - api
-  - models
+topics: [architecture]
 refs: []
 ---
 
@@ -147,7 +144,7 @@ from omnibase_core.models.reducer.model_intent import ModelIntent
 intent = ModelIntent(
     intent_type="emit_event",
     target="user.created",
-    payload={"user_id": "123", "email": "user@example.com"},  # sanitization-ok: illustrative example value, not a real address
+    payload={"user_id": "123", "email": "reader@example.invalid"},
     priority=5
 )
 ```

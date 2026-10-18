@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-08-26"
 title: "OmniDash Development Guide"
-topics: [omnidash, development, storybook, widgets, data-source, how-to]
+topics: [dashboard]
 refs: [architecture/omnidash-composable-frame.md, reference/omnidash-component-manifest.md, reference/omnidash-dashboard-definition.md]
 ---
 

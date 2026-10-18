@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Creating Mixins - Step-by-Step Guide"
-topics:
-  - omnibase-core
-  - mixin
-  - development
-  - creating
-  - mixins
+topics: [architecture]
 refs: []
 ---
 

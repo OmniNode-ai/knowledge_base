@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "ONEX Performance Testing Suite"
-topics:
-  - omnibase-core
-  - performance
-  - benchmarks
+topics: [testing]
 refs: []
 ---
 

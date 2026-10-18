@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Validation Orchestrator — Activation Guide"
-topics: [omnibase-infra, validation, orchestrator, activation]
+topics: [nodes, testing, runtime]
 refs: []
 ---
 

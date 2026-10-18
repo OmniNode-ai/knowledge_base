@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Approved Union Patterns for ONEX Development"
-topics:
-  - omnibase-core
-  - approved
-  - union
-  - patterns
+topics: [architecture]
 refs: []
 ---
 

@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Golden-Chain Harness — Authoring Guide"
-topics:
-  - omnibase-core
-  - golden
-  - chain
-  - harness
+topics: [architecture]
 refs: []
 ---
 

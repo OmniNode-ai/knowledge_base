@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-24"
 title: "ADR-0039: Dashboard Typography System — Tokens Plus Typed Primitives"
 adr_id: ADR-0039
-topics: [omnidash, typography, design-system, eslint, storybook]
+topics: [contracts, dashboard]
 refs: [adrs/ADR-0040-omnidash-storybook-widget-coverage.md, reference/omnidash-typography-primitives.md]
 supersedes: []
 superseded_by: []

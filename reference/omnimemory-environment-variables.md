@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniMemory Environment Variables"
-topics:
-  - omnimemory
-  - configuration
-  - environment-variables
-  - pydantic-settings
+topics: [configuration, memory, contracts]
 refs:
   - reference/omnimemory-runtime-plugins.md
   - reference/omnimemory-memory-data-ownership.md

@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "OmniMarket Cursor Adapter"
-topics:
-  - omnimarket
-  - adapters
-  - cursor
+topics: [projections, agent-integrations]
 refs: []
 ---
 

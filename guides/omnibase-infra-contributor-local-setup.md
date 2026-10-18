@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Contributor Local Setup"
-topics: [omnibase-infra, contributor, local, setup]
+topics: [runtime]
 refs: []
 ---
 

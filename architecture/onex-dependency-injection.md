@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Dependency Injection"
-topics:
-  - omnibase-core
-  - dependency
-  - injection
+topics: [packaging]
 refs: []
 ---
 

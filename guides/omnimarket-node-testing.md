@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "OmniMarket Node Testing"
-topics:
-  - omnimarket
-  - testing
-  - onex-runtime
+topics: [nodes, testing, runtime]
 refs: []
 ---
 

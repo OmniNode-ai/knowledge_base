@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "What is a Node?"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - what
-  - is
+topics: [nodes]
 refs: []
 ---
 

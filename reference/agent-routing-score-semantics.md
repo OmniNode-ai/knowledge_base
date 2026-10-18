@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-01"
 title: "Agent Routing Score Semantics"
-topics: [omniclaude, agent-routing, scoring, trigger-matching]
+topics: [agent-integrations]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Custom `__bool__` for Result Models"
-topics: [omnibase-infra, adr, custom, bool]
+topics: [runtime]
 refs: []
 ---
 

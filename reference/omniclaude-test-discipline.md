@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-06-24"
 title: "Test Discipline"
-topics: ["omniclaude", "testing", "standards"]
+topics: [testing, agent-integrations]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-30"
 title: "Supported Platforms"
-topics: [install, platforms, macos, intel, quickstart]
+topics: [overview]
 refs: []
 ---
 
@@ -59,7 +59,7 @@ with `rustup could not choose a version of cargo`.
 
 The first install compiles `cryptography` and takes several minutes longer than on other
 platforms; later installs and upgrades reuse the result. It ends with the same `Installed`
-line described in the [quickstart](onex-plugin-quickstart.md), and `onex --version` works.
+line described in the [quickstart](delegation-quickstart.md), and `onex --version` works.
 
 The `install.sh` installer detects an Intel Mac before it clones or installs anything. It
 prints this path, checks for the three prerequisites, sets `OPENSSL_DIR` for you, and stops

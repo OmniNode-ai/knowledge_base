@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "OmniMarket Codex Adapter"
-topics:
-  - omnimarket
-  - adapters
-  - codex
+topics: [agent-integrations]
 refs: []
 ---
 
@@ -96,7 +93,7 @@ uv run python scripts/install_codex_skills.py --source marketplace --force
    implementation in the skill layer.
 4. **Runtime targeting** - Preserve an optional `runtime://...` address on the
    adapter command so the runtime layer can route work to a concrete runtime
-   without treating a lane such as stability-test as a special flag.
+   without baking a deployment-specific target into the adapter.
 5. **Response handling** - Prefer `output_payloads[0]` for the business result
    and fall back to `dispatch_result` when the handler did not emit a typed
    output payload.

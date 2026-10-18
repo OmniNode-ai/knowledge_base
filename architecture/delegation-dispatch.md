@@ -3,17 +3,14 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "Delegation Dispatch Architecture"
-topics:
-  - omnimarket
-  - delegation
-  - llm-routing
+topics: [delegation, handlers]
 refs:
   - architecture/delegation-routing-contract.md
 ---
 
 # Delegation Dispatch Architecture
 
-> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. The escalation tier ladder below was corrected during migration: the source document described a 3-tier ladder (`local` / `cheap_cloud` / `frontier_api`) ending in Claude Sonnet and Claude Haiku backends. Both Anthropic backends were removed from the live routing contract before this migration — the org holds no Anthropic API key (Claude Code access is OAuth-only), so `resolve_api_key('llm.anthropic.api_key')` returns `None` in every lane and the tier terminated `no_routable_backend_for_task` on every escalation. The live ladder is 4 tiers, confirmed against `src/omnimarket/configs/routing_tiers.yaml`.
+> **Public interface review: 2026-10-18.** Customers supply their own model endpoints and provider keys (BYOK). Backend identities, credentials and availability are deployment configuration, not platform-wide facts.
 
 OmniMarket's delegation path routes a caller's prompt to the cheapest capable
 backend and escalates automatically when quality gates fail.
@@ -72,10 +69,10 @@ When a quality gate fails the orchestrator emits a
 `onex.evt.omnimarket.delegation-escalation-requested.v1` event. The escalation
 path tries tiers in the order defined by `routing_tiers.yaml`, cheapest first:
 
-1. `local` tier — vLLM/SGLang models on the local inference server (`<onex-host>`), zero marginal API cost
+1. `local` tier — vLLM/SGLang models on your configured inference server , no provider API charge for a local endpoint; operating costs still apply
 2. `cheap_cloud` tier — metered hosted APIs (Gemini Flash/Pro via Google AI Studio and Vertex)
-3. `cheap_frontier` tier — a free-tier frontier-quality model via OpenRouter (Qwen3-Coder-480B), when `OPENROUTER_API_KEY` is configured; sits between `cheap_cloud` and the ceiling to offer frontier-quality output at zero marginal cost
-4. `claude` tier — the ceiling slot. Every task class's `escalation_policy.tier_order` and the handler's cost-tier map key on the literal tier name `claude`, but this is a stable slot identifier, not a provider claim — the org has no Anthropic key, so the ceiling backend is whichever HTTP frontier backend (Gemini, GLM, or an OpenRouter model) is currently proven reachable. `routing_tiers.yaml`'s own changelog comments record each repoint and why the prior backend was dropped; read that file for the current pin rather than treating any provider name here as fixed.
+3. `cheap_frontier` tier — a configured frontier backend via OpenRouter, when `OPENROUTER_API_KEY` is configured; sits between `cheap_cloud` and the ceiling to offer frontier-quality output at the customer's configured provider price
+4. `claude` — a historical ceiling-slot identifier, not a fixed provider. The configured backend determines the provider and uses the customer's credential. Read the routing contract for the selected backend, not deployment-specific account history.
 
 Each tier is attempted at most once. If all tiers are exhausted without a
 passing quality gate the orchestrator emits

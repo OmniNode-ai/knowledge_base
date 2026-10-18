@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Mixin Development Best Practices"
-topics:
-  - omnibase-core
-  - mixin
-  - development
-  - best
-  - practices
+topics: [architecture]
 refs: []
 ---
 

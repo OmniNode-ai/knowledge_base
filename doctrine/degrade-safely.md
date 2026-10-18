@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Degrade Safely"
-topics: [failure-handling]
+topics: [architecture]
 refs: [doctrine/fail-fast-and-loud.md, doctrine/authoritative-projections-own-truth.md]
 ---
 

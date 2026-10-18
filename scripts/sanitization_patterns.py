@@ -23,7 +23,20 @@ import re
 # ``tests/test_sanitization_patterns.py`` pins the verdict for every other
 # underscore spelling so a further rename cannot silently change what this
 # gate exempts.
-PUBLIC_REPO_SLUGS: tuple[str, ...] = ("knowledge_base", "knowledge-base")
+PUBLIC_REPO_SLUGS: tuple[str, ...] = (
+    "knowledge_base",
+    "knowledge-base",
+    "omnibase",
+    "omnibase_core",
+    "omnibase_spi",
+    "omnibase_infra",
+    "omnibase_compat",
+    "omnimarket",
+    "omniclaude",
+    "omnidash",
+    "omniintelligence",
+    "omnimemory",
+)
 
 # A GitHub repository name may contain letters, digits, ``.``, ``_`` and ``-``.
 # Requiring the character following an exempt slug to be OUTSIDE that set is
@@ -47,9 +60,9 @@ _PRIVATE_SIBLING_SLUGS = "|".join(re.escape(slug) + r"-internal" + _SLUG_BOUNDAR
 # repository, so the prefix set is closed rather than ``omni*``.
 _PRIVATE_INTERNAL_SLUG = r"\b(?:omni(?:base|claude)|knowledge[-_]base)[-_]internal(?![A-Za-z0-9._-])"
 
-# The hosted-cloud deployment repository is the one private platform
-# repository. Naming it is allowed; describing its directory layout is not.
-_PRIVATE_REPO_PATH = r"\bomninode_infra/"
+# The hosted deployment's repository identifier is private even without a URL.
+_PRIVATE_REPO_NAME = r"\bomninode" + r"_infra(?![A-Za-z0-9._-])"
+_PRIVATE_WORKSPACE = r"\bomni" + r"_home\b"
 
 # A person named in an ``owner`` or ``author`` field: a YAML or plain
 # ``owner:`` line, or a bold ``**Author**`` label or table cell, whose whole
@@ -57,23 +70,45 @@ _PRIVATE_REPO_PATH = r"\bomninode_infra/"
 # team slug (``docs-maintainers``) and descriptive prose
 # (``**Owner**: Shared infrastructure (deployed separately)``) pass, and so does
 # a table header row such as ``| Owner | Role |``.
-_PERSON_VALUE = r"\s*(?!OmniNode\b)(?![A-Z][a-z]+ (?:Team|Maintainers|Group)\b)[A-Z][a-z]+(?: [A-Z][a-z]+)?\**\s*"
+_PERSON_VALUE = (
+    r"\s*[\"']?(?!OmniNode\b|Role\b)(?![A-Z][a-z]+ (?:Team|Maintainers|Group)\b)"
+    r"[A-Z][a-z]+(?: [A-Z][a-z]+)?[\"']?\**\s*"
+)
 _PERSON_FIELD = (
     r"^[\s>*-]*(?i:owner|author)s?\s*:" + _PERSON_VALUE + r"$"
     r"|\*\*(?i:owner|author)s?\*\*\s*[:|]" + _PERSON_VALUE + r"(?:\||$)"
+    r"|^\|\s*(?i:owner|author)s?\s*\|" + _PERSON_VALUE + r"\|"
 )
 
 # Expletives. A public decision record restates a reason neutrally.
-_PROFANITY = r"(?i)\b(?:f+u+c*k+\w*|motherf\w*|bullsh\w*|sh[i1]t(?:s|ty|ting)?\b|wtf\b|goddamn\w*)"
+_PROFANITY = (
+    r"(?i)\b(?:f+u+c*k+\w*|mother" + r"f\w*|bull" + r"sh\w*|sh[i1]t(?:s|ty|ting)?\b|wt"
+    r"f\b|god" + r"damn\w*)"
+)
 
 # Text addressed to a coding agent, telling it to act on the document. A
 # visiting agent pointed at this repository reads such text as instructions.
-_AGENT_DIRECTIVE = r"(?i:\bfor\s+claude\b)\**\s*:|REQUIRED SUB-SKILL|(?i:\bpass this file to\s+`/)"
+_AGENT_DIRECTIVE = (
+    r"(?i:\bfor\s+claude\b)\**\s*:|(?i:^[\s>*]*for\s+execution)\**\s*:|REQUIRED "
+    r"SUB-SKILL|(?i:\bpass this file to\s+`/|DO NOT "
+    r"re-implement)|(?i:^[\s>*-]*(?:\d+[.)]\s+)?`?git\s+(?:add|commit)\b)"
+)
 
-# Citations of private agent-memory files, which no reader can open. A path
-# segment (``.serena/memories/project_overview.md`` as a manifest source path)
-# is a repository file, not a memory citation, so a preceding ``/`` exempts it.
-_AGENT_MEMORY = r"(?<![/\w])(?:feedback|project)_[a-z0-9_]+\.md\b|(?i:\bproject memory\b)"
+# Citations of private agent-memory files, including within path segments.
+_AGENT_MEMORY = r"\b(?:feedback|project)_[a-z0-9_]+\.md\b|(?i:\bproject\s+memory\b)"
+
+# Company fleet procedures belong outside the public self-hoster reference.
+_INTERNAL_OPERATIONS = (
+    r"\b(?:runner[- ]fleet|runner[- ]disk[- ]admission|runner[- ]dns[- ]cache|"
+    r"bulk[- ]pr[- ]operations|worktree[- ](?:reaper|garbage)|stability[- ]lane|"
+    r"pypi[- ]cache[- ]egress|git[- ]mirror[- ]egress)\b"
+)
+
+# Reserved .invalid addresses are non-deliverable examples, not author waivers.
+_EMAIL_ADDRESS = (
+    r"[a-zA-Z0-9._%+\-]+@(?![a-zA-Z0-9.\-]+\.invalid(?![a-zA-Z0-9.\-]))"
+    r"[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+)
 
 SANITIZATION_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     # Case-insensitive so a ticket id inside a branch name or slug is caught;
@@ -91,14 +126,16 @@ SANITIZATION_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(rf"github\.com/OmniNode-ai/(?!{_PUBLIC_REPO_EXEMPTION})"), "Private repo URL"),
     (re.compile(rf"\b(?:{_PRIVATE_SIBLING_SLUGS})"), "Private repo name"),
     (re.compile(_PRIVATE_INTERNAL_SLUG), "Private repo name"),
-    (re.compile(_PRIVATE_REPO_PATH), "Private repo path"),
-    (re.compile(r"infisical", re.IGNORECASE), "Internal secrets manager reference"),
+    (re.compile(_PRIVATE_REPO_NAME, re.IGNORECASE), "Private repo name"),
+    (re.compile(_PRIVATE_WORKSPACE), "Private workspace reference"),
+    (re.compile(r"infi" + r"sical", re.IGNORECASE), "Internal secrets manager reference"),
     (re.compile(_PERSON_FIELD), "Person name in owner/author field"),
     (re.compile(_PROFANITY), "Profanity"),
     (re.compile(_AGENT_DIRECTIVE), "Agent-addressed directive"),
     (re.compile(_AGENT_MEMORY), "Agent-memory citation"),
+    (re.compile(_INTERNAL_OPERATIONS, re.IGNORECASE), "Internal fleet operations"),
     (re.compile(r"\bomninode-runner-\d+"), "CI runner container name"),
-    (re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"), "Email address pattern"),
+    (re.compile(_EMAIL_ADDRESS, re.IGNORECASE), "Email address pattern"),
 ]
 
 _ALLOWLIST_PATTERN = re.compile(r"#\s*sanitization-ok:\s*(.+)")

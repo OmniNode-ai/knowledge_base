@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-07-31"
 title: "Apply Migrations Runbook"
-topics: [omnibase-infra, apply, migrations]
+topics: [self-hosting, runtime]
 refs: []
 ---
 
@@ -37,9 +37,7 @@ Connect to the database and inspect what has already been applied:
 # Connect to DB
 source ~/.omnibase/.env
 psql -h localhost -p 5436 -U postgres -d omnibase_infra
-```
-
-```sql
+sql
 -- List all applied migrations in order
 SELECT migration_id, source_set, applied_at
 FROM schema_migrations
@@ -142,10 +140,6 @@ python scripts/check_schema_fingerprint.py stamp
 
 Commit the updated `docker/migrations/schema_fingerprint.sha256` artifact:
 
-```bash
-git add docker/migrations/schema_fingerprint.sha256
-git commit -m "chore: restamp schema fingerprint"
-```
 
 ## Emergency Rollback
 

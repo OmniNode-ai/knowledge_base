@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Standalone Quickstart"
-topics: [omnibase-infra, standalone, quickstart]
+topics: [overview, runtime]
 refs: []
 ---
 

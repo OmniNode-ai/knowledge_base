@@ -3,9 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Testing Guide - omnibase_core"
-topics:
-  - omnibase-core
-  - testing
+topics: [testing]
 refs: []
 ---
 

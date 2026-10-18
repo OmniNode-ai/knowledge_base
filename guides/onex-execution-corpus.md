@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Execution Corpus Guide"
-topics:
-  - omnibase-core
-  - execution
-  - corpus
+topics: [architecture]
 refs: []
 ---
 

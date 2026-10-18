@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-010: OmniBase Infra Owns Authoritative Environment Topology"
-topics: [omnibase-infra, adr, authoritative, environment]
+topics: [configuration, runtime]
 refs: []
 ---
 
@@ -24,7 +24,7 @@ Accepted
 the tracking ticket requires one checked-in, secret-free authority for application-database
 topology. `omnibase_infra` already owns the typed Docker service catalog and its
 generator, ships the runtime topology consumer package, and directly consumes
-`omnibase_core.models.core.ModelDeploymentTopology`. `omninode_infra` owns Kubernetes
+`omnibase_core.models.core.ModelDeploymentTopology`. The hosted-cloud deployment repository (private) owns Kubernetes
 manifests, but those manifests are deployment projections and must not become a second
 database-semantics registry. Host-local `~/.omnibase/topology.yaml` is mutable setup
 state and cannot be platform authority.

@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Event Registry"
-topics:
-  - omnimarket
-  - events
-  - kafka
+topics: [bus]
 refs: []
 ---
 

@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Payload Type Architecture"
-topics:
-  - omnibase-core
-  - payload
-  - type
-  - architecture
+topics: [contracts, architecture]
 refs: []
 summary: "Records the v0.4.0 breaking change that removes dict payloads from models such as ModelIntent and ModelAction in favor of typed payload models. Covers the decision and rationale, payload factory functions, discriminator naming, migration strategy, and examples. For developers migrating payload code to typed models."
 ---

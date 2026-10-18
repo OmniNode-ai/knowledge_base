@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Pipeline Runner and Hook Registry Guide"
-topics:
-  - omnibase-core
-  - pipeline
-  - hook
-  - registry
+topics: [agent-integrations]
 refs: []
 summary: "Documents the Pipeline Runner and Hook Registry, a declarative system that executes hooks in canonical phase order with dependency management, priority ordering, type validation, and thread safety. Includes a quick start, API reference, testing patterns, and troubleshooting. For developers extending pipeline execution with hooks."
 ---

@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Authoritative Projections Own Truth"
-topics: [projection-authority]
+topics: [projections, governance]
 refs:
   - doctrine/state-is-materialized-projection.md
   - doctrine/cursors-represent-projection-progress.md

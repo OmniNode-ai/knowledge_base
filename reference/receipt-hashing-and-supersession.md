@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "DoD Receipt Hashing, Append-Only, and Supersession"
-topics: [dod-receipts, append-only, supersession, contract-hashing, occ]
+topics: [evidence, contracts, governance]
 refs: []
 ---
 

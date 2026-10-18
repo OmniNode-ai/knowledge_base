@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Glossary"
-topics:
-  - omnibase_spi
-  - glossary
-  - terminology
+topics: [overview, governance]
 refs: []
 ---
 

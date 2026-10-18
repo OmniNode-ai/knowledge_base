@@ -33,6 +33,18 @@ _ORG = "github.com/OmniNode-ai"
 # synthetic name.
 _HYPHEN_INTERNAL = "knowledge-base" + "-internal"
 _UNDERSCORE_INTERNAL = "knowledge_base" + "_internal"
+_PUBLIC_PRODUCTS = {
+    "omnibase",
+    "omnibase_core",
+    "omnibase_spi",
+    "omnibase_infra",
+    "omnibase_compat",
+    "omnimarket",
+    "omniclaude",
+    "omnidash",
+    "omniintelligence",
+    "omnimemory",
+}
 
 
 def _blocks(text: str) -> bool:
@@ -78,6 +90,11 @@ class TestPublicRepoUrlsPass:
                 "compiled exemption does not actually exempt it"
             )
 
+    @pytest.mark.parametrize("slug", sorted(_PUBLIC_PRODUCTS))
+    def test_public_product_source_is_linkable(self, slug: str) -> None:
+        assert not _blocks(f"https://{_ORG}/{slug}")
+        assert _blocks(f"https://{_ORG}/{slug}-example-internal")
+
 
 class TestPrivateRepoUrlsBlock:
     """Negative direction: the defect this module exists to pin."""
@@ -105,7 +122,7 @@ class TestPrivateRepoUrlsBlock:
 
     @pytest.mark.parametrize(
         "slug",
-        ["omnibase_core", "omnibase_infra", "omniclaude", "omniweb", "onex_change_control"],
+        ["example-internal", "example-person", "unknown-product"],
     )
     def test_other_org_repositories_remain_blocked(self, slug: str) -> None:
         """The fix must not widen the exemption to the rest of the org."""
@@ -135,8 +152,8 @@ class TestUnderscoreSpellingVerdictsArePinned:
             f"{slug!r} is not a declared public slug, so it must block"
         )
 
-    def test_only_the_two_public_spellings_are_in_the_allowlist(self) -> None:
-        assert set(PUBLIC_REPO_SLUGS) == {"knowledge_base", "knowledge-base"}
+    def test_only_verified_public_spellings_are_in_the_allowlist(self) -> None:
+        assert set(PUBLIC_REPO_SLUGS) == {"knowledge_base", "knowledge-base"} | _PUBLIC_PRODUCTS
 
 
 class TestGateEntrypointReportsThePrivateRepoRule:

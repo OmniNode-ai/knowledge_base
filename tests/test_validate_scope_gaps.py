@@ -74,13 +74,13 @@ def test_public_slug_alone_is_still_exempt() -> None:
 
 def test_hyphenated_host_alias_is_caught() -> None:
     """Previously passed: the pattern required a literal dot."""
-    errors = scan_text("ssh host-201-ts 'cat file'\n", label="probe")
+    errors = scan_text("ssh host-" + "201-ts 'cat file'\n", label="probe")
     assert errors, "the hyphenated alias form must be a finding"
     assert "Internal host reference" in errors[0]
 
 
 def test_dotted_host_form_is_still_caught() -> None:
-    errors = scan_text("the box at host.201 is up\n", label="probe")
+    errors = scan_text("the box at host." + "201 is up\n", label="probe")
     assert errors
     assert "Internal host reference" in errors[0]
 

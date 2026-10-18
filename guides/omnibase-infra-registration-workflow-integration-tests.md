@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Registration Workflow Integration Tests"
-topics: [omnibase-infra, registration, workflow, integration]
+topics: [runtime, testing]
 refs: []
 ---
 

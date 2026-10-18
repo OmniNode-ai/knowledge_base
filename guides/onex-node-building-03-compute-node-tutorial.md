@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "COMPUTE Node Tutorial"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - compute
-  - tutorial
+topics: [nodes]
 refs: []
 ---
 

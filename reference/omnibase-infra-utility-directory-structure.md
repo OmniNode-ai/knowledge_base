@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Utility Directory Structure"
-topics: [omnibase-infra, utility, directory, structure]
+topics: [runtime]
 refs: []
 ---
 
@@ -193,6 +193,5 @@ from omnibase_infra.shared.utils import sanitize_error_message  # DEPRECATED
 
 ## Related
 
-- Error Sanitization Patterns (internal knowledge base) - Uses `util_error_sanitization`
 - Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`) - Uses `correlation.py`
 - Container Dependency Injection (`../architecture/omnibase-infra-container-dependency-injection.md`) - Service resolution patterns

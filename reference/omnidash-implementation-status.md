@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniDash Implementation Status"
-topics: [omnidash, widgets, data-sources, implementation-status]
+topics: [dashboard]
 refs: [reference/omnidash-component-manifest.md, reference/omnidash-dashboard-definition.md, architecture/omnidash-composable-frame.md]
 ---
 

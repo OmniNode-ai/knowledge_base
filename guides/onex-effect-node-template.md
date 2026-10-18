@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "EFFECT Node Template"
-topics:
-  - omnibase-core
-  - effect
-  - node
-  - template
+topics: [nodes]
 refs: []
 ---
 
@@ -426,7 +422,7 @@ class TestHandlerStorage:
 
         handler = HandlerStorage(db_client=mock_db)
         result = await handler.handle_store(
-            record={"user_id": "u1", "email": "a@b.com"},  # sanitization-ok: illustrative example value, not a real address
+            record={"user_id": "u1", "email": "reader@example.invalid"},
             input_envelope_id=uuid4(),
             correlation_id=uuid4(),
         )

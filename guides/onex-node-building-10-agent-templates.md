@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Agent Templates for ONEX Node Development"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - agent
-  - templates
+topics: [nodes, agent-integrations]
 refs: []
 summary: "Copy-paste-ready templates for NodeCompute, NodeEffect, NodeReducer, and NodeOrchestrator development, formatted to be machine-parseable with explicit parameters. Includes a node type selection matrix, validation checklists, common patterns, and error recovery guidance. For developers or agents scaffolding new nodes."
 ---

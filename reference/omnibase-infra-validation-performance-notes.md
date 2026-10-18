@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Validation Performance Notes"
-topics: [omnibase-infra, validation, performance, notes]
+topics: [testing, runtime]
 refs: []
 ---
 
@@ -488,7 +488,3 @@ Current validation performance is acceptable for infrastructure codebase size. F
 ---
 
 ## Next Steps
-
-- Validator Reference (internal knowledge base) - Detailed validator documentation
-- Framework Integration (internal knowledge base) - Integration patterns
-- Troubleshooting (internal knowledge base) - Performance troubleshooting

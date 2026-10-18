@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Operation Routing Pattern"
-topics: [omnibase-infra, operation, routing]
+topics: [runtime]
 refs: []
 ---
 
@@ -552,11 +552,7 @@ async def test_postgres_handler_failure():
 
 ## Related Patterns
 
-- Dispatcher Resilience (internal knowledge base) - Pattern for dispatcher-owned resilience
 - Circuit Breaker Implementation (`../guides/omnibase-infra-circuit-breaker-implementation.md`) - Circuit breaker state machine details
-- Error Handling Patterns (internal knowledge base) - Error classification and context
-- Error Sanitization Patterns (internal knowledge base) - Preventing credential exposure
-- Retry, Backoff, and Compensation (internal knowledge base) - Formal retry policies
 
 ## See Also
 

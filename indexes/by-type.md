@@ -50,30 +50,27 @@ Knowledge base artifacts grouped by type.
 - **[ADR-0028: Receipt Type Consolidation onto ModelDodReceipt](../adrs/ADR-0028-receipt-type-consolidation.md)** — accepted
 - **[ADR-0005: Dispatch Lifecycle Canonical Source](../adrs/ADR-0005-dispatch-lifecycle-canonical.md)** — accepted
 - **[ADR-0006: Skill Liveness Validator Home](../adrs/ADR-0006-skill-liveness-validator-home.md)** — accepted
-- **[ADR-0007: Canonical Skills Migration Plan](../adrs/ADR-0007-skills-canonical-plan.md)** — accepted
+- **[ADR-0007: Canonical Skills Migration Plan](../adrs/ADR-0007-skills-canonical-plan.md)** — deprecated
 - **[ADR-0041: BaselinesROICard Stays Bespoke, Outside the Generic Widget Primitives](../adrs/ADR-0041-omnidash-baselines-roi-card-stays-bespoke.md)** — accepted
-- **[ADR-0008: Delegation Config Authority and Budget-Aware Tier Cost](../adrs/ADR-0008-delegation-config-authority-and-budget-aware-tier-cost.md)** — proposed
-- **[ADR-0009: Complexity-Aware Delegation Routing](../adrs/ADR-0009-complexity-aware-delegation-routing.md)** — proposed
+- **[ADR-0008: Delegation configuration authority (historical)](../adrs/ADR-0008-delegation-config-authority-and-budget-aware-tier-cost.md)** — superseded
+- **[ADR-0009: Complexity-aware delegation routing (historical)](../adrs/ADR-0009-complexity-aware-delegation-routing.md)** — superseded
 - **[ADR-0042: Cross-Renderer Typed Empty-State Gate](../adrs/ADR-0042-omnidash-cross-renderer-typed-empty-state-gate.md)** — accepted
 - **[ADR-0043: Render Pydantic-Generated JSON Schema With Stock @rjsf, No Custom Field](../adrs/ADR-0043-omnidash-rjsf-discriminated-union-handling.md)** — accepted
 - **[ADR-0029: Model B — Failing-Rollup Validator Enforcement (pilot: omnibase_core)](../adrs/ADR-0029-model-b-failing-rollup-validator-enforcement.md)** — accepted
-- **[ADR-0025: OCC Validator Redesign = Option A (Per-Entry Hashing + Append-Only + Supersession/Tombstones)](../adrs/ADR-0025-occ-validator-redesign-option-a.md)** — proposed
-- **[ADR-0018: Delegation Ladder Acceptance = Escalating-Complexity Graded Benchmark, Local Floor to Paid-Cloud Ceiling](../adrs/ADR-0018-delegation-graded-benchmark-ladder.md)** — proposed
-- **[ADR-0011: Name the Discipline RSD = Recursive System Design](../adrs/ADR-0011-rsd-recursive-system-design-naming.md)** — proposed
-- **[ADR-0012: Seams Are First-Class — Seam-Tests-First, Tree-Shaped PRs, Seam-Scoped Testing](../adrs/ADR-0012-seams-first-class.md)** — proposed
-- **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** — proposed
-- **[ADR-0014: Factory Economics — Frontier Fissions, Locals Build, Regenerate-Don't-Debug](../adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** — proposed
-- **[ADR-0015: Steel Onslaught Live Play Is LLM-Driven and Non-Deterministic](../adrs/ADR-0015-steel-live-play-non-deterministic.md)** — proposed
-- **[ADR-0016: One Contract-Configured Pilot (ModelPilot + EnumPilotKind), No Pilot Class Hierarchy](../adrs/ADR-0016-one-contract-configured-pilot.md)** — proposed
-- **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** — proposed
-- **[ADR-0019: No Self-Authored Evidence — OCC Companions From Autogen or Independent Verifier Only](../adrs/ADR-0019-no-self-authored-evidence.md)** — proposed
-- **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** — proposed
-- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** — superseded
-- **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** — proposed
-- **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** — proposed
-- **[ADR-0022: Shift Defect-Detection Left + OCC Evidence-Only Fast-Lane (WS-E Build-Efficiency)](../adrs/ADR-0022-shift-left-and-occ-evidence-only-fast-lane.md)** — proposed
-- **[ADR-0023: Remove the onex_change_control Merge Queue](../adrs/ADR-0023-remove-occ-merge-queue.md)** — proposed
-- **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](../adrs/ADR-0010-required-context-parity-ratchet.md)** — proposed
+- **[ADR-0025: Historical evidence-process proposal](../adrs/ADR-0025-occ-validator-redesign-option-a.md)** — superseded
+- **[ADR-0018: Withdrawn planning proposal](../adrs/ADR-0018-delegation-graded-benchmark-ladder.md)** — deprecated
+- **[ADR-0011: Withdrawn planning proposal](../adrs/ADR-0011-rsd-recursive-system-design-naming.md)** — deprecated
+- **[ADR-0012: Withdrawn planning proposal](../adrs/ADR-0012-seams-first-class.md)** — deprecated
+- **[ADR-0013: Withdrawn planning proposal](../adrs/ADR-0013-deterministic-fsm-control-plane.md)** — deprecated
+- **[ADR-0014: Withdrawn planning proposal](../adrs/ADR-0014-factory-economics-frontier-fissions-locals-build.md)** — deprecated
+- **[ADR-0019: Historical evidence-process proposal](../adrs/ADR-0019-no-self-authored-evidence.md)** — superseded
+- **[ADR-0020: Withdrawn planning proposal](../adrs/ADR-0020-branch-preview-verification.md)** — deprecated
+- **[ADR-0021: Withdrawn beta planning record](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** — superseded
+- **[ADR-0024: Historical evidence-process proposal](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** — superseded
+- **[ADR-0052: Withdrawn planning proposal](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** — deprecated
+- **[ADR-0022: Historical evidence-process proposal](../adrs/ADR-0022-shift-left-and-occ-evidence-only-fast-lane.md)** — superseded
+- **[ADR-0023: Historical evidence-process proposal](../adrs/ADR-0023-remove-occ-merge-queue.md)** — superseded
+- **[ADR-0010: Historical required-check parity proposal](../adrs/ADR-0010-required-context-parity-ratchet.md)** — deprecated
 - **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** — superseded
 - **[ADR-0027: One Application Database with Contract-Classified Domains](../adrs/ADR-0027-one-application-database-domain-separation.md)** — accepted
 - **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)** — accepted. The beta is the local install: users delegate from their own computer to a model they run or a provider on their own key, and OmniNode does not sell inference. The hosted service is not part of the beta. Supersedes ADR-0021.
@@ -142,7 +139,7 @@ Knowledge base artifacts grouped by type.
 - **[Protocol Patterns](../architecture/omnibase-infra-protocol-patterns.md)** — accepted
 - **[ONEX Anti-Patterns Documentation](../architecture/onex-anti-patterns.md)** — accepted
 - **[Approved Union Patterns for ONEX Development](../architecture/onex-approved-union-patterns.md)** — accepted
-- **[ONEX Baseline Evaluation Framework](../architecture/onex-baseline-evaluation-framework.md)** — accepted
+- **[ONEX Baseline Evaluation Framework](../architecture/onex-baseline-evaluation-framework.md)** — superseded
 - **[ONEX Canonical Execution Shapes](../architecture/onex-canonical-execution-shapes.md)** — accepted. Defines the canonical execution shapes for the ONEX Four-Node Architecture, which enforces unidirectional data flow across the four node types. Lists allowed and forbidden patterns, explains why the constraints matter, and gives a decision matrix and enforcement notes. For anyone designing components that must follow these shapes.
 - **[Circuit Breaker Pattern for External Dependencies](../architecture/onex-circuit-breaker-pattern.md)** — accepted
 - **[Claude Code Hooks Architecture](../architecture/onex-claude-code-hook-models.md)** — accepted
@@ -181,6 +178,7 @@ Knowledge base artifacts grouped by type.
 - **[URL Contract Authority](../architecture/onex-url-contract-authority.md)** — accepted
 - **[Validation Protocol Compliance](../architecture/onex-validation-protocol-compliance.md)** — accepted
 - **[Wire Schema Contract Specification](../architecture/wire-schema-contract-spec.md)** — accepted
+- **[Delegation architecture guide](../architecture/delegation.md)** — accepted
 
 ## Pivot
 
@@ -189,34 +187,16 @@ Knowledge base artifacts grouped by type.
 - **[Completion Requires Durable Evidence](../pivots/PIVOT-0003-completion-requires-durable-evidence.md)** — accepted
 - **[Reducers Own State Progression](../pivots/PIVOT-0004-reducers-own-state-progression.md)** — accepted
 - **[Event Streams Are Not Authoritative State](../pivots/PIVOT-0005-event-streams-are-not-authoritative-state.md)** — accepted
+- **[Evidence lives with the code it proves](../pivots/PIVOT-0006-evidence-lives-with-code.md)** — accepted
 
 ## Plan
 
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** — historical
-- **[Gap investigation series](../plans/2026-03-01-gap-investigation-series.md)** — historical
-- **[Future enhancements for ONEX change control](../plans/2026-03-03-onex-change-control-future-enhancements.md)** — historical
-- **[Dashboard health model refinements — not_applicable status and probe semantics](../plans/2026-03-16-dashboard-health-model-refinements.md)** — historical
-- **[Compose required-env coverage guard](../plans/2026-03-18-compose-required-env-coverage-guard.md)** — historical
-- **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** — historical
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** — historical
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** — historical
-- **[Package install CLI and channel-adapter scaffold generator](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** — historical
-- **[Test-driven ticket-pipeline iteration loop](../plans/2026-04-01-test-driven-pipeline-iteration-loop.md)** — historical
-- **[Plugin cache freshness — preventing stale plugin deployments](../plans/2026-04-02-plugin-cache-freshness.md)** — completed
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** — historical
-- **[Platform readiness gap closure plan](../plans/2026-04-07-platform-readiness-gap-closure.md)** — historical
-- **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** — historical
-- **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** — historical
-- **[Fix onex run-node to publish to contract-declared topics](../plans/2026-05-02-run-node-contract-topic-resolution.md)** — completed
-- **[Canary-to-routing feedback loop](../plans/2026-05-11-canary-routing-feedback-loop.md)** — historical
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** — historical
-- **[Escalation proof corpus — specification](../plans/2026-07-02-escalation-proof-corpus-spec.md)** — historical
-- **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** — historical
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** — historical
-- **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** — active
-- **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** — active
-- **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** — active
-- **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](../plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** — active
+- **[Dashboard health semantics](../plans/2026-03-16-dashboard-health-model-refinements.md)** — superseded
+- **[Required environment coverage](../plans/2026-03-18-compose-required-env-coverage-guard.md)** — superseded
+- **[Package installation and scaffolding](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** — superseded
+- **[Validation stack design](../plans/2026-04-11-validation-stack-architecture-plan.md)** — superseded
+- **[Contract-declared topic resolution](../plans/2026-05-02-run-node-contract-topic-resolution.md)** — superseded
+- **[Shared delegation dispatch protocol](../plans/2026-09-27-shared-delegation-dispatch-port.md)** — superseded
 
 ## Guide
 
@@ -322,19 +302,18 @@ Knowledge base artifacts grouped by type.
 - **[Replay Safety Integration Guide](../guides/onex-replay-safety-integration.md)** — current
 - **[Request Tracing in ONEX](../guides/onex-request-tracing.md)** — current
 - **[Thread Safety in Omnibase Core](../guides/onex-threading.md)** — current
-- **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** — current. How to reach the hosted OmniNode service with the onex cloud client, and which of its steps work today. The hosted service is waitlist-gated and not part of the beta; beta users follow the quickstart instead.
+- **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** — draft. How to reach the hosted OmniNode service with the onex cloud client, and which of its steps work today. The hosted service is waitlist-gated and not part of the beta; beta users follow the quickstart instead.
 - **[Supported Platforms](../guides/supported-platforms.md)** — current
-- **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** — current. The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed.
+- **[Delegation quickstart](../guides/delegation-quickstart.md)** — current. The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed.
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** — current
+- **[Delegation quickstart has moved](../guides/onex-plugin-quickstart.md)** — deprecated
 
 ## Reference
 
 - **[ONEX Kafka Topic Naming Standard](../reference/onex-topic-taxonomy.md)** — current
-- **[Cross-Repo Merge Dependency Graph](../reference/merge-dependency-graph.md)** — current
 - **[Claude Code PostToolUse updatedToolOutput Shape](../reference/claude-code-posttooluse-output-shape.md)** — current
 - **[Event Envelope Canonical Field Names](../reference/event-envelope-field-names.md)** — current
 - **[Test Discipline](../reference/omniclaude-test-discipline.md)** — current
-- **[Verification Doctrine](../reference/omniclaude-verification-doctrine.md)** — current
 - **[AGENT.md Template](../reference/agent-md-template.md)** — current
 - **[CI Documentation Validation Setup](../reference/ci-validation-setup.md)** — current
 - **[DB Boundary Policy](../reference/db-boundary-policy.md)** — current
@@ -346,7 +325,6 @@ Knowledge base artifacts grouped by type.
 - **[OmniMemory Runtime Plugin System](../reference/omnimemory-runtime-plugins.md)** — current
 - **[ONEX Core Terminology](../reference/onex-terminology.md)** — current
 - **[DoD Receipt Hashing, Append-Only, and Supersession](../reference/receipt-hashing-and-supersession.md)** — current
-- **[Repository Registry](../reference/repository-registry.md)** — current
 - **[Standard Documentation Layout](../reference/standard-doc-layout.md)** — current
 - **[Typed-Metadata Policy](../reference/typed-metadata-policy.md)** — current
 - **[omnibase_compat Structural Inventory](../reference/omnibase-compat-structural-inventory.md)** — current
@@ -406,7 +384,6 @@ Knowledge base artifacts grouped by type.
 - **[ADR: Two Handler Systems in omnibase_infra](../reference/omnibase-infra-adr-two-handler-systems.md)** — current
 - **[Contract.yaml Reference](../reference/omnibase-infra-contract-yaml-reference.md)** — current
 - **[DLQ Quarantine Ownership Semantics](../reference/omnibase-infra-dlq-quarantine-ownership.md)** — current
-- **[LLM Endpoint Service Level Objectives](../reference/omnibase-infra-llm-endpoint-slo.md)** — current
 - **[Migration Versioning Convention](../reference/omnibase-infra-migration-versioning-convention.md)** — current
 - **[Naming Conventions](../reference/omnibase-infra-naming-conventions.md)** — current
 - **[Node Registration Orchestrator](../reference/omnibase-infra-node-registration-orchestrator.md)** — current
@@ -419,8 +396,8 @@ Knowledge base artifacts grouped by type.
 - **[OmniMarket node_golden_chain_sweep](../reference/omnimarket-node-golden-chain-sweep.md)** — current
 - **[OmniMarket node_ticket_pipeline](../reference/omnimarket-node-ticket-pipeline.md)** — current
 - **[ONEX Capability Naming Conventions](../reference/onex-capability-naming.md)** — current
-- **[ONEX Change Control — Decision Log](../reference/onex-change-control-decision-log.md)** — current
-- **[ONEX Change Control — Versioning Policy](../reference/onex-change-control-versioning-policy.md)** — current
+- **[ONEX Change Control — Decision Log](../reference/onex-change-control-decision-log.md)** — deprecated
+- **[ONEX Change Control — Versioning Policy](../reference/onex-change-control-versioning-policy.md)** — deprecated
 - **[ONEX Contract Model Docstring Templates](../reference/onex-docstring-templates.md)** — current. Provides docstring templates for contract model classes, with required elements such as descriptions, attribute documentation, examples, raises sections, and validation rules in Google style. Includes separate templates for contract models, subcontracts, TypedDicts, and enums. For anyone writing or reviewing contract model documentation.
 - **[ONEX Error Code Standards](../reference/onex-error-code-standards.md)** — current
 - **[File Header Conventions](../reference/onex-file-headers.md)** — current
@@ -428,19 +405,17 @@ Knowledge base artifacts grouped by type.
 - **[Node Archetypes Reference](../reference/onex-node-archetypes.md)** — current
 - **[Terminology Guide](../reference/onex-terminology-guide.md)** — current
 - **[Version Field Semantics in ONEX Models](../reference/onex-version-semantics.md)** — current
+- **[Beta status](../reference/beta-status.md)** — current
+- **[Glossary](../reference/glossary.md)** — current
+- **[LLM Endpoint Service Level Objectives](../reference/omnibase-infra-llm-endpoint-slo.md)** — current
+- **[Verification Doctrine](../reference/omniclaude-verification-doctrine.md)** — current
+- **[Repository Registry](../reference/repository-registry.md)** — current
 
 ## Runbook
 
-- **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](../runbooks/cold-lane-full-bringup.md)** — current
-- **[Judge Compose Profile](../runbooks/judge-compose-profile.md)** — current
-- **[Repowise Freshness Receipt](../runbooks/repowise-freshness-receipt.md)** — current
 - **[Vendored Node Migration Runbook](../runbooks/vendored-node-migrations.md)** — current
-- **[Volume Config Drift Gate + Re-seed Procedure](../runbooks/volume-config-drift-and-reseed.md)** — current
-- **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** — current
-- **[Market Node Deployment Runbook](../runbooks/market-node-deployment.md)** — current
 - **[Application database cutover receipts](../runbooks/application-database-cutover-receipts.md)** — current
 - **[Apply Migrations Runbook](../runbooks/apply-migrations.md)** — current
-- **[Fault-injection fixture — DLQ offset-withholding proof](../runbooks/fault-inject-fixture-dlq-offset-withholding.md)** — current
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** — current
 - **[omnibase_compat Release](../runbooks/omnibase-compat-release.md)** — current
 - **[Starting OmniMemory Services](../runbooks/omnimemory-starting-memory-services.md)** — current
@@ -448,3 +423,4 @@ Knowledge base artifacts grouped by type.
 - **[Database Index Monitoring Runbook](../runbooks/omnibase-infra-database-index-monitoring.md)** — current
 - **[Dead Letter Queue (DLQ) Replay Guide](../runbooks/omnibase-infra-dlq-replay.md)** — current
 - **[Event Bus Operations Runbook](../runbooks/omnibase-infra-event-bus-operations.md)** — current
+- **[Install a node package](../runbooks/node-skill-package-install.md)** — current

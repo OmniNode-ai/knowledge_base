@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Version Field Semantics in ONEX Models"
-topics:
-  - omnibase-core
-  - version
-  - semantics
+topics: [packaging]
 refs: []
 ---
 

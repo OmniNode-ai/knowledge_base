@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Wire Schema Contract Specification"
-topics: [wire-schema, contracts, envelopes, cross-repo]
+topics: [contracts, bus]
 refs: []
 ---
 

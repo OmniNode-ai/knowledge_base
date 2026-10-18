@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Contract Stability Specification"
-topics:
-  - omnibase-core
-  - contract
-  - stability
-  - spec
+topics: [contracts]
 refs: []
 ---
 

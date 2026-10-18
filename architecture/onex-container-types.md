@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Container Types in omnibase_core"
-topics:
-  - omnibase-core
-  - container
-  - types
+topics: [runtime]
 refs: []
 ---
 

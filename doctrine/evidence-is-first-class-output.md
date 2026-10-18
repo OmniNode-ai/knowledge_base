@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Evidence Is a First-Class Output"
-topics: [evidence-systems]
+topics: [evidence]
 refs:
   - doctrine/truth-must-be-proven.md
   - doctrine/fail-fast-and-loud.md

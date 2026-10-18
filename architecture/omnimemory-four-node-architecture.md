@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "ONEX Four-Node Architecture in OmniMemory"
-topics:
-  - omnimemory
-  - node-archetypes
-  - architecture
+topics: [nodes, memory, architecture]
 refs:
   - guides/omnimemory-market-migration-boundary.md
   - reference/omnimemory-memory-data-ownership.md

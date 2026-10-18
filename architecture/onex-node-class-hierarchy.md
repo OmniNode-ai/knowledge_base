@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Node Class Hierarchy Guide"
-topics:
-  - omnibase-core
-  - node
-  - class
-  - hierarchy
+topics: [nodes]
 refs: []
 summary: "Explains the three tiers of node base classes in omnibase_core: ModelService wrappers for recommended use, Node classes for advanced control, and NodeCoreBase for experts. Includes a decision matrix, feature comparison, migration paths, and common scenarios. For developers choosing which base class to build on."
 ---
@@ -1337,8 +1333,6 @@ The node class hierarchy is used across the ONEX ecosystem:
 
 - **omnibase_core.protocols** - Protocol definitions that nodes implement (`ProtocolNode`, `ProtocolService`)
 - **omniintelligence** - AI/ML nodes using `ModelServiceCompute` for inference pipelines
-- **omniagent** - Agent nodes using `ModelServiceOrchestrator` for multi-step workflows
-- **omnimcp** - MCP server implementations using `ModelServiceEffect` for tool invocation
 
 ---
 

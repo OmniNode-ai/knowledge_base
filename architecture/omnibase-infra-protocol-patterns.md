@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Protocol Patterns"
-topics: [omnibase-infra, protocol, patterns]
+topics: [runtime]
 refs: []
 ---
 
@@ -610,7 +610,6 @@ Use this checklist when reviewing PRs that add or modify protocols:
 ## Related Patterns
 
 - **Circuit Breaker Implementation (`../guides/omnibase-infra-circuit-breaker-implementation.md`)** - Uses `ProtocolCircuitBreakerAware` for mixin composition
-- **Error Handling Patterns (internal knowledge base)** - Error types raised by protocol implementations
 - **Container Dependency Injection (`../architecture/omnibase-infra-container-dependency-injection.md`)** - Protocols as DI boundaries for loose coupling
 
 ## See Also

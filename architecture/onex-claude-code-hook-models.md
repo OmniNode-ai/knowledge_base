@@ -3,12 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Claude Code Hooks Architecture"
-topics:
-  - omnibase-core
-  - claude
-  - code
-  - hook
-  - models
+topics: [agent-integrations]
 refs: []
 ---
 

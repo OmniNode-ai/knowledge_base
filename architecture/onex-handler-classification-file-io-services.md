@@ -3,12 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Handler Classification: omnibase_core File I/O Services (Epic 3 — Ticket 3.4)"
-topics:
-  - omnibase-core
-  - handler
-  - classification
-  - file
-  - io
+topics: [handlers]
 refs: []
 ---
 

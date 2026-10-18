@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-01"
 title: "OmniMarket node_service_registry Ownership"
-topics:
-  - omnimarket
-  - database
-  - migrations
+topics: [self-hosting]
 refs: []
 ---
 

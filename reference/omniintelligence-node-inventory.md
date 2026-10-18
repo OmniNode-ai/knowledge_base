@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "OmniIntelligence Node Inventory"
-topics:
-  - omniintelligence
-  - nodes
-  - node-inventory
+topics: [nodes]
 refs:
   - architecture/omniintelligence-four-node-architecture.md
 ---

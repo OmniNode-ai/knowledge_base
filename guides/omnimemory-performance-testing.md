@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-08-26"
 title: "OmniMemory Performance Testing"
-topics:
-  - omnimemory
-  - performance
-  - benchmarks
-  - testing
+topics: [testing, memory]
 refs:
   - guides/omnimemory-pii-handling.md
   - reference/omnimemory-handler-reuse-matrix.md

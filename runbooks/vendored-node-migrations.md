@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-07-21"
 title: "Vendored Node Migration Runbook"
-topics: [omnibase-infra, vendored, node, migrations]
+topics: [nodes, self-hosting, runtime]
 refs: []
 ---
 
@@ -96,12 +96,8 @@ OMNIMARKET_SRC=/path/to/omnimarket ./scripts/sync-node-migrations.sh
 ./scripts/sync-node-migrations.sh --check
 ```
 
-After the sync runs successfully, stage and commit the changes under `docker/migrations/forward/nodes/`:
+Review the generated migration changes under `docker/migrations/forward/nodes/` before applying them.
 
-```bash
-git add docker/migrations/forward/nodes/
-git commit -m "chore: vendor omnimarket node migrations"
-```
 
 ---
 

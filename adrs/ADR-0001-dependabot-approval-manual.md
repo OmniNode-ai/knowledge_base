@@ -4,7 +4,7 @@ status: accepted
 date: "2026-03-25"
 title: "ADR-0001: Dependabot PR Approval Remains Manual"
 adr_id: ADR-0001
-topics: [ci, dependabot, automation, github-actions]
+topics: [testing]
 refs:
   - doctrine/fail-fast-and-loud.md
   - doctrine/evidence-is-first-class-output.md

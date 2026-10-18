@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "OmniMarket Skill-Backing Node Handler Pattern"
-topics:
-  - omnimarket
-  - onex-runtime
-  - dispatch
+topics: [nodes, handlers, agent-integrations]
 refs: []
 ---
 

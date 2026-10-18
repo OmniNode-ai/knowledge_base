@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Core Public API Reference"
-topics:
-  - omnibase-core
-  - api
-  - documentation
+topics: [architecture]
 refs: []
 ---
 

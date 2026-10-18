@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Kafka Schema Handshake Gate"
-topics: [omnibase-infra, kafka, schema, handshake]
+topics: [contracts, bus, runtime]
 refs: []
 ---
 

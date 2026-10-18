@@ -5,7 +5,7 @@ date: "2026-05-23"
 title: "Dashboard Authority Collapse"
 observed_date: "2026-02-01"
 confidence: high
-topics: [dashboard, projections, client-state, authority, truth]
+topics: [dashboard, governance, projections]
 refs:
   - doctrine/authoritative-projections-own-truth.md
   - doctrine/state-is-materialized-projection.md

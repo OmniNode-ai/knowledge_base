@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "OmniMarket Claude Code Adapter"
-topics:
-  - omnimarket
-  - adapters
-  - claude-code
+topics: [agent-integrations]
 refs: []
 ---
 

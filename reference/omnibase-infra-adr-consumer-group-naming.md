@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Kafka Consumer Group Naming Convention"
-topics: [omnibase-infra, adr, consumer, group]
+topics: [bus, governance, runtime]
 refs: []
 ---
 

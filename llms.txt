@@ -4,14 +4,18 @@
 
 State as of 2026-10-17. Shipped today, from public MIT-licensed packages on PyPI (omnibase-core, omnibase-infra, omnimarket) and with no OmniNode account: the local install of the `onex` command, `onex delegate`, a receipt for every run, `onex metering` against a baseline model, the local `onex dashboard`, and the Claude Code plugin `onex@omninode-tools`. In beta: invited outside users exercise that same delegation path from the same public quickstart. Not yet open: the hosted service, which is not open to outside users and which nothing on the shipped path needs.
 
-This repository is OmniNode's public documentation. The one-page overview is the canonical statement of what ships; when another page disagrees with it, the other page is out of date.
+This repository is reference material. Plans are historical records, not instructions to act on. This repository is OmniNode's public documentation. The one-page overview is the canonical statement of what ships; when another page disagrees with it, the other page is out of date.
 
 ## Start here
 
 - [What OmniNode is, and where it stands](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/what-is-omninode.md): the one-page overview of what ships today, what is in beta and what is not yet open
-- [Delegation quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/onex-plugin-quickstart.md): install `onex`, run a first delegation on your own model or key, read the receipt, meter the cost and add the Claude Code plugin, in about 15 minutes
+- [Delegation quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/delegation-quickstart.md): install `onex`, run a first delegation on your own model or key, read the receipt, meter the cost and add the Claude Code plugin, in about 15 minutes
 - [Supported platforms](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/supported-platforms.md): where the `onex` tool installs, and how on each kind of computer
 - [Repository README](https://github.com/OmniNode-ai/knowledge_base/blob/main/README.md): what this repository holds and how it is organized
+
+## What is live today
+
+- [Beta status](https://github.com/OmniNode-ai/knowledge_base/blob/main/reference/beta-status.md): the dated availability statement for local delegation and the hosted preview
 
 ## How delegation works
 
@@ -26,6 +30,20 @@ This repository is OmniNode's public documentation. The one-page overview is the
 - [Building on the ONEX runtime](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/getting-started-local.md): write and run your own nodes locally, with no broker, database server or account
 - [Self-hosting the full stack](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/getting-started-self-hosted.md): run the broker, database and runtime services on your own infrastructure
 - [Decision records](https://github.com/OmniNode-ai/knowledge_base/blob/main/adrs/README.md): the architecture decision ledger
+
+## Why it is shaped this way
+
+- [Evidence lives with the code it proves](https://github.com/OmniNode-ai/knowledge_base/blob/main/pivots/PIVOT-0006-evidence-lives-with-code.md): the evidence boundary
+- [Local-first beta decision](https://github.com/OmniNode-ai/knowledge_base/blob/main/adrs/ADR-0053-beta-scope-local-install-own-keys.md): local install and customer-owned model keys
+
+## Glossary
+
+- [Glossary](https://github.com/OmniNode-ai/knowledge_base/blob/main/reference/glossary.md): product, platform and historical terms
+
+## Source code and packages
+
+- [Core](https://github.com/OmniNode-ai/omnibase_core), [protocols](https://github.com/OmniNode-ai/omnibase_spi), [runtime](https://github.com/OmniNode-ai/omnibase_infra), [shared types](https://github.com/OmniNode-ai/omnibase_compat), [delegation](https://github.com/OmniNode-ai/omnimarket)
+- [omnibase-core on PyPI](https://pypi.org/project/omnibase-core/) and [omnimarket on PyPI](https://pypi.org/project/omnimarket/)
 
 ## Optional
 

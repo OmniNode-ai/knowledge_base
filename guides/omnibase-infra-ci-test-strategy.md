@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "CI Test Strategy"
-topics: [omnibase-infra, ci, test, strategy]
+topics: [testing, runtime]
 refs: []
 ---
 

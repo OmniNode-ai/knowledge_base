@@ -4,7 +4,7 @@ status: accepted
 date: "2025-12-16"
 title: "ADR-0032: Reducer Output Exception Consistency"
 adr_id: ADR-0032
-topics: [omnibase_core, reducers, error-handling, pydantic, sentinel-pattern]
+topics: [nodes, contracts]
 refs: [adrs/ADR-0037-validator-error-handling-modelonexerror.md]
 supersedes: []
 superseded_by: []

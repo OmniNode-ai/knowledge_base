@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Replay Tests"
-topics: [omnibase-infra, replay, tests]
+topics: [replay, testing, runtime]
 refs: []
 ---
 

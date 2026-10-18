@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "OmniIntelligence Event Surface"
-topics:
-  - omniintelligence
-  - kafka
-  - event-surface
+topics: [bus]
 refs: []
 ---
 

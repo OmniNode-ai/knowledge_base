@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-08-19"
 title: "Adding a Skill"
-topics: ["omniclaude", "skills", "how-to"]
+topics: [agent-integrations]
 refs: []
 ---
 

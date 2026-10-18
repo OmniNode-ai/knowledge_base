@@ -81,7 +81,7 @@ event_bus = await provider.get_event_bus(environment="prod", group="user-service
 await event_bus.publish(
     topic="user-events",
     key=b"user-12345",
-    value=b'{"action": "user_created", "user_id": "12345", "email": "user@example.com"}',  # sanitization-ok: illustrative example payload
+    value=b'{"action": "user_created", "user_id": "12345", "email": "reader@example.invalid"}',
     headers={
         "event_type": "user_created",
         "correlation_id": str(uuid4()),
@@ -415,7 +415,7 @@ validator: ProtocolInputValidator = get_input_validator()
 
 # Validate a field
 validation_result = await validator.validate_string(
-    value="john@example.com",  # sanitization-ok: illustrative example payload
+    value="reader@example.invalid",
     min_length=1,
     max_length=254,
     pattern=None,

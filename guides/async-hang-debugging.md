@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-08-25"
 title: "Async Hang Debugging Guide"
-topics: [python, asyncio, pytest, debugging, ci]
+topics: [runtime, testing]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Migration Versioning Convention"
-topics: [omnibase-infra, migration, versioning, convention]
+topics: [self-hosting, runtime]
 refs: []
 ---
 

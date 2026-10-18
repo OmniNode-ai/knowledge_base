@@ -3,12 +3,7 @@ type: runbook
 status: current
 date: "2026-08-26"
 title: "Starting OmniMemory Services"
-topics:
-  - omnimemory
-  - runbook
-  - docker
-  - qdrant
-  - memgraph
+topics: [memory, self-hosting]
 refs:
   - reference/omnimemory-environment-variables.md
   - reference/omnimemory-runtime-plugins.md

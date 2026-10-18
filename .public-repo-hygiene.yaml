@@ -12,12 +12,9 @@
 # WITHHELD AT ADOPTION, and they must stay withheld:
 #   (none — every root entry in this repo is legitimate)
 #
-# mode: report — the gate records every finding with a per-class count and
-# exits 0. It flips to enforce when the residue is FIXED, never by moving the
-# residue into this file: that is the recurrence mechanism the public-repo
-# hygiene programme exists to remove.
+# Whole-tree enforcement: no content-class exemptions.
 
-mode: report
+mode: enforce
 suppression_registry: ".public-repo-hygiene-suppressions.yaml"
 
 allowed_top_level:
@@ -27,6 +24,8 @@ allowed_top_level:
   - ".pre-commit-config.yaml"
   - ".public-repo-hygiene-suppressions.yaml"
   - ".public-repo-hygiene.yaml"
+  - "AGENTS.md"
+  - "llms.txt"
   - "CLAUDE.md"
   - "CONTRIBUTING.md"
   - "LICENSE"

@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "File Header Conventions"
-topics:
-  - omnibase-core
-  - file
-  - headers
+topics: [architecture]
 refs: []
 ---
 

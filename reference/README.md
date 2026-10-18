@@ -42,3 +42,6 @@ them beside the code would not have kept them true to any tag.
 - [`onex-node-archetypes.md`](onex-node-archetypes.md) — Node Archetypes Reference
 - [`omnibase-core-example-contracts.md`](omnibase-core-example-contracts.md) — Example Contracts
 - [`omnibase-core-example-effect-contracts.md`](omnibase-core-example-effect-contracts.md) — NodeEffect Contract Examples
+
+- [Beta status](beta-status.md)
+- [Glossary](glossary.md)

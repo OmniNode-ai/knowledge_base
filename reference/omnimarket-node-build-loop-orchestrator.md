@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "OmniMarket node_build_loop_orchestrator"
-topics:
-  - omnimarket
-  - nodes
-  - onex-runtime
+topics: [nodes, runtime]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-07-21"
 title: "2-Way Registration: A Complete ONEX Example"
-topics: [omnibase-infra, registration, example]
+topics: [runtime]
 refs: []
 ---
 

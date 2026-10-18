@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Annotated, Literal, get_args
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Discriminator, Tag, TypeAdapter, ValidationError
+from pydantic import BaseModel, ConfigDict, Discriminator, Field, Tag, TypeAdapter, ValidationError
 
 # Make the sibling sanitization module importable regardless of CWD / import path.
 _SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -32,9 +32,7 @@ __all__ = ["SANITIZATION_PATTERNS", "scan_text"]
 # own frontmatter models but no decision-ledger semantics). `deep-dives` and
 # `evidence` were removed 2026-08-26 (self-hoster's-book scope ruling):
 # operational journals never migrate here (durable insight is promoted into
-# doctrine/ADR pages instead), and OCC (onex_change_control) is the sole
-# evidence authority — this repository cites outcomes, it does not host
-# receipts.
+# doctrine/ADR pages instead). Evidence is cited from the owning repository.
 ARTIFACT_DIRS = [
     "adrs",
     "architecture",
@@ -113,6 +111,7 @@ ROOT_SANITIZED_FILES = {
     ".pre-commit-config.yaml",
     ".public-repo-hygiene.yaml",
     "llms.txt",
+    "AGENTS.md",
 }
 
 # Platform/CI configuration: registered as a sanitization-scanned,
@@ -125,17 +124,43 @@ ROOT_SANITIZED_FILES = {
 # scoped to part of the tree reports green over the rest, so the directory is
 # scanned rather than assumed harmless. Its files carry no frontmatter and are
 # not indexed, exactly like GENERATED_CONTENT_DIRS.
-PLATFORM_SANITIZED_DIRS = [".github"]
+PLATFORM_SANITIZED_DIRS = [".github", "scripts", "tests"]
 
 # File suffixes scanned for sanitization inside PLATFORM_SANITIZED_DIRS.
 # Broader than the markdown-only artifact scan: a workflow is a `.yml`, and
 # extension-scoped gates are the other half of this failure mode.
-PLATFORM_SANITIZED_SUFFIXES = (".md", ".yml", ".yaml")
+PLATFORM_SANITIZED_SUFFIXES = (".md", ".yml", ".yaml", ".py", ".sh")
 
 # Directories pruned entirely from the fail-closed repository walk: version
 # control internals and local caches, never documentation content or platform
 # configuration that could carry a leak.
 EXCLUDED_WALK_DIRS = {".git", ".venv", "__pycache__", ".ruff_cache", ".pytest_cache"}
+
+
+Topic = Literal[
+    "overview",
+    "architecture",
+    "delegation",
+    "contracts",
+    "nodes",
+    "handlers",
+    "runtime",
+    "bus",
+    "projections",
+    "replay",
+    "configuration",
+    "security",
+    "self-hosting",
+    "cloud-api",
+    "dashboard",
+    "testing",
+    "evidence",
+    "governance",
+    "packaging",
+    "observability",
+    "memory",
+    "agent-integrations",
+]
 
 
 # ---------------------------------------------------------------------------
@@ -160,7 +185,7 @@ class BaseFrontmatter(BaseModel):
     status: str
     date: str  # YYYY-MM-DD
     title: str
-    topics: list[str] = []
+    topics: list[Topic] = Field(default_factory=list, max_length=3)
     refs: list[str] = []
     # Optional two- or three-sentence statement of the page's point, shown in
     # the type index so a reader sees it without opening a long page.
@@ -489,7 +514,7 @@ def check_adr_id_uniqueness(root: Path) -> list[str]:
     records validate individually and the generated indexes are keyed off
     frontmatter, so they do not surface it either. There is no exemption:
     the former exact-path-set grandfather covered only the ADR-0010
-    collision, resolved by OMN-21130 (the later file was renumbered to
+    collision, resolved when the later file was renumbered to
     ADR-0052 with a former-id line), so any duplicate — new file, third
     path, different id — fails.
     """
@@ -536,13 +561,15 @@ def check_sanitization(root: Path) -> list[str]:
     """Scan every registered content file for private content patterns.
 
     Covers artifact files (including README/_template files SKIP_FILES
-    exempts from frontmatter checking — sanitization is a separate concern),
-    generated indexes, and repository-root charter docs plus checked-in YAML.
+    exempts from frontmatter checking), generated indexes, root charter docs,
+    platform config, validator code and test fixtures. Paths are scanned too.
+    Publication does not honor author-written exemptions.
     """
     errors = []
     for md_file in _find_sanitization_targets(root):
+        errors.extend(scan_text(md_file.relative_to(root).as_posix(), label=str(md_file), honor_allowlist=False))
         content = md_file.read_text(encoding="utf-8")
-        errors.extend(scan_text(content, label=str(md_file)))
+        errors.extend(scan_text(content, label=str(md_file), honor_allowlist=False))
     return errors
 
 
@@ -590,7 +617,7 @@ _LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 # Repository-root documents a reader or an agent opens first. Their links are
 # checked like an artifact's: an entry point that 404s is the first thing a
 # newcomer meets.
-ROOT_LINK_CHECKED_FILES = ("README.md", "CONTRIBUTING.md", "CLAUDE.md", "docs-taxonomy.md", "llms.txt")
+ROOT_LINK_CHECKED_FILES = ("README.md", "CONTRIBUTING.md", "CLAUDE.md", "AGENTS.md", "docs-taxonomy.md", "llms.txt")
 
 # llms.txt links by absolute URL, since an agent fetches it on its own. A URL
 # under this prefix names a file in this repository and must resolve to one.
@@ -659,6 +686,11 @@ def export_schema(output_path: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate knowledge-base frontmatter")
     parser.add_argument(
+        "--sanitize-only",
+        action="store_true",
+        help="Run the shared content sanitization gate without generating indexes",
+    )
+    parser.add_argument(
         "--export-schema",
         metavar="PATH",
         nargs="?",
@@ -679,6 +711,15 @@ def main() -> int:
     args = parser.parse_args()
 
     repo_root = args.root.resolve() if args.root is not None else Path(__file__).parent.parent
+
+    if args.sanitize_only:
+        errors = check_sanitization(repo_root)
+        for error in errors:
+            print(error)
+        if errors:
+            return 1
+        print("Sanitization passed.")
+        return 0
 
     if args.export_schema:
         export_schema(repo_root / args.export_schema)

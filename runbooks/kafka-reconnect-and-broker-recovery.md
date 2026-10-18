@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-08-26"
 title: "Kafka/Redpanda Reconnect Tuning and Broker Recovery"
-topics: [kafka, event-bus, resilience, reconnect, operations]
+topics: [bus, self-hosting]
 refs: []
 ---
 

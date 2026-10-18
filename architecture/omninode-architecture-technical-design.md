@@ -3,23 +3,7 @@ type: architecture
 status: accepted
 date: "2026-05-31"
 title: "Technical Design: OmniNode Platform Architecture"
-topics:
-  - architecture
-  - contracts
-  - nodes
-  - handlers
-  - node-archetypes
-  - orchestrator-nodes
-  - reducers
-  - dispatch
-  - event-bus
-  - projections
-  - overlays
-  - self-extending-agent
-  - model-routing
-  - ci
-  - tdd
-  - evidence-systems
+topics: [architecture, contracts, nodes]
 refs:
   - doctrine/contracts-define-reality.md
   - doctrine/authoritative-projections-own-truth.md
@@ -38,11 +22,13 @@ refs:
 
 # Technical Design: OmniNode Platform Architecture
 
+> **State reviewed 2026-10-18.** This is the target architecture. For the beta workflow that users can run, read [Delegation](delegation.md) and [Beta status](../reference/beta-status.md). Historical implementation inventories have been withdrawn pending revision-scoped verification.
+
 ## Purpose
 
-Define the OmniNode platform architecture as a single, end-to-end public Technical Design Document. This document subsumes the previously separate designs for the contract-native platform, orchestrator nodes, the self-extending agent, and CI/full-TDD evidence gates, and folds in the supporting domains of state and projections, configuration and overlays, runtime registration and registry boundaries, and model/inference routing.
+Define the OmniNode platform architecture as a single, end-to-end public Technical Design Document. This document subsumes the previously separate designs for the contract-native platform, orchestrator nodes and CI/full-TDD evidence gates, and folds in the supporting domains of state and projections, configuration and overlays, runtime registration and registry boundaries, and model/inference routing.
 
-It establishes the primitives the platform is built from, the boundaries between them, how a unit of work flows from a contract through nodes and handlers onto the event bus and into reducers, projections, and durable evidence — and, honestly labeled, where the current implementation diverges from the canonical target. CI is treated as a proof pipeline, not just a test runner; truth is treated as something proven through contracts, events, projections, replay, and durable evidence, not asserted.
+It establishes the primitives the platform is built from, the boundaries between them, how a unit of work flows from a contract through nodes and handlers onto the event bus and into reducers, projections, and durable evidence — and the evidence required to assess implementation against the canonical target. CI is treated as a proof pipeline, not just a test runner; truth is treated as something proven through contracts, events, projections, replay, and durable evidence, not asserted.
 
 ## Scope
 
@@ -56,7 +42,7 @@ This design covers:
 - state, reducers, projections, cursors, and the authoritative-truth boundary;
 - configuration via contract requirements, overlays, manifests, subcontracts, and projection contracts;
 - the runtime, registration, and registry-owned consumer-surface boundary, and dependency injection;
-- the self-extending agent that generates, validates, registers, invokes, and proves new capabilities;
+- validation requirements for generated capabilities, independent of retired prototypes;
 - the model and inference routing boundary;
 - CI gate families, the full-TDD validation layers, and evidence/receipt pairing;
 - deterministic-truth requirements and proof bundles;
@@ -220,7 +206,7 @@ flowchart TD
     CB -->|open| FastFail["fail fast"]
 ```
 
-Several transport gaps are open against doctrine and labeled honestly in **Current Versus Target State**: there is no automated dead-letter reprocessor (recovery is manual), the producer edge has no durable buffer (events can drop on a broker outage, so the developer-signal pipeline is fail-open and its recovery-point objective is not zero), and breaking topic-schema migration (add a new `vN` topic, run the old consumer in parallel) is executed manually with no migration tooling yet.
+Transport acceptance evidence must exercise broker recovery, producer failure, dead-letter recovery and schema-version migration. This target design does not establish the current implementation status of those properties.
 
 ## State, Reducers & Projections
 
@@ -253,7 +239,7 @@ flowchart TD
 
 **Degrade safely.** Correctness is preferred over availability: delay, quarantine, dead-letter, or mark a projection explicitly degraded — never silently drop, guess missing state, reorder without authority, or present degraded data as complete. A projection-backed dashboard realizes this by disabling real-time updates and serving last-successful read-model data after backoff exhaustion.
 
-The doctrine target and the current as-built path differ on ordering, cursors, replay, and the state/bus consistency seam; these gaps are enumerated in **Current Versus Target State**.
+The doctrine target and the current as-built path differ on ordering, cursors, replay, and the state/bus consistency seam; implementation claims require revision-scoped evidence as described in **Current Versus Target State**.
 
 ## Configuration: Contracts, Overlays, Manifests, Subcontracts, Projection Contracts
 
@@ -298,35 +284,14 @@ flowchart LR
 
 - **Runtime owns discovery and wiring.** The runtime host process is the authority for discovering contracts (package and catalog surfaces), wiring handlers, dispatchers, and subscriptions, starting consumers, and emitting normalized lifecycle facts. It does **not** own durable registry truth or API read semantics. It is the wiring authority.
 - **Registration owns orchestration.** Registration is a separate authority that consumes the normalized lifecycle facts plus explicit registry events and orchestrates acceptance, liveness, expiry, and recovery. It does **not** decide what contracts exist and does **not** bootstrap runtime discovery; lifecycle facts are the boundary objects, not raw startup internals.
-- **Registry projections own durable read truth.** Registry projections are the sole durable read truth for registration state; runtime memory, startup logs, and compatibility paths are not read truth. Exactly one projection is declared canonical; any storage/effect table is non-canonical, and a legacy compatibility read-model is confirmed absent from the live store.
+- **Registry projections own durable read truth.** Registry projections are the sole durable read truth for registration state; runtime memory, startup logs, and compatibility paths are not read truth. Exactly one projection is declared canonical; any storage/effect table is non-canonical, and a compatibility read model must not become a second authority.
 - **Consumer surface ownership.** The only supported synchronous consumer surface is the registry-owned API backed by a projection reader (node list/detail, discovery summaries derived from projection results). Direct downstream reads from the projection table are not the default integration contract, and snapshot publication is deferred. Downstream consumers read projections only — never tables, never runtime memory.
 
 **Dependency injection is explicitly three-role.** The **container** is the service provider that owns protocol instances; the **runtime resolver** is the wiring authority that resolves and validates (fail-fast: it raises immediately if a required protocol cannot be resolved); the **node** is the consumer that receives resolved protocol dependencies via its constructor. Nodes never self-wire or hand-build buses; there is no manual handler wiring and no null event bus.
 
-## Self-Extending Agent
+## Generated-capability experiments (historical)
 
-The self-extending agent generates, validates, registers, invokes, and proves new contract-native capabilities. The design makes deterministic admission gates authoritative instead of trusting generated code or prompts. The agent is **not** a model-routing authority, a deployment bypass, a privileged transport client, or an exception path around platform validation.
-
-The minimum current proof path is `generate → validate → register → invoke → capture evidence`. This five-stage loop exists in current source. Broader surfaces (ingress orchestration, agent orchestration, model-evaluation orchestration, comparison workflows) remain separate design surfaces until each is verified as a contract-native node with evidence.
-
-```mermaid
-flowchart LR
-    Request["capability request"] --> Generate["generate contract, node shell, models, handler"]
-    Generate --> Validate["deterministic validation"]
-    Validate --> Scanner["imperative-IO scanner"]
-    Scanner -->|compliant| Register["register artifact"]
-    Scanner -->|violation| Reject["reject before registration"]
-    Register --> Invoke["invoke generated node"]
-    Invoke --> Evidence["event chain + receipt"]
-```
-
-**The load-bearing safety property is admission before registration:** the registration step refuses to register unless validation passed, so invalid generated code cannot become callable. This is genuinely wired in current source.
-
-**Generated artifact requirements.** Every generated node must include a contract declaring node identity, node type, typed models, topics, handler routing, configuration, and evidence requirements; a thin node shell; typed input/output models; handler code using the invocation seam; tests covering contract-derived behavior; and no direct network, broker, database, subprocess, undeclared-topic, or ambient-configuration lookup in generated handler logic.
-
-**Validation gates.** The target rejection criteria are: invalid declared node type; handler signature not matching the invocation seam; handler output shape not matching the declared node type; truncated or incomplete generated output; non-compliant imperative-IO scanning; and topics, route policy, model parameters, or config embedded in source instead of contract-owned. Honestly labeled, the **current** validator implements a narrower set of deterministic checks — required-contract-field presence, syntax parse, a hardcoded-path and topic-literal regex, presence of the top-level handle entry point, and contract-declared model-class presence. The node-type-value validity check, the node-type-versus-output-shape agreement check, the truncation/finish-reason gate, the dedicated imperative-IO scanner verdict, and the generated-test-presence requirement are **target**, not yet in the current validator. The divergence is enumerated in **Current Versus Target State**.
-
-**Generated capability proof** should bind: the generated contract hash, the generated handler hash, the validator identity, the scanner identity, the invocation correlation identity, the source and terminal events, a replay or replay-equivalent result, and a durable receipt.
+A retired prototype explored generating a contract, node and handler from a request. It is not a core subsystem or beta deliverable. The durable design requirement is that generated code must pass contract, type, effect-boundary and behavior checks before it becomes callable; no current implementation or gate coverage is claimed here for the retired prototype.
 
 ## Model & Inference Routing Boundary
 
@@ -349,7 +314,7 @@ sequenceDiagram
     B->>E: route + terminal evidence
 ```
 
-This bus-routed inference boundary is the **target**. In current source the self-extending agent calls a provider endpoint directly in-process and selects the model from a local registry with a fixed token budget — there is no inference-intent emission onto the bus, no routing node owning the decision, and the inference call lives inside the agent rather than in a platform routing/effect node. Route authority, model selection, cost calculation, and retry budgets are therefore currently inside the agent, not external. The divergence is labeled in **Current Versus Target State**. Route decisions and pricing are intended to be route evidence the agent observes, not authority it owns.
+Delegation already has a bus-routed dispatch design, described in [Delegation dispatch](delegation-dispatch.md). Local execution can use an in-process transport. A separate retired agent prototype is not evidence of a gap in the delegation product. Model selection and provider calls remain owned by the routing and effect boundaries.
 
 ## CI & Full-TDD Evidence Gates
 
@@ -404,12 +369,12 @@ A proof bundle should include:
 - replay or replay-equivalent validation;
 - a durable evidence receipt or equivalent artifact.
 
-**Evidence/receipt pairing.** Evidence-gated work requires durable pairing between the code change and the proof artifact: a central change contract plus a PASS receipt (with the verifier distinct from the runner) on the shared evidence surface, and a downstream code-change pointer to that evidence. Repo-local proof can support a change, but durable completion proof must be reachable from the shared evidence surface when a receipt gate applies.
+**Evidence/receipt pairing.** A code change cites acceptance evidence in its owning repository: a PR, a CI run or a receipt. Tests must exercise the changed behavior and fail without the change. See [the evidence pivot](../pivots/PIVOT-0006-evidence-lives-with-code.md).
 
 ```mermaid
 flowchart LR
     PR["code change"] --> Pointer["evidence pointer"]
-    EvidenceRepo["shared evidence surface"] --> Contract["change contract"]
+    EvidenceRepo["owning product repository"] --> Contract["change contract"]
     EvidenceRepo --> Receipt["PASS receipt (verifier ≠ runner)"]
     Pointer --> Gate["receipt gate"]
     Contract --> Gate
@@ -421,55 +386,15 @@ flowchart LR
 
 ## Current Versus Target State
 
-Honest labeling is mandatory. The canonical target — three primitives, one node-owned dispatch seam, one handler protocol, zero bespoke engines/routers/legacy compute base classes, bus-as-transport, contract-overlay config — is a **definitive target specification, not current reality.** Source verification confirms wide, deliberate divergence held open behind a staged cutover. The list below uses `current` / `target` / `divergent` labels and does **not** claim convergence is complete.
+*State as of 2026-10-18: this document is a target architecture, not a current deployment inventory.*
 
-### Dispatch seam
+The public beta workflow is local delegation: submit a task to a customer-configured model, evaluate the answer, and retain a receipt for metering and inspection. The [quickstart](../guides/delegation-quickstart.md) describes that path. The [delegation architecture guide](delegation.md) maps its dispatch, routing and ownership boundaries. Self-hosted delegation uses the configured bus transport; local execution can use an in-process bus. The hosted service is not open to outside users.
 
-- **Node-owned dispatch seam does not exist in source** *(divergent)* — the canonical node-owned dispatch mixin is target-only; it is absent from every layer. Only a dead predecessor routing mixin exists.
-- **Node-owned routing path is dead code** *(divergent)* — the predecessor mixin's route helper has zero production callers; its only references are its own docstring and one comment in an orchestrator shell.
-- **Live dispatch is a freestanding runtime engine** *(divergent)* — production orchestrator/effect dispatch runs entirely inside a freestanding dispatch engine in the runtime/infra layer, wired across multiple runtime modules and driven by bus wiring on every consumed message. This is the live path the public demo runs on, and it must stay live through the demo. The seam's five-step shape and glob dialect described above are implemented in this live engine today; the divergence is **ownership and location**, not behavior.
-- **Two duplicate dispatch-engine classes** *(divergent)* — a dead/secondary reference copy in the core layer (zero production importers) coexists with the live infra engine. Both are slated for deletion after the node-owned seam reaches parity.
-- **Two divergent routing-entry models share one name** *(divergent)* — the core shape and the infra shape have incompatible required fields; the live contract corpus is authored in the infra shape, so the core class cannot construct from production contracts. A hard schema fork.
-- **Aggregation result model is forked** *(divergent)* — a thin dead copy in core and a rich live copy in infra; the dispatch-status enum diverges between them and is unreconciled. The target promotes the rich copy into core and deletes the thin one.
-- **Selection-parity is formally NO-GO** *(divergent)* — selecting via the (target) node/mixin path over a contract does not yield what the live engine selects; selection semantics are verified non-equivalent (different keys, a default-handler concept in one only, different glob dialect/case sensitivity, single-handler versus fan-out). Cutover is gated on a corpus-wide selection-parity test that does not yet exist.
-- **Four competing invocation conventions** *(divergent)* — against the target of one handler protocol, source carries multiple competing invocation conventions plus local reimplementations (kwargs flattening, duck-typed handle/run/execute, attribute dispatch). Across the capability-node fleet, only a tiny fraction of handle definitions are envelope-conformant and essentially none implement the canonical protocol — a large multi-handler migration, not a single ticket.
-- **Some dead routers deleted, others pending** *(divergent)* — one dead core router is confirmed deleted; two infra routers still exist on disk pending deletion, gated behind the cutover.
-- **Inline intent-routing duplication persists** *(divergent)* — a duplicated inline intent-to-handler map remains, intended to be replaced with contract-declared intent routing.
-- **Dispatch cutover is deferred and sequenced** *(target)* — the cutover is staged (model consolidation → land seam + parity gate → flag → shadow → flip → production with sign-off → delete engines), and the later stages are deliberately post-demo. This is a scheduled divergence, not accidental drift.
+The earlier May divergence list has been withdrawn because it was not reverified against current default branches. It must not be read as a live defect list. In particular, its inference-routing statement described a separate agent experiment and did not describe the delegation workflow. No remaining May item is asserted resolved without current implementation evidence.
 
-### Node shells, archetypes, and legacy classes
+The self-extending-agent prototype is retired and is not a core platform subsystem or a beta deliverable. Generated-node admission remains an architectural validation requirement, independent of that prototype.
 
-- **Concrete node shells are thick, not thin** *(divergent)* — concrete shells do not implement the canonical `handle(envelope)` seam; they expose bespoke `process(input) -> typed_output` signatures and carry substantial workflow/snapshot logic. None parses handler routing into canonical routes or fans out via the one protocol.
-- **Compute still carries routing** *(divergent)* — the compute node currently mixes in routing, contradicting the target where compute loses routing entirely. The reducer correctly carries no routing (pure FSM, matches target); orchestrator and effect both carry routing (matches target seam ownership).
-- **Legacy compute base class and a live subclass remain** *(divergent)* — against the target "no plugin base class" (compute is the compute archetype), a legacy compute plugin base class still exists with at least one live example subclass — migration debt to be ported to contract + handler.
-
-### Enforcement
-
-- **Architecture validators are mostly advisory** *(divergent)* — against "enforcement not detection," only a narrow daemon-lifecycle guard is wired as a CI job plus pre-commit hook, and only in one repository. The broader node-architecture and handler-routing validators exist but are wired into no gate in any repository.
-- **Imperative-IO guard not hard-gated cross-repo** *(divergent)* — a large outstanding set of freestanding imperative-IO violations remains across the ecosystem, a substantial fraction invisible to the official scanner (it only inspects node handler directories). The scanner is a required check in only a few repositories and a pre-commit hook in only one; the target is a hard gate everywhere with allowlists at zero.
-
-### Configuration, transport, and proof
-
-- **Direct-env compatibility fallback** *(divergent)* — boot tolerates a legacy env-var mode (warn and run on env vars when no overlay exists); overlay-only boot is enforced only when a require-overlay flag is set. Overlay-as-sole-authority is target.
-- **Transport-config overlay is target-only** *(divergent / target)* — against contract-overlay transport resolution with fail-fast, direct broker-bootstrap env reads remain pervasive, and the planned typed transport-config carrier and runtime-lane enum are not in source. An environment-specific transport-lane misconfiguration (one broker lane masking another via stale shell export) is a recorded live blocker.
-- **No automated dead-letter reprocessor** *(divergent)* — dead-lettered messages require manual investigation; there is no documented automated re-drain path.
-- **Producer edge has no durable buffer** *(divergent)* — the producer never waits for confirmation and drops events on a broker outage; the developer-signal pipeline's recovery-point objective is not zero. This is an intentional fail-open choice for non-truth developer signals.
-- **Live dashboard projection path lacks a documented ordering key and cursor** *(divergent)* — the as-built read path uses leading-edge throttled projection writes, a client poll fallback, and a bounded recent-event initial load, but surfaces no contracted ordering key or projection cursor/watermark. Ordering-must-be-explicit and cursors-represent-projection-progress are doctrine targets not yet evidenced as wired in this read path.
-- **DB commit precedes bus emit; bus failure does not roll back state** *(divergent)* — a reducer transition commits the state update and audit row, then emits; if the publish fails the event routes to dead-letter and the committed transition is not rolled back, and the transition also commits when the producer is absent. Authoritative store state can therefore advance while the event/projection lags — a consistency seam against event-sourced truth.
-- **Replay tooling not yet evidenced as wired** *(divergent)* — replay is a load-bearing doctrine guarantee and a golden-chain proof input, but no replay harness is documented as implemented. Where replay is absent, a result must be labeled runtime-observed, never replay-proven.
-- **Topic schema migration is manual** *(divergent)* — breaking changes add a new `vN` topic and run the old consumer in parallel, but no parallel-consumer migration tooling exists yet.
-
-### Self-extending agent and inference
-
-- **Inference is not yet bus-routed** *(divergent)* — the agent currently calls a provider endpoint directly in-process with local model selection and a fixed token budget; the inference-intent / routing-node / inference-effect bus flow is target. Route authority and cost calculation are currently inside the agent, not external.
-- **Invocation uses an in-process tool registry** *(divergent)* — the demo invokes the generated node through an in-process registry, not the live dispatch engine.
-- **Validator implements a narrower current check set** *(divergent)* — the node-type-value validity, node-type-versus-output-shape, truncation/finish-reason, dedicated imperative-IO-scanner-verdict, and generated-test-presence gates are target, not in the current validator (which checks field presence, syntax, a path/topic regex, the handle entry point, and model-class presence).
-- **Admission before registration is wired** *(current)* — the registration step genuinely refuses to register unless validation passed.
-- **The agent's CI gate set is narrower than core/infra repositories** *(current)* — honestly scoped; do not claim platform-wide full-TDD from this repository's gate set.
-
-### Layering note
-
-- **The handler protocol's core home is a deliberate layering exception** *(target)* — strict layering would place it in the service-provider-interface layer, but it references core-resident I/O models and relocation would force a forbidden import. Stated explicitly so the public design does not claim a clean protocol-only boundary layer.
+For any implementation-convergence claim, cite the owning repository's PR, test or receipt and its revision, following [Evidence lives with the code it proves](../pivots/PIVOT-0006-evidence-lives-with-code.md).
 
 ## Acceptance Criteria / Platform Invariants
 

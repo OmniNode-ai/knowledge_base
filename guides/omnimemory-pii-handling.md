@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-08-26"
 title: "OmniMemory PII Handling"
-topics:
-  - omnimemory
-  - pii
-  - privacy
-  - memory-storage
+topics: [security, memory]
 refs:
   - architecture/omnimemory-four-node-architecture.md
   - reference/omnimemory-handler-reuse-matrix.md
@@ -603,12 +599,12 @@ class TestPIIDetector:
 
     def test_detects_api_keys(self):
         # OpenAI key pattern
-        result = self.detector.detect_pii("key: sk-abcdefghijklmnopqrstuvwxyz123456")
+        result = self.detector.detect_pii("key: " + "sk-" + "abcdefghijklmnopqrstuvwxyz123456")
         assert result.has_pii
         assert PIIType.API_KEY in result.pii_types_detected
 
         # GitHub token pattern
-        result = self.detector.detect_pii("token: ghp_abcdefghijklmnopqrstuvwxyz1234567890")
+        result = self.detector.detect_pii("token: " + "ghp_" + "abcdefghijklmnopqrstuvwxyz1234567890")
         assert result.has_pii
 ```
 

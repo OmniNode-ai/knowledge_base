@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ONEX Ecosystem Directory Structure"
-topics:
-  - omnibase-core
-  - ecosystem
-  - directory
-  - structure
+topics: [architecture]
 refs: []
 ---
 
@@ -182,7 +178,7 @@ build-backend = "poetry.core.masonry.api"
 name = "package_name"
 version = "0.1.0"
 description = "Package description"
-authors = [{name = "OmniNode Team", email = "team@example.com"}]  # sanitization-ok: illustrative packaging metadata
+authors = [{name = "OmniNode Team", email = "reader@example.invalid"}]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.12"

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "DLQ Quarantine Ownership Semantics"
-topics: [omnibase-infra, dlq, quarantine, ownership]
+topics: [runtime]
 refs: []
 ---
 

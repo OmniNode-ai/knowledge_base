@@ -5,7 +5,7 @@ date: "2026-05-23"
 title: "Ingestion Is Not Interpretation"
 observed_date: "2026-01-15"
 confidence: high
-topics: [event-streaming, projection, ingestion, nondeterminism, replay]
+topics: [memory, replay, projections]
 refs:
   - doctrine/ingestion-and-interpretation-separate.md
   - doctrine/deterministic-under-replay.md

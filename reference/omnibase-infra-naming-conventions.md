@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Naming Conventions"
-topics: [omnibase-infra, naming, conventions]
+topics: [governance, runtime]
 refs: []
 ---
 

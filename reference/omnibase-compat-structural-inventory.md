@@ -3,11 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "omnibase_compat Structural Inventory"
-topics:
-  - omnibase-compat
-  - dependency-boundary
-  - wire-dtos
-  - enums
+topics: [contracts, bus, governance]
 refs: []
 ---
 

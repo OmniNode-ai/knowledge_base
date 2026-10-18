@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Environment-Aware Topic Naming Pattern"
-topics: [omnibase-infra, environment, aware, topic]
+topics: [bus, configuration, governance]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "DoD Check Types"
-topics: [occ, dod-evidence, checks, receipts]
+topics: [evidence, governance]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Use of Any Type as Pydantic 2.x JsonType Workaround"
-topics: [omnibase-infra, adr, any, type]
+topics: [contracts, runtime]
 refs: []
 ---
 

@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "ONEX Error Handling Best Practices"
-topics:
-  - omnibase-core
-  - error
-  - handling
-  - best
-  - practices
+topics: [architecture]
 refs: []
 summary: "Sets error handling standards for the ONEX Four-Node Architecture across contract models, subcontracts, and node implementations. Covers error philosophy and categories, the centralized error code framework, recovery strategies, monitoring, and testing. For developers implementing or reviewing error handling in ONEX components."
 ---

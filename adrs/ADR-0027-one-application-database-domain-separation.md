@@ -4,7 +4,7 @@ status: accepted
 date: "2026-07-29"
 title: "ADR-0027: One Application Database with Contract-Classified Domains"
 adr_id: ADR-0027
-topics: [multitenancy, database, rls, tenant-isolation, postgres, data-topology, contracts]
+topics: [contracts, security]
 refs: [adrs/ADR-0026-two-databases-tenant-vs-internal.md]
 supersedes: [ADR-0026]
 superseded_by: []

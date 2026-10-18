@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ModelAction Architecture"
-topics:
-  - omnibase-core
-  - model
-  - action
-  - architecture
+topics: [architecture]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Chaos Tests"
-topics: [omnibase-infra, chaos, tests]
+topics: [testing, runtime]
 refs: []
 ---
 

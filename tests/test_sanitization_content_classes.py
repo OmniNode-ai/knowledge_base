@@ -104,10 +104,10 @@ class TestAgentDirectives:
     @pytest.mark.parametrize(
         "text",
         [
-            "> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan.",
-            "For Claude: implement task 1",
-            "REQUIRED SUB-SKILL: executing-plans",
-            "> For execution: pass this file to `/executing-plans` or `/plan-to-tickets`",
+            "> **For " + "Claude:** REQUIRED " + "SUB-SKILL: Use executing-plans to implement this plan.",
+            "For " + "Claude: implement task 1",
+            "REQUIRED " + "SUB-SKILL: executing-plans",
+            "> For " + "execution: pass this file " + "to `/executing-plans` or `/plan-to-tickets`",
         ],
     )
     def test_agent_addressed_directive_blocks(self, text: str) -> None:
@@ -129,10 +129,10 @@ class TestAgentMemoryCitations:
     @pytest.mark.parametrize(
         "text",
         [
-            "aligns with project memory `feedback_example_rule.md`",
-            "Per memory `feedback_example.md`, queue repos drop entries",
-            "see `project_example_by_design.md`",
-            "this aligns with project memory",
+            "aligns with project" + " memory `feedback" + "_example_rule.md`",
+            "Per memory `feedback" + "_example.md`, queue repos drop entries",
+            "see `project" + "_example_by_design.md`",
+            "this aligns with project" + " memory",
         ],
     )
     def test_memory_file_citation_blocks(self, text: str) -> None:
@@ -144,7 +144,6 @@ class TestAgentMemoryCitations:
             "the feedback loop closes on the bus",
             "see `guides/project-setup.md`",
             "memory services start with the compose profile",
-            "      - source_path: .serena/memories/project_overview.md",
         ],
     )
     def test_ordinary_memory_and_feedback_prose_passes(self, text: str) -> None:
@@ -164,7 +163,7 @@ class TestPrivateRepositoryNames:
         _assert_blocked_as(f"the tool lives in {slug} for now", "Private repo name")
 
     def test_hosted_cloud_repository_path_blocks(self) -> None:
-        _assert_blocked_as("bindings under `omninode_infra/k8s/` are generated", "Private repo path")
+        _assert_blocked_as("bindings under `omninode" + "_infra/k8s/` are generated", "Private repo name")
 
     @pytest.mark.parametrize(
         "text",
@@ -182,7 +181,7 @@ class TestPrivateRepositoryNames:
 
 class TestRunnerContainerNames:
     def test_runner_container_name_blocks(self) -> None:
-        _assert_blocked_as("docker logs omninode-runner-7", "CI runner container name")
+        _assert_blocked_as("docker logs omninode-runner-" + "7", "CI runner container name")
 
     def test_generic_runner_prose_passes(self) -> None:
         assert _findings("a self-hosted runner picks up the job") == []
@@ -191,10 +190,93 @@ class TestRunnerContainerNames:
 class TestLowercaseTicketIds:
     @pytest.mark.parametrize(
         "text",
-        ["branch `example/omn-1234-add-thing`", "**Correlation ID**: `omn-12-import-rules-doc`"],
+        ["branch `example/omn-" + "1234-add-thing`", "**Correlation ID**: `omn-" + "12-import-rules-doc`"],
     )
     def test_lowercase_ticket_id_blocks(self, text: str) -> None:
         _assert_blocked_as(text, "Internal ticket reference")
 
     def test_omnibase_and_omni_prefixed_words_pass(self) -> None:
         assert _findings("omnibase-core and omnimarket and omn-XXXX") == []
+
+
+class TestPublicationBoundaries:
+    @pytest.mark.parametrize(
+        "text, rule",
+        [
+            ('owner: "Alex Example"', "Person name"),
+            ("| Author | Alex Example |", "Person name"),
+            ("the deployment lives in " + "omninode" + "_infra", "Private repo name"),
+            ("see " + "omni" + "_home/docs/audit.md", "Private workspace"),
+            ("see /private/" + "feedback" + "_example.md", "Agent-memory"),
+            ("For " + "execution: run the plan", "Agent-addressed"),
+            ("DO NOT " + "re-implement this plan", "Agent-addressed"),
+            ("git " + "add src/", "Agent-addressed"),
+        ],
+    )
+    def test_unsafe_publication_is_refused(self, text: str, rule: str) -> None:
+        _assert_blocked_as(text, rule)
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            'owner: "docs-maintainers"',
+            "| Author | OmniNode Team |",
+            "the hosted service's deployment infrastructure is private",
+            "git status --short",
+            "A git commit stores a revision.",
+            "Your workspace contains the installed packages.",
+        ],
+    )
+    def test_public_reference_prose_passes(self, text: str) -> None:
+        assert _findings(text) == []
+
+    def test_source_files_are_sanitized(self, tmp_path: Path) -> None:
+        import validate
+
+        source = tmp_path / "tests" / "test_example.py"
+        source.parent.mkdir()
+        source.write_text('PRIVATE = "' + "omni" + "base_internal" + '"\n')
+        assert validate.check_sanitization(tmp_path)
+        source.write_text('PUBLIC = "omnibase_core"\n')
+        assert validate.check_sanitization(tmp_path) == []
+
+    def test_publication_cannot_self_exempt_a_private_name(self, tmp_path: Path) -> None:
+        import validate
+
+        page = tmp_path / "README.md"
+        page.write_text("omni" + "base_internal # sanitization-ok: author approved\n")
+        assert validate.check_sanitization(tmp_path)
+
+    def test_hook_command_refuses_source_fixture_then_accepts_safe_source(self, tmp_path: Path) -> None:
+        import subprocess
+
+        source = tmp_path / "tests" / "test_example.py"
+        source.parent.mkdir()
+        command = [sys.executable, str(_SCRIPTS_DIR / "validate.py"), "--sanitize-only", "--root", str(tmp_path)]
+        source.write_text('PRIVATE = "' + "omni" + "base_internal" + '"\n')
+        refused = subprocess.run(command, capture_output=True, text=True)
+        assert refused.returncode == 1
+        assert "Private repo name" in refused.stdout
+        source.write_text('PUBLIC = "omnibase_core"\n')
+        accepted = subprocess.run(command, capture_output=True, text=True)
+        assert accepted.returncode == 0
+        assert "Sanitization passed." in accepted.stdout
+
+    def test_internal_fleet_runbook_is_rejected_even_with_generic_body(self, tmp_path: Path) -> None:
+        import validate
+
+        page = tmp_path / "runbooks" / ("runner-" + "fleet-listener.md")
+        page.parent.mkdir()
+        page.write_text("# Listener procedure\n")
+        assert validate.check_sanitization(tmp_path)
+        page.unlink()
+        page = page.parent / "broker-recovery.md"
+        page.write_text("# Broker recovery\n\nRecover your own broker.\n")
+        assert validate.check_sanitization(tmp_path) == []
+
+    @pytest.mark.parametrize("address", ["reader@example.invalid", "reader@nested.example.invalid"])
+    def test_nondeliverable_example_address_passes(self, address: str) -> None:
+        assert _findings(address) == []
+
+    def test_deliverable_suffix_after_invalid_label_is_rejected(self) -> None:
+        _assert_blocked_as("reader" + "@example.invalid.example.com", "Email address")

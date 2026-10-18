@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2025-12-19"
 title: "ONEX Kafka Topic Naming Standard"
-topics: [onex, kafka, topic-naming, event-bus]
+topics: [bus, governance]
 refs: []
 ---
 

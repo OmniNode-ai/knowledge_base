@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "Standard Documentation Layout"
-topics: [documentation, doc-layout, cross-repo-standard]
+topics: [architecture]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Async Thread Safety Pattern"
-topics: [omnibase-infra, async, thread, safety]
+topics: [runtime]
 refs: []
 ---
 
@@ -926,5 +926,4 @@ These patterns are for **asyncio cooperative concurrency only**. If your code us
 ## Related Patterns
 
 - Circuit Breaker Implementation (`../guides/omnibase-infra-circuit-breaker-implementation.md`) - Circuit breaker with lock patterns
-- Error Recovery Patterns (internal knowledge base) - Retry and backoff strategies
 - Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`) - Request tracing across async operations

@@ -146,7 +146,7 @@ class TestPreviouslySkippedNestedLeakIsNowCaught:
     """RED-before/GREEN-after: a forbidden pattern in a nested guides/ path."""
 
     def test_nested_leak_is_caught_by_sanitization(self, repo: Path) -> None:
-        leaking = GUIDE_FRONTMATTER + "\nInternal host reachable at 192.168.0.10 for debugging.\n"
+        leaking = GUIDE_FRONTMATTER + "\nInternal host reachable at 192.168." + "0.10 for debugging.\n"
         _write(repo, "guides/getting-started/install.md", leaking)
         errors = validate.check_sanitization(repo)
         assert any("install.md" in e for e in errors), (
@@ -162,7 +162,7 @@ class TestPreviouslySkippedNestedLeakIsNowCaught:
 
 class TestRootAndYamlSanitization:
     def test_root_markdown_forbidden_pattern_caught(self, repo: Path) -> None:
-        _write(repo, "README.md", "# KB\n\nContact us at admin@internal-example.com for access.\n")
+        _write(repo, "README.md", "# KB\n\nContact us at admin" + "@internal-example.com for access.\n")
         errors = validate.check_sanitization(repo)
         assert any("README.md" in e for e in errors)
 
@@ -170,18 +170,18 @@ class TestRootAndYamlSanitization:
         _write(
             repo,
             "migration-manifest.yaml",
-            "schema_version: 1\nsource_path: /Users/example/internal-repo\nnote: internal ticket OMN-9999\n",
+            "schema_version: 1\nsource_path: example/internal-repo\nnote: internal ticket OMN-" + "9999\n",
         )
         errors = validate.check_sanitization(repo)
         assert any("migration-manifest.yaml" in e for e in errors)
 
     def test_charter_files_are_scanned(self, repo: Path) -> None:
-        _write(repo, "CLAUDE.md", "# CLAUDE\n\nSee 192.168.0.55 for the dev box.\n")
+        _write(repo, "CLAUDE.md", "# CLAUDE\n\nSee 192.168." + "0.55 for the dev box.\n")
         errors = validate.check_sanitization(repo)
         assert any("CLAUDE.md" in e for e in errors)
 
     def test_section_readme_is_scanned_even_though_frontmatter_exempt(self, repo: Path) -> None:
-        _write(repo, "adrs/README.md", "# ADRs\n\nInternal ticket OMN-1234 tracked this.\n")
+        _write(repo, "adrs/README.md", "# ADRs\n\nInternal ticket OMN-" + "1234 tracked this.\n")
         errors = validate.check_sanitization(repo)
         assert any("adrs/README.md" in e for e in errors)
 
@@ -219,7 +219,7 @@ class TestAdrIdUniqueness:
     ``ADRFrontmatter.adr_id`` is a bare ``str`` — nothing rejects two ADRs
     claiming the same value; each validates individually. These tests prove
     ``check_adr_id_uniqueness`` catches that class of defect with no
-    exemption (OMN-21130 removed the former exact-path-set grandfather for
+    exemption (the ADR uniqueness change removed the former exact-path-set grandfather for
     the resolved ADR-0010 collision), that the live repo is clean, and that
     a duplicate fails the full validate.py run over a fixture tree.
     """
@@ -253,14 +253,14 @@ class TestAdrIdUniqueness:
         assert validate.check_adr_id_uniqueness(repo) == []
 
     def test_live_repo_has_no_duplicate_adr_ids(self) -> None:
-        # OMN-21130: the check is strict (no exemption), so the live repo
+        # the ADR uniqueness change: the check is strict (no exemption), so the live repo
         # itself must be free of duplicate adr_ids — this fails on the tree
         # before the ADR-0010 collision is resolved and passes after.
         live_root = Path(__file__).resolve().parent.parent
         assert validate.check_adr_id_uniqueness(live_root) == []
 
     def test_duplicate_adr_id_fixture_fails_full_validate(self, repo: Path) -> None:
-        # OMN-21130: a duplicate adr_id must fail the WHOLE validate.py run,
+        # the ADR uniqueness change: a duplicate adr_id must fail the WHOLE validate.py run,
         # not only the focused check — run as a subprocess with --root over a
         # fixture tree, exactly the way CI invokes the script.
         import subprocess

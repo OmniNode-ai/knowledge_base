@@ -5,7 +5,7 @@ date: "2026-05-23"
 title: "Event Streams Are Not Authoritative State"
 observed_date: "2026-01-10"
 confidence: high
-topics: [event-streaming, projections, authority, truth, materialization, raw-events]
+topics: [projections, governance]
 refs:
   - doctrine/authoritative-projections-own-truth.md
   - doctrine/state-is-materialized-projection.md

@@ -4,7 +4,7 @@ status: accepted
 date: "2026-01-12"
 title: "ADR-0035: Status Taxonomy and Categorical Organization"
 adr_id: ADR-0035
-topics: [omnibase_core, enums, status-taxonomy, type-system, governance]
+topics: [governance, contracts]
 refs: []
 supersedes: []
 superseded_by: []

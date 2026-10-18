@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Migration Upgrade Guide: 003a to 004"
-topics: [omnibase-infra, migration, upgrade, 003a]
+topics: [self-hosting, runtime]
 refs: []
 ---
 

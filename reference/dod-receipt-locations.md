@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "DoD Receipt Locations"
-topics: [occ, dod-evidence, receipts, enforcement]
+topics: [evidence, governance]
 refs: []
 ---
 

@@ -3,9 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Installation Guide - omnibase_core"
-topics:
-  - omnibase-core
-  - installation
+topics: [packaging]
 refs: []
 ---
 
@@ -57,7 +55,7 @@ uv add omnibase_core
 
 ```bash
 # Clone the repository
-git clone https://github.com/OmniNode-ai/omnibase_core.git  # sanitization-ok: omnibase_core is a public repository
+git clone https://github.com/OmniNode-ai/omnibase_core.git
 cd omnibase_core
 
 # Install all dependencies (including dev extras)

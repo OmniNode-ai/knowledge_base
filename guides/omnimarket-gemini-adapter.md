@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "OmniMarket Gemini CLI Adapter"
-topics:
-  - omnimarket
-  - adapters
-  - gemini
+topics: [agent-integrations]
 refs: []
 ---
 

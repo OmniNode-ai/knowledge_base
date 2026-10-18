@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "Hook Data Flow Architecture"
-topics: ["omniclaude", "hooks", "data-flow"]
+topics: [agent-integrations]
 refs: []
 ---
 

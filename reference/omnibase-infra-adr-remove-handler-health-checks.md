@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-003: Remove Health Check Methods from Handlers"
-topics: [omnibase-infra, adr, remove, handler]
+topics: [handlers, observability, runtime]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Ingestion and Interpretation Are Separate"
-topics: [ingestion-boundaries]
+topics: [memory]
 refs:
   - doctrine/state-is-materialized-projection.md
   - doctrine/deterministic-under-replay.md

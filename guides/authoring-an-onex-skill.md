@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "Authoring an ONEX Skill"
-topics: ["omniclaude", "skills", "reference"]
+topics: [agent-integrations]
 refs: ["guides/adding-a-skill.md"]
 ---
 

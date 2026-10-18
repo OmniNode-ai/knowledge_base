@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "Typed-Metadata Policy"
-topics: [typed-metadata, pydantic, code-standards, onex-exclude]
+topics: [contracts]
 refs: []
 ---
 

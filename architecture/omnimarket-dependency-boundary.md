@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Dependency Boundary"
-topics:
-  - omnimarket
-  - dependencies
-  - packaging
+topics: [governance, packaging]
 refs: []
 ---
 

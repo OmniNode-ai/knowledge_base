@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Declarative Node Import Rules"
-topics:
-  - omnibase-core
-  - declarative
-  - node
-  - import
-  - rules
+topics: [nodes, packaging]
 refs: []
 ---
 

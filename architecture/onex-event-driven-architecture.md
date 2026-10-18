@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Event-Driven Architecture -- omnibase_core"
-topics:
-  - omnibase-core
-  - event
-  - driven
-  - architecture
+topics: [architecture]
 refs: []
 ---
 

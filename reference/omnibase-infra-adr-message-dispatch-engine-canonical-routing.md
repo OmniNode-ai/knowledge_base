@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-006: MessageDispatchEngine as Canonical Consumer Routing Pattern"
-topics: [omnibase-infra, adr, message, dispatch]
+topics: [governance, handlers, runtime]
 refs: []
 ---
 

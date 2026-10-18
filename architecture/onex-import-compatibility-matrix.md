@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Import Compatibility Matrix"
-topics:
-  - omnibase-core
-  - import
-  - compatibility
-  - matrix
+topics: [packaging]
 refs: []
 ---
 

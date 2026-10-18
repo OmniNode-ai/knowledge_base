@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Custom `__bool__` Pattern for Result Models"
-topics:
-  - omnibase-core
-  - custom
-  - bool
-  - pattern
+topics: [architecture]
 refs: []
 ---
 

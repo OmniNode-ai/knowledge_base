@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Validation Protocols Usage"
-topics:
-  - omnibase_spi
-  - validation
-  - protocols
+topics: [testing]
 refs: []
 ---
 

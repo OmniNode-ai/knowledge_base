@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Package Model"
-topics:
-  - omnimarket
-  - onex-runtime
-  - packaging
+topics: [packaging, runtime]
 refs: []
 ---
 

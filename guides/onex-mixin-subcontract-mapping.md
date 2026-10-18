@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Mixin-Subcontract Mapping Guide"
-topics:
-  - omnibase-core
-  - mixin
-  - subcontract
-  - mapping
+topics: [architecture]
 refs: []
 ---
 

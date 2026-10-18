@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Circuit Breaker Implementation Guide"
-topics: [omnibase-infra, circuit, breaker, implementation]
+topics: [runtime]
 refs: []
 ---
 
@@ -520,6 +520,4 @@ async def circuit_breaker_health() -> dict[str, object]:
 
 ## Related Patterns
 
-- Error Recovery Patterns (internal knowledge base) - Comprehensive recovery strategies
-- Error Handling Patterns (internal knowledge base) - Error classification and context
 - Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`) - Request tracing

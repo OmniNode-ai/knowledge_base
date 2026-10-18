@@ -4,7 +4,7 @@ status: accepted
 date: "2026-06-24"
 title: "ADR-0029: Model B — Failing-Rollup Validator Enforcement (pilot: omnibase_core)"
 adr_id: ADR-0029
-topics: [omnibase_core, ci, branch-protection, validator-enforcement]
+topics: [testing]
 refs: []
 supersedes: []
 superseded_by: []

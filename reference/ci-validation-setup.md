@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "CI Documentation Validation Setup"
-topics: [ci, markdown-link-check, cross-repo-standard]
+topics: [testing]
 refs: []
 ---
 
@@ -43,8 +43,7 @@ jobs:
       check-external: true
 ```
 
-For repos **without** omnibase_core as a dependency (omnidash, omninode_infra, omniweb,
-omnibase_compat):
+For repos **without** omnibase_core as a dependency (for example, a dashboard or a shared-types package):
 
 ```yaml
 jobs:

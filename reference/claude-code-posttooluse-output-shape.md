@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-06-12"
 title: "Claude Code PostToolUse updatedToolOutput Shape"
-topics: [claude-code, hooks, posttooluse, output-suppression]
+topics: [agent-integrations]
 refs: []
 ---
 
@@ -14,7 +14,6 @@ refs: []
 # PostToolUse `updatedToolOutput` Shape Probe — Empirical Resolution of F4
 
 **Date:** 2026-06-12
-**Plan:** `omni_home/docs/plans/2026-06-12-skill-output-suppression-plan.md` (Phase 0, items 1, 5, 6)
 **CLI version:** Claude Code `2.1.175` (`claude --version`, 2026-06-12)
 **Probe host:** macOS (darwin 24.3.0), live installed CLI, headless `claude -p` sessions
 **Probe location:** scratch project in a throwaway worktree with throwaway `.claude/settings.json` hooks — NOT the omniclaude plugin
@@ -38,9 +37,7 @@ such that no later hook in the same matcher list can overwrite its replacement.
 ## Probe Method
 
 Each probe ran a fresh headless session (`claude -p ... --allowedTools Bash
---model haiku --output-format json`) inside the scratch project. Ground truth is
-the session transcript JSONL under
-`~/.claude/projects/-...-probe-scratch/<session>.jsonl` — specifically the
+--model haiku --output-format json`) inside the scratch project. The probes inspected the
 `tool_result` content block the model actually received — not the model's
 self-report (which was also captured and agreed in every run).
 
@@ -158,7 +155,6 @@ single-emitter grep gate) to the validator scope.
 `env | sort` captured from inside the PostToolUse hook process during the live
 string-form run (`evidence/hook_env_string.txt`):
 
-- `ONEX_STATE_DIR=$OMNI_HOME/.onex_state` — **present**. Source: the `env` block in
   `~/.claude/settings.json` (verified present there), inherited by the CLI process
   and passed to hook subprocesses.
 - `ONEX_ARTIFACT_STORE_ROOT` — **absent**. It is set nowhere today: not in the
@@ -170,7 +166,6 @@ settings `env` block), so environment plumbing works — but `ONEX_ARTIFACT_STOR
 must be explicitly provided before any Phase 1 `ArtifactStore` call from hook code.
 Per the plan (Phase 0 item 5), the hook wrapper scripts must inject it from the
 plugin settings path (same mechanism as `onex-paths.sh`), deriving
-`ONEX_ARTIFACT_STORE_ROOT=$OMNI_HOME/.onex_state/artifacts` (or sourcing
 `~/.omnibase/.env` once the variable is added there). The Phase 1 fail-fast
 `KeyError` must never fire from inside a hook due to a missing wrapper export.
 
@@ -235,18 +230,6 @@ invisible (Probe 1), Phase 3 ships a protocol-level unit test asserting this exa
 JSON on stdout, and the CLI version is re-probed if the contract test ever starts
 failing against a newer installed CLI.
 
-## Evidence Inventory
+## Evidence boundary
 
-| Artifact | Location |
-|----------|----------|
-| Scratch project + hook scripts + raw captures | `$OMNI_HOME/omni_worktrees/probe-scratch/` (throwaway; key excerpts inlined above) |
-| String-form session transcript | `~/.claude/projects/-Users-...-probe-scratch/b00e4a65-c876-4768-baa6-1c6da9def8a9.jsonl` |
-| Object-form session transcript | `.../73a7636d-0d67-419c-9c03-d626aefb4c47.jsonl` |
-| Ordering run A / B transcripts | `.../6f6ee8ca-8582-42b9-8571-484c7a6ed4d2.jsonl` / `.../9b1d3ee7-fdd1-44f5-8d20-a38e4fb1769d.jsonl` |
-| stderr-merge session transcript | `.../8435bbb5-df20-40e4-ac8b-6d40fc3ca6f8.jsonl` |
-| Hook env dump | `probe-scratch/evidence/hook_env_string.txt`, `hook_env_object.txt` |
-| Hook stdin captures | `probe-scratch/evidence/hook_stdin_string.jsonl`, `hook_stdin_object.jsonl` |
-
-All transcript excerpts above are verbatim copies from the session JSONL files
-(machine-local; transcripts are not committed). The committed record is this
-document.
+The protocol examples above describe the observed output shapes for the named CLI version. Private session transcripts are not public references; re-run a local protocol test when upgrading the CLI.

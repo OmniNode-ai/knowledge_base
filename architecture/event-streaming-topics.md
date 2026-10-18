@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "ONEX Event Streaming Topics - Specification (v1)"
-topics: [omnibase-infra, event, streaming, topics]
+topics: [bus, runtime]
 refs: []
 ---
 

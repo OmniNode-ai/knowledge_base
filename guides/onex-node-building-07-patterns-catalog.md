@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Patterns Catalog -- Common ONEX Node Patterns"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - patterns
-  - catalog
+topics: [nodes]
 refs: []
 summary: "A catalog of handler-based patterns for building ONEX nodes, where each pattern pairs a YAML contract, a thin node shell, and a handler class holding the business logic. Organized by COMPUTE, EFFECT, REDUCER, and ORCHESTRATOR patterns, plus testing patterns. For developers implementing nodes against the four-node architecture invariants."
 ---
@@ -1091,7 +1086,7 @@ class TestHandlerSchemaValidator:
     def test_valid_data_passes(self) -> None:
         handler = HandlerSchemaValidator()
         request = ModelValidationRequest(
-            data={"user_id": "u123", "email": "test@example.com"},  # sanitization-ok: illustrative example value, not a real address
+            data={"user_id": "u123", "email": "reader@example.invalid"},
             rules=[
                 {"type": "field_presence", "field": "user_id"},
                 {"type": "field_presence", "field": "email"},

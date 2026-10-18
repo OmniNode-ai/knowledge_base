@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "LLM Routing Architecture"
-topics: ["omniclaude", "llm-routing"]
+topics: [delegation, agent-integrations]
 refs: []
 ---
 

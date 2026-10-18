@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "Untitled"
-topics: [omnibase-infra, shared, enum, ownership]
+topics: [contracts, runtime]
 refs: []
 ---
 

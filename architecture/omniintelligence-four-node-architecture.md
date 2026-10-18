@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "ONEX Four-Node Architecture in OmniIntelligence"
-topics:
-  - omniintelligence
-  - node-archetypes
-  - architecture
+topics: [nodes, architecture]
 refs:
   - reference/omniintelligence-node-inventory.md
   - reference/omniintelligence-event-surface.md

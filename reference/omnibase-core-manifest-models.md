@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Manifest Models"
-topics:
-  - omnibase-core
-  - manifest
-  - models
+topics: [configuration]
 refs: []
 ---
 

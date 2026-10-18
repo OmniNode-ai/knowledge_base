@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Cache Tuning for Production Deployment"
-topics:
-  - omnibase-core
-  - production
-  - cache
-  - tuning
+topics: [self-hosting]
 refs: []
 ---
 

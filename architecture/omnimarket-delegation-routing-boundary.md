@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "OmniMarket Delegation Routing Boundary"
-topics:
-  - omnimarket
-  - delegation
-  - llm-routing
+topics: [delegation, governance]
 refs: []
 ---
 

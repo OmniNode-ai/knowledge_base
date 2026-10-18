@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "ORCHESTRATOR Node Template"
-topics:
-  - omnibase-core
-  - orchestrator
-  - node
-  - template
+topics: [nodes]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Container-Based Dependency Injection"
-topics: [omnibase-infra, container, dependency, injection]
+topics: [runtime, packaging]
 refs: []
 ---
 
@@ -398,6 +398,4 @@ When migrating from singletons to container-based injection:
 
 ## Related Patterns
 
-- Error Handling Patterns (internal knowledge base) - Using services in error handling
-- Error Recovery Patterns (internal knowledge base) - Service-based retry logic
 - Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`) - Passing context through services

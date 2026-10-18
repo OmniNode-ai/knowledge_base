@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR-001: Graceful Shutdown with Drain Period"
-topics: [omnibase-infra, adr, graceful, shutdown]
+topics: [runtime]
 refs: []
 ---
 

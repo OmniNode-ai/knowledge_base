@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-26"
 title: "OmniDash Composable Frame Architecture"
-topics: [omnidash, dashboard, widgets, component-registry, data-source, frontend]
+topics: [dashboard]
 refs: [reference/omnidash-dashboard-definition.md, reference/omnidash-component-manifest.md, guides/omnidash-development.md, architecture/omnidash-component-truth-boundary.md]
 ---
 

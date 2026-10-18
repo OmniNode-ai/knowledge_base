@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Compute Plugin Determinism"
-topics: [omnibase-infra, compute, plugin, determinism]
+topics: [nodes, replay, packaging]
 refs: []
 ---
 

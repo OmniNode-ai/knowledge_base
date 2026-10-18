@@ -4,7 +4,7 @@ status: accepted
 date: "2025-12-10"
 title: "ADR-0038: CI Workflow Modification Risk (Transport Import Branch Protection)"
 adr_id: ADR-0038
-topics: [omnibase_core, ci, transport-imports, dependency-inversion, risk-mitigation]
+topics: [bus, testing, packaging]
 refs: [adrs/ADR-0034-core-infra-dependency-boundary.md]
 supersedes: []
 superseded_by: []

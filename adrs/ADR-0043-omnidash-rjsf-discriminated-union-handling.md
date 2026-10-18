@@ -4,7 +4,7 @@ status: accepted
 date: "2026-06-20"
 title: "ADR-0043: Render Pydantic-Generated JSON Schema With Stock @rjsf, No Custom Field"
 adr_id: ADR-0043
-topics: [omnidash, contract-driven-ui, json-schema, rjsf, pydantic, forms]
+topics: [contracts, dashboard]
 refs: [adrs/ADR-0042-omnidash-cross-renderer-typed-empty-state-gate.md, architecture/omnidash-composable-frame.md]
 supersedes: []
 superseded_by: []

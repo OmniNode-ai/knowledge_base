@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Protocol Selection Guide"
-topics:
-  - omnibase_spi
-  - protocols
-  - design-patterns
+topics: [architecture]
 refs: []
 ---
 

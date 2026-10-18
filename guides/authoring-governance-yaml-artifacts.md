@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Authoring Governance YAML Artifacts"
-topics: [occ, contracts, dod-evidence, governance, authoring]
+topics: [governance, contracts, evidence]
 refs: []
 ---
 
@@ -202,7 +202,6 @@ The Ticket Contract template (`ticket_contract.template.yaml`) is used to create
 
   A **binding/stamp item** — one whose only job is to prove the OCC PR's own identity (e.g. `dod-occ-self`, matching this contract to its own PR/commit) rather than to prove the *product* work is correct — is exempt from this rule; a self-referential or existence check is legitimate there. It is only the item(s) meant to be *the* proof of the ticket's work that must clear L1.
 
-  **Execution constraint**: `run_contract_compliance_check.py` sets `$CONTRACT_REPO_DIR` (this repo's root) but does **not** set `$OMNI_HOME`, so a `check_value` that greps a path in a sibling repo (`docs/handoff/...` in `omni_home`, etc.) will always fail — not because self-reference is required, but because the command must not depend on a filesystem path outside this checkout. A `gh`/API-based check has no such path dependency and works unmodified.
 
 **Example (correct, falsifiable, for a product-PR evidence item):**
 ```yaml

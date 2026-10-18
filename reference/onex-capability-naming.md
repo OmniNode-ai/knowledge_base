@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Capability Naming Conventions"
-topics:
-  - omnibase-core
-  - capability
-  - naming
+topics: [governance]
 refs: []
 ---
 

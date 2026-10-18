@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Node Building Guide"
-topics:
-  - omnibase-core
-  - node
-  - building
-  - overview
+topics: [nodes, overview]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "Topic Catalog Architecture"
-topics: [omnibase-infra, topic, catalog]
+topics: [bus, runtime]
 refs: []
 ---
 

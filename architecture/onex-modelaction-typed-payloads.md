@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ModelAction Typed Payloads"
-topics:
-  - omnibase-core
-  - modelaction
-  - typed
-  - payloads
+topics: [contracts]
 refs: []
 ---
 

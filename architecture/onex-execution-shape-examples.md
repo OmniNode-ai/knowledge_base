@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Execution Shape Examples"
-topics:
-  - omnibase-core
-  - execution
-  - shape
-  - examples
+topics: [architecture]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "DB Boundary Policy"
-topics: [database, service-boundary, check-db-boundary, onex-exclude]
+topics: [governance]
 refs: []
 ---
 
@@ -75,7 +75,7 @@ from omnimemory.repositories import DocumentRepository
 ### 3. Shared Database Access
 
 Services MUST NOT share a single database connection pool or use a common "bridge" database
-for cross-service communication. The legacy `omninode_bridge` database pattern is deprecated.
+for cross-service communication. The legacy `legacy_shared_database` database pattern is deprecated.
 
 ## Allowed Shared Variables
 

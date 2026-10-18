@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "Dual-Binding Test Cases — the Harness Convention"
-topics: [testing, seam-binding, integration-testing, occ, golden-chain]
+topics: [testing, governance]
 refs: []
 ---
 

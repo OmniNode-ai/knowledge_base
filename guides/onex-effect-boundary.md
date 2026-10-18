@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Effect Boundary Guide"
-topics:
-  - omnibase-core
-  - effect
-  - boundary
+topics: [governance]
 refs: []
 ---
 
@@ -453,7 +450,7 @@ def create_test_registry() -> ServiceEffectMockRegistry:
         lambda user_id: {
             "id": user_id,
             "name": "Test User",
-            "email": "test@example.com",  # sanitization-ok: illustrative example value, not a real address
+            "email": "reader@example.invalid",
             "created_at": "2025-01-01T00:00:00Z",
         },
     )
@@ -553,7 +550,7 @@ def test_fetch_user_mocked(enforcer):
 
     assert result["id"] == "user-123"
     assert result["name"] == "Test User"
-    assert result["email"] == "test@example.com"  # sanitization-ok: illustrative example value, not a real address
+    assert result["email"] == "reader@example.invalid"
 
 
 def test_get_timestamp_mocked(enforcer):

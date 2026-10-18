@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Drift Control System — Design"
-topics: [occ, drift-control, governance, seam-contracts, enforcement]
+topics: [governance, contracts]
 refs: []
 ---
 

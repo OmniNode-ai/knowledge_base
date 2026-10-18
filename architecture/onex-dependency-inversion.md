@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Dependency Inversion in ONEX Architecture"
-topics:
-  - omnibase-core
-  - dependency
-  - inversion
+topics: [packaging]
 refs: []
 ---
 

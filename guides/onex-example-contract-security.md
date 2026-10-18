@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Security Considerations for Example Contracts"
-topics:
-  - omnibase-core
-  - example
-  - contract
-  - security
+topics: [contracts, security]
 refs: []
 ---
 
@@ -59,7 +55,7 @@ The example contracts in this directory contain fields that represent Personally
 1. **Replace example data with anonymized placeholders**:
    ```yaml
    # INSECURE - Example with real-looking data
-   email: "john.smith@example.com"  # sanitization-ok: illustrative example value, not a real address
+   email: "reader@example.invalid"
 
    # SECURE - Use obvious placeholder data
    email: "user_${input.user_id}@placeholder.test"
@@ -244,7 +240,7 @@ Never include real connection strings in examples:
 
 ```yaml
 # INSECURE
-connection_name: "postgres://user:pass@prod-db.internal:5432/users"  # sanitization-ok: illustrative redacted connection string
+connection_name: "postgres://user:reader@example.invalid:5432/users"
 
 # SECURE
 connection_name: "user_db_pool"  # Resolved from connection configuration
@@ -254,7 +250,7 @@ connection_name: "user_db_pool"  # Resolved from connection configuration
 
 | Data Type | Placeholder Pattern | Example |
 |-----------|---------------------|---------|
-| Email | `user_${id}@placeholder.test` | `user_123@placeholder.test` | <!-- # sanitization-ok: placeholder token, not a real address -->
+| Email | `user_${id}@placeholder.test` | `reader@example.invalid` | <!--
 | Phone | `+1-555-000-${id}` | `+1-555-000-0001` |
 | UUID | `00000000-0000-0000-0000-${id}` | `00000000-0000-0000-0000-000000000001` |
 | IP Address | `192.0.2.${id}` (TEST-NET-1) | `192.0.2.1` |

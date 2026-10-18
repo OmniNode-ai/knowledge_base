@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Policy Registry Trust Model"
-topics: [omnibase-infra, policy, registry, trust]
+topics: [runtime]
 refs: []
 ---
 
@@ -629,9 +629,7 @@ tenant_b.use_registry(global_registry)  # Security boundary violated
 
 ## Related Patterns
 
-- Security Patterns (internal knowledge base) - Comprehensive security guide including policy security, input validation, and authentication
 - Container Dependency Injection (`../architecture/omnibase-infra-container-dependency-injection.md`) - How to properly inject PolicyRegistry
-- Error Handling Patterns (internal knowledge base) - PolicyRegistryError usage
 - Correlation ID Tracking (`../architecture/omnibase-infra-correlation-id-tracking.md`) - Tracing policy evaluations
 
 ## Architecture Layer Enforcement

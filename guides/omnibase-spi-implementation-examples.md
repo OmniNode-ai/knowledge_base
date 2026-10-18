@@ -3,11 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Implementation Examples"
-topics:
-  - omnibase_spi
-  - examples
-  - protocols
-  - omnibase_infra
+topics: [runtime]
 refs: []
 ---
 

@@ -3,9 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Thread Safety in Omnibase Core"
-topics:
-  - omnibase-core
-  - threading
+topics: [runtime]
 refs: []
 ---
 

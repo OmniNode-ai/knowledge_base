@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-27"
 title: "ADR-0028: Receipt Type Consolidation onto ModelDodReceipt"
 adr_id: ADR-0028
-topics: [omnibase_core, receipts, dod-evidence, schema-consolidation]
+topics: [evidence, contracts]
 refs: []
 supersedes: []
 superseded_by: []

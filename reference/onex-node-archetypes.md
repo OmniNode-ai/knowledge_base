@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Node Archetypes Reference"
-topics:
-  - omnibase-core
-  - node
-  - archetypes
+topics: [nodes]
 refs: []
 ---
 

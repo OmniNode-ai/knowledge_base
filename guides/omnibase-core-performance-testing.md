@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Performance Testing Guide"
-topics:
-  - omnibase-core
-  - performance
-  - testing
+topics: [testing]
 refs: []
 summary: "Covers performance testing in omnibase_core, which measures timing, memory usage, and scalability to catch regressions and quantify feature overhead. Explains when to add tests, statistical significance, benchmark stability, regression detection, and CI integration. For engineers maintaining performance as the codebase evolves."
 ---

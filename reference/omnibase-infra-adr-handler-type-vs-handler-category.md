@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: EnumHandlerType vs EnumHandlerTypeCategory Distinction"
-topics: [omnibase-infra, adr, handler, type]
+topics: [handlers, runtime]
 refs: []
 ---
 

@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "Context Enrichment Pipeline Architecture"
-topics: ["omniclaude", "context-injection", "hooks"]
+topics: [agent-integrations]
 refs: []
 ---
 

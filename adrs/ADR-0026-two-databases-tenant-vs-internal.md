@@ -4,7 +4,7 @@ status: superseded
 date: "2026-07-29"
 title: "ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops"
 adr_id: ADR-0026
-topics: [multitenancy, database, rls, tenant-isolation, postgres, data-topology]
+topics: [security]
 refs: [adrs/ADR-0027-one-application-database-domain-separation.md]
 supersedes: []
 superseded_by: [ADR-0027]
@@ -122,48 +122,4 @@ stand.
 
 ## Provenance
 
-This ADR records an operator ruling. A search of every durable decision surface found no
-prior written record of it: Linear (three targeted sweeps, ~75 issues inspected — the
-nearest match, the February 2026 `[Epic] DB-Per-Repo Split`, is a per-service split), the
-ADR corpus, the workspace decisions directory, the rolling work ledger, and the
-`decision_store` table itself (which returns **zero rows** on the target deployment and on
-both local lanes — the surface exists but has never been written to). The ruling is therefore
-recorded here as the decision of record rather than cited to an earlier artifact.
-
-## Related Pivots
-
-## Related Doctrine
-
-## Derived From
-
-Operator ruling, 2026-07-29.
-
-## Evidence
-
-Live read-only census of the target deployment's database instance, 2026-07-29, connected
-as the master role via the deployment's standard admin access path, with the credential
-resolved into process environment only (never inlined). No DDL, no DML, no GRANT, no RLS
-state change.
-
-- 317 application tables across eight databases; 18 carry `tenant_id`.
-- Tenant control plane: 16 tables, 10 tenant-stamped, `tenant_id` typed `uuid`.
-- Analytics warehouse: 86 tables, 7 tenant-stamped, `tenant_id` typed `text`/`varchar`;
-  3 tables with RLS ENABLED (not FORCED), 1 policy each.
-- Runtime database: 72 tables, 1 tenant-stamped, no RLS.
-- `baselines_*`: 8 physical tables across two databases, three names duplicated, none
-  carrying `tenant_id`.
-- `pg_database.datacl` NULL on all nine non-system databases; all seven application login
-  roles hold `CONNECT` on every database.
-
-Full inventory retained internally against the source deployment; this ADR records the
-decision and its corroborating counts, not the underlying deployment's cloud topology.
-
-## Supersedes
-
-## Superseded By
-
-[ADR-0027](ADR-0027-one-application-database-domain-separation.md) supersedes the
-physical two-database topology in this decision. The inventory and failure analysis
-above remain valid historical evidence. The tenant/internal semantic distinction is
-retained, but it is enforced through typed schema classification, distinct workload
-roles, and row-level security inside one application database.
+Decision of record, 2026-07-29.

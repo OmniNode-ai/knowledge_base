@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-01"
 title: "omniclaude PR Validation Path"
-topics: [omniclaude, ci, branch-protection, required-checks]
+topics: [testing, agent-integrations]
 refs: []
 ---
 

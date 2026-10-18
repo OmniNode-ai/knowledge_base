@@ -3,9 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Architecture Overview - omnibase_core"
-topics:
-  - omnibase-core
-  - overview
+topics: [overview]
 refs: []
 ---
 

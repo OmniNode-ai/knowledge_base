@@ -3,10 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ONEX Contract Model Docstring Templates"
-topics:
-  - omnibase-core
-  - docstring
-  - templates
+topics: [contracts]
 refs: []
 summary: "Provides docstring templates for contract model classes, with required elements such as descriptions, attribute documentation, examples, raises sections, and validation rules in Google style. Includes separate templates for contract models, subcontracts, TypedDicts, and enums. For anyone writing or reviewing contract model documentation."
 ---

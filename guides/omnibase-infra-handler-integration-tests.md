@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Handler Integration Tests"
-topics: [omnibase-infra, handler, integration, tests]
+topics: [handlers, testing, runtime]
 refs: []
 ---
 

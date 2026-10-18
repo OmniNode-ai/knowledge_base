@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-23"
 title: "ADR-0004: Registry-Owned Consumer Surface"
 adr_id: ADR-0004
-topics: [registry, projections, consumer-surface, api, architecture-boundary]
+topics: [projections, governance]
 refs:
   - doctrine/authoritative-projections-own-truth.md
   - doctrine/state-is-materialized-projection.md

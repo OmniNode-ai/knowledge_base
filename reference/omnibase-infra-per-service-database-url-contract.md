@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Per-Service Database URL Contract"
-topics: [omnibase-infra, per, service, database]
+topics: [contracts, runtime]
 refs: []
 ---
 
@@ -61,15 +61,15 @@ and `POSTGRES_POOL_MAX_SIZE` (default 10).
 
 ## Fail-Fast Behavior
 
-The implicit `omninode_bridge` default has been removed. Code that previously
-connected to the shared `omninode_bridge` database by default now raises an
+The implicit `legacy_shared_database` default has been removed. Code that previously
+connected to the shared `legacy_shared_database` database by default now raises an
 error unless explicitly configured.
 
 The conceptual change is:
 
 ```python
 # Before
-database = os.getenv("POSTGRES_DATABASE", "omninode_bridge")  # silent coupling
+database = os.getenv("POSTGRES_DATABASE", "legacy_shared_database")  # silent coupling
 
 # After — production code requires OMNIBASE_INFRA_DB_URL with no
 # fallback.  The test helper (PostgresConfig.from_env) additionally falls
@@ -79,13 +79,13 @@ if not db_url:
     raise ValueError("Set OMNIBASE_INFRA_DB_URL")
 ```
 
-## Migration from `omninode_bridge`
+## Migration from `legacy_shared_database`
 
 ### For `.env` files
 
 ```bash
 # Old
-POSTGRES_DATABASE=omninode_bridge
+POSTGRES_DATABASE=legacy_shared_database
 
 # New (preferred)
 OMNIBASE_INFRA_DB_URL=postgresql://role_omnibase_infra:<pw>@<host>:5432/omnibase_infra
@@ -97,7 +97,7 @@ POSTGRES_DATABASE=omnibase_infra
 ### For Docker Compose
 
 Docker Compose files use the standard PostgreSQL image variable `POSTGRES_DB`
-(not `POSTGRES_DATABASE`). Defaults have been updated from `omninode_bridge`
+(not `POSTGRES_DATABASE`). Defaults have been updated from `legacy_shared_database`
 to `omnibase_infra`:
 
 ```yaml

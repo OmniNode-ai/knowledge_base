@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-29"
 title: "ADR-0041: BaselinesROICard Stays Bespoke, Outside the Generic Widget Primitives"
 adr_id: ADR-0041
-topics: [omnidash, widgets, component-primitives, abstraction-timing]
+topics: [dashboard]
 refs: [adrs/ADR-0040-omnidash-storybook-widget-coverage.md, reference/omnidash-component-manifest.md]
 supersedes: []
 superseded_by: []

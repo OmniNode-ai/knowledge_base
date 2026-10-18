@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "ProtocolHandler vs ProtocolEventBus"
-topics:
-  - omnibase_spi
-  - architecture
-  - handler
-  - event-bus
+topics: [architecture, handlers, bus]
 refs: []
 ---
 

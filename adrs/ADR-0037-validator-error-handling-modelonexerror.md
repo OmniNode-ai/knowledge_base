@@ -4,7 +4,7 @@ status: accepted
 date: "2026-01-18"
 title: "ADR-0037: Validator Error Handling with ModelOnexError"
 adr_id: ADR-0037
-topics: [omnibase_core, pydantic, error-handling, validators]
+topics: [contracts]
 refs: [adrs/ADR-0032-reducer-output-exception-consistency.md]
 supersedes: []
 superseded_by: []

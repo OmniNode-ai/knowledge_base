@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Cryptography Library Upgrade to v46.0.3"
-topics: [omnibase-infra, adr, cryptography, upgrade]
+topics: [security, runtime]
 refs: []
 ---
 

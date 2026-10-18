@@ -54,6 +54,10 @@ Keep a TDD focused on one subsystem or one cross-cutting concern. If background 
 | Date | Title | Status |
 |------|-------|--------|
 | [2026-05-31](omninode-architecture-technical-design.md) | Technical Design: OmniNode Platform Architecture | accepted |
+| [2026-10-18](delegation.md) | Delegation architecture guide | accepted |
+| [2026-08-25](delegation-dispatch.md) | Delegation dispatch | accepted |
+| [2026-08-25](delegation-routing-contract.md) | Delegation routing contract | accepted |
+| [2026-06-04](omnimarket-delegation-routing-boundary.md) | Delegation routing ownership | accepted |
 
 ## ONEX kernel architecture (omnibase_core)
 

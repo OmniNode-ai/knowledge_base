@@ -3,7 +3,7 @@ type: architecture
 status: superseded
 date: "2026-02-20"
 title: "(historical) Agent Routing Before and After the Event-Driven Migration"
-topics: ["omniclaude", "routing", "historical"]
+topics: [self-hosting, agent-integrations]
 refs: []
 ---
 

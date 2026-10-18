@@ -3,12 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "OmniMemory Data Ownership"
-topics:
-  - omnimemory
-  - data-ownership
-  - qdrant
-  - memgraph
-  - valkey
+topics: [memory]
 refs:
   - architecture/omnimemory-four-node-architecture.md
   - guides/omnimemory-market-migration-boundary.md

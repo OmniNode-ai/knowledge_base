@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Projector Composite Key Upsert Workaround"
-topics: [omnibase-infra, adr, projector, composite]
+topics: [runtime]
 refs: []
 ---
 

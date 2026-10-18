@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-06-24"
 title: "Event Envelope Canonical Field Names"
-topics: ["onex", "event-envelope", "standards"]
+topics: [bus, governance]
 refs: []
 ---
 

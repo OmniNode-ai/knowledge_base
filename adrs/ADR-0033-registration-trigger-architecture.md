@@ -4,7 +4,7 @@ status: accepted
 date: "2025-12-19"
 title: "ADR-0033: Registration Trigger Architecture"
 adr_id: ADR-0033
-topics: [omnibase_core, registration, events, commands, orchestrator, node-lifecycle]
+topics: [runtime, nodes]
 refs: []
 supersedes: []
 superseded_by: []

@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-07-21"
 title: "Handler Authoring Guide"
-topics: [omnibase-infra, handler, authoring]
+topics: [handlers, runtime]
 refs: []
 ---
 

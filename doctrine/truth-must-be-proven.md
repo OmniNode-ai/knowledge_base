@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Truth Must Be Proven, Not Claimed"
-topics: [truth-verification]
+topics: [evidence]
 refs:
   - doctrine/evidence-is-first-class-output.md
   - doctrine/authoritative-projections-own-truth.md

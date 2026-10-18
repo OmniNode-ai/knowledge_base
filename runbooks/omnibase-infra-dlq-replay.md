@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-09-02"
 title: "Dead Letter Queue (DLQ) Replay Guide"
-topics: [omnibase-infra, dlq, replay]
+topics: [replay, runtime]
 refs: []
 ---
 

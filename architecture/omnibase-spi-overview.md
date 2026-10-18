@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "omnibase_spi Architecture Overview"
-topics:
-  - omnibase_spi
-  - architecture
-  - protocols
+topics: [overview, architecture]
 refs: []
 ---
 

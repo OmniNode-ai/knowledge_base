@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Message Category to Topic Mapping"
-topics:
-  - omnibase-core
-  - message
-  - topic
-  - mapping
+topics: [bus]
 refs: []
 ---
 
@@ -53,7 +49,7 @@ from omnibase_core.models.events import ModelEventEnvelope
 
 # Events describe what happened
 event = ModelEventEnvelope.create_broadcast(
-    payload=UserCreatedEvent(user_id="123", email="user@example.com"),  # sanitization-ok: illustrative example value, not a real address
+    payload=UserCreatedEvent(user_id="123", email="reader@example.invalid"),
     source_node_id=node_id,
 )
 # Publish to: dev.user-service.events.v1
@@ -75,7 +71,7 @@ from omnibase_core.models.events import ModelEventEnvelope
 
 # Commands request action
 command = ModelEventEnvelope.create_directed(
-    payload=CreateUserCommand(email="new@example.com", name="New User"),  # sanitization-ok: illustrative example value, not a real address
+    payload=CreateUserCommand(email="reader@example.invalid", name="New User"),
     source_node_id=orchestrator_id,
     target_node_id=user_service_id,
 )

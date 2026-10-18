@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Protocol Design Guidelines"
-topics: [omnibase-infra, adr, protocol, design]
+topics: [runtime]
 refs: []
 ---
 

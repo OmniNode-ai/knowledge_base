@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "Agent Routing Architecture"
-topics: ["omniclaude", "agents", "routing"]
+topics: [agent-integrations]
 refs: []
 ---
 

@@ -4,7 +4,7 @@ status: accepted
 date: "2026-10-17"
 title: "ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service"
 adr_id: ADR-0053
-topics: [beta-launch, delegation, byok, hosted-service, getting-started]
+topics: [cloud-api, delegation, overview]
 refs: [guides/onex-plugin-quickstart.md, guides/connecting-to-the-cloud.md]
 supersedes: [ADR-0021]
 superseded_by: []

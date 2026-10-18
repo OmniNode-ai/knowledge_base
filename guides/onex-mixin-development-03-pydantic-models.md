@@ -3,12 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "Pydantic Models for Mixins"
-topics:
-  - omnibase-core
-  - mixin
-  - development
-  - pydantic
-  - models
+topics: [contracts]
 refs: []
 ---
 

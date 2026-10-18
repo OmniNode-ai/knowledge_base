@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-07-21"
 title: "MCP Service Architecture"
-topics: [omnibase-infra, mcp, service]
+topics: [agent-integrations, runtime]
 refs: []
 ---
 

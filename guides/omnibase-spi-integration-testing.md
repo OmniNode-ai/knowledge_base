@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Integration Testing"
-topics:
-  - omnibase_spi
-  - testing
-  - integration
+topics: [testing]
 refs: []
 ---
 

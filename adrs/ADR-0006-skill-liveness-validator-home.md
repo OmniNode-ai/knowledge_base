@@ -4,7 +4,7 @@ status: accepted
 date: "2026-04-28"
 title: "ADR-0006: Skill Liveness Validator Home"
 adr_id: ADR-0006
-topics: [validators, skills, architecture-layers, pre-commit, ci]
+topics: [agent-integrations, testing]
 refs:
   - doctrine/contracts-define-reality.md
   - doctrine/fail-fast-and-loud.md

@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Envelope Flow Architecture"
-topics:
-  - omnibase-core
-  - envelope
-  - flow
-  - architecture
+topics: [bus, architecture]
 refs: []
 ---
 

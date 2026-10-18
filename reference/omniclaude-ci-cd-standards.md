@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-25"
 title: "CI/CD Standards"
-topics: ["omniclaude", "ci-cd"]
+topics: [testing, agent-integrations]
 refs: []
 ---
 

@@ -3,10 +3,7 @@ type: guide
 status: current
 date: "2026-09-01"
 title: "omnibase_spi Developer Guide"
-topics:
-  - omnibase_spi
-  - developer-guide
-  - protocols
+topics: [architecture]
 refs: []
 ---
 

@@ -3,10 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "Environment-Based Configuration Management"
-topics:
-  - omnibase-core
-  - configuration
-  - management
+topics: [configuration]
 refs: []
 ---
 

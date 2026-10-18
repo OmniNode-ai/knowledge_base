@@ -5,7 +5,7 @@ date: "2026-05-23"
 title: "Completion Requires Durable Evidence"
 observed_date: "2026-01-20"
 confidence: high
-topics: [evidence, completion, done-definition, receipts, verification]
+topics: [evidence]
 refs:
   - doctrine/evidence-is-first-class-output.md
   - doctrine/truth-must-be-proven.md

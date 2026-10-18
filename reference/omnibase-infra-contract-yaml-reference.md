@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Contract.yaml Reference"
-topics: [omnibase-infra, contract, yaml, reference]
+topics: [contracts, runtime]
 refs: []
 ---
 
@@ -1107,7 +1107,6 @@ workflow_coordination:
 |-------|----------|
 | Coding standards | CLAUDE.md (authoritative source) |
 | Quick start | Quick Start Guide |
-| Node archetypes | Node Archetypes Reference (internal knowledge base) |
 | Architecture | Architecture Overview |
 | Registration example | 2-Way Registration (complete 4-phase walkthrough) |
 | All patterns | Pattern Documentation |

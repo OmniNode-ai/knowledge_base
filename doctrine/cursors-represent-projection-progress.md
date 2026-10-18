@@ -3,7 +3,7 @@ type: doctrine
 status: accepted
 date: "2026-05-23"
 title: "Cursors Represent Projection Progress"
-topics: [projection-authority]
+topics: [projections, governance]
 refs: [doctrine/authoritative-projections-own-truth.md, doctrine/state-is-materialized-projection.md, doctrine/contracts-define-reality.md]
 ---
 

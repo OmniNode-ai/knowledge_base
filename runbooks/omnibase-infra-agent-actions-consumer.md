@@ -3,7 +3,7 @@ type: runbook
 status: current
 date: "2026-09-02"
 title: "Agent Actions Consumer - Operational Runbook"
-topics: [omnibase-infra, agent, actions, consumer]
+topics: [self-hosting, agent-integrations, runtime]
 refs: []
 ---
 

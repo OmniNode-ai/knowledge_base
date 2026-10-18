@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-06-24"
 title: "omniclaude Repo Charter"
-topics: ["omniclaude", "repo-boundaries"]
+topics: [agent-integrations]
 refs: []
 ---
 

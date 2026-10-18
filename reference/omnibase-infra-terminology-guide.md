@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "Terminology Guide"
-topics: [omnibase-infra, terminology, guide]
+topics: [governance, runtime]
 refs: []
 ---
 

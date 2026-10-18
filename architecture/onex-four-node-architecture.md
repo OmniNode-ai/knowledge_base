@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-02"
 title: "ONEX Four-Node Architecture Documentation"
-topics:
-  - omnibase-core
-  - four
-  - node
-  - architecture
+topics: [nodes, architecture]
 refs: []
 summary: "Documents the ONEX Four-Node Architecture design pattern and each node's responsibilities in the processing pipeline. Covers v0.4.0 changes, inter-node communication, error handling patterns, performance, monitoring, and testing. Intended for developers building or maintaining nodes within this architecture."
 ---

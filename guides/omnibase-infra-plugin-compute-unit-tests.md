@@ -3,7 +3,7 @@ type: guide
 status: current
 date: "2026-09-02"
 title: "PluginCompute Unit Tests"
-topics: [omnibase-infra, plugin, compute, unit]
+topics: [testing, nodes, runtime]
 refs: []
 ---
 

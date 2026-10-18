@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-09-02"
 title: "ADR: Kafka is Required Infrastructure (Rule #8)"
-topics: [omnibase-infra, adr, kafka, required]
+topics: [bus, runtime]
 refs: []
 ---
 

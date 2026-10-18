@@ -3,7 +3,7 @@ type: reference
 status: current
 date: "2026-08-26"
 title: "OmniDash Typography Primitives — Text and Heading"
-topics: [omnidash, typography, component-api, design-system]
+topics: [dashboard]
 refs: [adrs/ADR-0039-omnidash-typography-system.md, guides/omnidash-development.md]
 ---
 

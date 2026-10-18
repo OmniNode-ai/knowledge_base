@@ -3,11 +3,7 @@ type: architecture
 status: accepted
 date: "2026-09-01"
 title: "omnibase_spi Protocol Sequence Diagrams"
-topics:
-  - omnibase_spi
-  - architecture
-  - protocols
-  - sequence-diagrams
+topics: [architecture]
 refs: []
 ---
 
