@@ -450,7 +450,13 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
     core_prefixes = ("docs/decisions/", "docs/standards/", "docs/troubleshooting/")
     for row in repos_with_rows["omnibase_core"]:
         assert row["bucket"] == "A"
-        assert row["cutover_state"] == "moved"
+        if row["source_path"] == "docs/standards/CI_CD_STANDARDS.md":
+            # Removed from the knowledge base 2026-10-17 instead of staying
+            # published with status: stale; its source is gone from the repo too.
+            assert row["cutover_state"] == "deleted"
+            assert row["triage_verdict"] == "DELETE"
+        else:
+            assert row["cutover_state"] == "moved"
         assert row["source_path"].startswith(core_prefixes)
 
     assert len(repos_with_rows["omniclaude"]) == 21

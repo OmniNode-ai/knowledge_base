@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-03-24"
 title: "Environment variable lifecycle fix"
 topics: [configuration, ci, validators, runtime-health]

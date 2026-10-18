@@ -134,7 +134,6 @@ order.
 ## Related Documentation
 
 - [ADR-0034](../adrs/ADR-0034-core-infra-dependency-boundary.md) — Core-Infra Dependency Boundary
-- [ONEX CI/CD Standards](ci-cd-standards.md)
 
 ---
 

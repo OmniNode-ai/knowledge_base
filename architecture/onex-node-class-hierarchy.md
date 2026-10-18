@@ -9,6 +9,7 @@ topics:
   - class
   - hierarchy
 refs: []
+summary: "Explains the three tiers of node base classes in omnibase_core: ModelService wrappers for recommended use, Node classes for advanced control, and NodeCoreBase for experts. Includes a decision matrix, feature comparison, migration paths, and common scenarios. For developers choosing which base class to build on."
 ---
 
 <!-- Migrated from omnibase_core:docs/architecture/NODE_CLASS_HIERARCHY.md on 2026-09-02 -->
@@ -16,7 +17,6 @@ refs: []
 # Node Class Hierarchy Guide
 
 **Version**: 1.3.1
-**Last Updated**: 2025-12-06
 **Status**: ✅ Complete
 **Correlation ID**: `a3c8f7d4-2b5e-4a19-9f3a-8d6e1c4b7a2f`
 
@@ -1403,4 +1403,3 @@ Migration to declarative nodes was completed in v0.4.0.
 
 **Correlation ID**: `a3c8f7d4-2b5e-4a19-9f3a-8d6e1c4b7a2f`
 **Document Version**: 1.3.1
-**Last Updated**: 2025-12-06

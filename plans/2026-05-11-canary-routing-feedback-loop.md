@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-05-11"
 title: "Canary-to-routing feedback loop"
 topics: [routing, canary, model-scoring, reducers]

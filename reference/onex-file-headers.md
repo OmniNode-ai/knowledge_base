@@ -384,4 +384,4 @@ pre-commit run --all-files
 
 ---
 
-**Last Updated**: 2026-02-19 | **Related PR**: SPDX MIT License Header Rollout
+**Related PR**: SPDX MIT License Header Rollout

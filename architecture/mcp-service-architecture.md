@@ -9,8 +9,6 @@ refs: []
 
 # MCP Service Architecture
 
-> **Status**: Current | **Last Updated**: 2026-02-19
-
 The Model Context Protocol (MCP) integration exposes ONEX nodes as callable tools that AI agents (such as Claude) can discover and invoke. This document covers the full stack: the handler that owns the server lifecycle, the adapter that translates ONEX contracts into MCP tool definitions, the streamable HTTP transport layer, and how the pieces wire together at runtime.
 
 ---

@@ -679,6 +679,5 @@ nodes/my_node/
 
 ---
 
-**Last Updated**: 2026-01-18
 **Version**: 1.0.0
 **Maintainer**: ONEX Framework Team

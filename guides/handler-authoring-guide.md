@@ -9,7 +9,6 @@ refs: []
 
 # Handler Authoring Guide
 
-> **Status**: Current | **Last Updated**: 2026-02-19
 
 This guide walks through creating a new handler for an existing ONEX node — from deciding the right handler type to registering it in the contract YAML. It uses a concrete Postgres-reading handler as the running example.
 

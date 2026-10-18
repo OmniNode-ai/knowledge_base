@@ -16,7 +16,6 @@ refs: []
 # Custom `__bool__` Pattern for Result Models
 
 > **Version**: 1.0.0
-> **Last Updated**: 2025-12-26
 > **Status**: Complete
 > **Purpose**: Document the custom `__bool__` pattern for Pydantic result models
 > **Target Audience**: Node developers implementing result models
@@ -482,4 +481,4 @@ def test_model_bool_with_zero_value() -> None:
 
 ---
 
-**Last Updated**: 2025-12-26 | **Version**: 1.0.0
+**Version**: 1.0.0

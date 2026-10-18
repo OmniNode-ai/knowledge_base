@@ -161,6 +161,9 @@ class BaseFrontmatter(BaseModel):
     title: str
     topics: list[str] = []
     refs: list[str] = []
+    # Optional two- or three-sentence statement of the page's point, shown in
+    # the type index so a reader sees it without opening a long page.
+    summary: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -197,7 +200,9 @@ class ExperimentFrontmatter(BaseFrontmatter):
 
 class PlanFrontmatter(BaseFrontmatter):
     type: Literal["plan"]
-    status: Literal["draft", "active", "completed", "superseded"]
+    # `historical`: a point-in-time plan kept as a record of intent, not a
+    # statement of what is built or a live roadmap item.
+    status: Literal["draft", "active", "completed", "superseded", "historical"]
 
 
 class ArchitectureFrontmatter(BaseFrontmatter):

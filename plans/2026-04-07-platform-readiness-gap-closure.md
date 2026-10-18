@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-07"
 title: "Platform readiness gap closure plan"
 topics: [verification, platform-readiness, observability]

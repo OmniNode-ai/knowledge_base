@@ -166,7 +166,9 @@ def generate_by_type(artifacts: list[dict]) -> str:
             title = artifact.get("title", "Untitled")
             path = artifact.get("_path", "")
             status = artifact.get("status", "")
-            lines.append(f"- **[{title}]({path})** — {status}")
+            summary = artifact.get("summary")
+            suffix = f". {summary}" if summary else ""
+            lines.append(f"- **[{title}]({path})** — {status}{suffix}")
         lines.append("")
 
     for artifact_type in sorted(type_map):

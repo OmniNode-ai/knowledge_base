@@ -16,7 +16,6 @@ refs: []
 # Mixin-Subcontract Mapping Guide
 
 **Version**: 1.1.0
-**Last Updated**: 2026-02-14
 **Status**: Comprehensive Architecture Reference
 
 ## Overview
@@ -1126,6 +1125,5 @@ class MyNode(NodeCompute, MixinCaching):
 
 ---
 
-**Last Updated**: 2026-02-14
 **Version**: 1.1.0
 **Correlation ID**: `fbe7a832-7fc8-4d12-9e92-5a8d0b8e6c4a`

@@ -247,7 +247,8 @@ Knowledge base artifacts grouped by topic.
 
 ## beta-launch
 
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0021 (historical): July 2026 Beta Priority Lock](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr)
 
 ## bifrost
 
@@ -273,7 +274,6 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](adrs/ADR-0010-required-context-parity-ratchet.md)** (adr)
 - **[ADR-0023: Remove the onex_change_control Merge Queue](adrs/ADR-0023-remove-occ-merge-queue.md)** (adr)
 - **[ADR-0029: Model B — Failing-Rollup Validator Enforcement (pilot: omnibase_core)](adrs/ADR-0029-model-b-failing-rollup-validator-enforcement.md)** (adr)
-- **[CI/CD Standards](reference/ci-cd-standards.md)** (reference)
 - **[omniclaude PR Validation Path](reference/omniclaude-pr-validation-path.md)** (reference)
 
 ## breaker
@@ -318,6 +318,10 @@ Knowledge base artifacts grouped by topic.
 
 - **[Event Bus Integration Guide](architecture/event-bus-integration.md)** (architecture)
 - **[Event Bus Operations Runbook](runbooks/omnibase-infra-event-bus-operations.md)** (runbook)
+
+## byok
+
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr)
 
 ## c2
 
@@ -402,7 +406,6 @@ Knowledge base artifacts grouped by topic.
 - **[Verification before and after merge, and declared lab state, as ONEX nodes, events and projections](plans/2026-09-28-verification-before-and-after-merge-and-declared-lab-state.md)** (plan)
 - **[Async Hang Debugging Guide](guides/async-hang-debugging.md)** (guide)
 - **[CI Test Strategy](guides/omnibase-infra-ci-test-strategy.md)** (guide)
-- **[CI/CD Standards](reference/ci-cd-standards.md)** (reference)
 - **[CI Documentation Validation Setup](reference/ci-validation-setup.md)** (reference)
 - **[Cross-Repo Merge Dependency Graph](reference/merge-dependency-graph.md)** (reference)
 - **[omniclaude PR Validation Path](reference/omniclaude-pr-validation-path.md)** (reference)
@@ -684,7 +687,6 @@ Knowledge base artifacts grouped by topic.
 ## cross-repo-standard
 
 - **[AGENT.md Template](reference/agent-md-template.md)** (reference)
-- **[CI/CD Standards](reference/ci-cd-standards.md)** (reference)
 - **[CI Documentation Validation Setup](reference/ci-validation-setup.md)** (reference)
 - **[Standard Documentation Layout](reference/standard-doc-layout.md)** (reference)
 
@@ -738,7 +740,7 @@ Knowledge base artifacts grouped by topic.
 
 ## data-topology
 
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 
 ## data-verification
@@ -747,7 +749,7 @@ Knowledge base artifacts grouped by topic.
 
 ## database
 
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 - **[OmniMarket Projection API Materialization](architecture/omnimarket-projection-api-materialization.md)** (architecture)
 - **[DB Boundary Policy](reference/db-boundary-policy.md)** (reference)
@@ -780,7 +782,8 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0018: Delegation Ladder Acceptance = Escalating-Complexity Graded Benchmark, Local Floor to Paid-Cloud Ceiling](adrs/ADR-0018-delegation-graded-benchmark-ladder.md)** (adr)
 - **[ADR-0048: Local LLM Delegation with 2-Clean-Run Quality Gate](adrs/ADR-0048-delegation-orchestrator-quality-gate.md)** (adr)
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr)
-- **[Delegation Architecture](architecture/delegation-architecture.md)** (architecture)
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr)
+- **[(historical) Delegation Bridge Architecture, Hook-Driven](architecture/delegation-architecture.md)** (architecture)
 - **[Delegation Dispatch Architecture](architecture/delegation-dispatch.md)** (architecture)
 - **[Delegation Routing Contract](architecture/delegation-routing-contract.md)** (architecture)
 - **[OmniMarket Delegation Routing Boundary](architecture/omnimarket-delegation-routing-boundary.md)** (architecture)
@@ -1279,10 +1282,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Runner disk-admission gate (<ticket>)](runbooks/runner-disk-admission-gate.md)** (runbook)
 
-## gate-check-contract
-
-- **[CI/CD Standards](reference/ci-cd-standards.md)** (reference)
-
 ## gates
 
 - **[ADR-0013: No Driver Seat — Deterministic FSM Control Plane, LLMs as Gated Candidate Generators](adrs/ADR-0013-deterministic-fsm-control-plane.md)** (adr)
@@ -1301,6 +1300,7 @@ Knowledge base artifacts grouped by topic.
 
 ## getting-started
 
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr)
 - **[Combining Deployment Tiers](guides/combining-deployment-tiers.md)** (guide)
 - **[Connecting to the OmniNode Cloud](guides/connecting-to-the-cloud.md)** (guide)
 - **[Getting Started Locally](guides/getting-started-local.md)** (guide)
@@ -1407,8 +1407,8 @@ Knowledge base artifacts grouped by topic.
 
 ## historical
 
-- **[Event-Driven Agent Routing Architecture Proposal](architecture/event-driven-routing-proposal.md)** (architecture)
-- **[Agent Routing Architecture - Visual Comparison](architecture/routing-architecture-comparison.md)** (architecture)
+- **[(historical) Event-Driven Agent Routing Proposal](architecture/event-driven-routing-proposal.md)** (architecture)
+- **[(historical) Agent Routing Before and After the Event-Driven Migration](architecture/routing-architecture-comparison.md)** (architecture)
 
 ## hook
 
@@ -1426,6 +1426,10 @@ Knowledge base artifacts grouped by topic.
 - **[Adding a Hook Handler](guides/adding-a-hook-handler.md)** (guide)
 - **[Adding a Custom PostToolUse Handler](guides/adding-a-posttooluse-handler.md)** (guide)
 - **[Claude Code PostToolUse updatedToolOutput Shape](reference/claude-code-posttooluse-output-shape.md)** (reference)
+
+## hosted-service
+
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr)
 
 ## how-to
 
@@ -1648,7 +1652,7 @@ Knowledge base artifacts grouped by topic.
 ## local-llm
 
 - **[ADR-0048: Local LLM Delegation with 2-Clean-Run Quality Gate](adrs/ADR-0048-delegation-orchestrator-quality-gate.md)** (adr)
-- **[Delegation Architecture](architecture/delegation-architecture.md)** (architecture)
+- **[(historical) Delegation Bridge Architecture, Hook-Driven](architecture/delegation-architecture.md)** (architecture)
 
 ## macos
 
@@ -1823,7 +1827,7 @@ Knowledge base artifacts grouped by topic.
 
 ## multitenancy
 
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 
 ## naming
@@ -2203,14 +2207,14 @@ Knowledge base artifacts grouped by topic.
 - **[Agent Routing Architecture](architecture/agent-routing-architecture.md)** (architecture)
 - **[Compliance Enforcement Architecture](architecture/compliance-enforcement-architecture.md)** (architecture)
 - **[Context Enrichment Pipeline Architecture](architecture/context-enrichment-pipeline.md)** (architecture)
-- **[Delegation Architecture](architecture/delegation-architecture.md)** (architecture)
+- **[(historical) Delegation Bridge Architecture, Hook-Driven](architecture/delegation-architecture.md)** (architecture)
 - **[Emit Daemon Architecture](architecture/emit-daemon-architecture.md)** (architecture)
-- **[Event-Driven Agent Routing Architecture Proposal](architecture/event-driven-routing-proposal.md)** (architecture)
+- **[(historical) Event-Driven Agent Routing Proposal](architecture/event-driven-routing-proposal.md)** (architecture)
 - **[Hook Data Flow Architecture](architecture/hook-data-flow.md)** (architecture)
 - **[LLM Routing Architecture](architecture/llm-routing-architecture.md)** (architecture)
 - **[omniclaude Repo Charter](architecture/omniclaude-repo-charter.md)** (architecture)
 - **[Skill Lifecycle: When a Skill Stays in omniclaude vs. Moves to omnimarket](architecture/omniclaude-skill-lifecycle.md)** (architecture)
-- **[Agent Routing Architecture - Visual Comparison](architecture/routing-architecture-comparison.md)** (architecture)
+- **[(historical) Agent Routing Before and After the Event-Driven Migration](architecture/routing-architecture-comparison.md)** (architecture)
 - **[Service Ownership & Boundaries](architecture/service-boundaries.md)** (architecture)
 - **[Adding a Hook Handler](guides/adding-a-hook-handler.md)** (guide)
 - **[Adding a Custom PostToolUse Handler](guides/adding-a-posttooluse-handler.md)** (guide)
@@ -2464,7 +2468,7 @@ Knowledge base artifacts grouped by topic.
 ## planning
 
 - **[ADR-0007: Canonical Skills Migration Plan](adrs/ADR-0007-skills-canonical-plan.md)** (adr)
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0021 (historical): July 2026 Beta Priority Lock](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
 ## platform-readiness
 
@@ -2496,7 +2500,7 @@ Knowledge base artifacts grouped by topic.
 
 ## postgres
 
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 - **[Getting Started: Self-Hosting the Full Stack](guides/getting-started-self-hosted.md)** (guide)
 
@@ -2540,7 +2544,7 @@ Knowledge base artifacts grouped by topic.
 
 ## prioritization
 
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0021 (historical): July 2026 Beta Priority Lock](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
 ## privacy
 
@@ -2860,12 +2864,12 @@ Knowledge base artifacts grouped by topic.
 
 ## rls
 
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 
 ## roadmap
 
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
+- **[ADR-0021 (historical): July 2026 Beta Priority Lock](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
 ## rollout
 
@@ -2881,9 +2885,9 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0008: Delegation Config Authority and Budget-Aware Tier Cost](adrs/ADR-0008-delegation-config-authority-and-budget-aware-tier-cost.md)** (adr)
 - **[ADR-0009: Complexity-Aware Delegation Routing](adrs/ADR-0009-complexity-aware-delegation-routing.md)** (adr)
 - **[Agent Routing Architecture](architecture/agent-routing-architecture.md)** (architecture)
-- **[Event-Driven Agent Routing Architecture Proposal](architecture/event-driven-routing-proposal.md)** (architecture)
+- **[(historical) Event-Driven Agent Routing Proposal](architecture/event-driven-routing-proposal.md)** (architecture)
 - **[Operation Routing Pattern](architecture/omnibase-infra-operation-routing.md)** (architecture)
-- **[Agent Routing Architecture - Visual Comparison](architecture/routing-architecture-comparison.md)** (architecture)
+- **[(historical) Agent Routing Before and After the Event-Driven Migration](architecture/routing-architecture-comparison.md)** (architecture)
 - **[Delegation pipeline end-to-end fix](plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** (plan)
 - **[Channel runtime foundation — core contracts and routing backbone](plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** (plan)
 - **[Canary-to-routing feedback loop](plans/2026-05-11-canary-routing-feedback-loop.md)** (plan)
@@ -3207,7 +3211,7 @@ Knowledge base artifacts grouped by topic.
 
 ## tenant-isolation
 
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr)
 - **[ADR-0027: One Application Database with Contract-Classified Domains](adrs/ADR-0027-one-application-database-domain-separation.md)** (adr)
 
 ## terminology
@@ -3527,10 +3531,6 @@ Knowledge base artifacts grouped by topic.
 ## wrappers
 
 - **[ONEX Service Wrappers - Pre-Composed Production-Ready Node Classes](reference/omnibase-core-service-wrappers.md)** (reference)
-
-## ws-b
-
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr)
 
 ## ws-t
 

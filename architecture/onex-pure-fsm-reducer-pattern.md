@@ -10,6 +10,7 @@ topics:
   - reducer
   - pattern
 refs: []
+summary: "Defines the Pure FSM Reducer pattern, in which Reducer nodes operate as deterministic, side-effect-free state transformation machines following δ(state, action) → (new_state, intents). Covers requirements, intent emission, benefits, anti-patterns, migration from impure reducers, and testing. For anyone implementing NodeReducer classes."
 ---
 
 <!-- Migrated from omnibase_core:docs/patterns/PURE_FSM_REDUCER_PATTERN.md on 2026-09-02 -->
@@ -1457,7 +1458,6 @@ fsm_guarantees:
 ## Document Metadata
 
 - **Version**: 1.0.1
-- **Last Updated**: 2026-02-14
 - **Maintainer**: ONEX Core Team
 - **Status**: Active
 - **Applicability**: All NodeReducer implementations

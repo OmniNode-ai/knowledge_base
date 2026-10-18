@@ -15,7 +15,6 @@ refs: []
 # Utils API Reference - omnibase_core
 
 **Status**: ✅ Complete
-**Last Updated**: 2026-02-14
 
 ## Overview
 
@@ -362,5 +361,4 @@ class MyNode(NodeCoreBase):
 
 ---
 
-**Last Updated**: 2026-02-14
 **Framework Version**: omnibase_core 0.17.0

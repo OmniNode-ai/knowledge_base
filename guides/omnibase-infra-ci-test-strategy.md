@@ -11,8 +11,6 @@ refs: []
 
 # CI Test Strategy
 
-> **Status**: Current | **Last Updated**: 2026-06-16
-
 Test organization, pytest markers, coverage requirements, and common test commands for `omnibase_infra`. Read this before writing new tests or diagnosing CI failures.
 
 ---

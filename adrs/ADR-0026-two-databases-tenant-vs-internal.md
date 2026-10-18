@@ -2,7 +2,7 @@
 type: adr
 status: superseded
 date: "2026-07-29"
-title: "ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops"
+title: "ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops"
 adr_id: ADR-0026
 topics: [multitenancy, database, rls, tenant-isolation, postgres, data-topology]
 refs: [adrs/ADR-0027-one-application-database-domain-separation.md]
@@ -10,7 +10,9 @@ supersedes: []
 superseded_by: [ADR-0027]
 ---
 
-# ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops
+# ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops
+
+> **Superseded by [ADR-0027](ADR-0027-one-application-database-domain-separation.md)**, which is the current decision. This record is kept as history.
 
 ## Context
 

@@ -15,7 +15,6 @@ refs: []
 # Protocol Discovery Guide
 
 > **Version**: 0.4.0
-> **Last Updated**: 2025-12-08
 > **Related**: CLAUDE.md, Node Building Guide
 
 ---
@@ -1022,6 +1021,5 @@ if TYPE_CHECKING:
 
 ---
 
-**Last Updated**: 2025-12-08
 **Version**: 0.4.0
 **Maintainer**: ONEX Framework Team

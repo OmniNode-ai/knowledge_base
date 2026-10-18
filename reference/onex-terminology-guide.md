@@ -15,7 +15,6 @@ refs: []
 
 **Purpose**: Standard terminology reference for omnibase_core documentation
 **Audience**: Contributors, technical writers
-**Last Updated**: 2025-11-18
 
 ---
 
@@ -448,5 +447,4 @@ fi
 ---
 
 **Version**: 1.0
-**Last Updated**: 2025-11-18
 **Maintained By**: omnibase_core documentation team

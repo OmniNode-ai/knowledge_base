@@ -533,6 +533,5 @@ handlers = corpus.get_unique_handlers()
 
 ---
 
-**Last Updated**: 2025-01-04
 **Documentation Version**: 1.0.0
 **Framework Version**: omnibase_core 0.4.0+

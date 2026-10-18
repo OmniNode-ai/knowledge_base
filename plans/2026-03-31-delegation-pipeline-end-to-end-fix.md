@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-03-31"
 title: "Delegation pipeline end-to-end fix"
 topics: [delegation, routing, llm-backends, classification]

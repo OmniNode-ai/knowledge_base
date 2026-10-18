@@ -19,7 +19,6 @@ refs: []
 >
 > **Version**: 0.4.0
 > **Status**: Migration completed
-> **Last Updated**: 2025-12-09
 > **Purpose**: Document all current import paths for compatibility during v0.4.0 migration
 
 ---

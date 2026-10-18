@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-07-02"
 title: "Escalation proof corpus — specification"
 topics: [delegation, model-tiering, evaluation, escalation]

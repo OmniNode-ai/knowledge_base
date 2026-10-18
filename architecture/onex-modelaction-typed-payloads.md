@@ -16,7 +16,6 @@ refs: []
 # ModelAction Typed Payloads
 
 **Status**: COMPLETE (v0.4.0)
-**Last Updated**: 2025-12-26
 
 ---
 

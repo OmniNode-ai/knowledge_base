@@ -860,6 +860,5 @@ def test_workflow_debug(self, capfd):
 
 ---
 
-**Last Updated**: 2025-12-17
 **Documentation Version**: 1.0.0
 **Framework Version**: omnibase_core 0.4.0

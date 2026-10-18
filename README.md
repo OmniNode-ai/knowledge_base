@@ -55,7 +55,13 @@ The rule for deciding where any individual document belongs is written down, not
 
 The three consumer sections are now open. The validation tooling recognizes their artifact classes, discovers files recursively within every section, and scans repository-root documents and checked-in YAML for sanitization — a document placed in an unrecognized location fails the build rather than going unvalidated.
 
-No documentation has migrated yet. [`migration-manifest.yaml`](migration-manifest.yaml) records the planned mapping; every row is at `not-started`.
+Migration from the product repositories is in progress. [`migration-manifest.yaml`](migration-manifest.yaml) records the mapping, one row per source document. Its `correctness_status` field records what the source document was found to be when it was audited, not the state of the published page: most documents marked `stale` or `broken` there were corrected before they were published. The published page's own frontmatter `status` is the label to read.
+
+### How to read a page's status
+
+- **Guides, reference and runbooks** are living documents: `current` means the page is meant to match the code today, `stale` means it is known to be out of date, and `deprecated` means it describes something that no longer exists.
+- **Plans and experiments** are point-in-time records. A plan describes work as it was intended on its date. `plans/` is history, not a roadmap; a plan marked `historical` records what was planned and is not a statement of what is built.
+- **ADRs, pivots, doctrine and architecture** record decisions and designs. A record marked `superseded` or `deprecated` names its replacement in its first lines, and its title starts with "(historical)".
 
 ## Core Philosophy
 
@@ -69,12 +75,14 @@ No documentation has migrated yet. [`migration-manifest.yaml`](migration-manifes
 
 ## Getting Started
 
+**Beta users: start with the [quickstart](guides/onex-plugin-quickstart.md).** The beta is the local install: you delegate from your own computer to a model you choose, with no OmniNode account and no OmniNode service ([ADR-0053](adrs/ADR-0053-beta-scope-local-install-own-keys.md)). You bring your own key. Every model call goes to a model you run or to a provider on your own API key, and you pay that provider directly. OmniNode does not sell inference. The hosted service is not part of the beta.
+
 **To run the platform, start with [Getting started locally](guides/getting-started-local.md).** It is the shortest complete path to a working ONEX system: one package, one command, and a real event chain you can read back out of a local database file — no broker, no database server, no container runtime, no account, and nothing to configure. That configuration is the first-class entry path, not a demo mode, and most single-machine work stays there.
 
 The other two ways to run it, in the order you would reach for them:
 
 - [Self-hosting the full stack](guides/getting-started-self-hosted.md) — the scale-up chapter. A real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top, on your own infrastructure.
-- [Connecting to the cloud](guides/connecting-to-the-cloud.md) — for consuming a hosted deployment instead of operating one. Optional; nothing in ONEX requires it.
+- [Connecting to the cloud](guides/connecting-to-the-cloud.md) — for consuming a hosted deployment instead of operating one. Optional; nothing in ONEX requires it, and the hosted service is waitlist-gated and not part of the beta.
 
 Most people end up running more than one of those at once — authoring on tier-0, keeping a self-hosted stack for integration proof, and perhaps talking to a hosted deployment as a client. [Combining deployment tiers](guides/combining-deployment-tiers.md) covers the seams: which knob moves you across a tier, what changes when you cross it, and what stays identical.
 
@@ -94,6 +102,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose new artifacts, the PR 
 uv run python scripts/validate.py
 ```
 
-`scripts/validate.py` runs seven checks: a registered-location sweep (every `.md`/`.yaml`/`.yml` file in the repository must live in a declared section, a generated-content directory, or the root-file allowlist, or the build fails closed), frontmatter schema (a discriminated Pydantic union, one model per artifact type, across all nine sections), ADR identifier uniqueness (two ADRs must never share an `adr_id`; a narrow, exact-path-scoped exemption covers only the one already-known collision pending decision-record-owner sign-off — see `adrs/README.md`), `refs:` cross-reference integrity, sanitization (no internal information in public content — every artifact file at any depth, the generated `indexes/`, and repository-root documents and checked-in YAML), index freshness (committed `indexes/` match generated output), and broken relative markdown links. Discovery is recursive throughout, so a document nested in a subdirectory of any section is checked rather than silently skipped. A separate gate, `scripts/check_text_sanitization.py`, scans commit messages and PR title/body against the same forbidden-pattern list — both share `scripts/sanitization_patterns.py` as the single source of patterns.
+`scripts/validate.py` runs eight checks: a registered-location sweep (every `.md`/`.yaml`/`.yml` file in the repository must live in a declared section, a generated-content directory, or the root-file allowlist, or the build fails closed), frontmatter schema (a discriminated Pydantic union, one model per artifact type, across all nine sections), the filename naming convention of each section, ADR identifier uniqueness (two ADRs must never share an `adr_id`, with no exemption), `refs:` cross-reference integrity, sanitization (no internal information in public content — every artifact file at any depth, the generated `indexes/`, and repository-root documents and checked-in YAML), index freshness (committed `indexes/` match generated output), and broken relative markdown links. Discovery is recursive throughout, so a document nested in a subdirectory of any section is checked rather than silently skipped. A separate gate, `scripts/check_text_sanitization.py`, scans commit messages and PR title/body against the same forbidden-pattern list — both share `scripts/sanitization_patterns.py` as the single source of patterns.
 
 <!-- verified against scripts/validate.py, scripts/check_text_sanitization.py, scripts/sanitization_patterns.py, and .github/workflows/ci.yml on the 2026-08-19 adr_id-uniqueness refresh -->

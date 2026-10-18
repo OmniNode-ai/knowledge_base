@@ -18,7 +18,6 @@ refs: []
 > **Version**: 1.0.0
 
 > **Status**: Reference
-> **Last Updated**: 2025-12-19
 
 ## Overview
 
@@ -862,5 +861,4 @@ Is this an Intent from a Reducer?
 ---
 
 **Document Version**: 1.0.0
-**Last Updated**: 2025-12-19
 **Primary Maintainer**: ONEX Framework Team

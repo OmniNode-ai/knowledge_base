@@ -11,7 +11,6 @@ refs: []
 
 **Status**: Active
 **Based on**: ADR-001 (Service Ownership Separation)
-**Last Updated**: 2026-08-25 (corrected during KB migration — prior banner read 2025-11-05, stale against the file's actual last edit)
 **Version**: 1.0.0
 
 ## Purpose

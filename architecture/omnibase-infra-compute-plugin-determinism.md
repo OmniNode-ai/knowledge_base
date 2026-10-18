@@ -11,8 +11,6 @@ refs: []
 
 # Compute Plugin Determinism
 
-> **Status**: Current | **Last Updated**: 2026-04-24
-
 ## Overview
 
 All compute plugins implementing `ProtocolPluginCompute` MUST guarantee deterministic behavior. This document defines the specific requirements, testing procedures, and verification criteria for ensuring determinism in compute plugins.

@@ -15,7 +15,7 @@ refs:
 # ARCH-002: Kafka Abstraction Rule
 
 > **Version**: 0.1.1
-> **Last Updated**: 2026-08-25 — migrated from `omnimemory` to the knowledge base. The illustrative `subscribe_topics` example below previously used `intent_event_consumer_effect`, a node that has since been removed from `omnimemory` (its consumer role was consolidated into `omnimarket`). Reworded the example as an illustrative pattern rather than a still-live file path — the rule and CI enforcement described here are unaffected and remain active.
+> **Migration note (2026-08-25)**: Migrated from `omnimemory` to the knowledge base. The illustrative `subscribe_topics` example below previously used `intent_event_consumer_effect`, a node that has since been removed from `omnimemory` (its consumer role was consolidated into `omnimarket`). Reworded the example as an illustrative pattern rather than a still-live file path — the rule and CI enforcement described here are unaffected and remain active.
 > **Status**: Active — enforced by CI lint guard
 
 ## Overview

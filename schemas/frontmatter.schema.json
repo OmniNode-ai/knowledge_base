@@ -43,6 +43,18 @@
           "title": "Refs",
           "type": "array"
         },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
         "adr_id": {
           "title": "Adr Id",
           "type": "string"
@@ -115,6 +127,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         }
       },
       "required": [
@@ -166,6 +190,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         }
       },
       "required": [
@@ -217,6 +253,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         },
         "hypothesis": {
           "title": "Hypothesis",
@@ -291,6 +339,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         }
       },
       "required": [
@@ -345,6 +405,18 @@
           "title": "Refs",
           "type": "array"
         },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
         "observed_date": {
           "title": "Observed Date",
           "type": "string"
@@ -383,7 +455,8 @@
             "draft",
             "active",
             "completed",
-            "superseded"
+            "superseded",
+            "historical"
           ],
           "title": "Status",
           "type": "string"
@@ -411,6 +484,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         }
       },
       "required": [
@@ -463,6 +548,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         }
       },
       "required": [
@@ -515,6 +612,18 @@
           },
           "title": "Refs",
           "type": "array"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         }
       },
       "required": [

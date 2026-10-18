@@ -10,6 +10,7 @@ topics:
   - orchestrator
   - tutorial
 refs: []
+summary: "A tutorial for building a Data Processing Pipeline Orchestrator that coordinates COMPUTE, EFFECT, and REDUCER nodes in workflows. Covers the rule that ORCHESTRATOR nodes emit events and intents but cannot return typed results, plus branching, execution modes, error handling, and testing. Aimed at advanced readers who have finished the other node tutorials."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/node-building/06_ORCHESTRATOR_NODE_TUTORIAL.md on 2026-09-02 -->

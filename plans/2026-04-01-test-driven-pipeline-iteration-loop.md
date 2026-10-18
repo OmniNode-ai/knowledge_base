@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-01"
 title: "Test-driven ticket-pipeline iteration loop"
 topics: [pipelines, testing, automation, agents]

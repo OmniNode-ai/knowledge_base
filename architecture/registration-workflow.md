@@ -10,7 +10,6 @@ refs: []
 
 # REGISTRATION WORKFLOW
 
-> **Status**: Current | **Last Updated**: 2026-02-19
 
 ## Table of Contents
 

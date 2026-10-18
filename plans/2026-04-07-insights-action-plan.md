@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-07"
 title: "Insights action plan"
 topics: [workflow, hooks, developer-experience]

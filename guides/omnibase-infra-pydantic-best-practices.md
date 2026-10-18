@@ -11,8 +11,6 @@ refs: []
 
 # Pydantic Best Practices
 
-> **Status**: Current | **Last Updated**: 2026-02-19
-
 Pydantic usage standards for `omnibase_infra` models. These rules apply to every Pydantic model in the package — inputs, outputs, payloads, configs, error contexts, and projections.
 
 ---

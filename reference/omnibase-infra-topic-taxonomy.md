@@ -11,8 +11,6 @@ refs: []
 
 # ONEX Infrastructure Topic Taxonomy
 
-> **Status**: Current | **Last Updated**: 2026-02-19
-
 Kafka topic naming convention for `omnibase_infra`. Covers the realm-agnostic suffix format introduced in , the topic name construction pattern, and all defined topic suffix constants.
 
 ---
