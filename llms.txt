@@ -1,0 +1,37 @@
+# OmniNode
+
+> OmniNode lets you hand coding-agent work to a model you choose: a model you run on your own machine or network, or a provider you pay for on your own API key. The model call goes from your machine to that model directly and never passes through OmniNode. Every run leaves a receipt naming the model that answered, and a meter prices each run against a baseline model. OmniNode does not sell inference.
+
+State as of 2026-10-17. Shipped today, from public MIT-licensed packages on PyPI (omnibase-core, omnibase-infra, omnimarket) and with no OmniNode account: the local install of the `onex` command, `onex delegate`, a receipt for every run, `onex metering` against a baseline model, the local `onex dashboard`, and the Claude Code plugin `onex@omninode-tools`. In beta: invited outside users exercise that same delegation path from the same public quickstart. Not yet open: the hosted service, which is not open to outside users and which nothing on the shipped path needs.
+
+This repository is OmniNode's public documentation. The one-page overview is the canonical statement of what ships; when another page disagrees with it, the other page is out of date.
+
+## Start here
+
+- [What OmniNode is, and where it stands](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/what-is-omninode.md): the one-page overview of what ships today, what is in beta and what is not yet open
+- [Delegation quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/onex-plugin-quickstart.md): install `onex`, run a first delegation on your own model or key, read the receipt, meter the cost and add the Claude Code plugin, in about 15 minutes
+- [Supported platforms](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/supported-platforms.md): where the `onex` tool installs, and how on each kind of computer
+- [Repository README](https://github.com/OmniNode-ai/knowledge_base/blob/main/README.md): what this repository holds and how it is organized
+
+## How delegation works
+
+- [Delegation dispatch](https://github.com/OmniNode-ai/knowledge_base/blob/main/architecture/delegation-dispatch.md): how a delegation request travels from the command to a model and back
+- [Delegation routing contract](https://github.com/OmniNode-ai/knowledge_base/blob/main/architecture/delegation-routing-contract.md): how the model for a run is chosen from the backends you declared
+- [Connecting to the cloud](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/connecting-to-the-cloud.md): the current state of the hosted service, and whose model credential a hosted run uses
+
+## The platform underneath
+
+- [Repository map and runtime concepts](https://github.com/OmniNode-ai/knowledge_base/blob/main/architecture/repository-map-and-runtime-concepts.md): what each public repository owns and the runtime concepts that tie them into one system
+- [Doctrine](https://github.com/OmniNode-ai/knowledge_base/blob/main/doctrine/README.md): the stable principles the platform is built on
+- [Building on the ONEX runtime](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/getting-started-local.md): write and run your own nodes locally, with no broker, database server or account
+- [Self-hosting the full stack](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/getting-started-self-hosted.md): run the broker, database and runtime services on your own infrastructure
+- [Decision records](https://github.com/OmniNode-ai/knowledge_base/blob/main/adrs/README.md): the architecture decision ledger
+
+## Optional
+
+- [Guides index](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/README.md): every task-oriented guide, grouped
+- [Reference index](https://github.com/OmniNode-ai/knowledge_base/blob/main/reference/README.md): cross-repository factual reference
+- [Index by topic](https://github.com/OmniNode-ai/knowledge_base/blob/main/indexes/by-topic.md): every document grouped by topic tag
+- [Chronological index](https://github.com/OmniNode-ai/knowledge_base/blob/main/indexes/chronological.md): every document by date
+- [Pivots](https://github.com/OmniNode-ai/knowledge_base/blob/main/pivots/README.md): recorded changes in architectural direction
+- [Documentation taxonomy](https://github.com/OmniNode-ai/knowledge_base/blob/main/docs-taxonomy.md): the rule for where each kind of document belongs

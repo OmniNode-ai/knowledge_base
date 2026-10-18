@@ -31,7 +31,7 @@ stays exactly the same.
 
 It **composes** the three guides and does not restate them. Read them first:
 
-- [Getting started locally](getting-started-local.md) — tier-0: the in-process bus, the local file-backed store, zero external infrastructure.
+- [Building on the ONEX runtime](getting-started-local.md) — tier-0: the in-process bus, the local file-backed store, zero external infrastructure.
 - [Self-hosting the full stack](getting-started-self-hosted.md) — the broker, the database, the cache, the identity provider, the runtime services.
 - [Connecting to the cloud](connecting-to-the-cloud.md) — the hosted deployment as a client.
 
@@ -683,7 +683,7 @@ Not exercised: Linux and Windows. Every command here was run on macOS.
 
 ## Related pages
 
-- [Getting started locally](getting-started-local.md) — tier-0 in full.
+- [Building on the ONEX runtime](getting-started-local.md) — tier-0 in full.
 - [Self-hosting the full stack](getting-started-self-hosted.md) — the stack a flipped run lands on.
 - [Connecting to the cloud](connecting-to-the-cloud.md) — the hosted tier as a client.
 - [Handler authoring guide](handler-authoring-guide.md) — writing the logic behind the contract.

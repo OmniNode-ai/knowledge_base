@@ -8,7 +8,7 @@
 
 # OmniNode Knowledge Base
 
-The canonical home for OmniNode's external documentation — the single source of truth for how the platform works, how to use it, and why it is shaped the way it is.
+OmniNode's public documentation: what the platform is, how to use it, and why it is shaped the way it is.
 
 [![CI](https://github.com/OmniNode-ai/knowledge_base/actions/workflows/ci.yml/badge.svg)](https://github.com/OmniNode-ai/knowledge_base/actions/workflows/ci.yml)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
@@ -16,9 +16,30 @@ The canonical home for OmniNode's external documentation — the single source o
 
 ---
 
-Product repositories keep only what must physically ship beside their code, and point here for everything else — see **[The charter](#the-charter)** below for exactly what that scope includes and deliberately excludes.
+## What OmniNode is, and where it stands (as of 2026-10-17)
 
-## What This Is
+OmniNode lets you hand coding-agent work to a model you choose: a model you run on your own machine or network, or a provider you pay for on your own API key. The model call goes from your machine to that model directly and never passes through OmniNode. Every run leaves a receipt naming the model that answered, and `onex metering` prices each run against a baseline model so you can see what the work cost and what it would have cost on the baseline. **OmniNode does not sell inference.** You pay your provider, or nobody if you run the model yourself.
+
+It is for developers and teams who use coding agents such as Claude Code and want to move work onto cheaper or self-hosted models without losing track of which model did what, and for developers building on the ONEX runtime the delegation path is built on.
+
+**Shipped today**, from public MIT-licensed packages on PyPI, on your own machine, with no OmniNode account:
+
+- a one-line local install of the `onex` command (Apple Silicon Mac and Linux from wheels, Intel Mac from source);
+- `onex delegate`, to your own model server or your own OpenRouter or GLM key;
+- a receipt for every run, naming the provider or server and the model;
+- `onex metering`, with spend measured against a baseline model;
+- `onex dashboard`, a local page showing each run and its receipt;
+- the Claude Code plugin `onex@omninode-tools`, which adds `/onex:delegate`.
+
+**In beta:** the beta for invited outside users exercises that same delegation path, from the same public quickstart.
+
+**Not yet open:** the hosted service. It is not open to outside users: accounts are granted from a waitlist rather than self-served, and nothing on the shipped path needs it.
+
+**Start with the [Delegation quickstart](guides/onex-plugin-quickstart.md)** (about 15 minutes). The one-page version of this section, with links for each part, is [What OmniNode is, and where it stands](guides/what-is-omninode.md). An AI agent reading this repository can start from [`llms.txt`](llms.txt).
+
+## What this repository is
+
+This repository is the canonical home for OmniNode's external documentation. Product repositories keep only what must physically ship beside their code, and point here for everything else; [the charter](#the-charter) below says exactly what that scope includes and excludes.
 
 Two kinds of documentation live here, and telling them apart is what makes the collection navigable.
 
@@ -53,9 +74,7 @@ The rule for deciding where any individual document belongs is written down, not
 | [`reference/`](reference/README.md) | Cross-repository factual reference |
 | [`runbooks/`](runbooks/README.md) | Parameterized operational procedures |
 
-The three consumer sections are now open. The validation tooling recognizes their artifact classes, discovers files recursively within every section, and scans repository-root documents and checked-in YAML for sanitization — a document placed in an unrecognized location fails the build rather than going unvalidated.
-
-No documentation has migrated yet. [`migration-manifest.yaml`](migration-manifest.yaml) records the planned mapping; every row is at `not-started`.
+Migration status (2026-10-17): platform documentation from `omnibase_core`, `omnibase_infra`, `omniclaude`, `omnimarket`, `omnimemory`, `omniintelligence`, `omnidash`, `omnibase_compat` and `onex_change_control` has migrated here, and more than 400 documents are published across the sections above. Per-document state is in [`migration-manifest.yaml`](migration-manifest.yaml).
 
 ## Core Philosophy
 
@@ -69,20 +88,19 @@ No documentation has migrated yet. [`migration-manifest.yaml`](migration-manifes
 
 ## Getting Started
 
-**To run the platform, start with [Getting started locally](guides/getting-started-local.md).** It is the shortest complete path to a working ONEX system: one package, one command, and a real event chain you can read back out of a local database file — no broker, no database server, no container runtime, no account, and nothing to configure. That configuration is the first-class entry path, not a demo mode, and most single-machine work stays there.
+**To try OmniNode, start with the [Delegation quickstart](guides/onex-plugin-quickstart.md).** It installs the `onex` tool, runs a first delegation to a model you choose, and shows the receipt, `onex metering`, the local dashboard and the Claude Code plugin, with what you should see at each step.
 
-The other two ways to run it, in the order you would reach for them:
+**To build your own nodes on the ONEX runtime,** read [Building on the ONEX runtime](guides/getting-started-local.md). It is the shortest complete path to a working ONEX system: one package, one command, and a real event chain you can read back out of a local database file, with no broker, no database server, no container runtime and no account. It needs no model and does not delegate. From there:
 
-- [Self-hosting the full stack](guides/getting-started-self-hosted.md) — the scale-up chapter. A real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top, on your own infrastructure.
-- [Connecting to the cloud](guides/connecting-to-the-cloud.md) — for consuming a hosted deployment instead of operating one. Optional; nothing in ONEX requires it.
+- [Self-hosting the full stack](guides/getting-started-self-hosted.md) is the scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top, on your own infrastructure.
+- [Combining deployment tiers](guides/combining-deployment-tiers.md) covers the seams between running locally, self-hosting, and talking to a hosted deployment.
+- [Connecting to the cloud](guides/connecting-to-the-cloud.md) describes the hosted service, which is not yet open to outside users.
 
-Most people end up running more than one of those at once — authoring on tier-0, keeping a self-hosted stack for integration proof, and perhaps talking to a hosted deployment as a client. [Combining deployment tiers](guides/combining-deployment-tiers.md) covers the seams: which knob moves you across a tier, what changes when you cross it, and what stays identical.
+All of these, plus the rest of the task-oriented documentation, are indexed in [`guides/`](guides/README.md).
 
-All four, plus the rest of the task-oriented documentation, are indexed in [`guides/`](guides/README.md).
+**To understand how the repositories fit together,** read [Repository map and runtime concepts](architecture/repository-map-and-runtime-concepts.md). It is the orientation layer above the per-repository designs: what each repository owns, why the build-time import staircase and the runtime message graph look nothing alike, and the five runtime concepts (the three primitives, the four node archetypes, the canonical handler shape, the bus as transport, and projected truth) that explain how code in separate repositories becomes one running system.
 
-**To understand how the repositories fit together,** read [Repository map and runtime concepts](architecture/repository-map-and-runtime-concepts.md). It is the orientation layer above the per-repository designs: what each repository owns, why the build-time import staircase and the runtime message graph look nothing alike, and the five runtime concepts — the three primitives, the four node archetypes, the canonical handler shape, the bus as transport, and projected truth — that explain how code in separate repositories becomes one running system.
-
-**To understand why the platform is shaped the way it is,** start with [`doctrine/`](doctrine/README.md) — the stable principles that govern it. From there, decision records show specific choices that instantiate those principles, and pivots show where the principles themselves evolved.
+**To understand why the platform is shaped the way it is,** start with [`doctrine/`](doctrine/README.md), the stable principles that govern it. From there, decision records show specific choices that instantiate those principles, and pivots show where the principles themselves evolved.
 
 ## Contributing
 
@@ -94,6 +112,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose new artifacts, the PR 
 uv run python scripts/validate.py
 ```
 
-`scripts/validate.py` runs seven checks: a registered-location sweep (every `.md`/`.yaml`/`.yml` file in the repository must live in a declared section, a generated-content directory, or the root-file allowlist, or the build fails closed), frontmatter schema (a discriminated Pydantic union, one model per artifact type, across all nine sections), ADR identifier uniqueness (two ADRs must never share an `adr_id`; a narrow, exact-path-scoped exemption covers only the one already-known collision pending decision-record-owner sign-off — see `adrs/README.md`), `refs:` cross-reference integrity, sanitization (no internal information in public content — every artifact file at any depth, the generated `indexes/`, and repository-root documents and checked-in YAML), index freshness (committed `indexes/` match generated output), and broken relative markdown links. Discovery is recursive throughout, so a document nested in a subdirectory of any section is checked rather than silently skipped. A separate gate, `scripts/check_text_sanitization.py`, scans commit messages and PR title/body against the same forbidden-pattern list — both share `scripts/sanitization_patterns.py` as the single source of patterns.
+`scripts/validate.py` runs eight checks: a registered-location sweep (every `.md`/`.yaml`/`.yml` file must live in a declared section, a generated-content directory, or the root-file allowlist, or the build fails closed), frontmatter schema, the filename naming convention, ADR `adr_id` uniqueness (any two ADRs sharing an id fail the build, with no exemption), `refs:` cross-reference integrity, sanitization, index freshness, and broken relative links (across every artifact, the generated `indexes/`, the repository-root documents and the repository links in `llms.txt`). [CONTRIBUTING.md](CONTRIBUTING.md) covers the pull request process and the separate gate over commit messages and PR text, `scripts/check_text_sanitization.py`.
 
-<!-- verified against scripts/validate.py, scripts/check_text_sanitization.py, scripts/sanitization_patterns.py, and .github/workflows/ci.yml on the 2026-08-19 adr_id-uniqueness refresh -->
+<!-- verified against scripts/validate.py and scripts/generate_indexes.py on 2026-10-17 -->
