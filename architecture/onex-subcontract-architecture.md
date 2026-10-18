@@ -8,13 +8,12 @@ topics:
   - subcontract
   - architecture
 refs: []
+summary: "Describes the ONEX Subcontract Package of specialized contract models for operations such as state machines, aggregation, routing, event handling, and discovery. Covers architectural principles, core and advanced subcontract patterns, testing, performance, and monitoring. For engineers designing or extending subcontracts within the Four-Node Architecture."
 ---
 
 <!-- Migrated from omnibase_core:docs/architecture/SUBCONTRACT_ARCHITECTURE.md on 2026-09-02 -->
 
 # ONEX Subcontract Package Architecture
-
-**Last Updated**: 2026-02-14
 
 ## Overview
 

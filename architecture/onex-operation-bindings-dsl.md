@@ -16,7 +16,6 @@ refs: []
 # Operation Bindings DSL
 
 **Version**: 1.0.0
-**Last Updated**: 2026-01-25
 **Status**: Comprehensive Reference
 
 > **New in v0.9.4**: ModelOperationBindings provides declarative handler wiring without code adapters, enabling contract-driven operation binding.
@@ -628,6 +627,5 @@ mapping = bindings.get_mapping("process")
 
 ---
 
-**Last Updated**: 2026-01-25
 **Version**: 1.0.0
 **Maintainer**: ONEX Framework Team

@@ -8,6 +8,7 @@ topics:
   - effect
   - subcontracts
 refs: []
+summary: "Explains effect subcontracts, Pydantic models that declaratively define external I/O operations for EFFECT nodes across HTTP, database, Kafka, and filesystem cases. Covers type-safe configurations, idempotency-aware retries, transaction boundaries, circuit breakers, validation rules, and a migration path. For developers defining I/O behavior in EFFECT nodes."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/EFFECT_SUBCONTRACT_GUIDE.md on 2026-09-02 -->
@@ -15,7 +16,6 @@ refs: []
 # Effect Subcontract Guide
 
 **Version**: 1.0.0
-**Last Updated**: 2025-12-09
 **Correlation ID**: `effect-subcontract-guide-001`
 
 > **New in PR #139**: Effect subcontract models provide a declarative, type-safe way to define external I/O operations in ONEX's 4-node architecture. This guide shows how to adopt these models for HTTP, database, Kafka, and filesystem operations.
@@ -1138,6 +1138,5 @@ query_params=["value1", "value2", "value3"]  # Must have exactly 3
 
 ---
 
-**Last Updated**: 2025-12-09
 **Version**: 1.0.0
 **Maintainer**: ONEX Framework Team

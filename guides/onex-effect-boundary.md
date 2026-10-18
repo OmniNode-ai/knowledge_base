@@ -15,7 +15,6 @@ refs: []
 # Effect Boundary Guide
 
 **Version**: 1.0.0
-**Last Updated**: 2026-01-14
 **Feature**: Non-Deterministic Effect Classification
 
 > **New in v0.6.4**: The effect boundary system provides a declarative way to annotate, classify, and enforce policies on non-deterministic effects. This enables replay-safe pipelines where external interactions (network, time, random, filesystem, database) are controlled during testing and replay execution.

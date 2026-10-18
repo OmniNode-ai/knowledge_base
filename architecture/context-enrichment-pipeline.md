@@ -9,7 +9,6 @@ refs: []
 
 # Context Enrichment Pipeline Architecture
 
-**Last Updated**: 2026-02-19
 **Key changes**: enrichment pipeline, enrichment observability, emit timeout fix
 
 ---

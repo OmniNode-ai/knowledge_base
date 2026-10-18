@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-07-10"
 title: "Merge-queue governor — conservative fail-closed action-mode (arm-gate)"
 topics: [merge-queue, ci, governance, fail-closed]

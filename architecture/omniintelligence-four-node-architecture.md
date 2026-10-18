@@ -15,7 +15,7 @@ refs:
 # ONEX Four-Node Architecture in OmniIntelligence
 
 > **Scope**: OmniIntelligence-specific node inventory, data flow, and implementation patterns. For base class definitions, handler output constraints, and FSM/workflow contracts, see the platform's core ONEX Four-Node Architecture reference.
-> **Last Updated**: 2026-08-25 — migrated from `omniintelligence` to the knowledge base. Node-type counts and dispatch handler/route counts were re-verified against the live source tree during migration (`pyproject.toml [project.entry-points."onex.nodes"]`: 60 entries, 24 compute / 31 effect / 2 reducer / 2 orchestrator + 1 audit) and matched the source document unchanged.
+> **Migration note (2026-08-25)**: Migrated from `omniintelligence` to the knowledge base. Node-type counts and dispatch handler/route counts were re-verified against the live source tree during migration (`pyproject.toml [project.entry-points."onex.nodes"]`: 60 entries, 24 compute / 31 effect / 2 reducer / 2 orchestrator + 1 audit) and matched the source document unchanged.
 
 ---
 

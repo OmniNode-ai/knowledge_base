@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-02-28"
 title: "Insights-driven workflow improvements"
 topics: [workflow, skills, developer-experience, epics]

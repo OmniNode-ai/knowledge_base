@@ -5,6 +5,7 @@ date: "2026-07-21"
 title: "Event Bus Integration Guide"
 topics: [omnibase-infra, event, bus, integration]
 refs: []
+summary: "Step-by-step instructions for integrating with the ONEX Event Bus, which offers Kafka for production and an in-memory implementation for development and testing. Covers configuration, publishing and subscribing, message categories, error handling, correlation ID tracking, and production deployment. For developers connecting services to the event bus."
 ---
 
 

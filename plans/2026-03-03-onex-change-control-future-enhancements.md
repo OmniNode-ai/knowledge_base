@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-03-03"
 title: "Future enhancements for ONEX change control"
 topics: [change-control, governance, schemas, backlog]

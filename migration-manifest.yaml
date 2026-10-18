@@ -530,8 +530,13 @@ repos:
           out-of-date operational contract as current. Marked status: stale
           in the migrated copy's own frontmatter (not deprecated — the tier
           concepts remain a reasonable design pattern).
-        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
-        cutover_state: moved
+          Removed from the knowledge base 2026-10-17: a page marked stale is
+          not published, and a full rewrite against the live v3 schema was not
+          done. The destination path above no longer exists; it is kept here
+          as the record of where the page was. The source file is also absent
+          from omnibase_core@dev.
+        triage_verdict: DELETE
+        cutover_state: deleted
       - source_path: docs/standards/CI_VALIDATION_SETUP.md
         bucket: A
         destination: reference/ci-validation-setup.md

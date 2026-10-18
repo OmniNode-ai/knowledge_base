@@ -9,6 +9,7 @@ topics:
   - execution
   - shapes
 refs: []
+summary: "Defines the canonical execution shapes for the ONEX Four-Node Architecture, which enforces unidirectional data flow across the four node types. Lists allowed and forbidden patterns, explains why the constraints matter, and gives a decision matrix and enforcement notes. For anyone designing components that must follow these shapes."
 ---
 
 <!-- Migrated from omnibase_core:docs/architecture/CANONICAL_EXECUTION_SHAPES.md on 2026-09-02 -->
@@ -20,7 +21,6 @@ refs: []
 > **Version**: 1.0.0
 > **Status**: Specification
 > **Status**: Specification
-> **Last Updated**: 2025-12-19
 
 ## Overview
 
@@ -1173,5 +1173,4 @@ the complete data pipeline, not a single message routing pattern.
 ---
 
 **Document Version**: 1.0.0
-**Last Updated**: 2025-12-19
 **Primary Maintainer**: ONEX Framework Team

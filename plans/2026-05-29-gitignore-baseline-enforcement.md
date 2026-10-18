@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-05-29"
 title: "Canonical Python .gitignore baseline and cross-repo enforcement"
 topics: [validators, ci, propagation, repo-hygiene]

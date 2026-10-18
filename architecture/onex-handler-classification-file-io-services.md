@@ -19,7 +19,6 @@ refs: []
 **Status**: Classification completed
 **Epic**: Epic 3: Mixin/Service -> Handler Refactoring
 **Status**: Final — KEEP AS SERVICE (abort conditions apply)
-**Last Updated**: 2026-03-08
 **Classification Rules**: `HANDLER_CLASSIFICATION_RULES.md` in omnibase_infra `docs/architecture/`
 **Decision Matrix**: Section 3 of the handler classification rules
 **3.1 POC Finding**: postgres mixins KEEP AS MIXIN (utility-function pattern); evaluated independently per PR #706 guidance

@@ -10,6 +10,7 @@ topics:
   - effect
   - tutorial
 refs: []
+summary: "A tutorial for building a File Backup Node that performs atomic file operations with transaction support, retry logic, circuit breaker patterns, and rollback handling. Offers the recommended ModelServiceEffect wrapper or the NodeEffect base class, plus testing and troubleshooting. For intermediate developers following the node tutorials."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/node-building/04_EFFECT_NODE_TUTORIAL.md on 2026-09-02 -->
@@ -1151,6 +1152,5 @@ Congratulations! You've built a production-ready EFFECT node!
 
 ---
 
-**Last Updated**: 2025-12-13
 **Framework Version**: omnibase_core 0.4.0+
 **Tutorial Status**: Complete

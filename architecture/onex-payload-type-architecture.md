@@ -9,6 +9,7 @@ topics:
   - type
   - architecture
 refs: []
+summary: "Records the v0.4.0 breaking change that removes dict payloads from models such as ModelIntent and ModelAction in favor of typed payload models. Covers the decision and rationale, payload factory functions, discriminator naming, migration strategy, and examples. For developers migrating payload code to typed models."
 ---
 
 <!-- Migrated from omnibase_core:docs/architecture/PAYLOAD_TYPE_ARCHITECTURE.md on 2026-09-02 -->
@@ -18,7 +19,6 @@ refs: []
 **Status**: Implemented
 **Author**: OmniNode Team
 **Created**: 2025-12-24
-**Last Updated**: 2025-12-26
 
 ---
 

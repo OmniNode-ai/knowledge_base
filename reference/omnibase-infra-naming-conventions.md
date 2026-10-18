@@ -11,8 +11,6 @@ refs: []
 
 # Naming Conventions
 
-> **Status**: Current | **Last Updated**: 2026-02-19
-
 Naming conventions for all artifact types in `omnibase_infra`. The authoritative summary table lives in `CLAUDE.md` (Pydantic Model Standards section). This document expands on that table with rationale, examples verified against actual source, and coverage of node-specific artifacts not in the summary.
 
 ---

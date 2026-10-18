@@ -9,6 +9,7 @@ topics:
   - node
   - architecture
 refs: []
+summary: "Documents the ONEX Four-Node Architecture design pattern and each node's responsibilities in the processing pipeline. Covers v0.4.0 changes, inter-node communication, error handling patterns, performance, monitoring, and testing. Intended for developers building or maintaining nodes within this architecture."
 ---
 
 <!-- Migrated from omnibase_core:docs/architecture/ONEX_FOUR_NODE_ARCHITECTURE.md on 2026-09-02 -->
@@ -18,7 +19,6 @@ refs: []
 # ONEX Four-Node Architecture Documentation
 
 > **Version**: 0.4.0
-> **Last Updated**: 2025-12-05
 > **Status**: Production
 > **See Also**: ONEX Terminology Guide for canonical definitions of all ONEX concepts.
 
@@ -2001,7 +2001,6 @@ This architecture documentation provides comprehensive coverage of the ONEX Four
 ---
 
 **Document Version**: 0.4.0
-**Last Updated**: 2025-12-05
 **Primary Maintainer**: ONEX Framework Team
 
 **Related Documentation**:

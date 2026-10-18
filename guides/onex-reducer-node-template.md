@@ -9,6 +9,7 @@ topics:
   - node
   - template
 refs: []
+summary: "A template for the unified REDUCER node pattern, where FSM-driven state transitions are defined in YAML contracts and nodes emit intents rather than direct side effects. Lists output constraints, directory structure, template files, and usage instructions. For developers creating new REDUCER nodes."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/templates/REDUCER_NODE_TEMPLATE.md on 2026-09-02 -->

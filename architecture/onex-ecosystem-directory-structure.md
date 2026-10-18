@@ -325,6 +325,5 @@ tests/
 
 ---
 
-**Last Updated**: 2026-02-14
 **Maintainer**: OmniNode Development Team  
 **Next Review**: After migration plan implementation

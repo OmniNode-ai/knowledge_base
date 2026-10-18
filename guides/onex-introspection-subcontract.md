@@ -463,6 +463,5 @@ class MyNode(MixinNodeIntrospection):
 
 ---
 
-**Last Updated**: 2025-11-19
 **Version**: 1.0.0
 **Status**: Stable - Interface Locked

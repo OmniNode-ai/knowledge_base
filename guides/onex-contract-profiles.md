@@ -15,7 +15,6 @@ refs: []
 # Contract Profile Guide
 
 **Version**: 1.0.0
-**Last Updated**: 2025-12-29
 **Status**: Comprehensive Reference
 
 > **New in v0.4.0**: Contract profile factories provide pre-configured contract templates for each node type (orchestrator, reducer, effect, compute). This guide explains when to use each profile and how to create custom profiles.
@@ -882,6 +881,5 @@ contract.descriptor.observability_level = "verbose"
 
 ---
 
-**Last Updated**: 2025-12-29
 **Version**: 1.0.0
 **Maintainer**: ONEX Framework Team

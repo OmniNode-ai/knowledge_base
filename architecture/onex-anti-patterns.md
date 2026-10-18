@@ -569,6 +569,5 @@ class ModelConfig(BaseModel):
 ## Document Metadata
 
 - **Version**: 2.0.0
-- **Last Updated**: 2026-02-14
 - **Maintainer**: ONEX Core Team
 - **Status**: Active

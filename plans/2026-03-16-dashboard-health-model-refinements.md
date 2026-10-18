@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-03-16"
 title: "Dashboard health model refinements — not_applicable status and probe semantics"
 topics: [dashboard, health-model, probes, observability]

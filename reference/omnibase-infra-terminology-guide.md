@@ -11,8 +11,6 @@ refs: []
 
 # Terminology Guide
 
-> **Status**: Current | **Last Updated**: 2026-02-19
-
 Canonical definitions for ONEX architectural terms as used in `omnibase_infra`. These are not dictionary definitions — each entry explains what the term means architecturally: its role in the data flow, its invariants, and how it differs from related terms.
 
 For capitalization rules in prose vs. code contexts, see the quick-reference table at the top of this document. For naming file and class conventions, see `NAMING_CONVENTIONS.md`.

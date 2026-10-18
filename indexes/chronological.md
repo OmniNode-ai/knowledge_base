@@ -6,6 +6,7 @@ All knowledge base artifacts sorted by date.
 
 ## 2026-10
 
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr) — 2026-10-17
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide) — 2026-10-17
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide) — 2026-10-06
 ## 2026-09
@@ -294,13 +295,13 @@ All knowledge base artifacts sorted by date.
 - **[Adding a Hook Handler](../guides/adding-a-hook-handler.md)** (guide) — 2026-08-19
 - **[Adding a Skill](../guides/adding-a-skill.md)** (guide) — 2026-08-19
 - **[Adding an Agent](../guides/adding-an-agent.md)** (guide) — 2026-08-19
-- **[Event-Driven Agent Routing Architecture Proposal](../architecture/event-driven-routing-proposal.md)** (architecture) — 2026-08-18
+- **[(historical) Event-Driven Agent Routing Proposal](../architecture/event-driven-routing-proposal.md)** (architecture) — 2026-08-18
 ## 2026-07
 
 - **[Application database cutover receipts](../runbooks/application-database-cutover-receipts.md)** (runbook) — 2026-07-31
 - **[Apply Migrations Runbook](../runbooks/apply-migrations.md)** (runbook) — 2026-07-31
 - **[Market Node Deployment Runbook](../runbooks/market-node-deployment.md)** (runbook) — 2026-07-30
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr) — 2026-07-29
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** (adr) — 2026-07-29
 - **[ADR-0027: One Application Database with Contract-Classified Domains](../adrs/ADR-0027-one-application-database-domain-separation.md)** (adr) — 2026-07-29
 - **[Node-skill package co-install (omnimarket) — <ticket>](../runbooks/node-skill-package-install.md)** (runbook) — 2026-07-27
 - **[ONEX Current Node Architecture](../architecture/current-node-architecture.md)** (architecture) — 2026-07-21
@@ -336,7 +337,7 @@ All knowledge base artifacts sorted by date.
 - **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** (adr) — 2026-07-06
 - **[ADR-0019: No Self-Authored Evidence — OCC Companions From Autogen or Independent Verifier Only](../adrs/ADR-0019-no-self-authored-evidence.md)** (adr) — 2026-07-06
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** (adr) — 2026-07-06
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr) — 2026-07-06
+- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** (adr) — 2026-07-06
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** (adr) — 2026-07-06
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** (adr) — 2026-07-06
 - **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** (plan) — 2026-07-05
@@ -358,7 +359,7 @@ All knowledge base artifacts sorted by date.
 - **[Test Discipline](../reference/omniclaude-test-discipline.md)** (reference) — 2026-06-24
 - **[Verification Doctrine](../reference/omniclaude-verification-doctrine.md)** (reference) — 2026-06-24
 - **[ADR-0043: Render Pydantic-Generated JSON Schema With Stock @rjsf, No Custom Field](../adrs/ADR-0043-omnidash-rjsf-discriminated-union-handling.md)** (adr) — 2026-06-20
-- **[Delegation Architecture](../architecture/delegation-architecture.md)** (architecture) — 2026-06-20
+- **[(historical) Delegation Bridge Architecture, Hook-Driven](../architecture/delegation-architecture.md)** (architecture) — 2026-06-20
 - **[ADR-0008: Delegation Config Authority and Budget-Aware Tier Cost](../adrs/ADR-0008-delegation-config-authority-and-budget-aware-tier-cost.md)** (adr) — 2026-06-18
 - **[ADR-0009: Complexity-Aware Delegation Routing](../adrs/ADR-0009-complexity-aware-delegation-routing.md)** (adr) — 2026-06-18
 - **[ADR-0042: Cross-Renderer Typed Empty-State Gate](../adrs/ADR-0042-omnidash-cross-renderer-typed-empty-state-gate.md)** (adr) — 2026-06-18
@@ -424,14 +425,13 @@ All knowledge base artifacts sorted by date.
 
 - **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** (plan) — 2026-02-28
 - **[Cross-Repo Merge Dependency Graph](../reference/merge-dependency-graph.md)** (reference) — 2026-02-24
-- **[Agent Routing Architecture - Visual Comparison](../architecture/routing-architecture-comparison.md)** (architecture) — 2026-02-20
+- **[(historical) Agent Routing Before and After the Event-Driven Migration](../architecture/routing-architecture-comparison.md)** (architecture) — 2026-02-20
 - **[Testing Guide](../guides/omniclaude-testing-guide.md)** (guide) — 2026-02-20
 - **[ADR-0045: Remove YAML Loading from Synchronous Hook Path](../adrs/ADR-0045-candidate-list-injection.md)** (adr) — 2026-02-19
 - **[ADR-0046: Fail-Fast Routing — No Silent Fallback to general-purpose](../adrs/ADR-0046-no-fallback-routing.md)** (adr) — 2026-02-19
 - **[ADR-0047: Dual-Topic Emission for Prompt Privacy](../adrs/ADR-0047-dual-emission-privacy-split.md)** (adr) — 2026-02-19
 - **[ADR-0048: Local LLM Delegation with 2-Clean-Run Quality Gate](../adrs/ADR-0048-delegation-orchestrator-quality-gate.md)** (adr) — 2026-02-19
 - **[ADR-0049: Three-Tier Agent Routing (LLM → Fuzzy → Explicit)](../adrs/ADR-0049-three-tier-agent-routing.md)** (adr) — 2026-02-19
-- **[CI/CD Standards](../reference/ci-cd-standards.md)** (reference) — 2026-02-14
 - **[ADR-0044: Event Fan-Out Strategy and App-Owned Event Catalogs](../adrs/ADR-0044-event-fan-out-and-app-owned-catalogs.md)** (adr) — 2026-02-09
 ## 2026-01
 

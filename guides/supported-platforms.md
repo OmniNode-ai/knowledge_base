@@ -44,7 +44,7 @@ Then point the build at that OpenSSL explicitly and install as usual, in the sam
 
 ```bash
 export OPENSSL_DIR="$(brew --prefix openssl@3)"
-uv tool install --with 'omnibase-infra>=0.38.4' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
+uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
 ```
 
 `OPENSSL_DIR` pins the build to Homebrew's OpenSSL, which matters if another OpenSSL is also

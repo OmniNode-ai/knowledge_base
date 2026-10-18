@@ -9,8 +9,6 @@ refs: []
 
 # LLM Routing Architecture
 
-**Last Updated**: 2026-02-19
-
 ---
 
 ## Overview

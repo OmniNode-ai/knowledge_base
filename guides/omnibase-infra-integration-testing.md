@@ -11,8 +11,6 @@ refs: []
 
 # Integration Testing
 
-> **Status**: Current | **Last Updated**: 2026-02-19
-
 E2E test infrastructure for `omnibase_infra`: two-layer environment loading, the 53-test E2E suite, runtime container alignment, and infrastructure requirements.
 
 ---

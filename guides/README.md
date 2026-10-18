@@ -6,12 +6,14 @@ Task-oriented how-to documentation: getting started, onboarding, integration wal
 
 New to OmniNode? Read [What OmniNode is, and where it stands](what-is-omninode.md) first: one page on what ships today, what is in beta, and what is not yet open. Then try it.
 
+**Beta users: start with the [Delegation quickstart](onex-plugin-quickstart.md).** The beta is the local install: delegation from your own computer to a model you run or a provider on your own key, with no OmniNode account ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). OmniNode does not sell inference; you pay your provider directly.
+
 | | Guide | What it is for |
 |---|---|---|
 | **1** | **[Delegation quickstart](onex-plugin-quickstart.md)** | **Hand a task to a model you choose, on your own machine or your own provider key, and get back the answer plus a receipt naming the model.** Install, first delegation, receipts, `onex metering`, the local dashboard and the Claude Code plugin, in about 15 minutes. **Start here** to evaluate OmniNode. |
 | **2** | [Building on the ONEX runtime](getting-started-local.md) | For developers writing their own nodes. One package, one command, and a real event chain you can read back out of a local database file, with no broker, no database server, no container runtime and no account. It needs no model and does not delegate. |
 | **3** | [Self-hosting the full stack](getting-started-self-hosted.md) | On your own infrastructure, in containers. The scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top. Read it when you have actually outgrown the local runtime; the page opens with the list of reasons that qualify. |
-| **4** | [Connecting to the cloud](connecting-to-the-cloud.md) | The hosted service, which is not yet open to outside users. Nothing on the delegation path needs it. |
+| **4** | [Connecting to the cloud](connecting-to-the-cloud.md) | The hosted service, which is waitlist-gated, not yet open to outside users, and not part of the beta. Nothing on the delegation path needs it. |
 | **5** | [Combining deployment tiers](combining-deployment-tiers.md) | More than one of the runtime tiers at once. The seams between them: which knob moves you across one, what changes when you cross it, and what stays identical. |
 
 [Supported platforms](supported-platforms.md) says where the `onex` tool installs, and how, on each kind of computer.

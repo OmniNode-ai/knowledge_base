@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-01"
 title: "Channel runtime foundation — core contracts and routing backbone"
 topics: [contracts, runtime, channels, routing]

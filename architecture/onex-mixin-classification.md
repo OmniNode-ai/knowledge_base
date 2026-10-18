@@ -15,7 +15,6 @@ refs: []
 # Mixin Classification Reference
 
 > **Version**: 1.1.0
-> **Last Updated**: 2026-02-14
 
 ---
 

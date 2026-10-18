@@ -12,7 +12,6 @@ refs: []
 # ONEX Baseline Evaluation Framework
 
 **Status**: Implemented
-**Last Updated**: 2026-04-01
 
 ## Overview
 

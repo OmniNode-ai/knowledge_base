@@ -9,6 +9,7 @@ topics:
   - hook
   - registry
 refs: []
+summary: "Documents the Pipeline Runner and Hook Registry, a declarative system that executes hooks in canonical phase order with dependency management, priority ordering, type validation, and thread safety. Includes a quick start, API reference, testing patterns, and troubleshooting. For developers extending pipeline execution with hooks."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/PIPELINE_HOOK_REGISTRY.md on 2026-09-02 -->
@@ -1338,6 +1339,5 @@ from omnibase_core.pipeline import (
 
 ---
 
-**Last Updated**: 2026-01-01
 **Version**: 1.1.0
 **Related PR**: #291 — Pipeline Runner & Hook Registry; `enforce_hook_typing` default changed to `True` in v0.6.0

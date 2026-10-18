@@ -9,7 +9,6 @@ refs: []
 
 # MCP Integration Guide
 
-> **Status**: Current | **Last Updated**: 2026-02-19
 
 This guide explains how to expose ONEX node operations as Model Context Protocol (MCP) tools so that AI agents (such as Claude) can discover and invoke them. It covers the full practical workflow: registering a tool, testing without a live server, and the current limitations to work around.
 

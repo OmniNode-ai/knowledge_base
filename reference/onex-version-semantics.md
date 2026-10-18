@@ -15,7 +15,6 @@ refs: []
 # Version Field Semantics in ONEX Models
 
 **Version**: 1.0.0
-**Last Updated**: 2025-11-21
 **Status**: Active
 
 ---

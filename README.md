@@ -76,6 +76,14 @@ The rule for deciding where any individual document belongs is written down, not
 
 Migration status (2026-10-17): platform documentation from `omnibase_core`, `omnibase_infra`, `omniclaude`, `omnimarket`, `omnimemory`, `omniintelligence`, `omnidash`, `omnibase_compat` and `onex_change_control` has migrated here, and more than 400 documents are published across the sections above. Per-document state is in [`migration-manifest.yaml`](migration-manifest.yaml).
 
+Its `correctness_status` field records what the source document was found to be when it was audited, not the state of the published page: most documents marked `stale` or `broken` there were corrected before they were published. The published page's own frontmatter `status` is the label to read.
+
+### How to read a page's status
+
+- **Guides, reference and runbooks** are living documents: `current` means the page is meant to match the code today, `stale` means it is known to be out of date, and `deprecated` means it describes something that no longer exists.
+- **Plans and experiments** are point-in-time records. A plan describes work as it was intended on its date. `plans/` is history, not a roadmap; a plan marked `historical` records what was planned and is not a statement of what is built.
+- **ADRs, pivots, doctrine and architecture** record decisions and designs. A record marked `superseded` or `deprecated` names its replacement in its first lines, and its title starts with "(historical)".
+
 ## Core Philosophy
 
 **Truth must be proven.** Architectural claims require durable evidence — pull requests, CI runs, replay validation, or benchmarks. Assertions without proof are hypotheses.
@@ -90,11 +98,13 @@ Migration status (2026-10-17): platform documentation from `omnibase_core`, `omn
 
 **To try OmniNode, start with the [Delegation quickstart](guides/onex-plugin-quickstart.md).** It installs the `onex` tool, runs a first delegation to a model you choose, and shows the receipt, `onex metering`, the local dashboard and the Claude Code plugin, with what you should see at each step.
 
+The beta is the local install: you delegate from your own computer to a model you choose, with no OmniNode account and no OmniNode service ([ADR-0053](adrs/ADR-0053-beta-scope-local-install-own-keys.md)). You bring your own key. Every model call goes to a model you run or to a provider on your own API key, and you pay that provider directly. OmniNode does not sell inference. The hosted service is not part of the beta.
+
 **To build your own nodes on the ONEX runtime,** read [Building on the ONEX runtime](guides/getting-started-local.md). It is the shortest complete path to a working ONEX system: one package, one command, and a real event chain you can read back out of a local database file, with no broker, no database server, no container runtime and no account. It needs no model and does not delegate. From there:
 
 - [Self-hosting the full stack](guides/getting-started-self-hosted.md) is the scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top, on your own infrastructure.
 - [Combining deployment tiers](guides/combining-deployment-tiers.md) covers the seams between running locally, self-hosting, and talking to a hosted deployment.
-- [Connecting to the cloud](guides/connecting-to-the-cloud.md) describes the hosted service, which is not yet open to outside users.
+- [Connecting to the cloud](guides/connecting-to-the-cloud.md) describes the hosted service, which is waitlist-gated, not yet open to outside users, and not part of the beta.
 
 All of these, plus the rest of the task-oriented documentation, are indexed in [`guides/`](guides/README.md).
 

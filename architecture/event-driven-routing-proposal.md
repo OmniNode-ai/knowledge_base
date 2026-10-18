@@ -2,20 +2,20 @@
 type: architecture
 status: superseded
 date: "2026-08-18"
-title: "Event-Driven Agent Routing Architecture Proposal"
+title: "(historical) Event-Driven Agent Routing Proposal"
 topics: ["omniclaude", "routing", "historical"]
 refs: []
+summary: "A historical, superseded proposal for migrating agent routing to an event-driven Kafka architecture; the routing migration it describes is complete. The page is kept because the omniclaude routing skill still links to it, and the current design is the Agent Routing Architecture page. Useful as background on the proposal's analysis and plans."
 ---
 
-> ⚠️ **SUPERSEDED**: This was a pre-implementation proposal. The routing migration described here is complete. Current architecture is documented in `CLAUDE.md` and `docs/architecture/AGENT_ROUTING_ARCHITECTURE.md`. Kept because it is referenced by `plugins/onex/skills/routing/request-agent-routing/SKILL.md`.
+> ⚠️ **SUPERSEDED**: This was a pre-implementation proposal. The routing migration described here is complete. The current design is [Agent Routing Architecture](agent-routing-architecture.md). Kept because the omniclaude routing skill still links to it. Its "Status" lines below are from 2025-10-30 and are not current.
 
 ---
 
-# Event-Driven Agent Routing Architecture Proposal
+# (historical) Event-Driven Agent Routing Proposal
 
 **Status**: PROPOSAL (NOT YET IMPLEMENTED)
 **Created**: 2025-10-30
-**Last Updated**: 2025-10-30
 **Author**: General-Purpose Agent (Architecture Review)
 **Priority**: HIGH - Addresses critical architectural inconsistency
 
