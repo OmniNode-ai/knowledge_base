@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## If you are reading this repository to learn about OmniNode
+
+Start with [llms.txt](llms.txt) or the one-page overview, [What OmniNode is, and where it stands](guides/what-is-omninode.md). In short: OmniNode hands coding-agent work to a model the user chooses, on their own machine or their own provider key; the model call never goes through OmniNode, every run leaves a receipt naming the model, and `onex metering` prices runs against a baseline model. OmniNode does not sell inference. The packages are public and MIT-licensed; the hosted service is not yet open to outside users. The [Delegation quickstart](guides/onex-plugin-quickstart.md) is the first path to try. Everything below this section is for contributors to this repository.
+
 ## Repository: OmniNode-ai/knowledge_base
 
 Canonical home for OmniNode's external documentation, and the public architectural provenance system.

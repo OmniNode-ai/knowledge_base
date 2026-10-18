@@ -15,7 +15,7 @@ This guide is for someone who wants to send work to **the hosted OmniNode servic
 
 This knowledge base is the self-hoster's book. The first-class way to start with ONEX is to run it yourself in its **zero-external-infrastructure configuration** — the in-process event bus and local file-backed state, no broker, no cluster, no account, no network dependency. That path needs nothing from us, and it is the one to reach for when you are evaluating the platform, developing against it, or running it in your own environment. Scaling that up to the full stack (a real broker, a real database, real projections) is a later chapter, not a prerequisite.
 
-The hosted service exists for people who want the workload run on someone else's machines. That is what this page covers, and only that. Nothing here is required to use ONEX.
+The hosted service exists for people who want orchestration hosted rather than run on their own machine. That is what this page covers, and only that. Nothing here is required to use ONEX.
 
 ## Start local: delegate from your own machine
 
@@ -27,7 +27,11 @@ onex local init
 onex delegate "Write a one-sentence description of what delegation is."
 ```
 
-Until a local model is declared, `onex delegate` refuses before it reaches any model, with a message naming that file and a working line to start from. Everything below is the hosted path, for when you want the work run on our machines instead.
+Until a local model is declared, `onex delegate` refuses before it reaches any model, with a message naming that file and a working line to start from. Everything below is the hosted path, for when you want orchestration hosted rather than run on your machine.
+
+## Whose model, whose key
+
+The hosted service runs orchestration, routing, receipts and metering. It does not sell model access. The model call a hosted run makes is made on your own provider credential, or against your own model endpoint, and OmniNode does not mark up inference. That is the same arrangement as the local path above, with the orchestration moved off your machine.
 
 ## Use the client, not hand-written HTTP
 

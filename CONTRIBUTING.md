@@ -87,7 +87,7 @@ Cross-references in `refs:` must point to files that exist in this repository. T
 1. Run `uv run python scripts/validate.py` locally — it must exit 0 before opening a PR
 2. Run `uv run pytest tests/ -v` and `uv run ruff check scripts/ tests/ && uv run ruff format scripts/ tests/` if you modified Python files
 3. Open a PR with a description that explains what decision, pivot, or finding the artifact captures
-4. CI must be green: the `validate` job runs the checks above (registered-location sweep, frontmatter, cross-references, sanitization, index freshness, broken links) plus the test suite, and the `sanitize-text` job scans the PR title, the PR body, and the PR's own commit messages
+4. CI must be green: the `validate` job runs the eight `validate.py` checks (registered-location sweep, frontmatter, filename naming convention, ADR `adr_id` uniqueness, cross-references, sanitization, index freshness, broken links) plus the test suite, and the `sanitize-text` job scans the PR title, the PR body, and the PR's own commit messages
 5. Review is expected before merge but is not currently enforced by branch protection — treat it as a norm, not a mechanism
 
 ### Your PR text is scanned, not just your files

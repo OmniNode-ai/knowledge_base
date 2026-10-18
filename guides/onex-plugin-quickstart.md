@@ -2,14 +2,14 @@
 type: guide
 status: current
 date: "2026-10-06"
-title: "OmniClaude Quickstart"
+title: "Delegation quickstart"
 topics: [omniclaude, plugin, quickstart, delegation]
 refs: []
 ---
 
 <!-- Migrated from omniclaude:QUICKSTART.md on 2026-09-01 -->
 
-# OmniClaude Quickstart
+# Delegation quickstart
 
 This guide sets up **delegation** on your own computer: you hand a task to a model you choose,
 and you get back the answer plus a receipt saying which model answered it. The model is either
@@ -361,6 +361,9 @@ anything is checked. Step 4 is the real test.
 
 ## Next Steps
 
-- `CLAUDE.md` (omniclaude repo) — development/architecture reference for OmniNode's internal tooling (insider-oriented; assumes an OmniNode canonical-clone workspace)
-- `plugins/onex-delegate/skills/delegate/SKILL.md` (omniclaude repo) — the delegate skill's full usage reference
-- `plugins/onex-delegate/plugin-compat.yaml` (omniclaude repo) — the plugin's own `onex` version requirements
+- [What OmniNode is, and where it stands](what-is-omninode.md) — the one-page overview: what ships today, what is in beta, and what is not yet open
+- [Delegation dispatch](../architecture/delegation-dispatch.md) — how a delegation request travels from the command to a model and back
+- [Delegation routing contract](../architecture/delegation-routing-contract.md) — how the model for a run is chosen, and how the overlay file in step 3 changes that choice
+- [Supported platforms](supported-platforms.md) — where the `onex` tool installs, and how on each platform
+- [Doctrine](../doctrine/README.md) — the principles the platform is built on
+- [Building on the ONEX runtime](getting-started-local.md) — for writing your own nodes on the runtime that delegation is built on

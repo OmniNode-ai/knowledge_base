@@ -2,12 +2,14 @@
 type: guide
 status: current
 date: "2026-08-26"
-title: "Getting Started Locally"
+title: "Building on the ONEX runtime"
 topics: [getting-started, local, runtime, event-bus, projection, sqlite]
 refs: []
 ---
 
-# Getting Started Locally
+# Building on the ONEX runtime
+
+This guide is for developers who want to write their own nodes on the ONEX runtime. To try delegation, the product entering beta, start with the [Delegation quickstart](onex-plugin-quickstart.md) instead; this guide needs no model and does not delegate anything.
 
 This is the shortest complete path to a running ONEX system: one package, one command, and a real event chain you can read back out of a database file. No broker, no database server, no container runtime, no cloud account, no API key.
 
