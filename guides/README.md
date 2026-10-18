@@ -4,18 +4,30 @@ Task-oriented how-to documentation: getting started, onboarding, integration wal
 
 ## Start here
 
-Three guides cover the three ways to run ONEX, and a fourth covers running a combination of them. They are ordered, and the order is the recommendation.
+New to OmniNode? Read [What OmniNode is, and where it stands](what-is-omninode.md) first: one page on what ships today, what is in beta, and what is not yet open. Then try it.
 
-| | Guide | Run it |
+| | Guide | What it is for |
 |---|---|---|
-| **1** | **[Getting started locally](getting-started-local.md)** | **On your own machine, with zero external infrastructure.** One package, one command, and a real event chain you can read back out of a local database file. No broker, no database server, no container runtime, no account, no configuration. **Start here** — this is the first-class entry path, not a demo mode. |
-| **2** | [Self-hosting the full stack](getting-started-self-hosted.md) | On your own infrastructure, in containers. The scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top. Read it when you have actually outgrown tier-0 — the page opens with the list of reasons that qualify. |
-| **3** | [Connecting to the cloud](connecting-to-the-cloud.md) | On someone else's machines. Get a credential, point a client at the public API, submit a job, read the result back. Optional; nothing in ONEX requires it. |
-| **4** | [Combining deployment tiers](combining-deployment-tiers.md) | More than one of the above at once — which is what almost everyone actually runs. The seams between the tiers: which knob moves you across one, what changes when you cross it, and what stays identical. Read it after the three it composes. |
+| **1** | **[Delegation quickstart](onex-plugin-quickstart.md)** | **Hand a task to a model you choose, on your own machine or your own provider key, and get back the answer plus a receipt naming the model.** Install, first delegation, receipts, `onex metering`, the local dashboard and the Claude Code plugin, in about 15 minutes. **Start here** to evaluate OmniNode. |
+| **2** | [Building on the ONEX runtime](getting-started-local.md) | For developers writing their own nodes. One package, one command, and a real event chain you can read back out of a local database file, with no broker, no database server, no container runtime and no account. It needs no model and does not delegate. |
+| **3** | [Self-hosting the full stack](getting-started-self-hosted.md) | On your own infrastructure, in containers. The scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top. Read it when you have actually outgrown the local runtime; the page opens with the list of reasons that qualify. |
+| **4** | [Connecting to the cloud](connecting-to-the-cloud.md) | The hosted service, which is not yet open to outside users. Nothing on the delegation path needs it. |
+| **5** | [Combining deployment tiers](combining-deployment-tiers.md) | More than one of the runtime tiers at once. The seams between them: which knob moves you across one, what changes when you cross it, and what stays identical. |
 
-If you are evaluating the platform, guide 1 is the whole evaluation. It runs the same command → handler → terminal-event → projection chain a distributed deployment runs; scaling up later swaps two adapters rather than rewriting your nodes.
+[Supported platforms](supported-platforms.md) says where the `onex` tool installs, and how, on each kind of computer.
 
 ## Everything else
+
+### Agent integrations
+
+How each coding agent invokes OmniMarket nodes through a thin adapter: the skill or command
+file the agent reads, and the runtime path it calls. The Claude Code plugin in the
+[Delegation quickstart](onex-plugin-quickstart.md) is the one an outside user installs today.
+
+- [`omnimarket-claude-code-adapter.md`](omnimarket-claude-code-adapter.md) — Claude Code adapter
+- [`omnimarket-codex-adapter.md`](omnimarket-codex-adapter.md) — Codex adapter
+- [`omnimarket-cursor-adapter.md`](omnimarket-cursor-adapter.md) — Cursor adapter
+- [`omnimarket-gemini-adapter.md`](omnimarket-gemini-adapter.md) — Gemini CLI adapter
 
 ### Building on the ONEX kernel
 

@@ -24,6 +24,16 @@ ARTIFACT_DIRS = [
 ]
 SKIP_FILES = {"README.md", "_template.md"}
 
+# The index files live in indexes/, one directory below the repository root,
+# so every link they carry is written relative to that directory. A link
+# written relative to the root resolves to indexes/<section>/... and 404s.
+INDEX_LINK_PREFIX = "../"
+
+
+def _href(artifact: dict) -> str:
+    """Return the link to an artifact as written from inside indexes/."""
+    return INDEX_LINK_PREFIX + artifact.get("_path", "")
+
 
 def parse_frontmatter(path: Path) -> dict | None:
     """Extract YAML frontmatter from a markdown file."""
@@ -55,7 +65,7 @@ def collect_artifacts(root: Path) -> list[dict]:
                 continue
             fm = parse_frontmatter(md_file)
             if fm:
-                fm["_path"] = str(md_file.relative_to(root))
+                fm["_path"] = md_file.relative_to(root).as_posix()
                 fm["_dir"] = dir_name
                 artifacts.append(fm)
     return artifacts
@@ -86,7 +96,7 @@ def generate_chronological(artifacts: list[dict]) -> str:
 
         artifact_type = artifact.get("type", "unknown")
         title = artifact.get("title", "Untitled")
-        path = artifact.get("_path", "")
+        path = _href(artifact)
         lines.append(f"- **[{title}]({path})** ({artifact_type}) — {date_str}")
 
     if not dated:
@@ -117,7 +127,7 @@ def generate_by_topic(artifacts: list[dict]) -> str:
         lines.append("")
         for artifact in topic_map[topic]:
             title = artifact.get("title", "Untitled")
-            path = artifact.get("_path", "")
+            path = _href(artifact)
             artifact_type = artifact.get("type", "unknown")
             lines.append(f"- **[{title}]({path})** ({artifact_type})")
         lines.append("")
@@ -164,7 +174,7 @@ def generate_by_type(artifacts: list[dict]) -> str:
         lines.append("")
         for artifact in sorted(type_map[artifact_type], key=lambda a: str(a.get("date", ""))):
             title = artifact.get("title", "Untitled")
-            path = artifact.get("_path", "")
+            path = _href(artifact)
             status = artifact.get("status", "")
             lines.append(f"- **[{title}]({path})** — {status}")
         lines.append("")
@@ -176,7 +186,7 @@ def generate_by_type(artifacts: list[dict]) -> str:
         lines.append("")
         for artifact in type_map[artifact_type]:
             title = artifact.get("title", "Untitled")
-            path = artifact.get("_path", "")
+            path = _href(artifact)
             lines.append(f"- **[{title}]({path})**")
         lines.append("")
 

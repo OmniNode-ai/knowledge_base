@@ -9,9 +9,10 @@
 # placeholder convention all live in docs-taxonomy.md. This file records
 # decisions; it does not restate the rules behind them.
 #
-# STATE: migration in progress. omnibase_core carries the first real
-# per-document `rows:` (4 rows, docs/decisions/ subset); every other repo is
-# still at cutover_state: not-started with no `rows:` list, i.e. skeleton.
+# STATE (2026-10-17): migration in progress. Nine repositories are at
+# cutover_state moved or pointer-live with per-document `rows:`; the
+# remaining entries are still at cutover_state: not-started with no `rows:`.
+# Each repository's own entry below is the per-document state.
 #
 # ROW NESTING (drift-guard implementation decision, now exercised by
 # omnibase_core's rows): a repository's per-document rows nest under that

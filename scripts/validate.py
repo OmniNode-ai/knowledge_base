@@ -112,6 +112,7 @@ ROOT_SANITIZED_FILES = {
     "migration-manifest.yaml",
     ".pre-commit-config.yaml",
     ".public-repo-hygiene.yaml",
+    "llms.txt",
 }
 
 # Platform/CI configuration: registered as a sanitization-scanned,
@@ -581,13 +582,46 @@ def check_index_freshness(root: Path) -> list[str]:
 _LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 
 
+# Repository-root documents a reader or an agent opens first. Their links are
+# checked like an artifact's: an entry point that 404s is the first thing a
+# newcomer meets.
+ROOT_LINK_CHECKED_FILES = ("README.md", "CONTRIBUTING.md", "CLAUDE.md", "docs-taxonomy.md", "llms.txt")
+
+# llms.txt links by absolute URL, since an agent fetches it on its own. A URL
+# under this prefix names a file in this repository and must resolve to one.
+REPO_BLOB_URL = "https://github.com/OmniNode-ai/knowledge_base/blob/main/"
+
+
+def _find_link_check_targets(root: Path) -> list[Path]:
+    """Return every file whose relative links must resolve.
+
+    Artifact files, the generated indexes (the browsing entry most readers
+    follow) and the repository-root entry points. The indexes were outside
+    this scan while every link in them was broken, which is how CI stayed green.
+    """
+    files = list(_find_artifact_files(root))
+    index_dir = root / "indexes"
+    if index_dir.is_dir():
+        files.extend(sorted(index_dir.glob("*.md")))
+    for name in ROOT_LINK_CHECKED_FILES:
+        root_file = root / name
+        if root_file.is_file():
+            files.append(root_file)
+    return files
+
+
 def check_broken_links(root: Path) -> list[str]:
-    """Check for broken relative markdown links within artifact files."""
+    """Check for broken relative markdown links in artifacts, indexes and root entry points."""
     errors = []
-    for md_file in _find_artifact_files(root):
+    for md_file in _find_link_check_targets(root):
         content = md_file.read_text(encoding="utf-8")
         for i, line in enumerate(content.splitlines(), 1):
             for _text, href in _LINK_PATTERN.findall(line):
+                if href.startswith(REPO_BLOB_URL):
+                    path_part = href[len(REPO_BLOB_URL) :].split("#")[0]
+                    if path_part and not (root / path_part).exists():
+                        errors.append(f"{md_file}:{i}: broken link '{href}' — file does not exist in this repository")
+                    continue
                 # Skip absolute URLs and anchors
                 if href.startswith(("http://", "https://", "mailto:", "#")):
                     continue
