@@ -56,7 +56,8 @@ def test_workflow_files_are_in_the_sanitization_target_set() -> None:
 def test_private_repo_named_without_a_url_is_caught() -> None:
     """The live finding's shape. Previously passed twice over: the directory
     was unscanned, and the private-repo pattern only ever matched a URL."""
-    text = "# the same checker is vendored in knowledge-base-internal\n"
+    # Assembled at runtime so the private slug never appears in this public file.
+    text = "# the same checker is vendored in " + "knowledge-base" + "-internal" + "\n"
     errors = scan_text(text, label="probe")
     assert errors, "a bare private sibling slug must be a finding"
     assert "Private repo name" in errors[0]
@@ -73,7 +74,7 @@ def test_public_slug_alone_is_still_exempt() -> None:
 
 def test_hyphenated_host_alias_is_caught() -> None:
     """Previously passed: the pattern required a literal dot."""
-    errors = scan_text("ssh omni-201-ts 'cat file'\n", label="probe")
+    errors = scan_text("ssh host-201-ts 'cat file'\n", label="probe")
     assert errors, "the hyphenated alias form must be a finding"
     assert "Internal host reference" in errors[0]
 

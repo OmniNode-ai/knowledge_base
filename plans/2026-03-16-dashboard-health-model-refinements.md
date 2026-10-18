@@ -8,8 +8,6 @@ topics: [dashboard, health-model, probes, observability]
 
 # Omnidash Health Model Refinements — not_applicable status, envSync threshold, topicParity semantics
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan phase-by-phase.
-
 **Goal:** Close three gaps left from the health-model epic: add `not_applicable` as a distinct health status for intentionally disabled features, relax the envSync staleness threshold from 1h to 24h for local dev, and update the topicParity probe to use subscription-parity semantics instead of contract-completeness semantics.
 
 **Architecture:** All changes are in the omnidash repo. Server-side adds `not_applicable` to the `DataSourceStatus` union and updates two probes (envSync, topicParity). Client-side adds rendering for the new status. Existing `expected_idle_local` semantics are unchanged — `not_applicable` is a separate concept for features that are intentionally off, not merely idle.

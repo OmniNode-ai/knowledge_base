@@ -14,9 +14,11 @@ repos:
         name: Reject private content in commit messages
         description: >-
           Forward-blocking sanitization gate. Rejects a commit MESSAGE that
-          contains internal ticket refs, internal IPs/hosts, private repo URLs,
-          secrets-manager references, or emails. Reuses the forbidden-pattern
-          list from scripts/validate.py.
+          contains internal ticket refs, internal IPs/hosts, private repo URLs
+          or names, secrets-manager references, emails, person names in
+          owner/author fields, profanity, agent-addressed directives,
+          agent-memory citations, or CI runner container names. Reuses the
+          forbidden-pattern list from scripts/sanitization_patterns.py.
         entry: python scripts/check_text_sanitization.py --commit-msg-file
         language: system
         stages: [commit-msg]

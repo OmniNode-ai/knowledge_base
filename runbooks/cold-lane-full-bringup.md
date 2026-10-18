@@ -261,6 +261,5 @@ booting the kernel against a half-migrated schema. See
 
 - `docs/runbooks/emergency-runtime-refresh.md` — surgical warm runtime refresh
   that must not touch core infra.
-- `docs/runbooks/stability-test-runtime-lane.md` — the stability-test lane prep.
 - `docs/runbooks/apply-migrations.md` / `vendored-node-migrations.md` — migration
   mechanics referenced by the preflight.

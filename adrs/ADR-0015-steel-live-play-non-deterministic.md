@@ -66,4 +66,4 @@ buffer-end behavior; `event_stream.ts:90` WebSocket-closed console log).
 
 ## Related Doctrine
 
-- LOCAL-FIRST MANDATE (`feedback_local_first_mandatory.md`) — games run on the local model fleet; escalate only on a graded failure.
+- Local-first mandate — games run on the local model fleet; escalate only on a graded failure.

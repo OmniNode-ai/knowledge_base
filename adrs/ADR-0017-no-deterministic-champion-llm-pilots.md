@@ -38,7 +38,7 @@ served pilot.
 
 ## Alternatives Considered
 
-1. Accept a deterministic heuristic champion as a sparring/opponent seat vs a live-LLM pilot. Rejected by the operator — "that is fucking boring"; a live opponent seat does not make the champion non-deterministic, and the game must showcase live-LLM play on both seats.
+1. Accept a deterministic heuristic champion as a sparring/opponent seat vs a live-LLM pilot. Rejected: the game must showcase live-LLM play on both seats, and a live opponent seat does not make the champion non-deterministic.
 2. Keep the offline learning loop test-only and never field it into live play. Rejected: the operator requirement is a learning loop *built into the game* (after-match, not offline `so learn`) that measurably improves the LLM pilots.
 3. Rebuild a new learning substrate from scratch. Rejected: the existing evolutionary-search machinery is reused (repointed), preserving the seed-battery/paired-comparison/holdout gate.
 
@@ -63,9 +63,9 @@ resolves rolling-plan §3.23 and STEEL_DESIGN open-call #3.
 ## Evidence
 
 Hand-driven ADR canary batch (2026-07-06). Source records a direct
-operator decision (verbatim quote) plus the concrete rescope (LiveMatchEvaluator,
+operator decision plus the concrete rescope (LiveMatchEvaluator,
 DuelEvaluator CI-only, after-match hook) and the filed follow-up tickets.
 
 ## Related Pivots
 
-- Steel = model-vs-model by design (project memory `project_steel_model_vs_model_by_design.md`) — qwen35-both-sides was only a 4090-outage fallback; different LLMs pilot the two seats.
+- Steel is model-vs-model by design: different LLMs pilot the two seats. Running one model on both seats was a temporary fallback, not the design.

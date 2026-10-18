@@ -55,8 +55,7 @@ self-authored pre-rule → re-verify).
 ## Evidence
 
 Hand-driven ADR canary batch (2026-07-06). Source is a dated
-operator policy recorded in the revision log; aligns with project memory
-`feedback_no_self_authored_evidence.md` and CLAUDE.md Rule #3.
+operator policy recorded in the revision log.
 
 ## Related Doctrine
 

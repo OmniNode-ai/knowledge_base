@@ -511,9 +511,11 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
     # test 1 / bucket D before it can reach test 3 / bucket C — corrected
     # from an initial bucket-C classification to match its sibling row in
     # the occ_rows section below and the taxonomy's own stop-at-first-match
-    # ordering).
-    assert len(pointer_live) == 36
-    assert len(not_started) == 14
+    # ordering). A further 9 bucket A -> C reclassifications dropped to
+    # not-started 2026-10-18: runbooks that recorded OmniNode's own CI runner
+    # fleet and agent-lane operations, which the README charter excludes.
+    assert len(pointer_live) == 27
+    assert len(not_started) == 23
     # Every not-started row is quarantined for a documented reason, never silently dropped.
     for row in not_started:
         assert row["sensitivity"] in {"needs-review", "public", "restricted"}
@@ -526,10 +528,10 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
     for row in hygiene_risk_not_started:
         assert row["sensitivity"] == "needs-review"
         assert row["correctness_status"] == "hygiene-risk"
-    # The 3 bucket-C reclassifications: restricted, cited-not-hosted, never
+    # The 12 bucket-C reclassifications: restricted, cited-not-hosted, never
     # a live candidate for this public repo.
     restricted_not_started = [r for r in not_started if r["bucket"] == "C"]
-    assert len(restricted_not_started) == 3
+    assert len(restricted_not_started) == 12
     for row in restricted_not_started:
         assert row["sensitivity"] == "restricted"
         assert row["destination"] == "private-internal-kb"

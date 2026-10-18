@@ -15,7 +15,7 @@ topics: [cli, packaging, contracts, scaffolding]
 
 ---
 
-## Already Completed (DO NOT re-implement)
+## Already Completed
 
 - **Contract packages with auto-wiring**
 - **Part 1**: ModelChannelEnvelope, contract package layout pattern

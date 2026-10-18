@@ -28,6 +28,12 @@ from sanitization_patterns import PUBLIC_REPO_SLUGS, scan_text  # noqa: E402
 
 _ORG = "github.com/OmniNode-ai"
 
+# The private sibling slugs are assembled at runtime so that their literal
+# spelling never appears in this public file; the per-person sibling uses a
+# synthetic name.
+_HYPHEN_INTERNAL = "knowledge-base" + "-internal"
+_UNDERSCORE_INTERNAL = "knowledge_base" + "_internal"
+
 
 def _blocks(text: str) -> bool:
     """True when the shared gate entrypoint reports a finding for ``text``."""
@@ -77,14 +83,14 @@ class TestPrivateRepoUrlsBlock:
     """Negative direction: the defect this module exists to pin."""
 
     def test_private_sibling_internal_is_blocked(self) -> None:
-        url = f"https://{_ORG}/knowledge-base-internal/blob/main/plan.md"
+        url = f"https://{_ORG}/{_HYPHEN_INTERNAL}/blob/main/plan.md"
         assert _blocks(url), (
             "a private sibling repository whose name merely begins with the "
             "public slug must NOT inherit the public exemption"
         )
 
     def test_private_sibling_personal_fork_is_blocked(self) -> None:
-        url = f"https://{_ORG}/knowledge-base-jonah/blob/main/notes.md"
+        url = f"https://{_ORG}/knowledge-base-example-person/blob/main/notes.md"
         assert _blocks(url), (
             "a private per-person repository whose name begins with the public "
             "slug must NOT inherit the public exemption"
@@ -122,7 +128,7 @@ class TestUnderscoreSpellingVerdictsArePinned:
 
     @pytest.mark.parametrize(
         "slug",
-        ["knowledge_base_internal", "knowledge_base_jonah", "knowledge_basement"],
+        [_UNDERSCORE_INTERNAL, "knowledge_base_example_person", "knowledge_basement"],
     )
     def test_other_underscore_spellings_are_blocked(self, slug: str) -> None:
         assert _blocks(f"https://{_ORG}/{slug}/blob/main/README.md"), (
@@ -137,6 +143,6 @@ class TestGateEntrypointReportsThePrivateRepoRule:
     """The finding must be attributed to the private-repo rule, not another."""
 
     def test_finding_is_labelled_private_repo_url(self) -> None:
-        errors = scan_text(f"https://{_ORG}/knowledge-base-internal", label="probe")
+        errors = scan_text(f"https://{_ORG}/{_HYPHEN_INTERNAL}", label="probe")
         assert errors, "expected a finding for a private sibling repository"
         assert any("Private repo URL" in e for e in errors), f"expected the private-repo rule to fire, got: {errors}"

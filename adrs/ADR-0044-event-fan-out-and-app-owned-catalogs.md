@@ -23,9 +23,9 @@ superseded_by: []
 | **Status** | IMPLEMENTED |
 | **Created** | 2026-02-09 |
 | **Last Updated** | 2026-02-09 |
-| **Author** | Jonah |
+| **Author** | OmniNode Team |
 | **Related Issues** | emit daemon port, realm-agnostic topics, session outcome feedback loop, routing feedback events with guardrails |
-| **Implementation PRs** | omnibase_infra #275 (remove defaults), omniclaude4 branch `jonah/omn-1892-add-feedback-loop-with-guardrails` |
+| **Implementation PRs** | omnibase_infra #275 (remove defaults) |
 | **Related ADR** | omnibase_core ADR-005 — Core-Infra Dependency Boundary |
 
 ---
@@ -359,4 +359,4 @@ Extend infra with `FanOutRule` support. **Rejected** because:
 
 | Date | Version | Author | Changes |
 |------|---------|--------|---------|
-| 2026-02-09 | 1.0 | Jonah | Initial ADR: app-owned catalogs, fan-out strategy, legacy topic removal |
+| 2026-02-09 | 1.0 | OmniNode Team | Initial ADR: app-owned catalogs, fan-out strategy, legacy topic removal |

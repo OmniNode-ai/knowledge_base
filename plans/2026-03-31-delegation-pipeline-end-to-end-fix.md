@@ -8,8 +8,6 @@ topics: [delegation, routing, llm-backends, classification]
 
 # Delegation Pipeline E2E Fix — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan phase-by-phase.
-
 **Goal:** Fix the broken delegation pipeline so prompts actually route to local LLMs, Gemini CLI, and Codex CLI for delegatable tasks (pr-polish, test writing, documentation, research) — verified by live delegation events on the dashboard.
 
 **Architecture:** Three tracks executed sequentially in one worktree. Track A fixes the broken classifier (threshold, formula, allow-list). Track B adds Gemini/Codex CLI as delegation backends by generalizing the proven `aggregate_reviews.py` subprocess pattern. Track C adds GLM as an OpenAI-compatible LLM endpoint.

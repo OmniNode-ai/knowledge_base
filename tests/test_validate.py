@@ -146,7 +146,7 @@ class TestPreviouslySkippedNestedLeakIsNowCaught:
     """RED-before/GREEN-after: a forbidden pattern in a nested guides/ path."""
 
     def test_nested_leak_is_caught_by_sanitization(self, repo: Path) -> None:
-        leaking = GUIDE_FRONTMATTER + "\nInternal host reachable at 192.168.86.201 for debugging.\n"
+        leaking = GUIDE_FRONTMATTER + "\nInternal host reachable at 192.168.0.10 for debugging.\n"
         _write(repo, "guides/getting-started/install.md", leaking)
         errors = validate.check_sanitization(repo)
         assert any("install.md" in e for e in errors), (
@@ -176,7 +176,7 @@ class TestRootAndYamlSanitization:
         assert any("migration-manifest.yaml" in e for e in errors)
 
     def test_charter_files_are_scanned(self, repo: Path) -> None:
-        _write(repo, "CLAUDE.md", "# CLAUDE\n\nSee 192.168.86.55 for the dev box.\n")
+        _write(repo, "CLAUDE.md", "# CLAUDE\n\nSee 192.168.0.55 for the dev box.\n")
         errors = validate.check_sanitization(repo)
         assert any("CLAUDE.md" in e for e in errors)
 

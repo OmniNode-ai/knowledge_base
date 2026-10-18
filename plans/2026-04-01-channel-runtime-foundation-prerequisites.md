@@ -24,7 +24,7 @@ topics: [contracts, runtime, channels, routing]
 
 ---
 
-## Already Completed (DO NOT re-implement)
+## Already Completed
 
 - **Contract packages with auto-wiring** — topic auto-discovery in omniintelligence
 - **Tiered responder chain**

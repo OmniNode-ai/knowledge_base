@@ -55,8 +55,7 @@ and item 7 on the owed readbacks now legal pre-merge).
 ## Evidence
 
 Hand-driven ADR canary batch (2026-07-06). Source is a dated
-operator policy in the revision log; aligns with project memory
-`feedback_branch_preview_verification.md`.
+operator policy in the revision log.
 
 ## Related Doctrine
 

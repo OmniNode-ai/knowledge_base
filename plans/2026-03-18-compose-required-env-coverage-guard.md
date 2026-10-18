@@ -8,8 +8,6 @@ topics: [ci, validators, compose, configuration]
 
 # Compose Required-Env Coverage Guard Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan phase-by-phase.
-
 **Goal:** Add a CI guard that fails on the PR that introduces a new `:?`-required env var in `docker-compose.infra.yml` without a corresponding entry in the `test_compose_config_valid` fixture dict, preventing silent downstream test breakage.
 
 **Architecture:** A standalone Python script (`scripts/validation/check_compose_required_env_coverage.py`) parses the compose file for all `${VAR:?…}` patterns and cross-checks them against keys extracted via regex from the integration test fixture dict. A matching `tests/ci/` test validates the script logic without needing Docker. A new `onex-validation` step in `test.yml` wires it into CI. A PR template checkbox documents the manual companion rule.

@@ -50,7 +50,7 @@ This is the plan's recommended posture and is adopted verbatim. Rationale:
 1. **C aligns with contract-first policy.** Model routing and memory access already
    have canonical dispatch paths (omnimarket nodes + cloud runtime). Adding a
    secondary plugin-side router would duplicate the authority and drift from the
-   "one pattern" rule (`feedback_contract_driven_handlers.md`).
+   "one pattern" rule: every handler is contract-driven.
 2. **B preserves gradual migration.** Existing sibling plugins (omnigemini,
    omnimemory) have install footprints and user expectations today. Forcing them
    into C immediately would be a destructive rewrite. Keeping them separately

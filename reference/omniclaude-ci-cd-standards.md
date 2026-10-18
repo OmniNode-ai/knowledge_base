@@ -127,7 +127,7 @@ All three must pass before merging to `main` or `develop`.
 Linear generates branch names automatically:
 
 ```
-jonahgabriel/omn-XXXX-short-description
+<username>/omn-XXXX-short-description
 ```
 
 Branches not tied to Linear tickets: use `kebab-case-description`.
