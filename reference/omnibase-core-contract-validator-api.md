@@ -319,5 +319,4 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2026-02-14
 **Status**: Interface Stable

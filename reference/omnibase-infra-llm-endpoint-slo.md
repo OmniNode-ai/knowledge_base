@@ -11,8 +11,6 @@ refs: []
 
 # LLM Endpoint Service Level Objectives
 
-> **Last Updated**: 2026-02-19
-
 This document defines Service Level Objectives (SLOs) for the distributed LLM endpoints
 used by ONEX infrastructure. Endpoints are hosted on two machines and serve different
 model tiers. Calibration methodology follows the same principles as the E2E registration

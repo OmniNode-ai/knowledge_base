@@ -16,7 +16,6 @@ refs: []
 
 # Dict[str, Any] Prevention Guide
 
-**Last Updated**: 2025-12-26
 **Status**: Active Enforcement
 **Error Code**: `[explicit-any]`
 

@@ -15,7 +15,6 @@ refs: []
 # Handler Contract Guide
 
 **Version**: 1.0.0
-**Last Updated**: 2025-12-31
 **Status**: Comprehensive Reference
 
 > **New in v0.4.1**: ModelHandlerContract provides the complete authoring surface for ONEX handlers with capability-based dependencies and embedded behavior descriptors.
@@ -636,6 +635,5 @@ from omnibase_core.models.runtime import (
 
 ---
 
-**Last Updated**: 2025-12-31
 **Version**: 1.0.0
 **Maintainer**: ONEX Framework Team

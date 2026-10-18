@@ -520,5 +520,4 @@ protocols/
 
 ---
 
-**Last Updated**: 2026-02-14
 **Project**: omnibase_core

@@ -16,7 +16,6 @@ refs: []
 # Security Considerations for Example Contracts
 
 **Version**: 1.0.0
-**Last Updated**: 2025-12-08
 
 This document provides comprehensive security guidance for developers implementing ONEX contracts based on these examples. The example contracts in this directory are designed for demonstration purposes and contain patterns that require careful security consideration before production use.
 

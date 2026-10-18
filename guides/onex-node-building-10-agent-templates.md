@@ -10,6 +10,7 @@ topics:
   - agent
   - templates
 refs: []
+summary: "Copy-paste-ready templates for NodeCompute, NodeEffect, NodeReducer, and NodeOrchestrator development, formatted to be machine-parseable with explicit parameters. Includes a node type selection matrix, validation checklists, common patterns, and error recovery guidance. For developers or agents scaffolding new nodes."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/node-building/10_AGENT_TEMPLATES.md on 2026-09-02 -->
@@ -22,7 +23,6 @@ refs: []
 > **Status**: Complete
 > **Purpose**: Structured, copy-paste-ready templates for node development
 > **Format**: Machine-parseable with explicit parameters and validation checklists
-> **Last Updated**: 2026-02-14
 
 ---
 
@@ -1514,5 +1514,4 @@ uv run mypy src/your_module/your_node.py --show-error-codes
 ---
 
 **Document Version**: 1.0.0
-**Last Updated**: 2026-02-14
 **Status**: Complete

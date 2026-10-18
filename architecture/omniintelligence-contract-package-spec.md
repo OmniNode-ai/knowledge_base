@@ -14,7 +14,7 @@ refs:
 
 # Intelligence Contract Package Specification
 
-> **Last Updated**: 2026-08-25 — migrated from `omniintelligence` to the knowledge base. During migration, the Discovery Rules were corrected: the source document listed `event_bus_enabled: true` as a required key gating auto-wiring. Live source (`contract_topics.py`'s `_discover_effect_node_packages()` / `_has_subscribe_topics()`) does not check that key at all — the actual gate is a non-empty `event_bus.subscribe_topics` list. `event_bus_enabled` was removed from contract auto-wiring discovery in an earlier refactor and survives today only as a vestigial, unused key in 2 of the repo's 60 contracts (both compute nodes with no `subscribe_topics`, so the key has no effect either way). The YAML example and Discovery Rules below reflect the live mechanism, not the original (now-incorrect) description.
+> **Migration note (2026-08-25)**: Migrated from `omniintelligence` to the knowledge base. During migration, the Discovery Rules were corrected: the source document listed `event_bus_enabled: true` as a required key gating auto-wiring. Live source (`contract_topics.py`'s `_discover_effect_node_packages()` / `_has_subscribe_topics()`) does not check that key at all — the actual gate is a non-empty `event_bus.subscribe_topics` list. `event_bus_enabled` was removed from contract auto-wiring discovery in an earlier refactor and survives today only as a vestigial, unused key in 2 of the repo's 60 contracts (both compute nodes with no `subscribe_topics`, so the key has no effect either way). The YAML example and Discovery Rules below reflect the live mechanism, not the original (now-incorrect) description.
 
 ## Overview
 

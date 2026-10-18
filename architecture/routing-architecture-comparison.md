@@ -2,16 +2,16 @@
 type: architecture
 status: superseded
 date: "2026-02-20"
-title: "Agent Routing Architecture - Visual Comparison"
+title: "(historical) Agent Routing Before and After the Event-Driven Migration"
 topics: ["omniclaude", "routing", "historical"]
 refs: []
 ---
 
-> ⚠️ **HISTORICAL**: This comparison documents the completed migration from synchronous routing to event-driven routing. The "before" state no longer exists. Kept because it is referenced by `plugins/onex/skills/routing/request-agent-routing/SKILL.md`.
+> ⚠️ **HISTORICAL**: This comparison documents the completed migration from synchronous routing to event-driven routing. The "before" state no longer exists. The current design is [Agent Routing Architecture](agent-routing-architecture.md). Kept because the omniclaude routing skill still links to it.
 
 ---
 
-# Agent Routing Architecture - Visual Comparison
+# (historical) Agent Routing Before and After the Event-Driven Migration
 
 This document provides visual comparisons between the current synchronous routing architecture and the proposed event-driven architecture.
 

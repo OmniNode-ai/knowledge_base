@@ -5,9 +5,14 @@ date: "2026-09-23"
 title: "Connecting to the OmniNode Cloud"
 topics: [cloud, api, authentication, workflows, delegation, getting-started]
 refs: []
+summary: "How to reach the hosted OmniNode service with the onex cloud client, and which of its steps work today. The hosted service is waitlist-gated and not part of the beta; beta users follow the quickstart instead."
 ---
 
 # Connecting to the OmniNode Cloud
+
+> **Not part of the beta.** The beta is the local install in the [quickstart](onex-plugin-quickstart.md), which needs no account and no OmniNode service ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). The hosted service described here is waitlist-gated: you cannot open an account yourself, and its production API does not yet list the delegation routes. Read the [status table](#availability-of-each-step-stated-honestly) before relying on any step below.
+>
+> In every mode, OmniNode does not sell inference. Model calls go to a model you run or to a provider on your own key, and you pay that provider directly.
 
 This guide is for someone who wants to send work to **the hosted OmniNode service** rather than run the platform themselves: get an account, get a credential, install the client, submit a job, and read the result back.
 

@@ -365,5 +365,4 @@ dep = ModelCapabilityDependency(
 
 ---
 
-**Last Updated**: 2025-12-30
 **Project**: omnibase_core v0.4.0

@@ -15,7 +15,7 @@ refs: []
 
 **Status:** runnable, namespaced dev-lab application canary
 **Production runtime authority:** none; the deployed event ingress remains held
-**Last Updated**: 2026-08-25 — migrated from `omniintelligence` to the knowledge base, unchanged.
+**Migration note (2026-08-25)**: Migrated from `omniintelligence` to the knowledge base, unchanged.
 
 ## Decision
 

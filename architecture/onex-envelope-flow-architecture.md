@@ -16,7 +16,6 @@ refs: []
 # Envelope Flow Architecture
 
 > **Version**: 0.4.0
-> **Last Updated**: 2025-12-19
 > **Status**: Production
 
 ## Overview
@@ -665,5 +664,4 @@ process(envelope.payload)
 ---
 
 **Document Version**: 0.4.0
-**Last Updated**: 2025-12-19
 **Primary Maintainer**: ONEX Framework Team

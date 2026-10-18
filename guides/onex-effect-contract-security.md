@@ -448,6 +448,5 @@ Before deploying effect contracts to production, complete this security checklis
 
 ---
 
-**Last Updated**: 2025-12-08
 **Document Version**: 1.0.0
 **Correlation ID**: `d3c7b1a2-8f45-4e29-a6d9-5e2c9b3f1d8a`

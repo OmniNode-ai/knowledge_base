@@ -58,6 +58,7 @@ The numbered-id sections are decision-ledger records — the id matches the reco
 1. Add `plans/YYYY-MM-DD-short-title.md` — a plan is a point-in-time record of an intended implementation path, not updated after the work is done (see [`plans/README.md`](plans/README.md)), so it carries the same date-prefixed shape as an experiment
 2. Only plans that capture architectural intent worth preserving belong here — one that shaped how the system was built, was significantly revised, or contains reasoning about alternatives
 3. Once the work is done, capture what actually happened in an ADR or pivot instead of updating the plan
+4. A plan kept only as a record of what was intended carries `status: historical`, so nobody reads it as a live roadmap item; `plans/` is history, not a roadmap
 
 ### Guides, Reference, and Runbooks
 
@@ -77,8 +78,11 @@ date: YYYY-MM-DD
 title: "Descriptive title"
 topics: [list, of, topics]
 refs: [list/of/relative/file/paths.md]
+summary: "Optional. Two or three sentences stating the page's point."
 ---
 ```
+
+`summary:` is optional. Give one to any long page: the type index shows it beside the title, so a reader, or an agent working from the index, gets the point without opening the page.
 
 Cross-references in `refs:` must point to files that exist in this repository. The validator will fail on broken references.
 

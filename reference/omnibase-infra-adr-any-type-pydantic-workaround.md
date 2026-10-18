@@ -849,44 +849,7 @@ grep -rn "def.*Any" src/ | grep -v "__pycache__"
 
 ## Integration Test Status
 
-Integration tests for the registration reducer and related infrastructure are tracked internally.
-
-### Postponement Justification
-
-Integration tests are tracked separately for the following reasons:
-
-1. **Unit tests provide comprehensive coverage**: The RegistrationReducer has 100% coverage of FSM transitions, state machine logic, and intent generation through unit tests. All edge cases, error conditions, and state transitions are verified.
-
-2. **Integration tests require additional infrastructure**: Full integration tests require:
-   - `RuntimeHostProcess` for intent dispatch
-   - Mock Consul and PostgreSQL services
-   - Event bus infrastructure for end-to-end event flow
-   - `RegistrationProjector` for FSM state persistence
-
-3. **Separation of concerns**: This PR focuses on the declarative reducer refactoring. Integration testing is a distinct scope that deserves dedicated attention.
-
-### Integration Test Matrix
-
-The following integration tests are tracked internally:
-
-| Test Area | Description | Status |
-|-----------|-------------|--------|
-| Intent emission through RuntimeHostProcess | Verify intents are correctly dispatched | TODO |
-| End-to-end registration with Consul mocks | Full registration flow with mocked Consul | TODO |
-| End-to-end registration with PostgreSQL mocks | Full registration flow with mocked PostgreSQL | TODO |
-| FSM state persistence via RegistrationProjector | Verify state is correctly persisted | TODO |
-| DLQ handling for failed registrations | Verify failed events are correctly queued | TODO |
-
-### Pre-existing Test Failures
-
-**27 test failures in CI are pre-existing issues unrelated to this PR.**
-
-These failures existed before the migration work began and are documented in the PR description. They are caused by:
-- Missing infrastructure dependencies in CI environment
-- Incomplete mock configurations for external services
-- Test fixtures that require database connections
-
-These failures are tracked internally for resolution as part of the broader integration test effort.
+The registration reducer is covered by unit tests: its FSM transitions, state machine logic, intent generation, edge cases and error conditions. End-to-end integration tests through the runtime host, the event bus and the projector are not part of this record.
 
 ---
 

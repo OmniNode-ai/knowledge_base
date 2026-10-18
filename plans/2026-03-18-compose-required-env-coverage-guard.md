@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-03-18"
 title: "Compose required-env coverage guard"
 topics: [ci, validators, compose, configuration]

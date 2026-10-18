@@ -9,7 +9,6 @@ refs: []
 
 # Agent Routing Architecture
 
-**Last Updated**: 2026-02-19
 **Key changes**: agent YAML removed from sync path, routing_path signal added, LLM routing observability, routing.decision emission (PR-92)
 
 ---

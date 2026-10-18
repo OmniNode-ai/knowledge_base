@@ -8,6 +8,7 @@ topics:
   - performance
   - testing
 refs: []
+summary: "Covers performance testing in omnibase_core, which measures timing, memory usage, and scalability to catch regressions and quantify feature overhead. Explains when to add tests, statistical significance, benchmark stability, regression detection, and CI integration. For engineers maintaining performance as the codebase evolves."
 ---
 
 <!-- Migrated from omnibase_core:docs/testing/PERFORMANCE_TESTING_GUIDE.md on 2026-09-02 -->
@@ -17,8 +18,6 @@ refs: []
 **Location**: `tests/performance/`
 
 **Status**: ✅ Active - Performance testing framework
-
-**Last Updated**: 2025-12-16
 
 ---
 
@@ -1130,6 +1129,5 @@ class TestPerformanceRegression:
 
 ---
 
-**Last Updated**: 2026-02-14
 **Status**: Active - performance testing framework
 **Contact**: @omnibase_core-maintainers

@@ -15,7 +15,6 @@ refs: []
 # ONEX Mixin Architecture
 
 **Status**: Active
-**Last Updated**: 2026-02-14
 **Related Documents**: Subcontract Architecture, Mixin Development Guide
 
 ## Overview

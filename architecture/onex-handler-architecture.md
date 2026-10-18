@@ -15,7 +15,6 @@ refs: []
 # Handler Architecture
 
 **Version**: 1.0.0
-**Last Updated**: 2026-02-14
 **Status**: Canonical Reference
 
 This document teaches the end-to-end handler pattern in ONEX: from YAML contract
@@ -731,6 +730,5 @@ from omnibase_core.models.errors.model_onex_error import ModelOnexError
 
 ---
 
-**Last Updated**: 2026-02-14
 **Version**: 1.0.0
 **Maintainer**: ONEX Framework Team

@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-01"
 title: "Package install CLI and channel-adapter scaffold generator"
 topics: [cli, packaging, contracts, scaffolding]

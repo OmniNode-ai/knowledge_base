@@ -622,5 +622,4 @@ Need from_attributes?
 
 ---
 
-**Last Updated**: 2026-01-12
 **Project**: omnibase_core v0.6.6

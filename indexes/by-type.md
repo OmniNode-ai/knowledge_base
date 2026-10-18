@@ -68,20 +68,21 @@ Knowledge base artifacts grouped by type.
 - **[ADR-0017: No Deterministic Champion in Live Play; Learning Loop Repointed at LLM Pilots](../adrs/ADR-0017-no-deterministic-champion-llm-pilots.md)** — proposed
 - **[ADR-0019: No Self-Authored Evidence — OCC Companions From Autogen or Independent Verifier Only](../adrs/ADR-0019-no-self-authored-evidence.md)** — proposed
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** — proposed
-- **[ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** — proposed
+- **[ADR-0021 (historical): July 2026 Beta Priority Lock](../adrs/ADR-0021-beta-ships-first-priority-lock.md)** — superseded
 - **[ADR-0024: Merge Stall Root Cause = Merge-Sweep Tooling Miss, Not a Capacity Deadlock](../adrs/ADR-0024-merge-stall-tooling-not-capacity.md)** — proposed
 - **[ADR-0052: Adaptive Recursive Contract Bisection (Bisect-on-Contract-Failure)](../adrs/ADR-0052-adaptive-recursive-contract-bisection.md)** — proposed
 - **[ADR-0022: Shift Defect-Detection Left + OCC Evidence-Only Fast-Lane (WS-E Build-Efficiency)](../adrs/ADR-0022-shift-left-and-occ-evidence-only-fast-lane.md)** — proposed
 - **[ADR-0023: Remove the onex_change_control Merge Queue](../adrs/ADR-0023-remove-occ-merge-queue.md)** — proposed
 - **[ADR-0010: Enforcement and Merge-Policy Parity Ratchet](../adrs/ADR-0010-required-context-parity-ratchet.md)** — proposed
-- **[ADR-0026: Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** — superseded
+- **[ADR-0026 (historical): Two Databases — Tenant-Facing vs Internal/Ops](../adrs/ADR-0026-two-databases-tenant-vs-internal.md)** — superseded
 - **[ADR-0027: One Application Database with Contract-Classified Domains](../adrs/ADR-0027-one-application-database-domain-separation.md)** — accepted
+- **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)** — accepted. The beta is the local install: users delegate from their own computer to a model they run or a provider on their own key, and OmniNode does not sell inference. The hosted service is not part of the beta. Supersedes ADR-0021.
 
 ## Architecture
 
-- **[Agent Routing Architecture - Visual Comparison](../architecture/routing-architecture-comparison.md)** — superseded
+- **[(historical) Agent Routing Before and After the Event-Driven Migration](../architecture/routing-architecture-comparison.md)** — superseded
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** — accepted
-- **[Delegation Architecture](../architecture/delegation-architecture.md)** — deprecated
+- **[(historical) Delegation Bridge Architecture, Hook-Driven](../architecture/delegation-architecture.md)** — deprecated. Historical. Describes a hook-driven delegation bridge that is no longer wired. For current delegation read Delegation Dispatch Architecture and Delegation Routing Contract.
 - **[Agent Routing Architecture](../architecture/agent-routing-architecture.md)** — accepted
 - **[Compliance Enforcement Architecture](../architecture/compliance-enforcement-architecture.md)** — accepted
 - **[Context Enrichment Pipeline Architecture](../architecture/context-enrichment-pipeline.md)** — accepted
@@ -92,7 +93,7 @@ Knowledge base artifacts grouped by type.
 - **[Skill Lifecycle: When a Skill Stays in omniclaude vs. Moves to omnimarket](../architecture/omniclaude-skill-lifecycle.md)** — accepted
 - **[ONEX Current Node Architecture](../architecture/current-node-architecture.md)** — accepted
 - **[Dead Letter Queue (DLQ) Message Format](../architecture/dlq-message-format.md)** — accepted
-- **[Event Bus Integration Guide](../architecture/event-bus-integration.md)** — accepted
+- **[Event Bus Integration Guide](../architecture/event-bus-integration.md)** — accepted. Step-by-step instructions for integrating with the ONEX Event Bus, which offers Kafka for production and an in-memory implementation for development and testing. Covers configuration, publishing and subscribing, message categories, error handling, correlation ID tracking, and production deployment. For developers connecting services to the event bus.
 - **[ONEX Event Streaming Topics - Specification (v1)](../architecture/event-streaming-topics.md)** — accepted
 - **[LLM Infrastructure Architecture](../architecture/llm-infrastructure.md)** — accepted
 - **[MCP Service Architecture](../architecture/mcp-service-architecture.md)** — accepted
@@ -102,7 +103,7 @@ Knowledge base artifacts grouped by type.
 - **[Untitled](../architecture/shared-enum-ownership.md)** — accepted
 - **[Snapshot Publishing Architecture](../architecture/snapshot-publishing.md)** — accepted
 - **[Topic Catalog Architecture](../architecture/topic-catalog-architecture.md)** — accepted
-- **[Event-Driven Agent Routing Architecture Proposal](../architecture/event-driven-routing-proposal.md)** — superseded
+- **[(historical) Event-Driven Agent Routing Proposal](../architecture/event-driven-routing-proposal.md)** — superseded. A historical, superseded proposal for migrating agent routing to an event-driven Kafka architecture; the routing migration it describes is complete. The page is kept because the omniclaude routing skill still links to it, and the current design is the Agent Routing Architecture page. Useful as background on the proposal's analysis and plans.
 - **[Delegation Dispatch Architecture](../architecture/delegation-dispatch.md)** — accepted
 - **[Delegation Routing Contract](../architecture/delegation-routing-contract.md)** — accepted
 - **[OmniIntelligence Deterministic Code Projection v2](../architecture/omniintelligence-code-projection-v2.md)** — accepted
@@ -142,7 +143,7 @@ Knowledge base artifacts grouped by type.
 - **[ONEX Anti-Patterns Documentation](../architecture/onex-anti-patterns.md)** — accepted
 - **[Approved Union Patterns for ONEX Development](../architecture/onex-approved-union-patterns.md)** — accepted
 - **[ONEX Baseline Evaluation Framework](../architecture/onex-baseline-evaluation-framework.md)** — accepted
-- **[ONEX Canonical Execution Shapes](../architecture/onex-canonical-execution-shapes.md)** — accepted
+- **[ONEX Canonical Execution Shapes](../architecture/onex-canonical-execution-shapes.md)** — accepted. Defines the canonical execution shapes for the ONEX Four-Node Architecture, which enforces unidirectional data flow across the four node types. Lists allowed and forbidden patterns, explains why the constraints matter, and gives a decision matrix and enforcement notes. For anyone designing components that must follow these shapes.
 - **[Circuit Breaker Pattern for External Dependencies](../architecture/onex-circuit-breaker-pattern.md)** — accepted
 - **[Claude Code Hooks Architecture](../architecture/onex-claude-code-hook-models.md)** — accepted
 - **[Environment-Based Configuration Management](../architecture/onex-configuration-management.md)** — accepted
@@ -158,7 +159,7 @@ Knowledge base artifacts grouped by type.
 - **[Envelope Flow Architecture](../architecture/onex-envelope-flow-architecture.md)** — accepted
 - **[Event-Driven Architecture -- omnibase_core](../architecture/onex-event-driven-architecture.md)** — accepted
 - **[Execution Shape Examples](../architecture/onex-execution-shape-examples.md)** — accepted
-- **[ONEX Four-Node Architecture Documentation](../architecture/onex-four-node-architecture.md)** — accepted
+- **[ONEX Four-Node Architecture Documentation](../architecture/onex-four-node-architecture.md)** — accepted. Documents the ONEX Four-Node Architecture design pattern and each node's responsibilities in the processing pipeline. Covers v0.4.0 changes, inter-node communication, error handling patterns, performance, monitoring, and testing. Intended for developers building or maintaining nodes within this architecture.
 - **[Handler Architecture](../architecture/onex-handler-architecture.md)** — accepted
 - **[Handler Classification: omnibase_core File I/O Services (Epic 3 — Ticket 3.4)](../architecture/onex-handler-classification-file-io-services.md)** — accepted
 - **[Import Compatibility Matrix](../architecture/onex-import-compatibility-matrix.md)** — accepted
@@ -169,13 +170,13 @@ Knowledge base artifacts grouped by type.
 - **[ModelAction Architecture](../architecture/onex-model-action-architecture.md)** — accepted
 - **[ModelIntent Architecture](../architecture/onex-model-intent-architecture.md)** — accepted
 - **[ModelAction Typed Payloads](../architecture/onex-modelaction-typed-payloads.md)** — accepted
-- **[Node Class Hierarchy Guide](../architecture/onex-node-class-hierarchy.md)** — accepted
+- **[Node Class Hierarchy Guide](../architecture/onex-node-class-hierarchy.md)** — accepted. Explains the three tiers of node base classes in omnibase_core: ModelService wrappers for recommended use, Node classes for advanced control, and NodeCoreBase for experts. Includes a decision matrix, feature comparison, migration paths, and common scenarios. For developers choosing which base class to build on.
 - **[Node Purity Guarantees](../architecture/onex-node-purity-guarantees.md)** — accepted
 - **[Operation Bindings DSL](../architecture/onex-operation-bindings-dsl.md)** — accepted
-- **[Payload Type Architecture](../architecture/onex-payload-type-architecture.md)** — accepted
+- **[Payload Type Architecture](../architecture/onex-payload-type-architecture.md)** — accepted. Records the v0.4.0 breaking change that removes dict payloads from models such as ModelIntent and ModelAction in favor of typed payload models. Covers the decision and rationale, payload factory functions, discriminator naming, migration strategy, and examples. For developers migrating payload code to typed models.
 - **[Protocol Architecture](../architecture/onex-protocol-architecture.md)** — accepted
-- **[Pure FSM Reducer Pattern](../architecture/onex-pure-fsm-reducer-pattern.md)** — accepted
-- **[ONEX Subcontract Package Architecture](../architecture/onex-subcontract-architecture.md)** — accepted
+- **[Pure FSM Reducer Pattern](../architecture/onex-pure-fsm-reducer-pattern.md)** — accepted. Defines the Pure FSM Reducer pattern, in which Reducer nodes operate as deterministic, side-effect-free state transformation machines following δ(state, action) → (new_state, intents). Covers requirements, intent emission, benefits, anti-patterns, migration from impure reducers, and testing. For anyone implementing NodeReducer classes.
+- **[ONEX Subcontract Package Architecture](../architecture/onex-subcontract-architecture.md)** — accepted. Describes the ONEX Subcontract Package of specialized contract models for operations such as state machines, aggregation, routing, event handling, and discovery. Covers architectural principles, core and advanced subcontract patterns, testing, performance, and monitoring. For engineers designing or extending subcontracts within the Four-Node Architecture.
 - **[Type System](../architecture/onex-type-system.md)** — accepted
 - **[URL Contract Authority](../architecture/onex-url-contract-authority.md)** — accepted
 - **[Validation Protocol Compliance](../architecture/onex-validation-protocol-compliance.md)** — accepted
@@ -191,27 +192,27 @@ Knowledge base artifacts grouped by type.
 
 ## Plan
 
-- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** — active
-- **[Gap investigation series](../plans/2026-03-01-gap-investigation-series.md)** — active
-- **[Future enhancements for ONEX change control](../plans/2026-03-03-onex-change-control-future-enhancements.md)** — active
-- **[Dashboard health model refinements — not_applicable status and probe semantics](../plans/2026-03-16-dashboard-health-model-refinements.md)** — active
-- **[Compose required-env coverage guard](../plans/2026-03-18-compose-required-env-coverage-guard.md)** — active
-- **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** — active
-- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** — active
-- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** — active
-- **[Package install CLI and channel-adapter scaffold generator](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** — active
-- **[Test-driven ticket-pipeline iteration loop](../plans/2026-04-01-test-driven-pipeline-iteration-loop.md)** — active
+- **[Insights-driven workflow improvements](../plans/2026-02-28-insights-driven-workflow-improvements.md)** — historical
+- **[Gap investigation series](../plans/2026-03-01-gap-investigation-series.md)** — historical
+- **[Future enhancements for ONEX change control](../plans/2026-03-03-onex-change-control-future-enhancements.md)** — historical
+- **[Dashboard health model refinements — not_applicable status and probe semantics](../plans/2026-03-16-dashboard-health-model-refinements.md)** — historical
+- **[Compose required-env coverage guard](../plans/2026-03-18-compose-required-env-coverage-guard.md)** — historical
+- **[Environment variable lifecycle fix](../plans/2026-03-24-env-var-lifecycle-fix.md)** — historical
+- **[Delegation pipeline end-to-end fix](../plans/2026-03-31-delegation-pipeline-end-to-end-fix.md)** — historical
+- **[Channel runtime foundation — core contracts and routing backbone](../plans/2026-04-01-channel-runtime-foundation-prerequisites.md)** — historical
+- **[Package install CLI and channel-adapter scaffold generator](../plans/2026-04-01-package-install-cli-and-scaffold-generator.md)** — historical
+- **[Test-driven ticket-pipeline iteration loop](../plans/2026-04-01-test-driven-pipeline-iteration-loop.md)** — historical
 - **[Plugin cache freshness — preventing stale plugin deployments](../plans/2026-04-02-plugin-cache-freshness.md)** — completed
-- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** — active
-- **[Platform readiness gap closure plan](../plans/2026-04-07-platform-readiness-gap-closure.md)** — active
-- **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** — active
-- **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** — active
+- **[Insights action plan](../plans/2026-04-07-insights-action-plan.md)** — historical
+- **[Platform readiness gap closure plan](../plans/2026-04-07-platform-readiness-gap-closure.md)** — historical
+- **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** — historical
+- **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** — historical
 - **[Fix onex run-node to publish to contract-declared topics](../plans/2026-05-02-run-node-contract-topic-resolution.md)** — completed
-- **[Canary-to-routing feedback loop](../plans/2026-05-11-canary-routing-feedback-loop.md)** — active
-- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** — active
-- **[Escalation proof corpus — specification](../plans/2026-07-02-escalation-proof-corpus-spec.md)** — active
-- **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** — active
-- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** — active
+- **[Canary-to-routing feedback loop](../plans/2026-05-11-canary-routing-feedback-loop.md)** — historical
+- **[Canonical Python .gitignore baseline and cross-repo enforcement](../plans/2026-05-29-gitignore-baseline-enforcement.md)** — historical
+- **[Escalation proof corpus — specification](../plans/2026-07-02-escalation-proof-corpus-spec.md)** — historical
+- **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** — historical
+- **[Merge-queue governor — conservative fail-closed action-mode (arm-gate)](../plans/2026-07-10-merge-queue-governor-arm-gate-design.md)** — historical
 - **[PR landing workflow: change-control companions and the mechanical landing rules as one ONEX workflow](../plans/2026-09-26-pr-landing-workflow-plan.md)** — active
 - **[PR landing workflow, revision 1: the state machine and safety properties after model checking](../plans/2026-09-27-pr-landing-state-machine-revision.md)** — active
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** — active
@@ -256,7 +257,7 @@ Knowledge base artifacts grouped by type.
 - **[Model Validation Demo: Support Ticket Classification](../guides/omnibase-core-model-validation-demo.md)** — current
 - **[Parallel Testing Architecture and Resource Management](../guides/omnibase-core-parallel-testing.md)** — current
 - **[ONEX Performance Testing Suite](../guides/omnibase-core-performance-benchmarks.md)** — current
-- **[Performance Testing Guide](../guides/omnibase-core-performance-testing.md)** — current
+- **[Performance Testing Guide](../guides/omnibase-core-performance-testing.md)** — current. Covers performance testing in omnibase_core, which measures timing, memory usage, and scalability to catch regressions and quantify feature overhead. Explains when to add tests, statistical significance, benchmark stability, regression detection, and CI integration. For engineers maintaining performance as the codebase evolves.
 - **[Quick Start Guide](../guides/omnibase-core-quick-start.md)** — current
 - **[Code Coverage Testing](../guides/omnibase-core-test-coverage.md)** — current
 - **[Testing Guide - omnibase_core](../guides/omnibase-core-testing.md)** — current
@@ -288,8 +289,8 @@ Knowledge base artifacts grouped by type.
 - **[Effect Boundary Guide](../guides/onex-effect-boundary.md)** — current
 - **[Security Considerations for Effect Contracts](../guides/onex-effect-contract-security.md)** — current
 - **[EFFECT Node Template](../guides/onex-effect-node-template.md)** — current
-- **[Effect Subcontract Guide](../guides/onex-effect-subcontracts.md)** — current
-- **[ONEX Error Handling Best Practices](../guides/onex-error-handling-best-practices.md)** — current
+- **[Effect Subcontract Guide](../guides/onex-effect-subcontracts.md)** — current. Explains effect subcontracts, Pydantic models that declaratively define external I/O operations for EFFECT nodes across HTTP, database, Kafka, and filesystem cases. Covers type-safe configurations, idempotency-aware retries, transaction boundaries, circuit breakers, validation rules, and a migration path. For developers defining I/O behavior in EFFECT nodes.
+- **[ONEX Error Handling Best Practices](../guides/onex-error-handling-best-practices.md)** — current. Sets error handling standards for the ONEX Four-Node Architecture across contract models, subcontracts, and node implementations. Covers error philosophy and categories, the centralized error code framework, recovery strategies, monitoring, and testing. For developers implementing or reviewing error handling in ONEX components.
 - **[Security Considerations for Example Contracts](../guides/onex-example-contract-security.md)** — current
 - **[Execution Corpus Guide](../guides/onex-execution-corpus.md)** — current
 - **[Golden-Chain Harness — Authoring Guide](../guides/onex-golden-chain-harness.md)** — current
@@ -303,33 +304,32 @@ Knowledge base artifacts grouped by type.
 - **[Mixin Development Guide](../guides/onex-mixin-development-overview.md)** — current
 - **[Mixin-Subcontract Mapping Guide](../guides/onex-mixin-subcontract-mapping.md)** — current
 - **[What is a Node?](../guides/onex-node-building-01-what-is-a-node.md)** — current
-- **[Node Types](../guides/onex-node-building-02-node-types.md)** — current
+- **[Node Types](../guides/onex-node-building-02-node-types.md)** — current. Introduces the four fundamental ONEX node types and the handler delegation pattern, where thin node shells leave business logic to handlers. Details each node type's allowed and forbidden outputs, with a decision matrix, flowchart, and service wrapper guidance. For readers learning which node type to use.
 - **[COMPUTE Node Tutorial](../guides/onex-node-building-03-compute-node-tutorial.md)** — current
-- **[EFFECT Node Tutorial: Build a File Backup System](../guides/onex-node-building-04-effect-node-tutorial.md)** — current
-- **[REDUCER Node Tutorial: Build a Pure FSM Metrics Aggregator](../guides/onex-node-building-05-reducer-node-tutorial.md)** — current
-- **[ORCHESTRATOR Node Tutorial: Build a Data Processing Pipeline](../guides/onex-node-building-06-orchestrator-node-tutorial.md)** — current
-- **[Patterns Catalog -- Common ONEX Node Patterns](../guides/onex-node-building-07-patterns-catalog.md)** — current
+- **[EFFECT Node Tutorial: Build a File Backup System](../guides/onex-node-building-04-effect-node-tutorial.md)** — current. A tutorial for building a File Backup Node that performs atomic file operations with transaction support, retry logic, circuit breaker patterns, and rollback handling. Offers the recommended ModelServiceEffect wrapper or the NodeEffect base class, plus testing and troubleshooting. For intermediate developers following the node tutorials.
+- **[REDUCER Node Tutorial: Build a Pure FSM Metrics Aggregator](../guides/onex-node-building-05-reducer-node-tutorial.md)** — current. A tutorial on building a Pure FSM Metrics Aggregator REDUCER node, presented in two approaches: the recommended ModelServiceReducer wrapper and the NodeReducer base class. Explains the FSM-driven architecture, pure state transitions, intent execution, and testing. For intermediate readers who have completed the prerequisites.
+- **[ORCHESTRATOR Node Tutorial: Build a Data Processing Pipeline](../guides/onex-node-building-06-orchestrator-node-tutorial.md)** — current. A tutorial for building a Data Processing Pipeline Orchestrator that coordinates COMPUTE, EFFECT, and REDUCER nodes in workflows. Covers the rule that ORCHESTRATOR nodes emit events and intents but cannot return typed results, plus branching, execution modes, error handling, and testing. Aimed at advanced readers who have finished the other node tutorials.
+- **[Patterns Catalog -- Common ONEX Node Patterns](../guides/onex-node-building-07-patterns-catalog.md)** — current. A catalog of handler-based patterns for building ONEX nodes, where each pattern pairs a YAML contract, a thin node shell, and a handler class holding the business logic. Organized by COMPUTE, EFFECT, REDUCER, and ORCHESTRATOR patterns, plus testing patterns. For developers implementing nodes against the four-node architecture invariants.
 - **[Common Pitfalls - What to Avoid When Building Nodes](../guides/onex-node-building-08-common-pitfalls.md)** — current
-- **[Agent Templates for ONEX Node Development](../guides/onex-node-building-10-agent-templates.md)** — current
+- **[Agent Templates for ONEX Node Development](../guides/onex-node-building-10-agent-templates.md)** — current. Copy-paste-ready templates for NodeCompute, NodeEffect, NodeReducer, and NodeOrchestrator development, formatted to be machine-parseable with explicit parameters. Includes a node type selection matrix, validation checklists, common patterns, and error recovery guidance. For developers or agents scaffolding new nodes.
 - **[Node Building Guide](../guides/onex-node-building-overview.md)** — current
 - **[ORCHESTRATOR Node Template](../guides/onex-orchestrator-node-template.md)** — current
-- **[Pipeline Runner and Hook Registry Guide](../guides/onex-pipeline-hook-registry.md)** — current
+- **[Pipeline Runner and Hook Registry Guide](../guides/onex-pipeline-hook-registry.md)** — current. Documents the Pipeline Runner and Hook Registry, a declarative system that executes hooks in canonical phase order with dependency management, priority ordering, type validation, and thread safety. Includes a quick start, API reference, testing patterns, and troubleshooting. For developers extending pipeline execution with hooks.
 - **[Cache Tuning for Production Deployment](../guides/onex-production-cache-tuning.md)** — current
 - **[Protocol Discovery Guide](../guides/onex-protocol-discovery.md)** — current
 - **[Pydantic Best Practices for ONEX](../guides/onex-pydantic-best-practices.md)** — current
-- **[REDUCER Node Template](../guides/onex-reducer-node-template.md)** — current
+- **[REDUCER Node Template](../guides/onex-reducer-node-template.md)** — current. A template for the unified REDUCER node pattern, where FSM-driven state transitions are defined in YAML contracts and nodes emit intents rather than direct side effects. Lists output constraints, directory structure, template files, and usage instructions. For developers creating new REDUCER nodes.
 - **[Replay Safety Integration Guide](../guides/onex-replay-safety-integration.md)** — current
 - **[Request Tracing in ONEX](../guides/onex-request-tracing.md)** — current
 - **[Thread Safety in Omnibase Core](../guides/onex-threading.md)** — current
-- **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** — current
+- **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** — current. How to reach the hosted OmniNode service with the onex cloud client, and which of its steps work today. The hosted service is waitlist-gated and not part of the beta; beta users follow the quickstart instead.
 - **[Supported Platforms](../guides/supported-platforms.md)** — current
-- **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** — current
+- **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** — current. The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed.
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** — current
 
 ## Reference
 
 - **[ONEX Kafka Topic Naming Standard](../reference/onex-topic-taxonomy.md)** — current
-- **[CI/CD Standards](../reference/ci-cd-standards.md)** — stale
 - **[Cross-Repo Merge Dependency Graph](../reference/merge-dependency-graph.md)** — current
 - **[Claude Code PostToolUse updatedToolOutput Shape](../reference/claude-code-posttooluse-output-shape.md)** — current
 - **[Event Envelope Canonical Field Names](../reference/event-envelope-field-names.md)** — current
@@ -421,7 +421,7 @@ Knowledge base artifacts grouped by type.
 - **[ONEX Capability Naming Conventions](../reference/onex-capability-naming.md)** — current
 - **[ONEX Change Control — Decision Log](../reference/onex-change-control-decision-log.md)** — current
 - **[ONEX Change Control — Versioning Policy](../reference/onex-change-control-versioning-policy.md)** — current
-- **[ONEX Contract Model Docstring Templates](../reference/onex-docstring-templates.md)** — current
+- **[ONEX Contract Model Docstring Templates](../reference/onex-docstring-templates.md)** — current. Provides docstring templates for contract model classes, with required elements such as descriptions, attribute documentation, examples, raises sections, and validation rules in Google style. Includes separate templates for contract models, subcontracts, TypedDicts, and enums. For anyone writing or reviewing contract model documentation.
 - **[ONEX Error Code Standards](../reference/onex-error-code-standards.md)** — current
 - **[File Header Conventions](../reference/onex-file-headers.md)** — current
 - **[ONEX Naming Conventions](../reference/onex-naming-conventions.md)** — current

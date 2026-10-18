@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-03-01"
 title: "Gap investigation series"
 topics: [integration, drift, auditing, methodology]

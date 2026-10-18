@@ -10,6 +10,7 @@ topics:
   - best
   - practices
 refs: []
+summary: "Sets error handling standards for the ONEX Four-Node Architecture across contract models, subcontracts, and node implementations. Covers error philosophy and categories, the centralized error code framework, recovery strategies, monitoring, and testing. For developers implementing or reviewing error handling in ONEX components."
 ---
 
 <!-- Migrated from omnibase_core:docs/conventions/ERROR_HANDLING_BEST_PRACTICES.md on 2026-09-02 -->

@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-07-05"
 title: "Delegation to CI integration — design"
 topics: [delegation, ci, gates, model-tiering]

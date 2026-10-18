@@ -5,6 +5,7 @@ date: "2026-10-06"
 title: "Delegation quickstart"
 topics: [omniclaude, plugin, quickstart, delegation]
 refs: []
+summary: "The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed."
 ---
 
 <!-- Migrated from omniclaude:QUICKSTART.md on 2026-09-01 -->
@@ -38,8 +39,10 @@ There are two ways to use it, and both use the same `onex` command-line tool:
 | Claude Code (only for step 7) | The [Claude Code CLI](https://claude.com/claude-code), signed in. Steps 1 to 6 do not need it. |
 
 You do not need to install Python yourself. The Python that ships with macOS is too old
-(3.9), but that does not matter: `uv` uses a newer Python if you have one (Homebrew's, for
-example) and downloads one for itself if you don't.
+(3.9), but that does not matter: the install command in step 1 asks `uv` for Python 3.12, and
+`uv` downloads it for itself if you don't have it. Keep `--python 3.12` in that command: without
+it `uv` picks the newest Python it can find, and on a clean machine the install then fails
+because one of the packages has no prebuilt build for that version yet.
 
 The `uv` installer puts `uv` in `~/.local/bin`, which may not be on your PATH yet. If `uv --version`
 answers `command not found`, run this once, then **close the terminal window and open a new one**:
@@ -63,7 +66,7 @@ Check that `uv` is ready: `uv --version` prints a version number.
 > install fail while compiling `cryptography`.
 
 ```bash
-uv tool install --with 'omnibase-infra>=0.38.4' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
+uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
 ```
 
 This downloads about 175 packages and takes a minute or two. It ends with a line starting
@@ -95,7 +98,7 @@ releases this guide supports; the command installs the newest published release 
 To update later: `uv tool upgrade omnibase-core` (it keeps the other two packages).
 
 If you use `pipx` instead of `uv`, the equivalent is
-`pipx install 'omnibase-core>=0.46.8' && pipx inject omnibase-core 'omnibase-infra>=0.38.4' 'omnimarket>=0.4.205'`.
+`pipx install --python 3.12 'omnibase-core>=0.46.8' && pipx inject omnibase-core 'omnibase-infra>=0.38.67' 'omnimarket>=0.4.205'`.
 Do not use `uv run onex ...`: `uv run` uses the environment of whatever project folder you are
 in, so it only works by coincidence. Call the plain `onex` command.
 
@@ -151,8 +154,12 @@ your key, once, on this machine.
 
 1. Sign in at [openrouter.ai](https://openrouter.ai), open **Settings → Keys**, create a key,
    and copy it. An OpenRouter key starts with `sk-or-v1-`.
-2. Run this command. It asks you to paste the key, then to paste it again to confirm. The
-   key is never typed on the command line or read from an environment variable:
+2. Pick the OpenRouter model you want your key to run and copy its id from OpenRouter's model
+   page (for example a model whose id ends in `:free`, if you want one that costs nothing).
+   OmniNode does not pick one for you.
+3. Run this command. It asks you to paste the key, then to paste it again to confirm, then asks
+   which model your key should run; paste the model id. The key is never typed on the command
+   line or read from an environment variable:
 
    ```bash
    onex secret set llm.openrouter.api_key
@@ -160,20 +167,24 @@ your key, once, on this machine.
 
    **Nothing appears on screen when you paste. That is on purpose, so the key never shows.**
    The command refuses an empty entry, two entries that differ, and an OpenRouter key that
-   does not start with `sk-or-v1-`, and it never prints what you pasted. To register a key
-   from a script, pipe it in instead:
-   `printf '%s' "$KEY" | onex secret set llm.openrouter.api_key`.
+   does not start with `sk-or-v1-`, and it never prints what you pasted. It checks the model
+   you named against your key's model list and refuses one the list does not name. To register
+   a key from a script, pipe it in and name the model, because a script cannot be asked:
+   `printf '%s' "$KEY" | onex secret set llm.openrouter.api_key --model <model id>`.
 
 You should see `Stored llm.openrouter.api_key in ...` and
-`Registered it as your openrouter route key: ...`. For GLM, use `llm.glm.api_key` in the same
-command. `onex secret list` shows the names of the keys this machine holds, never the keys. It lists
+`Registered it as your openrouter route key: ...`, with a `Model:` line naming the model you
+chose. For GLM, use `llm.glm.api_key` in the same command. GLM has more than one plan, so the
+command sends your key to GLM's own endpoints in a one-token request to find out which plan it
+belongs to (name it with `--plan general_api` to skip that). A GLM Coding Plan key is refused and
+never stored, because that plan's terms bar its use from other tools. `onex secret list` shows the names of the keys this machine holds, never the keys. It lists
 two entries for one key: the name you set, and a second one that looks like
 `cred_localinstall_openrouter_<hex>`. The second is the route reference OmniNode derives from
 your key so delegation can use it; it is expected, and you do not need to set or manage it.
 
 A provider key alone is enough: with no model server declared, `onex delegate` goes straight
-to your provider on your key. With only an OpenRouter key, it uses a **free** OpenRouter model;
-free models cost nothing but OpenRouter limits how often you can call them. The key is kept in
+to your provider on your key, on the model you chose. Free OpenRouter models cost nothing, but
+OpenRouter limits how often you can call them. The key is kept in
 a file under `~/.omninode/` that only your user account can read. It is not encrypted, so treat
 that folder like any other file holding a password.
 
@@ -265,7 +276,9 @@ onex dashboard
 ```
 
 The command prints the address it is serving on, for example
-`onex dashboard: http://127.0.0.1:54321`. Open that address in a browser. Leave the command
+`onex dashboard: http://127.0.0.1:54321/?<token>=<value> (tenant <your tenant id>)`. Open that
+whole address, including the part after `?`, in a browser: it carries an access token minted
+for this start, and a request without it is refused. Each start prints a new one. Leave the command
 running while you use the page, and press Ctrl+C to stop it.
 
 The first run takes a few seconds longer than later ones: it downloads the dashboard's pages
@@ -313,22 +326,26 @@ it was already open, and type:
 ```
 
 Claude asks for permission to run the `onex delegate` command; allow it. It then shows the
-answer and the model that produced it. The result files are written exactly as in step 5,
-under `~/.onex_state`, whichever folder Claude Code was started from.
+answer as it came back, with no summary added. The model that answered, the cost and the
+receipt are in the result files, written exactly as in step 5 under `~/.onex_state`, whichever
+folder Claude Code was started from, and `onex metering` and `onex dashboard` show them.
 
 ---
 
-## Cloud (not yet available to outside users)
+## The hosted service (not part of the beta)
 
-OmniNode also runs a hosted delegation service that uses a dashboard-issued `onxk_` key. Outside
-users cannot start it from public material yet: there is no public sign-up for the dashboard and
-no public service address. Everything in this guide runs on your own machine on your own key and
-does not need it. When the hosted service opens to outside users, this section will say how to
-get an account.
+OmniNode also runs a hosted delegation service that uses a dashboard-issued `onxk_` key. It is
+not part of the beta, and nothing in this guide needs it. Its sign-up is a waitlist: signing up
+registers interest, and accounts are granted by the OmniNode team. Its production API does not
+yet list the delegation routes. [Connecting to the OmniNode Cloud](connecting-to-the-cloud.md)
+says which of its steps work today.
+
+Whichever way you run it, OmniNode does not sell inference. Your work goes to a model you run or
+to a provider on your own key, and you pay that provider directly.
 
 ---
 
-## Tier 1 (self-hosted) / Tier 2 (cloud)
+## Tier 1 (a model you run) / Tier 2 (a provider on your own key)
 
 The overlay file in step 3 (`~/.omninode/delegation/bifrost_overrides.yaml`) is the composable
 mechanism: it adds or overrides backend entries on top of OmniNode's committed routing
@@ -345,7 +362,7 @@ registering your own provider key with `onex secret set`, a cloud model you pay 
 | `command not found: uv` | Install it with `curl -LsSf https://astral.sh/uv/install.sh \| sh`, then run `uv tool update-shell` and open a new terminal window. |
 | `command not found: onex` | The install folder is not on your PATH yet. Run `uv tool update-shell`, close the terminal window and open a new one. If that does not fix it, re-run the step 1 install command. |
 | The command in step 3 seems to hang | It is waiting for you to paste the key. Nothing shows while you paste; paste once and press Return. |
-| `error_message` contains `credential_rejected` and `Missing Authentication header` or `User not found` | The provider refused the key. The text you pasted was not a whole, current key (an OpenRouter key starts with `sk-or-v1-`). Copy it again from the provider's Keys page and re-run the step 3 command; it replaces the stored key. |
+| `error_message` contains `credential_rejected` and `Missing Authentication header` or `User not found` | The provider refused the key. The text you pasted was not a whole, current key (an OpenRouter key starts with `sk-or-v1-`). Copy it again from the provider's Keys page and re-run the step 3 command with `--force` added (`onex secret set llm.openrouter.api_key --force`); without `--force` it refuses to replace a key already stored. |
 | `error_message` mentions `429` or a rate limit | The provider is limiting how often you can call it (free models are limited). Wait a minute and try again, or add credit to your provider account. |
 | `No local model is declared on this machine` | You have neither registered a provider key nor declared a model server. Do step 3. |
 | `this install has never minted a tenant identity` | Run `onex local init` once (step 2). |

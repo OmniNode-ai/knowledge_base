@@ -9,7 +9,6 @@ refs: []
 
 # Compliance Enforcement Architecture
 
-**Last Updated**: 2026-02-19
 **Key changes**: compliance pipeline design, PostToolUse compliance emit, advisory injection, compliance result subscriber
 
 ---

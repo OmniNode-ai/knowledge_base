@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-11"
 title: "Validation stack architecture — implementation plan"
 topics: [validation, ci, architecture, gates]

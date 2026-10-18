@@ -18,7 +18,6 @@ refs: []
 > **Version**: 1.0.0
 > **Status**: Documentation
 > **Scope**: omnibase_core
-> **Last Updated**: 2025-12-09
 > **Related**: THREADING.md
 
 ---
@@ -453,5 +452,4 @@ See THREADING.md for:
 
 ---
 
-**Last Updated**: 2025-12-09
 **Author**: ONEX Framework Team

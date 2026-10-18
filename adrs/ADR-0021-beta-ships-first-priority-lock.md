@@ -1,16 +1,18 @@
 ---
 type: adr
-status: proposed
+status: superseded
 date: "2026-07-06"
-title: "ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes"
+title: "ADR-0021 (historical): July 2026 Beta Priority Lock"
 adr_id: ADR-0021
-topics: [prioritization, beta-launch, ws-b, planning, roadmap]
+topics: [prioritization, beta-launch, planning, roadmap]
 refs: []
 supersedes: []
-superseded_by: []
+superseded_by: [ADR-0053]
 ---
 
-# ADR-0021: Beta Ships First — Priority-Ladder Lock, WS-B Outranks All In-Flight Lanes
+# ADR-0021 (historical): July 2026 Beta Priority Lock
+
+> **Superseded by [ADR-0053](ADR-0053-beta-scope-local-install-own-keys.md).** This record is the July 2026 plan for a beta that did not ship in this form, and it was never accepted. The current beta scope is in ADR-0053. "WS-B", "WS-D", "WS-P" and the other codes below are internal workstream names of that time; nothing current depends on them.
 
 ## Context
 

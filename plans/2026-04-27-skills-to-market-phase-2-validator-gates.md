@@ -1,6 +1,6 @@
 ---
 type: plan
-status: active
+status: historical
 date: "2026-04-27"
 title: "Skills-to-market phase 2: validator gates"
 topics: [validation, skills, gates, ci]

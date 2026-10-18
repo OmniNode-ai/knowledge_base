@@ -15,7 +15,7 @@ refs:
 # ONEX Four-Node Architecture in OmniMemory
 
 > **Version**: 0.2.3
-> **Last Updated**: 2026-08-25 — migrated from `omnimemory` to the knowledge base. During migration, the EFFECT node table and data-flow diagram below were corrected: they still listed `node_intent_event_consumer_effect`, which had already been removed from `omnimemory` (its consumer role was consolidated into `omnimarket` to eliminate a duplicate-consumer race on the same topic). Verified via `git ls-files src/omnimemory/nodes/` against the live `omnimemory` tree on 2026-08-25: 14 node directories, 13 with `contract.yaml` (`node_memory_consolidator_reducer` is a contract-less stub).
+> **Migration note (2026-08-25)**: Migrated from `omnimemory` to the knowledge base. During migration, the EFFECT node table and data-flow diagram below were corrected: they still listed `node_intent_event_consumer_effect`, which had already been removed from `omnimemory` (its consumer role was consolidated into `omnimarket` to eliminate a duplicate-consumer race on the same topic). Verified via `git ls-files src/omnimemory/nodes/` against the live `omnimemory` tree on 2026-08-25: 14 node directories, 13 with `contract.yaml` (`node_memory_consolidator_reducer` is a contract-less stub).
 > **Status**: Active
 
 ## Overview

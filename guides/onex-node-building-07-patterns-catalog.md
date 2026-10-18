@@ -10,6 +10,7 @@ topics:
   - patterns
   - catalog
 refs: []
+summary: "A catalog of handler-based patterns for building ONEX nodes, where each pattern pairs a YAML contract, a thin node shell, and a handler class holding the business logic. Organized by COMPUTE, EFFECT, REDUCER, and ORCHESTRATOR patterns, plus testing patterns. For developers implementing nodes against the four-node architecture invariants."
 ---
 
 <!-- Migrated from omnibase_core:docs/guides/node-building/07_PATTERNS_CATALOG.md on 2026-09-02 -->
@@ -1222,6 +1223,5 @@ class TestHandlerOrderReducer:
 ## Document Metadata
 
 - **Version**: 2.0.0
-- **Last Updated**: 2026-02-14
 - **Maintainer**: ONEX Core Team
 - **Status**: Complete
