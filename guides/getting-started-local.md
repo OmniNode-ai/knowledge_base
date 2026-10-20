@@ -27,7 +27,7 @@ Read this guide first even if you intend to run the full stack. Everything in th
 | Projection store | SQLite (file or `:memory:`) | Server-hosted relational database |
 | External services | none | broker, database, container runtime |
 | Configuration | none required | connection settings per service |
-| What it proves | contracts, handler chain, terminal events, projections, replay of a recorded run | all of that, plus partitioning, ordering across processes, durability, multi-consumer fan-out |
+| What it exercises | contracts, handler chain, terminal events, projections, repeatable fixture-fed runs | all of that, plus partitioning, ordering across processes, broker-backed event persistence/recovery, multi-consumer fan-out |
 
 Local is a genuine ONEX runtime, not a simulator. What it does **not** exercise is anything that only exists once more than one process is involved: cross-process ordering, consumer groups, broker durability, and server-side database behaviour. Those are the subject of the full-stack guide.
 
@@ -107,7 +107,7 @@ The runtime harness is the smallest real success loop the platform ships. It pub
 ./.venv/bin/python -m omnibase_core.runtime.harness.harness_cli delegation \
   --prompt "hello onex" \
   --inference fixture \
-  --fixture-completion "A recorded completion from a real model call." \
+  --fixture-completion "Synthetic fixture text for the event-projection check." \
   --sqlite-path ./onex-local.db
 ```
 
@@ -117,10 +117,17 @@ The runtime harness is the smallest real success loop the platform ships. It pub
 
 **`--inference`** selects how the effect step obtains a completion, and it has exactly two settings:
 
-- `fixture` — replay a completion you recorded from a real model call. Requires `--fixture-completion`.
+- `fixture` — return the nonempty text supplied through `--fixture-completion`.
+  The example above is synthetic: it exercises event/projection plumbing without inference.
+  You can supply a real recorded completion, but its origin needs separate evidence.
 - `curl` — call a live, OpenAI-compatible chat-completions endpoint. Requires `--endpoint`. See step 6.
 
-There is deliberately **no third option that echoes the prompt back**. A run with neither real nor recorded inference fails rather than reporting success on nothing. This is the fail-fast principle applied to your very first command: the framework would rather refuse than hand you a green result that proves nothing.
+The [fixture adapter in core v0.47.49](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/runtime/harness/harness_inference_fixture.py)
+checks only that the supplied text is nonempty after stripping whitespace. It does
+not authenticate a model call or distinguish recorded output from invented text.
+There is no automatic prompt-echo default, but any supplied nonempty string can
+pass this check. A successful fixture run establishes the handler/event/projection
+loop with that input, not inference provenance or answer correctness.
 
 **`--sqlite-path`** defaults to `:memory:`, which is ephemeral — the projection is written and read within the process and then vanishes. Pass a file path, as above, when you want an artifact you can inspect afterwards. Step 5 assumes you did.
 
@@ -134,7 +141,7 @@ Run `./.venv/bin/python -m omnibase_core.runtime.harness.harness_cli delegation 
 
 ## 5. Verify it worked
 
-Four independent signals. Check them in order; each one rules out a different way a "successful" run could be lying to you.
+Four checks of the harness loop. They cover event/projection behavior and input validation; none authenticates the origin of supplied fixture text.
 
 ### 5.1 The process exit code
 
@@ -178,7 +185,10 @@ Read it as five separate assertions:
 
 ### 5.3 The projection row, read back independently
 
-The evidence packet is written by the same process that ran the workflow. Reading the database with a separate tool is what makes it independent proof of durability:
+The evidence packet is written by the same process that ran the workflow. Reading
+the SQLite file after that process exits checks that the projection persisted
+outside process memory. It does not show that the in-memory event transport retained
+a journal across the restart or independently attest to inference provenance:
 
 ```bash
 sqlite3 ./onex-local.db \
@@ -189,7 +199,7 @@ One row per correlation identifier, in table `harness_projection`, whose columns
 
 ### 5.4 The negative control
 
-A verification step that cannot fail proves nothing. Run the same command with the recorded completion removed:
+Check the missing-fixture refusal by running the same command without fixture text:
 
 ```bash
 ./.venv/bin/python -m omnibase_core.runtime.harness.harness_cli delegation --inference fixture
@@ -197,9 +207,12 @@ A verification step that cannot fail proves nothing. Run the same command with t
 
 It **fails**, and exits `1`.
 
-Be ready for the shape of that failure, because it is not a tidy one-line usage message: you get a Python traceback, ten or so frames deep, terminating in a typed validation error whose message states that `--fixture-completion` is required when `--inference=fixture`, and that a fixture run with no recorded completion is a false-green stub. The traceback is the expected output here — read the last line, not the first. It is the error being raised rather than swallowed, which is the entire point of the check.
-
-If that command succeeds, something is wrong with your installation. A framework that refuses to fabricate a result is the behaviour you want; confirming it now means you can trust the green in 5.2.
+Expect a Python traceback terminating in a typed validation error stating that
+`--fixture-completion` is required with `--inference=fixture`. The adapter's error
+wording asks for a recorded completion, but the implementation only validates
+nonempty text. This negative control establishes refusal of missing fixture input;
+it does not establish that supplied text came from a model. If it succeeds without
+a fixture, investigate that input-validation behavior before relying on the example.
 
 ---
 
@@ -217,7 +230,10 @@ Still zero external infrastructure, provided the model server runs on your own m
 
 The adapter posts `{"model": ..., "max_tokens": ..., "messages": [{"role": "user", "content": ...}]}` and reads the completion from `choices[0].message.content`. Anything speaking that dialect works; substitute your server's port and model name. The evidence packet then reports `"inference_adapter": "curl"` and the completion in the projection payload is the model's, not a replay.
 
-This is also how you produce the recorded completions that `--inference fixture` replays: run it live once, keep the completion, and every subsequent run of that scenario is deterministic and offline.
+To use real recorded output in a later offline fixture run, retain the completion
+alongside the request, endpoint/model identity, software version and run evidence.
+Passing the completion back with `--inference fixture` reuses that text; the fixture
+adapter does not verify that evidence or recreate the live model call.
 
 ---
 
@@ -254,7 +270,7 @@ Two honest limits on this section. First, `onex validate` on a freshly scaffolde
 | Symptom | Cause and fix |
 |---|---|
 | `ModuleNotFoundError: omnibase_core` | A different interpreter answered than the one you installed into. Run `onex --verbose info` — with the flag, and with the flag *before* `info` — and compare its reported `Python path` against your virtual environment. Plain `onex info` will not show you the path. An inherited `PYTHONPATH` can shadow the environment; clearing it for the command (`env -u PYTHONPATH ...`) resolves that case. |
-| Traceback ending in a `--fixture-completion` validation error | Working as designed — see 5.4. Supply a recorded completion, or switch to `--inference curl`. |
+| Traceback ending in a `--fixture-completion` validation error | Working as designed — see 5.4. Supply nonempty fixture text (synthetic or separately recorded), or switch to `--inference curl`. |
 | `ValueError: badly formed hexadecimal UUID string` | You passed a non-UUID value to `--correlation-id`. It must parse as a UUID — see step 4. |
 | `Error: No such option '--verbose'` | The flag belongs to the `onex` group, not the subcommand. Write `onex --verbose info`, not `onex info --verbose`. |
 | `onex doctor` / `onex health` report failures | Expected on a local-only machine. Both probe full-stack services and local checkouts. Neither is the local health check; step 5 is. A green result from either is not evidence about the local loop either — see step 3. |

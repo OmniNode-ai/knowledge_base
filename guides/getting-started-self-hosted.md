@@ -37,10 +37,15 @@ Come here when one of these is actually true:
 | Reason to scale up | What tier-0 cannot do |
 |---|---|
 | More than one process must see the same events | The in-memory bus is per-process by construction |
-| You need events to survive a restart | Nothing is durable without the broker |
-| You want the projection/analytics surface | Projections are consumers writing into PostgreSQL |
+| You need transport events retained for recovery after a restart | The in-memory event bus loses its events on process exit; a broker provides distributed event persistence/recovery |
+| You need server-hosted projection/analytics storage | Tier-0 can persist projections in a local SQLite file; this stack adds PostgreSQL-backed consumers |
 | You need multiple runtime replicas or workers | Consumer groups require a real broker |
 | You need OIDC-authenticated service-to-service calls | The auth provider is a container in this stack |
+
+A file-backed SQLite projection and saved run artifacts can survive a local process
+restart without a broker. That persistence is separate from retaining the event
+stream for replay and recovery: the in-memory transport is not a durable event log.
+See the [local projection check](getting-started-local.md#53-the-projection-row-read-back-independently).
 
 If none of those apply, close this page. Running a five-service data plane to get
 what tier-0 already gives you is a cost with no return.
@@ -84,11 +89,15 @@ scripts scan the repository source tree directly (they iterate over the node
 catalog under `docker/catalog/`), so they only work from a checkout:
 
 ```bash
-git clone <omnibase_infra repository URL> omnibase_infra
+git clone --branch v0.38.75 --depth 1 https://github.com/OmniNode-ai/omnibase_infra.git omnibase_infra
 cd omnibase_infra
 uv sync
 ```
 
+This selects the public `v0.38.75` source snapshot, whose checked commit is
+`ea342c1741393e77c7be04f0286795c2e1067a98`, rather than a moving default branch.
+The tag contains the service catalog referenced below. This source check does not
+establish that a full deployment at that revision has been independently validated.
 Everything from here on assumes your shell is inside that checkout.
 
 ---

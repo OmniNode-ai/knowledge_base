@@ -155,7 +155,7 @@ flip when the property you are trying to prove **only exists between processes.*
 | A validation or refusal fires | tier-0 |
 | A second process sees the event | self-hosted |
 | Consumer groups, partitioning, ordering across processes | self-hosted |
-| Durability across a restart | self-hosted |
+| Broker-backed event persistence and recovery across a restart | self-hosted |
 | A deployed runtime consumer picks the command up and dispatches it | self-hosted |
 
 Anything in the top half that you run on the broker is a slower version of a test
@@ -468,10 +468,12 @@ from its own `correlation_id`, `status`, `terminal_model_used`,
 and you can establish that without asking the service to confirm anything about
 itself.
 
-Combine it with the check guide 3 already gives you — that a well-formed receipt's
-two hashes are computed over different field sets and must therefore **differ from
-each other** — and you have two independent integrity assertions, both computable
-locally.
+The hashes cover different field sets, but comparing them for inequality is only a
+sanity check. Recomputing a hash from the receipt's own fields establishes internal
+consistency with those fields; it is not an independent attestation of execution,
+model identity or answer correctness. Someone who replaces the data can recompute
+these unkeyed hashes too. See guide 3's [receipt limits](connecting-to-the-cloud.md#what-a-receipt-says)
+for the distinction between hashes, signatures and authentication.
 
 > **Unverified.** The recomputation was proven against synthetic field values, not
 > against a receipt issued by the production API. Guide 3 states that the workflow
@@ -574,9 +576,9 @@ proving your own logic; "integrate" means proving behaviour between components;
 |---|---|---|
 | **Author** a contract or handler | tier-0 | Nothing about writing a contract needs a broker. The scaffold and the contract read are offline operations. |
 | **Test** handler logic, refusals, replay determinism | tier-0 | Fastest loop, and these properties are fully present in-process. A recorded completion makes the run deterministic and offline. |
-| **Integrate** — second consumer, ordering, durability, consumer groups | self-hosted | Structurally absent from tier-0; the in-memory bus is per-process by construction. |
+| **Integrate** — second consumer, cross-process ordering, broker-backed event persistence/recovery, consumer groups | self-hosted | The tier-0 event bus is in-memory and per-process; it does not retain events across a restart. |
 | **Integrate** — a deployed runtime consumer dispatching your command | self-hosted | Requires the runtime services and the migration gate from guide 2. |
-| **Operate** something others depend on | self-hosted, or hosted | tier-0 has no durability and no second process. |
+| **Operate** with distributed event persistence and recovery | self-hosted, or hosted where supported | tier-0 has no durable event transport or cross-process consumers. Local SQLite projection files and saved run artifacts can persist without a broker. |
 | **Operate** without running infrastructure yourself | hosted | The entire reason the hosted tier exists. |
 | **Verify** a hosted receipt's integrity | tier-0 | The hash function runs offline, on the receipt's own fields. |
 | **Evaluate** the platform | tier-0 | Guide 1 is the whole evaluation. |
