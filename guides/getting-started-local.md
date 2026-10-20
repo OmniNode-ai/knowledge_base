@@ -247,21 +247,26 @@ cd my-onex-project
 ../.venv/bin/onex new node my-first-node --type compute
 ```
 
-`onex init` creates a project directory with a `pyproject.toml`, a `src/<package>/nodes/` tree, a `contracts/` directory and a `tests/` directory. `onex new node` then writes four files into it:
+The checked [core v0.47.49 scaffold](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/cli/cli_new.py)
+creates a project and node package with a contract, node class, handler class,
+separate input/output model modules and package initializers. `--type` accepts
+`compute`, `effect`, `reducer` or `orchestrator`.
 
-```
-src/my_onex_project/nodes/my_first_node/
-├── contract.yaml
-├── node_my_first_node_compute.py
-├── handlers/handler_my_first_node.py
-└── models/models_my_first_node.py
-```
+The contract declares typed model references, `handler_routing.default_handler`,
+`handler.module/class/input_model` and a terminal event. The generated handler
+returns an empty typed response so its wiring can run; the separate node-method
+stub raises `NotImplementedError`. Replace the handler's empty response with your
+actual logic and tests. An empty success does not establish useful application behavior.
 
-`--type` accepts `compute`, `effect`, `reducer`, or `orchestrator` — the four node archetypes. The generated `contract.yaml` declares the node's name, archetype, contract and node versions, its typed input and output models, its handler routing, a descriptor block (purity, runtime profiles, idempotency, timeout), and the topics it subscribes to and publishes on. The generated handler raises `NotImplementedError` on purpose: the contract is complete, the behaviour is yours to write, and the node fails loudly until you do.
-
-Read the contract file before you touch the handler. It is the specification the runtime resolves against, and the ordering — contract first, implementation second — is the working habit the rest of the platform assumes.
-
-Two honest limits on this section. First, `onex validate` on a freshly scaffolded, still-unimplemented project reports failures; treat validation as something to run once your handler exists, not as a smoke test of the scaffold. Second, this guide verified that the scaffold is generated correctly and that its contract is well-formed — it did **not** verify running a hand-written node through the harness command above, because that harness wires two specific built-in workflows. Executing your own node is the subject of the handler-authoring and full-stack material below.
+Read the contract before editing the handler. To execute your project, make its
+package importable and use the project contract with the appropriate runtime/CLI;
+the two built-in harness workflows above do not discover arbitrary project nodes.
+The public [scaffold execution tests](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/tests/unit/cli/test_cli_new_scaffold_runnable.py)
+and [validation tests](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/tests/unit/cli/test_cli_scaffold_validates_clean.py)
+exercise the generated shape. They were source-inspected, not executed during
+this documentation update; the older report of a missing handler binding is
+historical. See [combining tiers](combining-deployment-tiers.md#local-authoring-and-the-scaffold-boundary)
+for the current authoring/execution boundary.
 
 ---
 
