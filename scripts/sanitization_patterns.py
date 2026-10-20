@@ -16,17 +16,19 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-# The only repositories under the ``OmniNode-ai`` org that are public. A URL
-# naming any other slug is a private-repo leak. This is an explicit allowlist,
-# not a prefix rule: every entry must be an exact repository name.
-#
-# The public repository was renamed from ``knowledge-base`` to ``knowledge_base``
-# (operator instruction 2026-10-09). The old hyphen spelling stays exempt
-# because GitHub redirects it and published pointer stubs still carry it.
-# ``tests/test_sanitization_patterns.py`` pins the verdict for every other
-# underscore spelling so a further rename cannot silently change what this
-# gate exempts.
-PUBLIC_REPO_SLUGS: tuple[str, ...] = ("knowledge_base", "knowledge-base")
+# Verified public repositories that this documentation may cite. A URL naming
+# any other slug remains blocked. Entries are exact names, never prefixes.
+# The legacy knowledge-base spelling redirects to knowledge_base.
+# Product-source visibility was checked anonymously on 2026-10-20; see
+# reference/public-proof-index.md for the cited public release/source artifacts.
+PUBLIC_REPO_SLUGS: tuple[str, ...] = (
+    "knowledge_base",
+    "knowledge-base",
+    "omnibase_core",
+    "omnibase_infra",
+    "omnimarket",
+    "omniclaude",
+)
 
 # A GitHub repository name may contain letters, digits, ``.``, ``_`` and ``-``.
 # Requiring the character following an exempt slug to be OUTSIDE that set is
@@ -42,7 +44,11 @@ _PUBLIC_REPO_EXEMPTION = "|".join(re.escape(slug) + _SLUG_BOUNDARY for slug in P
 # vendored in <public-slug>-internal, guarding that repo's own guide" — a bare
 # slug naming a private repository, describing its contents, in a public repo.
 # The URL pattern above could never see it.
-_PRIVATE_SIBLING_SLUGS = "|".join(re.escape(slug) + r"-internal" + _SLUG_BOUNDARY for slug in PUBLIC_REPO_SLUGS)
+# Keep the existing bare-name rule independent of the public source-URL list.
+# Extending verified citations must not implicitly redefine bare-name policy.
+_PRIVATE_SIBLING_SLUGS = "|".join(
+    re.escape(slug) + r"-internal" + _SLUG_BOUNDARY for slug in ("knowledge_base", "knowledge-base")
+)
 
 # The private ``-internal`` / ``_internal`` repositories, in either separator.
 # Spelling them as an alternation rather than a list keeps the private names

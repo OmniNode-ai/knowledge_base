@@ -27,6 +27,20 @@ baseline model, so you can see what the work cost and what it would have cost on
 OmniNode does not sell inference and does not mark it up; you pay your provider, or nobody if you
 run the model yourself.
 
+Delegation is the first shipped product path. **ONEX is the broader platform** of shared
+nodes, contracts, events and projections that can be composed into other workflows.
+Published architecture for [memory](../architecture/omnimemory-four-node-architecture.md)
+and [context enrichment](../architecture/context-enrichment-pipeline.md) explains that
+broader scope; it does not make those workflows part of the installed delegation plugin.
+The software is MIT-licensed and free to use; your provider usage, hardware and operations
+can still cost money. ONEX is designed to keep workflow behavior behind contracts while
+swapping infrastructure adapters: [local in-process/SQLite](getting-started-local.md) and
+[the self-hosted stack](getting-started-self-hosted.md) are configurations of that design.
+“Dependency-agnostic” describes that adapter boundary, not an absence of dependencies or
+verified parity for every workflow across those configurations.
+For releases, reproducible checks and what remains unproven, read the
+[public proof index](../reference/public-proof-index.md).
+
 ## Who it is for
 
 - **Developers and teams who use coding agents** such as Claude Code and want to move part of

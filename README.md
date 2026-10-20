@@ -37,6 +37,10 @@ It is for developers and teams who use coding agents such as Claude Code and wan
 
 **Start with the [Delegation quickstart](guides/onex-plugin-quickstart.md)** (about 15 minutes). The one-page version of this section, with links for each part, is [What OmniNode is, and where it stands](guides/what-is-omninode.md). An AI agent reading this repository can start from [`llms.txt`](llms.txt).
 
+Public evidence → [Public proof index](reference/public-proof-index.md): published releases,
+reproducible checks, author reports, and missing evidence. Delegation is the first shipped
+product path; ONEX is the broader platform underneath it.
+
 ## What this repository is
 
 This repository is the canonical home for OmniNode's external documentation. Product repositories keep only what must physically ship beside their code, and point here for everything else; [the charter](#the-charter) below says exactly what that scope includes and excludes.

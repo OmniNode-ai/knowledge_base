@@ -762,6 +762,7 @@ Knowledge base artifacts grouped by topic.
 - **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** (guide)
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
+- **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
 ## demo
 
@@ -1097,6 +1098,7 @@ Knowledge base artifacts grouped by topic.
 - **[ADR-0020: Branch-Preview Verification (proof_class=branch-preview)](../adrs/ADR-0020-branch-preview-verification.md)** (adr)
 - **[ADR-0025: OCC Validator Redesign = Option A (Per-Entry Hashing + Append-Only + Supersession/Tombstones)](../adrs/ADR-0025-occ-validator-redesign-option-a.md)** (adr)
 - **[Completion Requires Durable Evidence](../pivots/PIVOT-0003-completion-requires-durable-evidence.md)** (pivot)
+- **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
 ## evidence-gates
 
@@ -1222,6 +1224,7 @@ Knowledge base artifacts grouped by topic.
 - **[Getting Started: Self-Hosting the Full Stack](../guides/getting-started-self-hosted.md)** (guide)
 - **[omnibase_spi Quick Start](../guides/omnibase-spi-quick-start.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
+- **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
 ## github-actions
 
@@ -2222,6 +2225,7 @@ Knowledge base artifacts grouped by topic.
 - **[Mixin Development Guide](../guides/onex-mixin-development-overview.md)** (guide)
 - **[Node Building Guide](../guides/onex-node-building-overview.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
+- **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
 ## ownership
 

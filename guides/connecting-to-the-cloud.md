@@ -24,15 +24,15 @@ The hosted service exists for people who want orchestration hosted rather than r
 
 ## Start local: delegate from your own machine
 
-The same client delegates with no account, no key of ours and no service of ours: to a model on your own machine or network, or to a provider on your own key. Install it (the same line section 3 uses), mint this install's identity once, declare your model in `~/.omninode/delegation/bifrost_overrides.yaml` as the [quickstart](onex-plugin-quickstart.md#declare-your-model) shows, then delegate:
+The same client delegates with no account, no key of ours and no service of ours: to a model on your own machine or network, or to a provider on your own key. Install all three packages in one tool environment (the same line section 3 uses), mint this install's identity once, declare your model in `~/.omninode/delegation/bifrost_overrides.yaml` as the [quickstart](onex-plugin-quickstart.md#declare-your-model) shows, then delegate:
 
 ```bash
-uv tool install --python 3.12 --upgrade --with omnimarket omnibase-core
+uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
 onex local init
 onex delegate "Write a one-sentence description of what delegation is."
 ```
 
-Until a local model is declared, `onex delegate` refuses before it reaches any model, with a message naming that file and a working line to start from. Everything below is the hosted path, for when you want orchestration hosted rather than run on your machine.
+Alternatively, register your own provider key with `onex secret set` as the quickstart shows. Without either a declared model endpoint or a registered provider route, delegation refuses before inference. Exporting a provider key does not register a route. Everything below is the hosted path, for when you want orchestration hosted rather than run on your machine.
 
 ## Whose model, whose key
 
@@ -46,7 +46,7 @@ The API it calls is a documented HTTP surface, and the [appendix](#appendix--the
 
 ## Availability of each step, stated honestly
 
-The steps below are at different levels of readiness. This table is the summary; each section repeats its own status in place. Nothing on this page is described as working unless it was checked.
+The table preserves the guide authors' reported checks as of 2026-09-23; those reports are not independent validation or a current deployment audit. Public client source establishes the client contract, not hosted availability. Check the live OpenAPI route list before use; an advertised route alone does not prove a successful authenticated run.
 
 | Step | Status |
 |---|---|
@@ -104,10 +104,10 @@ Treat it like a password. Never type it into a command-line argument, never comm
 ## 3. Install the client and log in
 
 ```bash
-uv tool install --python 3.12 --upgrade --with omnimarket omnibase-core
+uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
 ```
 
-**Name the interpreter.** `omnimarket` declares `requires-python = ">=3.12"` with no upper bound, so an unqualified install works on 3.12 and on 3.13. Passing `--python 3.12` pins the interpreter so two machines resolve the same one, and makes `uv` fetch it when the machine does not already have it.
+Use the [quickstart prerequisites and supported platforms](onex-plugin-quickstart.md#before-you-start), including the Intel Mac source-build steps. Keep `--python 3.12`: package metadata declaring `>=3.12` does not guarantee wheels for every newer interpreter. `uv` can fetch 3.12 for you. The version floors and package roles match the quickstart; see the [public proof index](../reference/public-proof-index.md#published-install-and-plugin) for the checked releases. To update an existing installation, use `uv tool upgrade omnibase-core`.
 
 The `omnimarket` package is what contributes the `cloud` command to the `onex` CLI — it is advertised through an entry-point group and discovered over the installed distributions, not hand-wired. Confirm it registered:
 
@@ -163,12 +163,12 @@ onex cloud delegate "Write a one-sentence description of what delegation is." \
   --task-type reasoning
 ```
 
-The client submits the task, polls it to a terminal state, fetches the signed receipt, prints the generated output, and writes three files under `onex-delegations/<workflow-id>/`:
+The client submits the task, polls it to a terminal state, fetches the hash-bearing receipt, prints the generated output, and writes three files under `onex-delegations/<workflow-id>/`:
 
 | File | What it holds |
 |---|---|
 | `result.txt` | The generated output, as text. |
-| `receipt.json` | The signed receipt — which model ran it, token count, latency, and the two integrity hashes. |
+| `receipt.json` | The hash-bearing receipt — reported model, token count, latency, and two integrity hashes; see the limits below. |
 | `run.json` | What you asked for: prompt, task type, token budget, and the gateway you sent it to. |
 
 The command prints those paths and a summary line naming the model, the token count and the latency.
@@ -218,7 +218,25 @@ onex cloud receipt <workflow-id>
 | `terminal_event_hash` | SHA-256 over just the terminal-outcome subset. |
 | `verifier` | Who asked for this receipt. The client stamps `onex-cloud-delegate@<hostname>` unless you pass `--runner-identity`. It is deliberately not server-derived: the receipt's job is to record who *verified* a workflow, which is a different fact from who *ran* it. |
 
-The two hashes are the receipt's integrity claim, and they are computed over **different** field sets. A well-formed receipt has two 64-character hashes that are **not equal to each other**; identical hashes would mean the renderer hashed one source twice. If you are gating anything on a receipt, assert that inequality rather than settling for an exit code of zero.
+The hashes cover different field sets. Check their encoding and recompute them over the
+specified fields when you have those fields; comparing them for inequality is only a sanity
+check. Two different hashes do not establish authenticity, successful execution, or correctness.
+
+**Integrity is not a signature.** The public [client receipt model](https://github.com/OmniNode-ai/omnimarket/blob/v0.4.317/src/omnimarket/cloud/model_cloud_delegation.py)
+exposes hashes and a caller-supplied `verifier` string, but specifies no cryptographic signature,
+signing key, or signature-verification procedure. Older prose calls this receipt “signed”; that
+word is not a supported guarantee of this documented format. Someone able to replace the data
+can also recompute unkeyed hashes. An OmniNode API key authenticates access to the gateway;
+a provider key authenticates access to inference. Neither authenticates the model's answer as
+correct, and the client-stamped `verifier` is not an independent attestation.
+
+**Replay has a narrower scope here.** `event_count=1` reports the terminal record, not a full
+workflow journal. The public [replay verifier](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/verification/workflow_receipt/verifier.py)
+can compare `terminal_event_hash` with captured Kafka terminal events when a suitable stream is
+available; it explicitly cannot reconstruct `projection_row_hash` from those events alone.
+That library capability does not show that this hosted surface exposes a journal, supports
+full workflow replay, or can reproduce a nondeterministic model answer. The architecture and
+[reducer replay tests](omnibase-infra-replay-tests.md) describe separate contracts and tests.
 
 ---
 
@@ -235,7 +253,7 @@ The two hashes are the receipt's integrity claim, and they are computed over **d
 | `400` naming an extra or forbidden field | You sent a routing field such as `topic` or `tenant_id`, or a payload key outside the declared schema | Remove it. The refusal is deliberate: callers submit workflows, not routing instructions. |
 | A route returns `401` and you cannot tell whether it exists | Authentication is refused ahead of routing | Read `GET /openapi.json`. It is unauthenticated, and it is the authoritative route list. |
 | The run stays `published` past the timeout | Slow execution, or something stuck upstream | Keep the workflow id and run `onex cloud receipt <workflow-id>` later. If it never terminates, report it with that id. |
-| A receipt comes back with two identical hashes | The receipt's integrity claim is not intact | Do not accept it as proof. Report it with the `workflow_id`. |
+| A receipt comes back with two identical hashes | Possible renderer defect; the covered field sets differ | Recompute against the specified fields and report with the `workflow_id`. Unequal hashes alone are not proof either. |
 
 ---
 
@@ -444,7 +462,7 @@ Use `--data-urlencode` rather than pasting the value into the query string: the 
 
 A receipt is rendered only for a **terminal** workflow. Asking for one before the workflow has completed or failed returns `409` — go back to polling.
 
-> **What this endpoint is, honestly.** The receipt route was built as an internal definition-of-done and verification tool, not as an advertised customer surface, and the team that owns it says so in its own documentation. It is live, it is reachable by any authenticated tenant, and it is the only way to retrieve a workflow's actual output today — which is why it is documented here. But its contract is aimed at a verifier, not at an application. If your product depends on retrieving results, expect this shape to be superseded by something designed for that purpose.
+> **What this endpoint is, honestly.** The receipt route was built as an internal definition-of-done and verification tool, not as an advertised customer surface, and the team that owns it says so in its own documentation. The guide authors reported reaching it on the pre-production build described above; that is not evidence of current production availability. In this client contract, it is how a caller retrieves a workflow's output. But its contract is aimed at a verifier, not at an application. If your product depends on retrieving results, expect this shape to be superseded by something designed for that purpose.
 
 ## E. Response codes
 

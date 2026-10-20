@@ -25,6 +25,11 @@ infrastructure: a Kafka-compatible broker, PostgreSQL, a Valkey cache, an OIDC
 provider, a secrets-manager container, and the runtime services that sit on top of
 them.
 
+Source audit: 2026-10-20 against `omnibase-infra v0.38.75`. The public catalog and
+CLI source support the requirements below; this update did not deploy the stack.
+For containers on one development machine with fewer integrations, use the
+[separate local bundle procedure](#a-separate-container-path-for-one-machine).
+
 ## Read this only after you have outgrown tier-0
 
 The first-class entry path into ONEX is **tier-0**: the in-memory event bus plus a
@@ -37,10 +42,15 @@ Come here when one of these is actually true:
 | Reason to scale up | What tier-0 cannot do |
 |---|---|
 | More than one process must see the same events | The in-memory bus is per-process by construction |
-| You need events to survive a restart | Nothing is durable without the broker |
-| You want the projection/analytics surface | Projections are consumers writing into PostgreSQL |
+| You need transport events retained for recovery after a restart | The in-memory event bus loses its events on process exit; a broker provides distributed event persistence/recovery |
+| You need server-hosted projection/analytics storage | Tier-0 can persist projections in a local SQLite file; this stack adds PostgreSQL-backed consumers |
 | You need multiple runtime replicas or workers | Consumer groups require a real broker |
 | You need OIDC-authenticated service-to-service calls | The auth provider is a container in this stack |
+
+A file-backed SQLite projection and saved run artifacts can survive a local process
+restart without a broker. That persistence is separate from retaining the event
+stream for replay and recovery: the in-memory transport is not a durable event log.
+See the [local projection check](getting-started-local.md#53-the-projection-row-read-back-independently).
 
 If none of those apply, close this page. Running a five-service data plane to get
 what tier-0 already gives you is a cost with no return.
@@ -57,7 +67,7 @@ what tier-0 already gives you is a cost with no return.
 |---|---|---|
 | Docker Engine + Compose v2 | Every service in this chapter is a container | `docker info` |
 | `uv` | The catalog CLI and all repo scripts run under `uv run` | `uv --version` |
-| `openssl` | Every bootstrap secret is generated locally with it | `openssl version` |
+| `openssl` | Generates local base passwords; runtime and integration credentials require their owning services | `openssl version` |
 | A clone of `omnibase_infra` | The operational `scripts/` and the service catalog are **not** shipped in the pip package | see below |
 | ~8 GB RAM free | The broker alone defaults to a large memory reservation | — |
 
@@ -84,11 +94,15 @@ scripts scan the repository source tree directly (they iterate over the node
 catalog under `docker/catalog/`), so they only work from a checkout:
 
 ```bash
-git clone <omnibase_infra repository URL> omnibase_infra
+git clone --branch v0.38.75 --depth 1 https://github.com/OmniNode-ai/omnibase_infra.git omnibase_infra
 cd omnibase_infra
 uv sync
 ```
 
+This selects the public `v0.38.75` source snapshot, whose checked commit is
+`ea342c1741393e77c7be04f0286795c2e1067a98`, rather than a moving default branch.
+The tag contains the service catalog referenced below. This source check does not
+establish that a full deployment at that revision has been independently validated.
 Everything from here on assumes your shell is inside that checkout.
 
 ---
@@ -120,10 +134,21 @@ trusting a table anywhere (copied tables drift). The shape that matters:
 - `memgraph`, `omnimemory`, `omnimarket-projections`, `omnidash`, `auth`,
   `observability`, `tracing`, `canary`, `fault-injection` — optional add-ons.
 
-The split exists for a specific operational reason: `runtime-core` declares **no**
-env requirements beyond the base, so you can redeploy correctness fixes to it
-without also switching on the integrations that demand new secrets. Bring the
-remaining sub-bundles up individually once their secrets exist.
+Bundle requirements are the union of selected service manifests, transitive
+service dependencies and bundle-level requirements, after declared injection
+rules. An empty bundle `inject_required_env` list does not mean an empty resolved
+requirement set. In the pinned [bundle declarations](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/docker/catalog/bundles.yaml),
+`runtime-core` includes services that need credentials and model configuration
+beyond `core`; the earlier claim of base-only requirements was false.
+
+For example, the [primary runtime manifest](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/docker/catalog/services/omninode-runtime.yaml)
+requires database/cache passwords, identity/service-client secrets, registration
+settings, model URLs, endpoint CIDR/host allowlists, a local-model shared secret and
+an analytics database URL. Other resolved services add their own requirements,
+including integration credentials. These are your self-hosted configuration and
+credentials, not values supplied by OmniNode. Use the resolved validator output;
+do not infer readiness from a sub-bundle name or copy a partial list as a complete
+contract.
 
 ### The env-var contract
 
@@ -131,22 +156,27 @@ Three categories, and mixing them up is the most common self-host failure:
 
 | Category | Declared in | Rule |
 |---|---|---|
-| `required_env` | per-service manifest | Must be present in *your* environment; validated before start |
-| `hardcoded_env` | per-service manifest | Container-to-container addresses; never overrideable |
-| `inject_env` / `inject_required_env` | per-bundle in `bundles.yaml` | Applied only when that bundle is selected |
+| `required_env` | per-service manifest | Required operator inputs, including secrets, model addresses and operational settings; checked after bundle resolution |
+| `hardcoded_env` | per-service manifest | Manifest-owned values/expressions; may reference operator variables |
+| `inject_env` / `inject_required_env` | per-bundle in `bundles.yaml` | Bundle-provided overrides and additional operator requirements; included bundles also contribute |
 
-**The rule:** container-to-container addresses (`redpanda:9092`, `valkey:6379`,
-`postgres:5432`) belong in `hardcoded_env`. Only operator-supplied secrets
-(`POSTGRES_PASSWORD`, `VALKEY_PASSWORD`, API keys) belong in `required_env`. If you
-find yourself wanting to pass an internal address in from the host environment, the
-manifest is wrong, not your environment.
+Use the selected manifest as authority. Stable container service addresses can
+be declared by the manifest; model endpoints and externally supplied configuration
+can still be required operator inputs. The `local` bundle deliberately injects
+values that disable integrations on runtime-layer services. The
+[resolver](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/docker/catalog/resolver.py)
+removes an injected variable from operator requirements only under its declared
+rules, including which service layers require it.
 
 ---
 
-## Step 1 — Generate your secrets
+## Step 1 — Generate the base secrets and inventory runtime inputs
 
-Every secret the core stack needs is minted **on your machine**. Nothing in this
-step reaches an external service, and there is no account to create:
+The base-secret generator creates local database/cache passwords and the
+secrets-manager bootstrap values. It does not provision the runtime's service-client
+credentials, model endpoints/allowlists, integration credentials or machine identity.
+Inventory the selected bundle's requirements before expecting the runtime to start.
+Generating this base file itself contacts no external service:
 
 ```bash
 ./scripts/generate-local-env.sh              # writes ~/.omnibase/.env
@@ -162,9 +192,9 @@ The script requires `openssl`, writes with `umask 077`, and `chmod 600`s the res
 > rotation, not a re-run — see [Securing the cache](#securing-the-cache) for the
 > shape a real rotation has to take.
 
-If you prefer to do it by hand, `cp .env.example .env` and replace every
-`__REPLACE_*__` placeholder. Read `.env.example` itself for the authoritative list;
-the values it asks for are:
+If you prefer to start from `.env.example`, replace its placeholders and then
+compare with the selected release's resolved bundle requirements. The template and
+base generator are not complete runtime provisioning. Base bootstrap values include:
 
 | Variable | Generate with | Needed by |
 |---|---|---|
@@ -173,22 +203,28 @@ the values it asks for are:
 | secrets-manager encryption key | `openssl rand -hex 16` (must be 32 hex chars) | `core` |
 | secrets-manager auth secret | `openssl rand -base64 32` | `core` |
 | secrets-manager cache URL | reuse `VALKEY_PASSWORD`, in-network host and port | `core` |
-| `KEYCLOAK_ADMIN_PASSWORD` | `openssl rand -base64 24` | `auth` bundle |
+| `KEYCLOAK_ADMIN_PASSWORD` | choose your own local admin password | The OIDC service in `core`; its manifest supplies a development default, not a value generated by this script |
 
 > **Naming note.** This book redacts the secrets-manager product name under its own
 > sanitization gate, so the last three rows are described rather than named. Their
 > exact variable names, and the exact placeholder text, are in `.env.example` in the
 > checkout — read them there. Do not guess at the names.
 
-The validator refuses to start while a `required_env` var is unset, but **it cannot
-tell a placeholder from a real secret**. A `__REPLACE_*__` string left in place
-passes the check and then fails at runtime with a malformed-key error.
+The required-env validator checks that resolved names have nonempty values; it
+does not authenticate a credential or validate a model endpoint. With explicit
+`--env-file`, the pinned CLI also refuses its recognized `__REPLACE_WITH_`
+template markers. That check is not a general secret-validity test, and the
+legacy implicit env-file path does not apply that placeholder scan.
 
 ### Where the CLI looks for your env
 
-`~/.omnibase/.env` is read first, then the repo-local `.env`. Values already present
-in the process environment always win, and the home file beats the repo file. Both
-are read — you do not have to pick one.
+Without `--env-file`, the CLI reads `~/.omnibase/.env`, then repo `.env`. With
+`--env-file <path>`, it reads only that operator file instead of those two.
+In both cases it loads the release's runtime-policy contract afterward; already
+exported process values win, followed by earlier files. The local bundle procedure
+uses the explicit-file path to avoid inheriting the two implicit operator files.
+See the [loader](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/docker/catalog/cli.py)
+for precedence and placeholder checks.
 
 ---
 
@@ -199,8 +235,10 @@ uv run python -m omnibase_infra.docker.catalog.cli up core
 ```
 
 The `up` command is `validate` → `generate` → `docker compose up -d`, in that order,
-with a `docker compose rm -f --stop` pre-cleanup pass that removes dead/exited
-containers so stale names cannot collide. It also records your bundle selection in
+with a `docker compose rm -f --stop -v` pre-cleanup pass for selected services.
+That command can stop/remove their running containers as well as exited ones;
+named data volumes are retained. Do not assume this is a rolling or restart-free
+update. It also records your bundle selection in
 `.onex/stack.yml`, so a later bare `up` with no arguments repeats the same stack
 (defaulting to `core` if nothing was ever saved).
 
@@ -246,17 +284,17 @@ source of truth, this table is a convenience.
 
 This is the one value in the catalog you almost certainly must override. The broker
 manifest advertises itself to external clients using `REDPANDA_ADVERTISE_HOST`, and
-its built-in default is a **private lab address that will not resolve on your
-network**. Set it to the address your clients will actually reach the broker on:
+its pinned default is **`localhost`**. That is appropriate for a client on the
+same host, but a remote client would interpret it as its own machine. For remote
+access, set the advertised address to the host your clients can reach:
 
 ```bash
 REDPANDA_ADVERTISE_HOST=<the host address your clients use>
 ```
 
-Leave it unset and in-container clients still work (they use the internal listener),
-while anything connecting from outside the compose network gets handed an
-unreachable address and fails on the *second* hop, after metadata — a confusing
-failure that looks like a broker outage. `REDPANDA_EXTERNAL_PORT`,
+In-container clients use the internal listener. With the default external
+advertisement, a client on another host may connect for metadata and then fail
+when it follows the advertised `localhost` address. `REDPANDA_EXTERNAL_PORT`,
 `REDPANDA_PANDAPROXY_PORT`, and `REDPANDA_MEMORY` are overridable the same way.
 
 ---
@@ -304,9 +342,12 @@ the committed `docker/migrations/skip-manifest.yaml` with an id and a reason. Th
 is no flag, no env var, and no override. Adding an entry is a code change that
 belongs in the same change as the decision.
 
-### Known cold-database caveat
+### Historical cold-database caveat
 
-On a **truly cold** database, a forward migration that does `CREATE OR REPLACE VIEW`
+The original 2026-08-26 guide reported a cold-database failure involving
+`CREATE OR REPLACE VIEW`; this source audit did not reproduce that failure or
+establish that the same migration defect persists in `v0.38.75`. In general, a
+forward migration that does `CREATE OR REPLACE VIEW`
 with reordered columns can fail outright — PostgreSQL forbids renaming view columns
 in place. This only manifests on a from-scratch database; incremental redeploys
 never re-run the offending migration. The bring-up **correctly fails fast** at the
@@ -322,8 +363,11 @@ hit it, fix the migration.
 uv run python -m omnibase_infra.docker.catalog.cli up runtime
 ```
 
-`runtime` transitively pulls in `core` and `tracing`, so this is a superset of what
-you already have running; compose reconciles rather than restarting from scratch.
+Before this command, provision all resolved runtime/service/integration inputs and
+validate the selection. The base env generator is not sufficient. `runtime`
+transitively includes `core`, `tracing` and all runtime slices. The CLI pre-cleanup
+can stop/recreate selected service containers; retaining volumes does not make
+this a restart-free update.
 
 **One ordering constraint you cannot avoid.** The `runtime` bundle requires a
 secrets-manager *machine identity* (a client id, a client secret, and a project id).
@@ -341,25 +385,54 @@ that mints them — read it there rather than guessing. `core` deliberately does
 
 ### Rolling out one slice at a time
 
-If you would rather not enable everything at once:
+Validate the selected slice and its transitive dependencies before starting it:
 
 ```bash
-# no secrets beyond the base
+uv run python -m omnibase_infra.docker.catalog.cli validate runtime-core
+# After supplying all reported requirements:
 uv run python -m omnibase_infra.docker.catalog.cli up runtime-core
-
-# adds projection consumers; needs a projection DSN
-uv run python -m omnibase_infra.docker.catalog.cli up runtime-observability-projections
-
-# adds migrations, workers, autoheal, DLQ replay
-uv run python -m omnibase_infra.docker.catalog.cli up runtime-infrastructure
-
-# adds outbound integrations; each needs its own credential
-uv run python -m omnibase_infra.docker.catalog.cli up runtime-integrations
 ```
 
-`runtime-integrations` is the one that will block you on secrets you may not have —
-it declares required env for external webhook and chat credentials. Skip it unless
-you actually want those integrations.
+`runtime-core` is not a low-secret profile. Its empty bundle-level requirement list
+still resolves service-level identity credentials, model URLs/allowlists and other
+operator inputs. The remaining slices also require their resolved service inputs:
+
+- `runtime-observability-projections` adds projection consumers and database DSNs.
+- `runtime-infrastructure` adds migrations, workers and recovery services.
+- `runtime-integrations` adds webhook/chat integration credentials.
+
+Selecting one slice does not erase its service dependencies or credentials. The
+full `runtime` bundle additionally requires the secrets-manager machine identity
+described above. Validation checks declared input presence; readiness also requires
+correct values, images, migrations, working endpoints and healthy consumers.
+
+### A separate container path for one machine
+
+For a developer who wants a broker and runtime in containers without the full
+operator integrations, the release defines a distinct `local` bundle. Follow the
+pinned [Makefile](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/Makefile),
+[local env template](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/docker/local.env.example)
+and [model overlay template](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/docker/lane-overlays/local.bifrost.example.yaml).
+From the pinned checkout, its separate procedure is:
+
+```bash
+make local-env
+# Edit the generated model overlay to point at your own model.
+make up-local
+make status-local
+```
+
+`local-env` creates the local env/overlay files when absent and can add missing
+local credential fields to an existing env file. The template names five local
+passwords (database, cache, two database principals and broker superuser), plus the
+model-overlay path; do not confuse this with having no credentials or only two
+passwords. `up-local` selects `local --env-file` and builds the runtime image.
+The bundle injects integration-disable values, uses its own compose project and
+binds published ports to loopback. It still needs Docker resources, its declared
+local passwords, a model reachable from the containers, migrations and runtime
+readiness checks. This is a source-inspected procedure, not a deployment performed
+for this documentation update. It is separate from the broker-free quickstart and
+from the operator `runtime-core`/`runtime` sequence above.
 
 ---
 
@@ -406,8 +479,11 @@ Read health in this order — gate, then kernel — because a kernel that never 
 is almost always a gate that never went healthy, and the kernel's own health output
 will not tell you that.
 
-A kernel `start_period` of 1800 seconds is configured deliberately. A slow first
-boot is not a hang.
+The pinned kernel healthcheck has a 1800-second start period and a semantic
+health probe. An HTTP `200` from `/health` alone is insufficient: read the JSON
+status and verify the expected handlers/consumers, because a degraded runtime can
+still answer HTTP successfully. A long start period is not proof that a slow boot
+will eventually become healthy; inspect logs and dependency state.
 
 ---
 
@@ -452,10 +528,10 @@ volumeMounts:
     readOnly: true
 ```
 
-The reason is specific: an env var referenced with `$(VAR)` in a pod spec is
-expanded by the kubelet, which stores the **plaintext** in the object — and
-therefore in your cluster's backing store. Reading the file at exec time keeps the
-secret out of the spec entirely.
+The example records a file path in the command rather than a literal password.
+The shell reads the mounted file when starting the process; the snippet does not
+claim that environment expansion rewrites a stored Pod object. This Kubernetes
+example is separate from the release's Compose catalog procedure.
 
 ### 2. Give the probes their own auth channel
 
@@ -578,13 +654,13 @@ one-shots, and the raised broker-join timeout a cold start needs — is in
 | Symptom | Most likely cause |
 |---|---|
 | `Cannot start: missing required env vars` | The listed vars are absent from both `~/.omnibase/.env` and the repo `.env` |
-| Stack starts, then a service fails on a malformed key | A `__REPLACE_*__` placeholder survived; validation cannot detect it |
-| Runtime never starts, no obvious error | `migration-gate` is not healthy — inspect it before anything else |
-| Gate reports UNHEALTHY for ~2 minutes on a cold DB | Expected. Its `start_period` is 180s; wait it out |
+| Stack starts, then a service fails on a malformed key | Presence validation does not authenticate values. Explicit `--env-file` rejects recognized template markers, but real-looking invalid credentials can still pass that check |
+| Runtime never starts | First check resolved required inputs and images, then `migration-gate` and runtime health/logs. Base secrets alone do not satisfy `runtime-core` |
+| Gate stays in `starting` on a cold DB | Its declared start period is 180s. Inspect migration progress; that grace period is not proof of eventual success |
 | Gate never goes healthy | A migration failed; the sentinel flag is correctly still false. Read the one-shot's logs |
 | Nothing at all starts from a checked-in compose file | Missing `--profile runtime` |
 | Orphaned containers after `down` | Use `down --remove-orphans` |
-| External clients connect, then fail on the next call | `REDPANDA_ADVERTISE_HOST` still points at the default lab address |
+| Remote clients connect, then fail on the next call | The advertised host still resolves to `localhost` or another address those clients cannot reach |
 | Cache-dependent services fail after enabling auth | Consumers were not configured with the password before the server required it |
 | A rotation "succeeded" but a consumer still uses the old value | The consumer referenced a stale secret; the reference check would have caught it |
 

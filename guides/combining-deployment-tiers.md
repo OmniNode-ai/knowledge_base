@@ -35,8 +35,10 @@ It **composes** the three guides and does not restate them. Read them first:
 - [Self-hosting the full stack](getting-started-self-hosted.md) — the broker, the database, the cache, the identity provider, the runtime services.
 - [Connecting to the cloud](connecting-to-the-cloud.md) — the hosted deployment as a client.
 
-Everything below assumes you have seen the tier-0 loop in guide 1 succeed. That is
-the baseline every claim on this page is measured against.
+Current source audit: 2026-10-20, against public `omnibase-core v0.47.49` and
+`omnibase-infra v0.38.75`. The examples below describe those revisions. Earlier
+execution reports are attributed and dated in [verification posture](#verification-posture-for-this-page);
+this update did not run inference, access credentials or deploy a stack.
 
 ---
 
@@ -52,17 +54,19 @@ whole accepted set in one place:
 SUPPORTED_EVENT_BUS_VALUES: frozenset[str] = frozenset({"inmemory", "kafka"})
 ```
 
-— `omnibase_core/src/omnibase_core/runtime/runtime_local.py:111`
+— [runtime_local.py](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/runtime/runtime_local.py)
 
 `RuntimeLocal._create_event_bus()`
-(`omnibase_core/src/omnibase_core/runtime/runtime_local.py:1539`) reads
+([runtime_local.py](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/runtime/runtime_local.py)) reads
 `backend_overrides["event_bus"]`, defaults it to `"inmemory"`, and returns either
 `EventBusInmemory(environment="local", group="runtime-local")` or — for `"kafka"` —
 a bus class discovered through an entry-point group. Your nodes, contracts and
 models are on the other side of that call and never see which one won.
 
-That is the whole basis for a hybrid setup: **moving between tiers is a change to
-one construction argument, not a change to your code.**
+That adapter boundary is the basis for reusing node code across configurations.
+A distributed run also needs declared transport/addressing, matching credentials,
+and the services and migrations described in guide 2. Changing one argument alone
+does not establish deployment readiness or full behavioral parity.
 
 ### Why the Kafka bus is an entry point and not an import
 
@@ -75,7 +79,7 @@ _BACKEND_ENTRY_POINT_GROUP: str = "onex.backends"
 _KAFKA_EVENT_BUS_ENTRY_POINT: str = "event_bus_kafka"
 ```
 
-— `omnibase_core/src/omnibase_core/runtime/runtime_local.py:102`
+— [runtime_local.py](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/runtime/runtime_local.py)
 
 and `omnibase_infra` supplies it from its own `pyproject.toml`:
 
@@ -85,11 +89,12 @@ event_bus_kafka = "omnibase_infra.event_bus.event_bus_kafka:EventBusKafka"
 state_postgres = "omnibase_infra.backends.backend_probe:probe_postgres"
 ```
 
-— `omnibase_infra/pyproject.toml:174`
+— [pyproject.toml](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/pyproject.toml)
 
 The practical consequence is the first rule of a hybrid setup: **asking for the
 Kafka bus in an environment where `omnibase-infra` is not installed is an error,
-not a downgrade.** Verified in a clean `omnibase-core`-only virtual environment:
+not a downgrade.** The original authors reported this refusal in a clean core-only environment
+on 2026-08-26; the checked runtime still declares the missing-entry-point error:
 
 ```
 [ONEX_CORE_044_CONFIGURATION_ERROR] Requested event_bus=kafka but no entry point
@@ -98,7 +103,7 @@ omnibase-infra to provide EventBusKafka.
 ```
 
 A typo is refused on the same terms, rather than silently falling back to
-in-memory — also verified:
+in-memory — the checked source declares this error (also historically reported):
 
 ```
 [ONEX_CORE_044_CONFIGURATION_ERROR] Unsupported backend override
@@ -108,31 +113,18 @@ event_bus='kafak'. Supported values: inmemory, kafka.
 Silent fallback would be the worst possible behaviour here: you would believe you
 were proving cross-process behaviour while running everything in one process.
 
-### The CLI grows when you install the second package
+### The CLI grows through installed entry points
 
-The `onex` command comes from `omnibase_core`
-(`omnibase_core/pyproject.toml:68`). It also loads any `click` group registered
-under the `onex.cli` entry-point group
-(`omnibase_core/src/omnibase_core/cli/cli_commands.py:733`), and `omnibase_infra`
-registers seven (`omnibase_infra/pyproject.toml:165`).
+The `onex` command comes from core and discovers extensions under `onex.cli`.
+The pinned [infra package declaration](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/pyproject.toml)
+registers `auth`, `delegate`, `identity`, `kafka`, `ledger`, `node`, `occ`, `profile`
+and `skill`. These are registration declarations, not a freshly executed install test.
+The older seven-command inventory on this page is obsolete.
 
-Verified by installing the two packages in order into one clean environment and
-diffing `onex --help`. With `omnibase-core` alone, none of the following exist.
-After `uv pip install omnibase-infra`, all seven appear, on the same binary:
-
-| Command | Entry point |
-|---|---|
-| `auth` | `omnibase_infra.cli.cli_auth:auth_group` |
-| `delegate` | `omnibase_infra.cli.cli_delegate:delegate_command` |
-| `kafka` | `omnibase_infra.cli.cli_kafka:kafka` |
-| `node` | `omnibase_infra.cli.cli_node:run_node_by_name` |
-| `occ` | `omnibase_infra.cli.cli_occ:occ` |
-| `run` | `omnibase_infra.cli.cli_node:run_node_by_name` |
-| `skill` | `omnibase_infra.cli.cli_skill:run_skill_by_name` |
-
-This is the shape of the combination at the tooling level: **one binary, two
-packages, and the tier-crossing commands only exist once the infra package is
-present.** Note that `node` and `run` are two names for the same command.
+`onex run` is a core command in the checked release; it is not an alias registered
+by infra for `onex node`. Use `onex node` for the backend examples below. Local
+product delegation also needs `omnimarket` in the same environment, as the
+[quickstart](onex-plugin-quickstart.md) specifies.
 
 ---
 
@@ -155,170 +147,102 @@ flip when the property you are trying to prove **only exists between processes.*
 | A validation or refusal fires | tier-0 |
 | A second process sees the event | self-hosted |
 | Consumer groups, partitioning, ordering across processes | self-hosted |
-| Durability across a restart | self-hosted |
+| Broker-backed event persistence and recovery across a restart | self-hosted |
 | A deployed runtime consumer picks the command up and dispatches it | self-hosted |
 
 Anything in the top half that you run on the broker is a slower version of a test
 you already had.
 
-### How the flip is actually expressed
+### How transport selection is expressed
 
-There are **three** mechanisms, they are not equivalent, and the differences
-between them are the main source of confusion in a hybrid setup.
+The command surfaces differ; do not treat their defaults as interchangeable.
 
-**1. The explicit `--backend` flag** (`onex node` / `onex run`):
+**`onex node`: explicit runtime backend overrides.** The checked
+[core runtime](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/runtime/runtime_local.py)
+reads `backend_overrides["event_bus"]`, defaulting to `inmemory`. The infra
+[node CLI](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/cli/cli_node.py)
+accepts repeated `--backend key=value` arguments:
 
 ```bash
 onex node <node-name> --backend event_bus=inmemory
-onex node <node-name> --backend event_bus=kafka
 onex node <node-name> --backend event_bus=kafka --backend kafka_bootstrap=<host:port>
 ```
 
-The flag is declared at `omnibase_infra/src/omnibase_infra/cli/cli_node.py:147`
-and parsed by `parse_backend_overrides`
-(`omnibase_core/src/omnibase_core/runtime/runtime_local.py:169`). Verified: it
-accepts `key=value` pairs and refuses anything else —
+Only `inmemory` and `kafka` are supported here. The explicit Kafka address reaches
+the provider's `from_bootstrap` factory. Without that address, this generic node
+path uses the Kafka provider's default configuration, which can read
+`KAFKA_BOOTSTRAP_SERVERS`. That is address configuration after selecting Kafka,
+not a broker probe choosing the transport.
 
-```
-[ONEX_CORE_007_INVALID_INPUT] Invalid --backend format 'event_bus'.
-Expected key=value (e.g. --backend event_bus=inmemory).
-```
+**`onex delegate`: explicit flag or declared runtime configuration.** The checked
+[delegate CLI](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/cli/cli_delegate.py)
+accepts `--bus inmemory|kafka`. For example, after the quickstart's model/key setup:
 
-Omitting `kafka_bootstrap` lets the Kafka bus resolve its broker from
-`KAFKA_BOOTSTRAP_SERVERS`.
-
-**2. The explicit `--bus` flag** (`onex delegate`), declared at
-`omnibase_infra/src/omnibase_infra/cli/cli_delegate.py:453`, with the accepted
-values and the guardrail in `build_backend_overrides`
-(`omnibase_infra/src/omnibase_infra/cli/cli_delegate.py:240`). Verified behaviour:
-
-```
-BUS_CHOICES: ('inmemory', 'kafka')   DEFAULT_BUS: inmemory
---bus kafka --kafka-bootstrap <host:port>  ->  {'event_bus': 'kafka', 'kafka_bootstrap': '<host:port>'}
---bus inmemory                            ->  {'event_bus': 'inmemory'}
---bus inmemory --kafka-bootstrap <host:port>  ->  REJECTED:
-    "--kafka-bootstrap is only valid with --bus kafka (got --bus inmemory)."
+```bash
+onex delegate "<task>" --bus inmemory
+onex delegate "<task>" --bus kafka --kafka-bootstrap <host:port>
 ```
 
-That last refusal is worth noticing. Passing a broker address alongside the
-in-memory bus is exactly the mistake that would otherwise leave you running
-in-process while believing you were on the broker, so it fails loudly instead.
+For Kafka, supply a declared lane with `--lane <lane-id>` or state the broker
+address with `--kafka-bootstrap`; those two addressing options are mutually
+exclusive. A configured lane can supply the address when `--bus` is omitted.
+The delegate path does not take its broker address from ambient
+`KAFKA_BOOTSTRAP_SERVERS`. A Kafka selection without resolved addressing refuses;
+`--kafka-bootstrap` alongside `--bus inmemory` also refuses.
 
-**3. Auto-resolution, when you pass no flag at all.** This is the one that will
-surprise you, and it is the reason this section exists.
+### Current resolution authority
 
-### The ambient-environment hazard
+The shared [transport resolver](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/backends/auto_configure.py)
+uses this order:
 
-Omit `--bus` on `onex delegate` and the bus is **probed for, not defaulted**.
-`resolve_default_bus` (`omnibase_infra/src/omnibase_infra/cli/cli_delegate.py:194`)
-calls the shared resolver `resolve_bus_type`
-(`omnibase_infra/src/omnibase_infra/backends/auto_configure.py:116`), whose last
-tier is `probe_kafka` — which reads `KAFKA_BOOTSTRAP_SERVERS` from the
-environment when no bootstrap is passed
-(`omnibase_infra/src/omnibase_infra/backends/backend_probe.py:131`).
+1. An explicit caller argument (`--bus` for delegation, `bus_type=` for a selector caller).
+2. Declared `config.event_bus.type`, supplied by a config-resolved runtime caller.
+3. A broker probe, only for callers that supply neither argument nor configuration.
 
-That probe has **three** outcomes, not two, and only two of them resolve a bus at
-all:
+The shared resolver also normalizes a declared `cloud` value to Kafka transport;
+that alias does not select the hosted API. The CLI flags above still accept only
+`inmemory` and `kafka`.
 
-| Environment | Probe state | Resolved bus |
-|---|---|---|
-| `KAFKA_BOOTSTRAP_SERVERS` unset | `DISCOVERED` — short-circuits with no network call | `inmemory` |
-| Set; broker healthy, a live consumer group bound to the delegation request topic | `AUTHORITATIVE` | `kafka` |
-| Set, but the broker answers weakly — TCP connects and the metadata call times out or the topic list fails | `REACHABLE` | **none — the command refuses** |
+`ONEX_EVENT_BUS_TYPE` is ignored. A nonempty value produces a warning to remove
+it; even an invalid value does not select a transport or fail validation. It is
+not a shell-wide transport override.
 
-The first two, verified on one machine changing nothing but the environment:
+Omitting `--bus` on the current delegate CLI calls `resolve_default_bus`, which
+always resolves embedded runtime configuration first through
+[service_kernel.py](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/runtime/service_kernel.py).
+Its authority is a contracts-directory bootstrap pointer (`ONEX_CONTRACTS_DIR`),
+then a developer lane binding, then a bound workspace's materialized or working-tree
+runtime config, otherwise the shipped
+[tier-0 default](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/runtime/tier0_runtime_config.yaml)
+(`event_bus.type: inmemory`, local profile). A bound workspace missing its required
+config refuses instead of silently becoming tier-0.
 
-```
-# KAFKA_BOOTSTRAP_SERVERS unset
-resolved bus -> inmemory
-reason      -> DISCOVERED: KAFKA_BOOTSTRAP_SERVERS not set
+Consequently the broker-probe tier is unreachable on this config-resolved delegate
+path. An ambient broker appearing or disappearing cannot choose its transport.
+If the declared transport is Kafka and that broker is unreachable, execution fails
+downstream; it does not silently switch to in-memory. Read the reported resolution
+provenance to identify which configuration answered, or pass `--bus` for a one-run
+override. For a persistent selection, update the owning runtime configuration;
+bootstrap variables name where it is found, not which transport to invent.
 
-# KAFKA_BOOTSTRAP_SERVERS set, broker up, a live consumer group bound
-resolved bus -> kafka
-reason      -> Kafka healthy with <N> topics; a Stable consumer group is bound to
-               'onex.cmd.omnibase-infra.delegation-request.v1'
-```
+The deployed kernel also passes its configured event-bus type to the shared
+resolver. Its broker connection settings are distinct from selecting that type.
+The generic `onex node --backend` construction path above is not the delegate
+config loader and should not be described as that same ladder.
 
-`<N>` stands in for the broker's topic count, which the real `reason` string
-carries as a number. It is the only value elided from that output.
+### Probe-only callers and historical observations
 
-Read that carefully, because it is the first hazard of a hybrid workstation:
-**the same command, in the same directory, on the same machine, ran on two
-different transports — and the only difference was an environment variable.**
+A caller that directly invokes the shared resolver without either an explicit
+bus or `config_bus` can still reach the probe. `HEALTHY` and `AUTHORITATIVE` select
+Kafka, `DISCOVERED` selects in-memory, and indeterminate `REACHABLE` raises
+`EventBusResolutionAmbiguousError`. Declare configuration or an explicit argument
+to resolve that ambiguity; exporting `ONEX_EVENT_BUS_TYPE` cannot fix it.
 
-On a machine that is *only* tier-0 this never bites; the variable is not set and
-auto-resolution always lands on in-memory. It bites precisely on the machine this
-chapter is written for — the one where you also run a self-hosted stack, and
-therefore have `KAFKA_BOOTSTRAP_SERVERS` exported in your shell profile or
-sourced from an env file.
-
-### The third outcome: an indeterminate probe refuses instead of guessing
-
-The `REACHABLE` row is the one that turns a surprise into a real hazard, because
-reaching it does not require you to change anything at all.
-
-`probe_kafka` is a live network call with a timeout. Against a genuinely healthy
-broker it can still time out on the metadata request, and that timeout is not an
-answer — it means TCP connected but the broker's serving state was never
-established. Measured here by probing one healthy broker twenty times in a row
-with the environment unchanged, the probe itself did not agree with itself:
-
-```
-counts: {'kafka': 14, 'inmemory': 6}
-  kafka:    Kafka healthy with <N> topics; a Stable consumer group is bound to
-            'onex.cmd.omnibase-infra.delegation-request.v1'
-  inmemory: REACHABLE: TCP reachable but topic list failed:
-            KafkaError{code=_TIMED_OUT,val=-185,str="Failed to get metadata: Local: Timed out"}
-```
-
-Fourteen of twenty calls resolved the broker; six timed out. Nothing about the
-environment differed between them, and the exact ratio is a property of one
-broker on one network — treat it as evidence that the probe's outcome varies, not
-as a rate you can plan around.
-
-Because that variation is real, the resolver does not translate it into a
-transport. A `REACHABLE` probe is **indeterminate**, and `resolve_bus_type`
-refuses rather than picking a bus from an unknown state:
-
-```
-Error: Kafka probe returned REACHABLE (TCP reachable but topic list failed: ...);
-the broker accepted a TCP connection but its serving state could not be
-established, so the transport cannot be resolved repeatably. Select one
-explicitly: pass the bus argument (e.g. '--bus kafka' / '--bus inmemory') or set
-ONEX_EVENT_BUS_TYPE=kafka|inmemory.
-```
-
-This is the deliberate trade. Degrading a timeout to the in-process bus would
-keep the command running, and for a one-off interactive call that is defensible —
-but it means a delegation you believed landed on the broker may have run entirely
-in-process, with no trace but a `reason` string you never looked at. Refusing
-costs you a re-run and one decision; guessing costs you a result you cannot
-trust. Only the two conclusive outcomes still resolve on their own: a broker that
-answered, and a broker that is definitively not there.
-
-The auto-resolution default is deliberate too: the flag's own help text says
-omitting it resolves to "the SAME bus the rest of the system is configured with,
-so the delegation lands in the shared delegation_events projection". That is the
-right default for operating a stack. It is the wrong default for a quick
-iteration you believed was local.
-
-### The fix
-
-Both paths — the delegate CLI and the service-side selector — resolve through one
-authority, in one order:
-
-1. **An explicit bus** — `--bus inmemory`, `--backend event_bus=inmemory`, or the
-   in-process `bus_type=` argument. Never second-guessed, and never probed for.
-2. **`ONEX_EVENT_BUS_TYPE`** — `inmemory`, `kafka`, or `cloud`, case-insensitive.
-   Read once, in `auto_configure.py:192`, and honoured by both paths. An
-   unrecognised value is an error, not a shrug.
-3. **The probe**, with the three outcomes above.
-
-**In a script, or anywhere the answer must be repeatable, use tier 1 or tier 2.**
-Both remove the ambient-environment hazard and the timing hazard together, since
-neither reaches `probe_kafka` at all. Tier 1 is the right choice for a single
-command; tier 2 is the right choice for a whole shell session or a container,
-where you want every ONEX process on that machine pinned to the same transport.
+**Historical author report (2026-08-26):** the earlier guide reported fourteen
+Kafka selections and six in-memory selections over twenty unchanged-environment
+probe calls, illustrating the old probe-driven behavior. That observation predates
+the current config-first delegate path, was not repeated for this update, and is
+not a current CLI selection rule or a portable failure-rate estimate.
 
 ### Crossing back: what your self-hosted stack must already be
 
@@ -345,9 +269,9 @@ service your stack talks to, the same way it talks to any external API.
 
 The platform's own REST connection configuration is
 `ModelRestApiConnectionConfig`
-(`omnibase_core/src/omnibase_core/models/configuration/model_rest_api_connection_config.py:18`).
+([model_rest_api_connection_config.py](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/models/configuration/model_rest_api_connection_config.py)).
 Its `apply_environment_overrides()` method
-(same file, line 391) declares the exact variable-to-field mapping:
+(the linked file) declares the exact variable-to-field mapping:
 
 | Variable | Field |
 |---|---|
@@ -357,8 +281,9 @@ Its `apply_environment_overrides()` method
 | `ONEX_API_TIMEOUT_SECONDS` | `timeout_seconds` |
 | `ONEX_API_MAX_RETRIES` | `max_retries` |
 
-Those are the five names guide 3 lists, and this is the code that gives them
-meaning. Three details that guide 3 does not cover, and that matter as soon as
+These are bindings for this connection model. The `onex cloud` client has its
+own documented credential-file setup in guide 3; do not assume that constructing
+this model configures that CLI. Three details that guide 3 does not cover, and that matter as soon as
 you are wiring this into your own stack rather than typing `curl`:
 
 - **The overrides are applied, not absorbed.** `apply_environment_overrides()` is
@@ -366,62 +291,40 @@ you are wiring this into your own stack rather than typing `curl`:
   variables at import time or at construction. Exporting `ONEX_API_KEY` and
   constructing the model does not pick the key up; the calling code has to invoke
   the method. If you are embedding this, call it.
-- **`base_url` is required on the model.** It is declared `default=...` (same
-  file, line 35) — Pydantic's marker for a required field, so there is no
-  in-model fallback to a public address. Nor is there one elsewhere in either
-  package: `https://api.omninode.ai` appears exactly once across
-  `omnibase_core/src` and `omnibase_infra/src`, as example text in the help for
-  `onex auth --base-url`
-  (`omnibase_infra/src/omnibase_infra/cli/cli_auth.py:103`), and that option is
-  itself `required=True`. Nothing in these two packages reads
-  `ONEX_API_BASE_URL` other than the mapping above. Whatever supplies the
-  default base URL guide 3 describes, it is not `omnibase-core` or
-  `omnibase-infra` — so if you are embedding this model, construct it with an
-  explicit base URL rather than expecting one.
+- **`base_url` is required on the model.** Construct it with an explicit gateway
+  origin; the field does not provide a default public service address.
 - **`timeout_seconds` and `max_retries` are parsed as integers, and a value that
-  does not parse is skipped rather than raising** (same file, line 408). A typo in
+  does not parse is skipped rather than raising** (the linked file). A typo in
   `ONEX_API_TIMEOUT_SECONDS` leaves the previous timeout in force silently. This
   is the one place in this chapter where a bad input is absorbed instead of
   refused, so check the value you set.
 
 The credential shapes themselves — `X-API-Key` versus `Authorization: Bearer` —
-are selected at `get_request_headers()` (same file, line 223), matching the two
+are selected at `get_request_headers()` (the linked file), matching the two
 header shapes guide 3 documents.
 
-### The credential command guide 3 does not mention
+### Other credential commands in the public package
 
-`omnibase_infra` ships an `onex auth` group
-(`omnibase_infra/src/omnibase_infra/cli/cli_auth.py`) with four commands —
-`login`, `status`, `token`, `logout` — that store a gateway credential under
-`~/.onex` and mint tokens from it. It appears on the `onex` binary once
-`omnibase-infra` is installed, per the entry-point table above.
+The checked [auth CLI](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/cli/cli_auth.py)
+registers `login`, `status`, `token`, `logout`, `lane-login` and `lane-logout`.
+For the hosted customer path, follow guide 3's `onex cloud` instructions.
 
-Two properties worth stating because they change how you script around it:
+`onex auth login` requires `--tenant-slug` and `--base-url`, plus exactly one of
+`--api-key-stdin` or `--client-secret-stdin`. The client-secret mode additionally
+requires `--client-id` and `--token-endpoint`; API-key mode does not. Secrets arrive
+on stdin and are stored by reference under `~/.onex`.
 
-- **The secret is read from stdin only.** There is deliberately no
-  `--client-secret <value>` option; the module's own docstring gives the reason —
-  an argv flag puts the credential in the process table, in shell history, and in
-  any exec log. `--client-secret-stdin` is a required flag.
-- **`login`, `status` and `logout` perform no network I/O at all** — they are file
-  operations over `~/.onex`. Only `token` reaches the network. So you can stage a
-  credential on a machine that cannot currently reach the gateway.
-
-`login` requires `--tenant-slug`, `--client-id`, `--token-endpoint` and
-`--base-url` (`omnibase_infra/src/omnibase_infra/cli/cli_auth.py:88`); none are
-defaulted.
-
-> **Unverified.** This chapter did not execute `onex auth login`, `status`,
-> `token` or `logout` against a live gateway — doing so requires a tenant
-> credential, which is waitlist-gated per guide 3 step 1. The command's presence
-> on the CLI, its options, and its stdin-only secret handling were read from the
-> source and confirmed on `onex --help`; the authentication round trip was not
-> exercised.
+`login` and `logout` are local storage operations. `status` verifies API-key
+credentials against the gateway by default; use `status --no-verify` for a local
+inspection. For a client credential, status does not claim verification and points
+to `token`, which performs the token request. These are source-inspected behaviors;
+this documentation update did not access a credential or exercise authentication.
 
 ### The genuinely composable piece: verify a hosted receipt on your own machine
 
 This is the most useful thing in this pattern, and it is available to you offline.
 
-Guide 3 step 5 documents the receipt a completed workflow returns, including a
+Guide 3's receipt section documents the receipt a completed workflow returns, including a
 `terminal_event_hash` presented as the receipt's integrity claim. That hash is
 recomputable, and the function that computes it ships in `omnibase-infra`:
 
@@ -468,10 +371,12 @@ from its own `correlation_id`, `status`, `terminal_model_used`,
 and you can establish that without asking the service to confirm anything about
 itself.
 
-Combine it with the check guide 3 already gives you — that a well-formed receipt's
-two hashes are computed over different field sets and must therefore **differ from
-each other** — and you have two independent integrity assertions, both computable
-locally.
+The hashes cover different field sets, but comparing them for inequality is only a
+sanity check. Recomputing a hash from the receipt's own fields establishes internal
+consistency with those fields; it is not an independent attestation of execution,
+model identity or answer correctness. Someone who replaces the data can recompute
+these unkeyed hashes too. See guide 3's [receipt limits](connecting-to-the-cloud.md#what-a-receipt-says)
+for the distinction between hashes, signatures and authentication.
 
 > **Unverified.** The recomputation was proven against synthetic field values, not
 > against a receipt issued by the production API. Guide 3 states that the workflow
@@ -481,33 +386,24 @@ locally.
 > with a parity test asserting they agree; that is a strong claim but it is a
 > claim about the code, not a live end-to-end comparison.
 
-### What is live, and what is not
+### Hosted availability is a dated report
 
-Guide 3's availability table is the authority and this chapter does not restate
-it. The one thing to carry across into a hybrid design: the **workflow submit /
-poll / receipt routes are not advertised in the production OpenAPI document**,
-while the API-key routes and the health check are. That was re-checked for this
-chapter, unauthenticated, and still held — but the point of the check is that it
-can change without warning, so run guide 3's `GET /openapi.json` yourself before
-you build a dependency on any route rather than trusting either page's snapshot
-of it.
-
-Treat a `401` as evidence of nothing. Authentication is refused ahead of routing,
-so every `/v1/` path returns `401` whether or not it exists — confirmed here by
-requesting a real route and a route invented for the test and getting the same
-`401` from both. The OpenAPI document is the only signal about what exists.
+Guide 3's [availability table](connecting-to-the-cloud.md#availability-of-each-step-stated-honestly)
+preserves author reports dated 2026-09-23. The earlier version of this chapter
+reported unauthenticated checks on 2026-08-26: workflow routes were absent from
+the production OpenAPI document and real/invented `/v1/` paths both returned `401`.
+Those observations were not repeated in this update and do not establish the
+current deployment. Recheck `GET /openapi.json` before depending on a route;
+even an advertised route does not establish successful authenticated execution.
 
 ---
 
 ## Pattern C — author locally, execute in the cloud
 
-**This combination is not available today.** Stating that plainly is more useful
-than describing a flow you cannot run.
-
-Guide 1 step 7 covers local authoring, and it works: `onex init` creates a
-project, `onex new node <name> --type compute` writes a contract and a handler
-skeleton. Both were re-executed for this chapter and both produced the documented
-files.
+The documented hosted workflow API does not provide an arbitrary node-upload
+procedure. Local authoring is a separate capability: the pinned core source
+supports project/node scaffolding, but that is not hosted deployment authorization
+or a custom workflow registration API.
 
 The submission side does not connect to it, for two independent reasons:
 
@@ -516,51 +412,33 @@ The submission side does not connect to it, for two independent reasons:
    ingress with `400`, and that the refusal lists the types that *are* accepted.
    There is no route that accepts a contract, a node package, or a handler. A node
    you scaffolded on your laptop is not a `workflow_type` the gateway knows.
-2. **The submission routes are not advertised in production anyway**, per guide 3's
-   availability table.
+2. **Current production availability is not established by this source audit.**
+   Guide 3's dated availability report says submission routes were not advertised;
+   repeat its route-discovery check before relying on the hosted path.
 
-There is no environment variable, flag, or endpoint in `omnibase_core` or
-`omnibase_infra` that submits a locally authored node to a hosted deployment. This
-chapter searched for one and did not find it; if you see a recipe claiming
-otherwise, check it against `GET /openapi.json` before believing it.
+The public sources linked here do not establish a supported procedure to submit
+and deploy your locally authored node to the hosted service. Do not infer one
+from the ability to execute a packaged workflow locally.
 
-### What you *can* do with a locally authored node
+### Local authoring and the scaffold boundary
 
-The honest boundary, and it is narrower than guide 1 might leave you expecting.
+The older author report on this page described a missing `default_handler` binding
+and terminal event, preventing a freshly generated scaffold from running. That
+source mismatch is fixed in the checked
+[core scaffold template](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/src/omnibase_core/cli/cli_new.py):
+it emits `handler_routing.default_handler` in `module_ref:ClassName` form, a typed
+handler class, input/output model modules and a terminal event. Its handler returns
+an empty typed response pending your implementation. The public
+[scaffold execution tests](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/tests/unit/cli/test_cli_new_scaffold_runnable.py)
+exercise generated nodes through `RuntimeLocal`; they were inspected, not executed
+in this documentation audit.
 
-A freshly scaffolded node is **not** runnable by `onex node` as generated.
-Verified, on a clean scaffold, with the packaged-node lookup bypassed by pointing
-`--contract` straight at the generated file:
-
-```
-ERROR omnibase_core.runtime.runtime_local — Workflow contract missing
-'terminal_event' topic and no handler spec found (need
-handler_routing.default_handler or handler.module/class).
-```
-
-The cause is a concrete mismatch between what the scaffold writes and what the
-runtime reads. `onex new node --type compute` generates:
-
-```yaml
-handler_routing:
-  default: my_onex_project.nodes.my_first_node.handlers.handler_my_first_node
-```
-
-while `RuntimeLocal._resolve_default_handler()`
-(`omnibase_core/src/omnibase_core/runtime/runtime_local.py:1366`) reads
-`handler_routing.default_handler` and requires a `module_ref:ClassName` value. The
-generated handler is additionally a module-level `async def handle(input_data)`
-function rather than a class, so the key name is not the only gap.
-
-Separately, invoking `onex node <name>` **without** `--contract` resolves against
-nodes packaged into the installed distribution, not against your project
-directory; a scaffolded node is reported as `Unknown node` with a list of the
-packaged ones.
-
-This confirms and extends guide 1's own stated limit at the end of its step 7 —
-that it verified the scaffold is generated correctly but did not verify running a
-hand-written node. The scaffold gives you a correct contract to read and edit. It
-does not give you a runnable node in one step, on any tier.
+A default `onex node <name>` lookup still targets packaged nodes. For your own
+project, make its Python package importable and point `--contract` at its contract;
+consult the pinned CLI and test source for that invocation shape. The two built-in
+harness workflows in guide 1 do not dynamically discover your project. A runnable
+empty scaffold establishes wiring, not your application's behavior, and it does
+not upload a new workflow type to a hosted service.
 
 ---
 
@@ -574,9 +452,9 @@ proving your own logic; "integrate" means proving behaviour between components;
 |---|---|---|
 | **Author** a contract or handler | tier-0 | Nothing about writing a contract needs a broker. The scaffold and the contract read are offline operations. |
 | **Test** handler logic, refusals, replay determinism | tier-0 | Fastest loop, and these properties are fully present in-process. A recorded completion makes the run deterministic and offline. |
-| **Integrate** — second consumer, ordering, durability, consumer groups | self-hosted | Structurally absent from tier-0; the in-memory bus is per-process by construction. |
+| **Integrate** — second consumer, cross-process ordering, broker-backed event persistence/recovery, consumer groups | self-hosted | The tier-0 event bus is in-memory and per-process; it does not retain events across a restart. |
 | **Integrate** — a deployed runtime consumer dispatching your command | self-hosted | Requires the runtime services and the migration gate from guide 2. |
-| **Operate** something others depend on | self-hosted, or hosted | tier-0 has no durability and no second process. |
+| **Operate** with distributed event persistence and recovery | self-hosted, or hosted where supported | tier-0 has no durable event transport or cross-process consumers. Local SQLite projection files and saved run artifacts can persist without a broker. |
 | **Operate** without running infrastructure yourself | hosted | The entire reason the hosted tier exists. |
 | **Verify** a hosted receipt's integrity | tier-0 | The hash function runs offline, on the receipt's own fields. |
 | **Evaluate** the platform | tier-0 | Guide 1 is the whole evaluation. |
@@ -586,7 +464,7 @@ proving your own logic; "integrate" means proving behaviour between components;
 This is the part worth internalising, because it determines how much of your work
 survives a move.
 
-**Identical across all three tiers:**
+**Designed to remain stable across configurations (not a full parity test):**
 
 | | Why it is invariant |
 |---|---|
@@ -594,7 +472,7 @@ survives a move.
 | Your typed input and output models | Referenced by the contract by import path; the bus carries them, it does not define them. |
 | Your handler code | It sits behind the runtime, on the far side of `_create_event_bus()`. It cannot observe which bus was constructed. |
 | Topic names | Declared in the contract's `event_bus.subscribe_topics` / `publish_topics`. The same strings appear in the tier-0 evidence packet's `emitted_topics` and on the broker. |
-| The `onex` binary and its command surface | One binary. Installing `omnibase-infra` adds commands; it does not replace or reshape the ones core provides. |
+| The `onex` entry point | Installed distributions extend its command registry; inspect the pinned package entry points rather than assuming the surface is identical. |
 | The three-primitive model — contract, node, handler | Architectural, not deployment-specific. |
 
 **Changes when you cross:**
@@ -602,11 +480,11 @@ survives a move.
 | | tier-0 | self-hosted | hosted |
 |---|---|---|---|
 | Bus construction argument | `event_bus=inmemory` (default) | `event_bus=kafka` + a bootstrap address | not yours to set |
-| Packages required | `omnibase-core` | `omnibase-core` + `omnibase-infra` + a checkout for `scripts/` and `docker/` | a client and a credential |
+| Packages required | Core for the harness; the quickstart lists all three packages for product delegation | Relevant node packages plus infra and a checkout for `scripts/` and `docker/` | the documented client and a credential |
 | Preconditions before a run | none | migration gate healthy, secrets present, broker advertising a reachable address | an account and an API key |
 | Failure surface | one process, one traceback | dependency ordering, gate health, broker reachability | HTTP status codes |
 | What proves success | the evidence packet plus an independent read of the projection row | the same, plus behaviour visible only between processes | a terminal status, then a receipt |
-| Configuration required | none | per guide 2 | the `ONEX_API_*` variables |
+| Configuration required | The harness uses explicit arguments; product delegation resolves its runtime config | per guide 2 and the selected runtime/lane | guide 3's client login and base URL |
 
 The row that matters most is the first one, and it is deliberately one row.
 
@@ -623,13 +501,13 @@ how you tell a working hybrid setup from a broken one.
 | `Unsupported backend override event_bus='...'` | **Expected** for a typo. Only `inmemory` and `kafka` are accepted, and no other value silently degrades. Fix the spelling. |
 | `Invalid --backend format '...'. Expected key=value` | **Expected.** `--backend` takes `key=value`, e.g. `--backend event_bus=inmemory`. |
 | `--kafka-bootstrap is only valid with --bus kafka` | **Expected**, and a useful refusal — it catches the case where you would have run in-process while believing you were on the broker. Pick one. |
-| `onex delegate` ran on Kafka when you expected in-process | Auto-resolution probed and found a broker, because `KAFKA_BOOTSTRAP_SERVERS` is set in your environment. Pass `--bus inmemory` explicitly. |
-| `Kafka probe returned REACHABLE ...; the transport cannot be resolved repeatably` | **Expected**, and the most useful refusal on this page. `KAFKA_BOOTSTRAP_SERVERS` is set and TCP connects, but the metadata call timed out, so the broker's serving state is unknown — and it is not sticky, since the next identical run may resolve cleanly. Decide it yourself: `--bus kafka` or `--bus inmemory`. See [an indeterminate probe refuses](#the-third-outcome-an-indeterminate-probe-refuses-instead-of-guessing). |
-| You set `ONEX_EVENT_BUS_TYPE` and want to know whether it applies here | It does, on both paths, and it outranks the probe. An explicit `--bus` still outranks it. |
-| `auth`, `delegate`, `node`, `run`, `skill`, `kafka`, `occ` missing from `onex --help` | `omnibase-infra` is not installed in the interpreter answering `onex`. Confirm with `onex --verbose info`, which prints the interpreter path and the installed ONEX packages. |
+| `onex delegate` selected Kafka when you expected in-process | Inspect the reported config provenance, developer lane binding and any bound workspace config. The current CLI does not probe for its default transport. Use `--bus inmemory` for a one-run override. |
+| `Kafka probe returned REACHABLE ...; the transport cannot be resolved repeatably` | This belongs to a no-config resolver caller, not the current config-resolved delegate default. Supply declared configuration or an explicit argument; see [probe-only callers](#probe-only-callers-and-historical-observations). |
+| You set `ONEX_EVENT_BUS_TYPE` and want to know whether it applies here | It is ignored by the shared resolver and a nonempty value warns. Remove it; select via the explicit flag or the owning runtime config. |
+| An infra CLI extension is missing from `onex --help` | Confirm the interpreter and installed package with `onex --verbose info`, then compare the pinned `onex.cli` entry points. `run` is a core command, not an infra alias. |
 | A flipped run hangs against your self-hosted stack | Verify the stack on its own terms first — guide 2 step 5, gate before kernel. A flipped run cannot distinguish "broker unreachable" from "gate never went healthy". |
 | External client connects, then fails on the next call | The broker's advertised address, per guide 2. Presents identically whether the client is a flipped local run or anything else. |
-| `Workflow contract missing 'terminal_event' topic and no handler spec found` on a fresh scaffold | **Expected.** The scaffold writes `handler_routing.default`; the runtime reads `handler_routing.default_handler` in `module_ref:ClassName` form. See Pattern C. |
+| An older scaffold lacks a terminal event or handler binding | Compare it with the pinned core template, which emits both. The historical scaffold mismatch is fixed; see Pattern C. |
 | `Unknown node '<your-node>'` from `onex node` | `onex node` resolves nodes packaged into the installed distribution. A project-directory scaffold is not one. |
 | `ONEX_API_TIMEOUT_SECONDS` appears to have no effect | A value that does not parse as an integer is skipped silently rather than raising. Check the value. |
 | Exported `ONEX_API_KEY` but the client is unauthenticated | The env mapping is applied by an explicit `apply_environment_overrides()` call, not absorbed at construction. Call it. |
@@ -639,45 +517,30 @@ how you tell a working hybrid setup from a broken one.
 
 ## Verification posture for this page
 
-Same posture as the three guides it composes. Executed and proven here:
+**Current source audit, 2026-10-20:** public core `v0.47.49` and infra `v0.38.75`
+were inspected for runtime construction, CLI entry points and flags, shared
+transport/config authority, auth behavior, hash helpers and scaffold templates.
+No model call, live broker probe, secret access, hosted authentication or deployment
+was performed. Isolated checks of the pinned resolver source used a mocked probe
+and synthetic environment values to confirm precedence, ignored env and all probe
+states. The pinned catalog resolver was also exercised against public declarations
+without loading operator env files or contacting containers. These narrow checks
+do not constitute the full product test suite or deployment validation.
 
-- The tier-0 baseline from guide 1, in a clean virtual environment against the
-  packages as published on the public index — `bus_impl: EventBusInmemory`,
-  three emitted topics, `terminal_status: success`, exit `0`.
-- The entry-point CLI composition, by installing `omnibase-core` then
-  `omnibase-infra` into one clean environment and diffing `onex --help`: exactly
-  seven commands added, none replaced.
-- Every refusal quoted above: the missing-entry-point error, the unsupported-value
-  error, the `--backend` format error, and the `--kafka-bootstrap` guardrail.
-- All three outcomes of bus auto-resolution — the two environment-driven branches
-  isolated by changing only the environment, and the timeout branch by repeating
-  one call twenty times against a live broker.
-- The resolution order and the refusal on an indeterminate probe, against the
-  `omnibase_infra` unit suite that pins them, with the probe mocked so each tier
-  and each probe state is exercised in isolation. The refusal message quoted above
-  is the one the resolver raises; it was not re-measured against a live broker,
-  because reproducing the timeout branch on demand is exactly what this section
-  says you cannot do.
-- Local recomputation of a receipt hash, for shape and stability, from the inputs
-  printed alongside it.
-- The scaffold, and the two distinct ways a scaffolded node fails to run.
-- Every source citation on this page, re-resolved line by line against both the
-  repository and the installed distributions — the cited `runtime_local.py` is
-  byte-identical between them.
+**Historical author reports, 2026-08-26:** the original chapter reported a clean
+local harness run, then-current CLI inventory and refusals, no-config broker
+probe observations, synthetic receipt-hash recomputation, and scaffold-generation
+failures. The command inventory, transport default and scaffold mismatch have
+since changed as documented above. Those reports do not validate the current
+release, and their environmental observations are not current CLI defaults.
 
-Read-only against the live production API, with no account and no credential:
-`GET /health` answered, `GET /openapi.json` was read for the current route list —
-the workflow submit/poll/receipt routes are still absent from it while the
-API-key routes and the health check are present — and the `401`-ahead-of-routing
-claim was confirmed directly, since a real `/v1/` route and a route invented for
-the test returned the same `401`.
-
-Marked unverified in place, with the reason: the `onex auth` network round trip
-(needs a waitlist-gated tenant credential), and recomputing a hash against a
-receipt issued by the production API (the workflow routes are not advertised
-there, so no live receipt was obtainable).
-
-Not exercised: Linux and Windows. Every command here was run on macOS.
+The same original report described unauthenticated health/OpenAPI checks and
+matching `401` responses from real and invented routes. Hosted route availability
+can change independently of these packages; guide 3's table is an attributed dated
+report and its route-discovery procedure is the check to repeat. The auth round
+trip, production receipt comparison and cross-platform execution remain
+unverified in this source audit. Published test sources are not represented as
+new passing product tests.
 
 ---
 

@@ -416,6 +416,7 @@ Knowledge base artifacts grouped by type.
 - **[Node Archetypes Reference](../reference/onex-node-archetypes.md)** — current
 - **[Terminology Guide](../reference/onex-terminology-guide.md)** — current
 - **[Version Field Semantics in ONEX Models](../reference/onex-version-semantics.md)** — current
+- **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** — current. Public releases, reproducible entry points and test sources for delegation, with explicit limits on what publication, author reports and receipt hashes establish.
 
 ## Runbook
 
