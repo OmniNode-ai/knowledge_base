@@ -105,11 +105,11 @@ class TestPrivateRepoUrlsBlock:
 
     @pytest.mark.parametrize(
         "slug",
-        ["omnibase_core", "omnibase_infra", "omniclaude", "omniweb", "onex_change_control"],
+        ["unknown-product", "unverified_source", "knowledge_base_archive"],
     )
     def test_other_org_repositories_remain_blocked(self, slug: str) -> None:
         """The fix must not widen the exemption to the rest of the org."""
-        assert _blocks(f"https://{_ORG}/{slug}"), f"{slug!r} is private and must stay blocked"
+        assert _blocks(f"https://{_ORG}/{slug}"), f"{slug!r} is not verified public and must stay blocked"
 
     def test_dot_git_suffix_does_not_smuggle_a_private_repo(self) -> None:
         """``.git`` is allowed as a suffix, not as a delimiter mid-slug."""
@@ -120,8 +120,8 @@ class TestUnderscoreSpellingVerdictsArePinned:
     """Pin the other underscore spellings against a silent rename.
 
     The public repository is ``knowledge_base``, and ``knowledge-base`` still
-    redirects to it. Every other underscore spelling is a private or unknown
-    slug and must stay blocked, so that a further rename cannot quietly flip
+    redirects to it. Other unlisted underscore spellings are private or unknown
+    slugs and must stay blocked, so that a further rename cannot quietly flip
     gate behaviour without a test failure forcing the exemption list to be
     updated deliberately.
     """
@@ -135,8 +135,20 @@ class TestUnderscoreSpellingVerdictsArePinned:
             f"{slug!r} is not a declared public slug, so it must block"
         )
 
-    def test_only_the_two_public_spellings_are_in_the_allowlist(self) -> None:
-        assert set(PUBLIC_REPO_SLUGS) == {"knowledge_base", "knowledge-base"}
+    def test_only_verified_public_slugs_are_in_the_allowlist(self) -> None:
+        assert set(PUBLIC_REPO_SLUGS) == {
+            "knowledge_base",
+            "knowledge-base",
+            "omnibase_core",
+            "omnibase_infra",
+            "omnimarket",
+            "omniclaude",
+        }
+
+    @pytest.mark.parametrize("slug", PUBLIC_REPO_SLUGS)
+    @pytest.mark.parametrize("suffix", ["-internal", "_private", ".github-internal", "-archive"])
+    def test_public_source_exemption_never_covers_sibling_slugs(self, slug: str, suffix: str) -> None:
+        assert _blocks(f"https://{_ORG}/{slug}{suffix}/blob/main/README.md")
 
 
 class TestGateEntrypointReportsThePrivateRepoRule:

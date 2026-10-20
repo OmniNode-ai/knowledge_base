@@ -14,6 +14,14 @@ superseded_by: []
 
 # ADR-0048: Local LLM Delegation with 2-Clean-Run Quality Gate
 
+> **Current navigation (2026-10-20):** this ADR preserves its dated reasoning and status.
+> For current installation and credential registration, use the [quickstart](../guides/onex-plugin-quickstart.md);
+> for dispatch and routing, use [dispatch](../architecture/delegation-dispatch.md) and
+> [routing](../architecture/delegation-routing-contract.md). A proposal or benchmark design
+> here does not establish shipped behavior or measured customer outcomes; see the
+> [public proof index](../reference/public-proof-index.md).
+
+
 **Date**: 2026-02-19
 **Status**: Accepted
 **PR**: #177

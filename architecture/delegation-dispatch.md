@@ -3,116 +3,74 @@ type: architecture
 status: accepted
 date: "2026-08-25"
 title: "Delegation Dispatch Architecture"
-topics:
-  - omnimarket
-  - delegation
-  - llm-routing
+topics: [omnimarket, delegation, llm-routing]
 refs:
   - architecture/delegation-routing-contract.md
+  - guides/onex-plugin-quickstart.md
+  - reference/public-proof-index.md
 ---
 
 # Delegation Dispatch Architecture
 
-> **Last verified:** 2026-08-25, migrated from `omnimarket` to the knowledge base. The escalation tier ladder below was corrected during migration: the source document described a 3-tier ladder (`local` / `cheap_cloud` / `frontier_api`), and the live ladder is 4 tiers, confirmed against `src/omnimarket/configs/routing_tiers.yaml`. Every backend beyond the local tier is reached with the caller's own provider key (BYOK); OmniNode does not supply a key or sell inference.
+Public source checked on 2026-10-20 against `omnimarket` release `v0.4.317`.
+Start with the [quickstart](../guides/onex-plugin-quickstart.md) for the shipped local product.
+The [routing contract](delegation-routing-contract.md) owns configuration and credential
+registration; exporting `OPENROUTER_API_KEY` does not register a local customer key.
 
-OmniMarket's delegation path routes a caller's prompt to the cheapest capable
-backend and escalates automatically when quality gates fail.
+## Local product and distributed runtime
 
-## Dispatch path
+`onex delegate` and the installed plugin's `/onex:delegate` invoke
+`node_delegate_skill_orchestrator`. The public
+[local dispatch port](https://github.com/OmniNode-ai/omnimarket/blob/v0.4.317/src/omnimarket/nodes/node_delegate_skill_orchestrator/ports/port_local_delegation_dispatch.py)
+implements the local execution path without requiring a broker or hosted gateway. Your
+machine calls your declared model endpoint or provider directly, using your registered key.
 
-```
-Caller (omniclaude skill / Codex adapter)
-  │
-  ▼
-node_delegate_skill_orchestrator  (effect handler, contract.yaml)
-  │  publishes: onex.cmd.omnimarket.delegate-skill.v1
-  │
-  ▼
-node_delegation_orchestrator  (orchestrator, owned by omnimarket)
-  │  route: onex.cmd.omnibase-infra.delegation-request.v1
-  │
-  ▼
-node_llm_delegation_call_effect  (effect handler)
-  │  dispatches via: DirectCurl posts endpoint_url VERBATIM
-  │
-  ▼
-Backend (local vLLM/SGLang / cloud API)
-  │
-  ▼
-node_delegation_quality_gate_reducer  (reducer, FSM transition)
-  │  on pass: onex.evt.omnibase-infra.delegation-completed.v1
-  │  on fail: triggers escalation emit
-  │
-  ▼
-node_delegate_skill_orchestrator  collects terminal event and returns result
+The distributed runtime composes delegation through command and event boundaries:
+
+```text
+caller → node_delegate_skill_orchestrator
+       → node_delegation_orchestrator
+       → routing and inference effects
+       → quality gate → terminal result or escalation
+       → projections / caller
 ```
 
-An earlier version of the dispatch path included bespoke port objects
-(`source_tool: delegate-skill-runtime-port`) that owned HTTP client lifecycle
-outside the canonical handler boundary. Those ports were removed; the
-canonical effect handler now owns the full dispatch.
+The entry contract is [published here](https://github.com/OmniNode-ai/omnimarket/blob/v0.4.317/src/omnimarket/nodes/node_delegate_skill_orchestrator/contract.yaml).
+These are two execution configurations of shared ONEX components. The distributed flow
+is not a requirement to run the local quickstart, nor evidence that the hosted service
+exposes a full event journal. The [cloud guide](../guides/connecting-to-the-cloud.md#what-a-receipt-says)
+documents a terminal receipt with `event_count=1` and no workflow journal; its availability
+reports must not be read as an independently validated production deployment.
 
-## endpoint_url verbatim rule
+## Inference effect boundary
 
-Every backend in `src/omnimarket/configs/bifrost_delegation.yaml` carries a
-`endpoint_url` that is the **complete, final URL** including the full chat path
-(e.g. `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`).
-The call site posts this value verbatim — no in-code construction, append,
-rstrip, or path-resolver exists. A bare base URL (no chat path) is a
-misconfiguration and the resolver fails closed.
+The [delegation call handler](https://github.com/OmniNode-ai/omnimarket/blob/v0.4.317/src/omnimarket/nodes/node_llm_delegation_call_effect/handlers/handler_llm_delegation_call.py)
+posts the resolved complete endpoint URL verbatim. Transport selection is profile-dependent
+(curl or httpx); the older description of every call as `DirectCurl` was too broad.
+Do not append `/v1/chat/completions` in another layer. The route must already carry its
+provider's complete path. Local endpoint overrides and registered provider credentials
+are separate inputs; the former does not authenticate the latter.
 
-For site-local backends the `endpoint_url` is `null` in the repo default; the
-`endpoint_url_env` key names the environment variable (or overlay file key)
-that must hold the **complete** URL. The overlay file is typically
-`~/.omninode/delegation/bifrost_overrides.yaml`.
+## Routing, escalation and result quality
 
-## Escalation gate sequence
+Routing uses task capabilities, declared tiers, registered provider models and configured
+gates. See [the routing contract](delegation-routing-contract.md) for the tier names and
+budget rule. Tier names do not establish price or quality. A failed attempt may escalate;
+a refusal or exhausted route is a terminal outcome rather than permission to use an
+undeclared provider credential.
 
-When a quality gate fails the orchestrator emits a
-`onex.evt.omnimarket.delegation-escalation-requested.v1` event. The escalation
-path tries tiers in the order defined by `routing_tiers.yaml`, cheapest first:
+A receipt records the system's reported outcome and backend attribution. Provider
+authentication establishes access to an inference service, and hash checks can establish
+consistency with particular recorded fields. Neither establishes answer correctness.
+Configured quality gates have their own criteria and coverage; generated code still needs
+task-specific tests and review. See [public evidence and limits](../reference/public-proof-index.md#credentials-and-receipt-limits).
 
-1. `local` tier — vLLM/SGLang models on the local inference server (`<onex-host>`), zero marginal API cost
-2. `cheap_cloud` tier — metered hosted APIs (Gemini Flash/Pro via Google AI Studio and Vertex)
-3. `cheap_frontier` tier — a free-tier frontier-quality model via OpenRouter (Qwen3-Coder-480B), when `OPENROUTER_API_KEY` is configured; sits between `cheap_cloud` and the ceiling to offer frontier-quality output at zero marginal cost
-4. `claude` tier — the ceiling slot. Every task class's `escalation_policy.tier_order` and the handler's cost-tier map key on the literal tier name `claude`, but this is a stable slot identifier, not a provider claim — the org has no Anthropic key, so the ceiling backend is whichever HTTP frontier backend (Gemini, GLM, or an OpenRouter model) is currently proven reachable. `routing_tiers.yaml`'s own changelog comments record each repoint and why the prior backend was dropped; read that file for the current pin rather than treating any provider name here as fixed.
+## Replay scope
 
-Each tier is attempted at most once. If all tiers are exhausted without a
-passing quality gate the orchestrator emits
-`onex.evt.omnimarket.delegate-skill-failed.v1`.
-
-The escalation emit publisher is wired on the dispatch path so that
-escalation events are visible to downstream projections
-(`node_llm_delegation_projection`) even when the final attempt succeeds.
-
-## per-backend max_tokens
-
-Each backend entry in `bifrost_delegation.yaml` carries a `max_tokens` field
-that caps the output-token budget for that backend. When the caller omits
-`max_tokens` from the delegation request the orchestrator resolves the
-effective value from the selected backend's ceiling. An explicit caller value
-is capped at that ceiling. The contract-level `maximum: 200000` field is the
-absolute schema bound; the per-backend ceiling is typically lower — for
-example the local code backend and the Gemini ceiling backend are both
-pinned to 65536, while the cheap_cloud Gemini Flash backend is capped at
-8192 (the provider's real output limit for that model family).
-
-See `bifrost_delegation.yaml` for current per-backend values.
-
-## Related nodes
-
-| Node | Archetype | Role |
-| --- | --- | --- |
-| `node_delegate_skill_orchestrator` | Orchestrator | Consumer-facing entry point |
-| `node_delegation_orchestrator` | Orchestrator | Internal dispatch coordinator |
-| `node_delegation_routing_reducer` | Reducer | Selects backend from routing tiers |
-| `node_delegation_quality_gate_reducer` | Reducer | Evaluates result against criteria |
-| `node_llm_delegation_call_effect` | Effect | Posts request to backend endpoint |
-| `node_delegation_ab_runner` | Compute | A/B routing experiment runner |
-| `node_llm_delegation_projection` | Projection | Materializes delegation event stream |
-
-## Related configuration
-
-- `src/omnimarket/configs/bifrost_delegation.yaml` — backend definitions, per-backend max_tokens
-- `src/omnimarket/configs/routing_tiers.yaml` — tier escalation ladder
-- `~/.omninode/delegation/bifrost_overrides.yaml` — local endpoint overlay (not committed)
+Reducer determinism and replay are platform contracts tested with captured event inputs.
+They do not imply that a fresh model request will generate the same answer. The public
+[workflow receipt verifier](https://github.com/OmniNode-ai/omnibase_infra/blob/v0.38.75/src/omnibase_infra/verification/workflow_receipt/verifier.py)
+can recompute the terminal-event hash from a suitable Kafka replay; it explicitly cannot
+reconstruct the full projection-row hash from terminal events alone. That capability also
+does not establish customer access to a hosted journal. For test entry points, see
+[replay tests](../guides/omnibase-infra-replay-tests.md).

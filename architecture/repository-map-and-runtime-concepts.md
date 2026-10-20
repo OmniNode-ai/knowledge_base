@@ -183,6 +183,11 @@ contract  ->  event on the bus  ->  reducer  ->  projection  ->  read surface
 
 The doctrine behind this: truth is established through contracts, event logs, materialized projections, and deterministic replay — not through a service's in-memory opinion. A capability is proven when it produces durable evidence in those surfaces and replay reproduces it.
 
+The flow above is the distributed architecture, not a guarantee that every user-facing
+surface retains an event journal. In particular, the [hosted receipt contract](../guides/connecting-to-the-cloud.md#what-a-receipt-says)
+reports `event_count=1` and no workflow journal. Reducer replay tests establish behavior
+under captured inputs; they do not establish full hosted workflow or model-answer replay.
+
 ### Configuration, briefly
 
 Configuration follows the same contract-first posture. Contracts carry a base declaration; overlays layer environment- and user-specific values onto it by deep merge. Secrets are referenced by name in the contract and resolved from a secrets manager at runtime — the value never appears in the contract.

@@ -12,6 +12,15 @@ refs: []
 omniclaude is **Claude Code plugin scaffolding + Pydantic models + app-specific code**.
 All business logic lives in omnimarket.
 
+## Installed plugin versus repository scope
+
+The customer marketplace entry `onex@omninode-tools` selects `plugins/onex-delegate`,
+which ships only `/onex:delegate`, with no hooks or agents. The broader `plugins/onex`
+tree and the ownership inventory below describe repository capabilities; installing the
+customer plugin does not enable them. See the pinned marketplace and plugin manifests
+in the [public proof index](../reference/public-proof-index.md#published-install-and-plugin).
+Use the [quickstart](../guides/onex-plugin-quickstart.md) for the shipped product path.
+
 ## What omniclaude owns
 - Claude Code hooks (SessionStart, UserPromptSubmit, PostToolUse, SessionEnd)
 - Plugin manifest and skill/agent/command markdown files

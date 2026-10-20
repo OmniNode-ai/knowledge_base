@@ -34,7 +34,7 @@ There are two ways to use it, and both use the same `onex` command-line tool:
 |----------|---------------|
 | A supported computer | Apple Silicon Mac or Linux (x86_64, arm64) installs from prebuilt wheels. **Intel Mac: supported by building from source**, which needs a few extra steps; read [Supported platforms](supported-platforms.md) before step 1. |
 | A terminal | macOS: the **Terminal** app (Applications → Utilities). Linux: any shell. |
-| Python 3.12+ and `uv` | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
+| `uv` (it can install Python 3.12) | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
 | A model to send work to | **Either** an account with a model provider and an API key from it (OpenRouter is the simplest: [openrouter.ai](https://openrouter.ai), and it has free models), **or** a model server you run yourself that speaks the OpenAI chat-completions API (llama.cpp, vLLM, or similar). |
 | Claude Code (only for step 7) | The [Claude Code CLI](https://claude.com/claude-code), signed in. Steps 1 to 6 do not need it. |
 
@@ -93,7 +93,9 @@ What was installed: `omnibase-core` provides the `onex` command, `omnibase-infra
 `delegate` subcommand, and `omnimarket` provides the node that does the delegating. All three
 must be in the same environment, which is what the one line above does. There is no source
 checkout to clone and no workspace variable to set. The version floors are the oldest
-releases this guide supports; the command installs the newest published release of each.
+releases this guide supports; dependency resolution chooses compatible published releases.
+The [public proof index](../reference/public-proof-index.md#published-install-and-plugin) records
+the releases checked for this documentation. It does not pin this floating install command.
 
 To update later: `uv tool upgrade omnibase-core` (it keeps the other two packages).
 
@@ -188,8 +190,9 @@ OpenRouter limits how often you can call them. The key is kept in
 a file under `~/.omninode/` that only your user account can read. It is not encrypted, so treat
 that folder like any other file holding a password.
 
-Setting `LLM_<PROVIDER>_API_KEY` in your environment does **not** register a key; a
-delegation never reads a provider key from the environment. Use `onex secret set`.
+Setting `OPENROUTER_API_KEY` or `LLM_<PROVIDER>_API_KEY` in your environment does **not**
+register a key for local delegation. Use `onex secret set`. The public resolver and its
+environment-present refusal tests are linked in the [public proof index](../reference/public-proof-index.md#credentials-and-receipt-limits).
 
 ### If you skip this step
 
@@ -225,6 +228,10 @@ receipt. To see the full receipt as JSON, pass `--json`. When the output goes to
 instead of a terminal, the default is the same: standard output carries the answer and the
 `delegate artifacts:` line, and the status and summary lines go to standard error. See
 [Troubleshooting](#troubleshooting).
+
+A receipt records the system's reported route and outcome; it does not guarantee the answer
+is correct. A configured quality gate checks its declared criteria. Review generated work
+and run task-specific tests. See [credentials and receipt limits](../reference/public-proof-index.md#credentials-and-receipt-limits).
 
 ---
 

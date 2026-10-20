@@ -19,6 +19,10 @@ refs: []
 
 ---
 
+> **Scope:** this page describes the broader omniclaude repository and its development
+> conventions. The installed customer plugin contains only `/onex:delegate`; see the
+> [repository charter](omniclaude-repo-charter.md#installed-plugin-versus-repository-scope).
+
 ## The One Rule
 
 > A skill file (`SKILL.md`) is a **thin UX trigger**. It publishes a command
