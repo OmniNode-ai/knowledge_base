@@ -9,6 +9,8 @@ All knowledge base artifacts sorted by date.
 - **[OmniUI ONEX models schema mirror and its provenance record](../reference/omniui-onex-models-schema-mirror.md)** (reference) — 2026-11-01
 ## 2026-10
 
+- **[Validate the OmniMarket RightModeler integration](../guides/omnimarket-rightmodeler-validation.md)** (guide) — 2026-10-30
+- **[OmniMarket RightModeler model-swap validation](../runbooks/omnimarket-rightmodeler-model-swap-validation.md)** (runbook) — 2026-10-30
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference) — 2026-10-20
 - **[ADR-0053: Beta Scope — Local Install, Your Own Model Keys, No Hosted Service](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)** (adr) — 2026-10-17
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide) — 2026-10-17

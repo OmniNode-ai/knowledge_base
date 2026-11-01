@@ -2131,6 +2131,7 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMarket Cursor Adapter](../guides/omnimarket-cursor-adapter.md)** (guide)
 - **[OmniMarket Gemini CLI Adapter](../guides/omnimarket-gemini-adapter.md)** (guide)
 - **[OmniMarket Node Testing](../guides/omnimarket-node-testing.md)** (guide)
+- **[Validate the OmniMarket RightModeler integration](../guides/omnimarket-rightmodeler-validation.md)** (guide)
 - **[OmniMarket Skill-Backing Node Handler Pattern](../guides/omnimarket-skill-backing-node-pattern.md)** (guide)
 - **[OmniMemory → OmniMarket Node Migration Boundary](../guides/omnimemory-market-migration-boundary.md)** (guide)
 - **[OmniMarket node_build_loop_orchestrator](../reference/omnimarket-node-build-loop-orchestrator.md)** (reference)
@@ -2139,6 +2140,7 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMarket Node Metadata Reference](../reference/omnimarket-node-metadata.md)** (reference)
 - **[OmniMarket node_service_registry Ownership](../reference/omnimarket-node-service-registry-ownership.md)** (reference)
 - **[OmniMarket node_ticket_pipeline](../reference/omnimarket-node-ticket-pipeline.md)** (reference)
+- **[OmniMarket RightModeler model-swap validation](../runbooks/omnimarket-rightmodeler-model-swap-validation.md)** (runbook)
 
 ## omnimemory
 
@@ -2175,12 +2177,14 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMarket Package Model](../architecture/omnimarket-package-model.md)** (architecture)
 - **[OmniMarket Skill, Package, and Node Boundaries](../architecture/omnimarket-skill-package-node-boundaries.md)** (architecture)
 - **[OmniMarket Node Testing](../guides/omnimarket-node-testing.md)** (guide)
+- **[Validate the OmniMarket RightModeler integration](../guides/omnimarket-rightmodeler-validation.md)** (guide)
 - **[OmniMarket Skill-Backing Node Handler Pattern](../guides/omnimarket-skill-backing-node-pattern.md)** (guide)
 - **[OmniMarket node_build_loop_orchestrator](../reference/omnimarket-node-build-loop-orchestrator.md)** (reference)
 - **[OmniMarket Node Catalog](../reference/omnimarket-node-catalog.md)** (reference)
 - **[OmniMarket node_golden_chain_sweep](../reference/omnimarket-node-golden-chain-sweep.md)** (reference)
 - **[OmniMarket Node Metadata Reference](../reference/omnimarket-node-metadata.md)** (reference)
 - **[OmniMarket node_ticket_pipeline](../reference/omnimarket-node-ticket-pipeline.md)** (reference)
+- **[OmniMarket RightModeler model-swap validation](../runbooks/omnimarket-rightmodeler-model-swap-validation.md)** (runbook)
 
 ## operation
 
@@ -2192,6 +2196,7 @@ Knowledge base artifacts grouped by topic.
 
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** (runbook)
 - **[Event Bus Operations Runbook](../runbooks/omnibase-infra-event-bus-operations.md)** (runbook)
+- **[OmniMarket RightModeler model-swap validation](../runbooks/omnimarket-rightmodeler-model-swap-validation.md)** (runbook)
 
 ## orchestration
 
@@ -2677,6 +2682,11 @@ Knowledge base artifacts grouped by topic.
 
 - **[OmniMemory Handler Reuse Matrix](../reference/omnimemory-handler-reuse-matrix.md)** (reference)
 
+## rightmodeler
+
+- **[Validate the OmniMarket RightModeler integration](../guides/omnimarket-rightmodeler-validation.md)** (guide)
+- **[OmniMarket RightModeler model-swap validation](../runbooks/omnimarket-rightmodeler-model-swap-validation.md)** (runbook)
+
 ## risk-mitigation
 
 - **[ADR-0038: CI Workflow Modification Risk (Transport Import Branch Protection)](../adrs/ADR-0038-ci-workflow-modification-risk.md)** (adr)
@@ -3032,6 +3042,7 @@ Knowledge base artifacts grouped by topic.
 - **[omnibase_spi Protocol Testing](../guides/omnibase-spi-testing.md)** (guide)
 - **[Testing Guide](../guides/omniclaude-testing-guide.md)** (guide)
 - **[OmniMarket Node Testing](../guides/omnimarket-node-testing.md)** (guide)
+- **[Validate the OmniMarket RightModeler integration](../guides/omnimarket-rightmodeler-validation.md)** (guide)
 - **[OmniMemory Performance Testing](../guides/omnimemory-performance-testing.md)** (guide)
 - **[Dual-Binding Test Cases — the Harness Convention](../reference/dual-binding-cases.md)** (reference)
 - **[Test Discipline](../reference/omniclaude-test-discipline.md)** (reference)

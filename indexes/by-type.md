@@ -314,6 +314,7 @@ Knowledge base artifacts grouped by type.
 - **[Supported Platforms](../guides/supported-platforms.md)** — current
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** — current. The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed.
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** — current
+- **[Validate the OmniMarket RightModeler integration](../guides/omnimarket-rightmodeler-validation.md)** — draft. Validate the client, durable state and runtime terminal wiring without treating synthetic responses as model-quality evidence.
 
 ## Reference
 
@@ -437,3 +438,4 @@ Knowledge base artifacts grouped by type.
 - **[Database Index Monitoring Runbook](../runbooks/omnibase-infra-database-index-monitoring.md)** — current
 - **[Dead Letter Queue (DLQ) Replay Guide](../runbooks/omnibase-infra-dlq-replay.md)** — current
 - **[Event Bus Operations Runbook](../runbooks/omnibase-infra-event-bus-operations.md)** — current
+- **[OmniMarket RightModeler model-swap validation](../runbooks/omnimarket-rightmodeler-model-swap-validation.md)** — draft. Configure the proposed HTTP evidence boundary and durable recovery state. A compatible operator-provided service and aligned package releases remain prerequisites.

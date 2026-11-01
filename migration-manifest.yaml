@@ -2451,6 +2451,36 @@ repos:
         pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge-base"
         cutover_state: moved
 
+      - source_path: docs/integrations/rightmodeler/node.md
+        bucket: A
+        destination: runbooks/omnimarket-rightmodeler-model-swap-validation.md
+        owner: docs-maintainers
+        sensitivity: public
+        correctness_status: current
+        verification_evidence: >-
+          Draft source exists in the OmniMarket contribution at commit
+          51088a119bf3ee661cf03a9e6396e6e05845c3a5, not upstream dev.
+          Parameterized operator examples and retained the proposed HTTP
+          boundary, explicit composition, durable recovery and live-pilot
+          prerequisites. No service deployment or model-quality result is
+          claimed. Publication and source-tree cutover have not completed.
+        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge_base/blob/main/runbooks/omnimarket-rightmodeler-model-swap-validation.md"
+        cutover_state: not-started
+      - source_path: docs/integrations/rightmodeler/validation.md
+        bucket: A
+        destination: guides/omnimarket-rightmodeler-validation.md
+        owner: docs-maintainers
+        sensitivity: public
+        correctness_status: current
+        verification_evidence: >-
+          Draft source exists in the OmniMarket contribution at commit
+          51088a119bf3ee661cf03a9e6396e6e05845c3a5, not upstream dev.
+          Preserved local-check and live-pilot limitations and separated
+          normal release-based validation from isolated source-built wheels.
+          Publication and source-tree cutover have not completed.
+        pointer_redirect: "Full documentation → https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/omnimarket-rightmodeler-validation.md"
+        cutover_state: not-started
+
   - repo: omnidash
     visibility: public
     assessed: 41
