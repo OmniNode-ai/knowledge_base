@@ -1210,6 +1210,10 @@ Knowledge base artifacts grouped by topic.
 
 - **[OmniMarket Gemini CLI Adapter](../guides/omnimarket-gemini-adapter.md)** (guide)
 
+## generated-artifacts
+
+- **[OmniUI ONEX models schema mirror and its provenance record](../reference/omniui-onex-models-schema-mirror.md)** (reference)
+
 ## generation
 
 - **[OmniMarket Generation Pipeline Boundary](../architecture/omnimarket-generation-pipeline-boundary.md)** (architecture)
@@ -2149,6 +2153,10 @@ Knowledge base artifacts grouped by topic.
 - **[OmniMemory Runtime Plugin System](../reference/omnimemory-runtime-plugins.md)** (reference)
 - **[Starting OmniMemory Services](../runbooks/omnimemory-starting-memory-services.md)** (runbook)
 
+## omniui
+
+- **[OmniUI ONEX models schema mirror and its provenance record](../reference/omniui-onex-models-schema-mirror.md)** (reference)
+
 ## onex
 
 - **[ONEX Architecture Overview](../architecture/onex-runtime-overview.md)** (architecture)
@@ -2751,6 +2759,7 @@ Knowledge base artifacts grouped by topic.
 - **[Kafka Schema Handshake Gate](../architecture/omnibase-infra-kafka-schema-handshake-gate.md)** (architecture)
 - **[Mixin YAML Schema Reference](../guides/onex-mixin-development-02-mixin-yaml-schema.md)** (guide)
 - **[OmniDash DashboardDefinition Schema](../reference/omnidash-dashboard-definition.md)** (reference)
+- **[OmniUI ONEX models schema mirror and its provenance record](../reference/omniui-onex-models-schema-mirror.md)** (reference)
 
 ## schema-consolidation
 

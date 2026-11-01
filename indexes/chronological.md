@@ -4,6 +4,9 @@ Generated — do not edit manually. Run `uv run python scripts/generate_indexes.
 
 All knowledge base artifacts sorted by date.
 
+## 2026-11
+
+- **[OmniUI ONEX models schema mirror and its provenance record](../reference/omniui-onex-models-schema-mirror.md)** (reference) — 2026-11-01
 ## 2026-10
 
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference) — 2026-10-20
