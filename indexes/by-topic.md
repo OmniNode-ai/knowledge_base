@@ -763,6 +763,7 @@ Knowledge base artifacts grouped by topic.
 - **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** (guide)
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide)
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
@@ -894,6 +895,7 @@ Knowledge base artifacts grouped by topic.
 ## docker
 
 - **[Getting Started: Self-Hosting the Full Stack](../guides/getting-started-self-hosted.md)** (guide)
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
 - **[Starting OmniMemory Services](../runbooks/omnimemory-starting-memory-services.md)** (runbook)
 
 ## docstring
@@ -1231,6 +1233,7 @@ Knowledge base artifacts grouped by topic.
 - **[Getting Started: Self-Hosting the Full Stack](../guides/getting-started-self-hosted.md)** (guide)
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[omnibase_spi Quick Start](../guides/omnibase-spi-quick-start.md)** (guide)
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
@@ -1404,6 +1407,7 @@ Knowledge base artifacts grouped by topic.
 
 ## install
 
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
 - **[Supported Platforms](../guides/supported-platforms.md)** (guide)
 - **[Node-skill package co-install (omnimarket) ](../runbooks/node-skill-package-install.md)** (runbook)
 
@@ -2544,6 +2548,7 @@ Knowledge base artifacts grouped by topic.
 
 - **[Standalone Quickstart](../guides/omnibase-infra-standalone-quickstart.md)** (guide)
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide)
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
 - **[Supported Platforms](../guides/supported-platforms.md)** (guide)
 
 ## raw-events
@@ -2813,6 +2818,7 @@ Knowledge base artifacts grouped by topic.
 
 - **[Combining Deployment Tiers](../guides/combining-deployment-tiers.md)** (guide)
 - **[Getting Started: Self-Hosting the Full Stack](../guides/getting-started-self-hosted.md)** (guide)
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
 
 ## semantics
 

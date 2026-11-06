@@ -16,6 +16,8 @@ New to OmniNode? Read [What OmniNode is, and where it stands](what-is-omninode.m
 | **4** | [Connecting to the cloud](connecting-to-the-cloud.md) | The hosted service, which is waitlist-gated, not yet open to outside users, and not part of the beta. Nothing on the delegation path needs it. |
 | **5** | [Combining deployment tiers](combining-deployment-tiers.md) | More than one of the runtime tiers at once. The seams between them: which knob moves you across one, what changes when you cross it, and what stays identical. |
 
+The [Self-hosted quickstart](self-hosted-quickstart.md) is the shortest path to run it on one machine you control, with or without containers, and says what is not supported yet.
+
 [Supported platforms](supported-platforms.md) says where the `onex` tool installs, and how, on each kind of computer.
 
 ## Everything else

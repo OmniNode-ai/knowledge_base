@@ -10,6 +10,7 @@ This repository is OmniNode's public documentation. The one-page overview is the
 
 - [What OmniNode is, and where it stands](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/what-is-omninode.md): the one-page overview of what ships today, what is in beta and what is not yet open
 - [How OmniNode works](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/how-omninode-works.md): the design in plain words for a technical reader, with one real example of each node type and what is built and not built yet
+- [Self-hosted quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/self-hosted-quickstart.md): run it on one machine you control, with or without containers, with each command checked and what is not supported yet
 - [Delegation quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/onex-plugin-quickstart.md): install `onex`, run a first delegation on your own model or key, read the receipt, meter the cost and add the Claude Code plugin, in about 15 minutes
 - [Supported platforms](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/supported-platforms.md): where the `onex` tool installs, and how on each kind of computer
 - [Repository README](https://github.com/OmniNode-ai/knowledge_base/blob/main/README.md): what this repository holds and how it is organized

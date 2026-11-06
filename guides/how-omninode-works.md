@@ -8,6 +8,7 @@ refs:
   - guides/what-is-omninode.md
   - guides/onex-plugin-quickstart.md
   - guides/getting-started-self-hosted.md
+  - guides/self-hosted-quickstart.md
   - guides/getting-started-local.md
   - guides/combining-deployment-tiers.md
   - guides/README.md
@@ -86,7 +87,7 @@ What is built and what is not, for this part:
 - **A limit that matters on the shipped delegation path:** the installed `onex delegate` command
   runs without a broker, and its record is the per-run receipt folder, not a bus journal. The
   container stack, described in
-  [Self-hosting the full stack](getting-started-self-hosted.md#a-separate-container-path-for-one-machine),
+  [Self-hosted quickstart](self-hosted-quickstart.md) (path 2),
   runs delegation through a broker and its projections. This page did not start that stack. The
   [dispatch architecture page](../architecture/delegation-dispatch.md) states the same boundary.
 
@@ -243,7 +244,7 @@ the first section explains.
 | If you want to | Read |
 |---|---|
 | Try delegation in about 15 minutes | [Delegation quickstart](onex-plugin-quickstart.md) |
-| Run the platform on one machine, in containers | [Self-hosting the full stack](getting-started-self-hosted.md#a-separate-container-path-for-one-machine) |
+| Run it on one machine, with or without containers | [Self-hosted quickstart](self-hosted-quickstart.md) |
 | Build your own nodes | the tutorials in [Building on the ONEX kernel](README.md#building-on-the-onex-kernel) |
 | See what ships and what is in beta | [What OmniNode is, and where it stands](what-is-omninode.md) |
 | See how the repositories fit together | [Repository map and runtime concepts](../architecture/repository-map-and-runtime-concepts.md) |
