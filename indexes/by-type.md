@@ -314,6 +314,7 @@ Knowledge base artifacts grouped by type.
 - **[Supported Platforms](../guides/supported-platforms.md)** — current
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** — current. The beta path. Install the onex tool, point it at a model you run or a provider on your own key, and delegate a task from your own computer; each run writes the answer and a receipt naming the model, and onex metering shows tokens and cost. No OmniNode account or service is needed.
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** — current
+- **[How OmniNode works](../guides/how-omninode-works.md)** — current. A plain-words tour for a technical reader who will not read a README: the problem OmniNode is built around, the event bus and the record it leaves, the four node types with one real example each, how buses connect from one machine to a server to a hosted service, how a failing check stops the line, what learning from earlier runs means today, and the delegation plugin as the way in. Each part says what is built and what is not.
 
 ## Reference
 

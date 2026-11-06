@@ -104,6 +104,8 @@ Its `correctness_status` field records what the source document was found to be 
 
 The beta is the local install: you delegate from your own computer to a model you choose, with no OmniNode account and no OmniNode service ([ADR-0053](adrs/ADR-0053-beta-scope-local-install-own-keys.md)). You bring your own key. Every model call goes to a model you run or to a provider on your own API key, and you pay that provider directly. OmniNode does not sell inference. The hosted service is not part of the beta.
 
+**To see how the whole design fits together,** read [How OmniNode works](guides/how-omninode-works.md). It is written for a technical reader who will not read this README top to bottom: the problem, the event bus and the record it leaves, the four node types with one real example each, how buses connect from one machine to a server to a hosted service, how a failing check stops the line, what learning from earlier runs means today, and the delegation plugin as the way in. Each part says what is built and what is not.
+
 **To build your own nodes on the ONEX runtime,** read [Building on the ONEX runtime](guides/getting-started-local.md). It is the shortest complete path to a working ONEX system: one package, one command, and a real event chain you can read back out of a local database file, with no broker, no database server, no container runtime and no account. It needs no model and does not delegate. From there:
 
 - [Self-hosting the full stack](guides/getting-started-self-hosted.md) is the scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top, on your own infrastructure.

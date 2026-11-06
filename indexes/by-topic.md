@@ -153,6 +153,7 @@ Knowledge base artifacts grouped by topic.
 - **[Protocol Architecture](../architecture/onex-protocol-architecture.md)** (architecture)
 - **[ONEX Subcontract Package Architecture](../architecture/onex-subcontract-architecture.md)** (architecture)
 - **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** (plan)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 
 ## architecture-boundary
 
@@ -760,6 +761,7 @@ Knowledge base artifacts grouped by topic.
 - **[Delegation to CI integration — design](../plans/2026-07-05-delegation-ci-integration-design.md)** (plan)
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** (plan)
 - **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** (guide)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
@@ -1065,6 +1067,7 @@ Knowledge base artifacts grouped by topic.
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** (architecture)
 - **[Combining Deployment Tiers](../guides/combining-deployment-tiers.md)** (guide)
 - **[Building on the ONEX runtime](../guides/getting-started-local.md)** (guide)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[ONEX Kafka Topic Naming Standard](../reference/onex-topic-taxonomy.md)** (reference)
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** (runbook)
 
@@ -1226,6 +1229,7 @@ Knowledge base artifacts grouped by topic.
 - **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** (guide)
 - **[Building on the ONEX runtime](../guides/getting-started-local.md)** (guide)
 - **[Getting Started: Self-Hosting the Full Stack](../guides/getting-started-self-hosted.md)** (guide)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[omnibase_spi Quick Start](../guides/omnibase-spi-quick-start.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
@@ -1756,6 +1760,7 @@ Knowledge base artifacts grouped by topic.
 ## nodes
 
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** (architecture)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[OmniMemory → OmniMarket Node Migration Boundary](../guides/omnimemory-market-migration-boundary.md)** (guide)
 - **[Nodes API Reference - omnibase_core](../reference/omnibase-core-api-nodes.md)** (reference)
 - **[OmniIntelligence Node Inventory](../reference/omniintelligence-node-inventory.md)** (reference)
@@ -2230,6 +2235,7 @@ Knowledge base artifacts grouped by topic.
 - **[Architecture Overview - omnibase_core](../architecture/omnibase-core-overview.md)** (architecture)
 - **[ONEX Architecture Overview](../architecture/onex-runtime-overview.md)** (architecture)
 - **[Repository Map and Runtime Concepts](../architecture/repository-map-and-runtime-concepts.md)** (architecture)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[Mixin Development Guide](../guides/onex-mixin-development-overview.md)** (guide)
 - **[Node Building Guide](../guides/onex-node-building-overview.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
@@ -3204,6 +3210,7 @@ Knowledge base artifacts grouped by topic.
 - **[Validation Protocol Compliance](../architecture/onex-validation-protocol-compliance.md)** (architecture)
 - **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** (plan)
 - **[Skills-to-market phase 2: validator gates](../plans/2026-04-27-skills-to-market-phase-2-validator-gates.md)** (plan)
+- **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[Model Validation Demo: Support Ticket Classification](../guides/omnibase-core-model-validation-demo.md)** (guide)
 - **[Validation Orchestrator — Activation Guide](../guides/omnibase-infra-validation-orchestrator-activation.md)** (guide)
 - **[omnibase_spi Validation Protocols Usage](../guides/omnibase-spi-validation-protocols-usage.md)** (guide)
