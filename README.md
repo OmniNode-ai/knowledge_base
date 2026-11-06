@@ -106,6 +106,8 @@ The beta is the local install: you delegate from your own computer to a model yo
 
 **To see how the whole design fits together,** read [How OmniNode works](guides/how-omninode-works.md). It is written for a technical reader who will not read this README top to bottom: the problem, the event bus and the record it leaves, the four node types with one real example each, how buses connect from one machine to a server to a hosted service, how a failing check stops the line, what learning from earlier runs means today, and the delegation plugin as the way in. Each part says what is built and what is not.
 
+**To run it on one machine you control,** read the [Self-hosted quickstart](guides/self-hosted-quickstart.md): the shortest real path, with each command checked and what is not supported yet stated. Path 1 installs the `onex` tool and delegates to your own model; path 2 runs the platform's own services in containers on the same machine.
+
 **To build your own nodes on the ONEX runtime,** read [Building on the ONEX runtime](guides/getting-started-local.md). It is the shortest complete path to a working ONEX system: one package, one command, and a real event chain you can read back out of a local database file, with no broker, no database server, no container runtime and no account. It needs no model and does not delegate. From there:
 
 - [Self-hosting the full stack](guides/getting-started-self-hosted.md) is the scale-up chapter: a real broker, PostgreSQL, a cache, an identity provider, and the runtime services on top, on your own infrastructure.
