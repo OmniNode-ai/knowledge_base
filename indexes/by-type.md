@@ -316,6 +316,7 @@ Knowledge base artifacts grouped by type.
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** — current
 - **[How OmniNode works](../guides/how-omninode-works.md)** — current. A plain-words tour with diagrams for a technical reader who will not read a README: the problem OmniNode is built around, the event bus and the record it leaves, the four node types with one real example each, how buses connect from one machine to a server to a hosted service, how a failing check stops the line, what learning from earlier runs means today, and the delegation plugin as the way in, traced event by event with charts from measured runs. Each part says what is built and what is not.
 - **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** — current. The shortest real path to run OmniNode on one machine you control: a four-command install with no containers, then an optional container stack on the same machine. It lists what each path needs, what was run to check each command, and what is not supported or not built yet.
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** — current. One Mermaid diagram per interactive tutorial and repository tour, drawn from the tutorial's own node and edge data so that a reader on GitHub sees the picture without opening the animated page. Anything the tutorial marks as not built is drawn dashed and labelled.
 
 ## Reference
 

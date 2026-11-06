@@ -4,7 +4,7 @@ Task-oriented how-to documentation: getting started, onboarding, integration wal
 
 ## Start here
 
-New to OmniNode? Read [What OmniNode is, and where it stands](what-is-omninode.md) first: one page on what ships today, what is in beta, and what is not yet open. For the design in plain words, with a real example of each part and what is not built yet, read [How OmniNode works](how-omninode-works.md). Then try it.
+New to OmniNode? Read [What OmniNode is, and where it stands](what-is-omninode.md) first: one page on what ships today, what is in beta, and what is not yet open. For the design in plain words, with a real example of each part and what is not built yet, read [How OmniNode works](how-omninode-works.md). For a picture of every tutorial that renders on GitHub, see [Diagrams for every tutorial](tutorial-diagrams.md). Then try it.
 
 **Beta users: start with the [Delegation quickstart](onex-plugin-quickstart.md).** The beta is the local install: delegation from your own computer to a model you run or a provider on your own key, with no OmniNode account ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). OmniNode does not sell inference; you pay your provider directly.
 

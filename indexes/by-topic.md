@@ -154,6 +154,7 @@ Knowledge base artifacts grouped by topic.
 - **[ONEX Subcontract Package Architecture](../architecture/onex-subcontract-architecture.md)** (architecture)
 - **[Validation stack architecture — implementation plan](../plans/2026-04-11-validation-stack-architecture-plan.md)** (plan)
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide)
 
 ## architecture-boundary
 
@@ -764,6 +765,7 @@ Knowledge base artifacts grouped by topic.
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide)
 - **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide)
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide)
 - **[What OmniNode is, and where it stands](../guides/what-is-omninode.md)** (guide)
 - **[Public proof index: delegation and the ONEX platform](../reference/public-proof-index.md)** (reference)
 
@@ -846,6 +848,10 @@ Knowledge base artifacts grouped by topic.
 - **[Mixin Integration Guide](../guides/onex-mixin-development-04-mixin-integration.md)** (guide)
 - **[Mixin Development Best Practices](../guides/onex-mixin-development-05-best-practices.md)** (guide)
 - **[Mixin Development Guide](../guides/onex-mixin-development-overview.md)** (guide)
+
+## diagrams
+
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide)
 
 ## dict
 
@@ -1070,6 +1076,7 @@ Knowledge base artifacts grouped by topic.
 - **[Combining Deployment Tiers](../guides/combining-deployment-tiers.md)** (guide)
 - **[Building on the ONEX runtime](../guides/getting-started-local.md)** (guide)
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide)
 - **[ONEX Kafka Topic Naming Standard](../reference/onex-topic-taxonomy.md)** (reference)
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** (runbook)
 
@@ -1766,6 +1773,7 @@ Knowledge base artifacts grouped by topic.
 - **[Technical Design: OmniNode Platform Architecture](../architecture/omninode-architecture-technical-design.md)** (architecture)
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide)
 - **[OmniMemory → OmniMarket Node Migration Boundary](../guides/omnimemory-market-migration-boundary.md)** (guide)
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide)
 - **[Nodes API Reference - omnibase_core](../reference/omnibase-core-api-nodes.md)** (reference)
 - **[OmniIntelligence Node Inventory](../reference/omniintelligence-node-inventory.md)** (reference)
 - **[OmniMarket node_build_loop_orchestrator](../reference/omnimarket-node-build-loop-orchestrator.md)** (reference)
@@ -3146,6 +3154,10 @@ Knowledge base artifacts grouped by topic.
 - **[EFFECT Node Tutorial: Build a File Backup System](../guides/onex-node-building-04-effect-node-tutorial.md)** (guide)
 - **[REDUCER Node Tutorial: Build a Pure FSM Metrics Aggregator](../guides/onex-node-building-05-reducer-node-tutorial.md)** (guide)
 - **[ORCHESTRATOR Node Tutorial: Build a Data Processing Pipeline](../guides/onex-node-building-06-orchestrator-node-tutorial.md)** (guide)
+
+## tutorials
+
+- **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide)
 
 ## two
 
