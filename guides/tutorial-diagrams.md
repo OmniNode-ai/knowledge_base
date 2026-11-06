@@ -22,8 +22,8 @@ animated tour for the step-by-step version.
 How the diagrams were made: each tutorial page carries its diagram as data, a list of nodes and the edges
 between them. Each diagram below is that data redrawn, with the same names, the same zones and the same
 edge order, and each edge is labelled with the number of the tour step it belongs to. Nothing here is added to what
-the tutorial itself shows. A **dashed grey box marked NOT BUILT** is a part the tutorial says is not built
-or not wired yet, and a dashed arrow is a path the tutorial draws as optional or conditional.
+the tutorial itself shows. A **dashed grey box marked NOT BUILT OR NOT WIRED** is a part the tutorial labels as
+proposed, built but never called, never run or not wired yet, and a dashed arrow is a path the tutorial draws as optional or conditional.
 
 To open an animated tutorial, clone the repository and open the file in a browser. A workflow that
 publishes the folder as a site is in the repository, but GitHub Pages is not turned on for it yet, so there is
@@ -1166,7 +1166,7 @@ Tutorial file: [`docs/tutorials/delivery-chain-lab-to-prod.exhibit.html`](../doc
 flowchart LR
   subgraph z0["Merge and Trigger"]
     n0["A merged pull request<br/>Fires only on a pull request that closed AS MERGED. A push..."]
-    n1["The rebuild publisher<br/>Decides whether the merge is runtime-relevant, then...<br/>NOT BUILT"]
+    n1["The rebuild publisher<br/>Decides whether the merge is runtime-relevant, then...<br/>NOT BUILT OR NOT WIRED"]
     n2["The candidate build<br/>A separate path: build the images and boot them on a..."]
   end
   subgraph z1["The Control Bus"]
@@ -1515,9 +1515,9 @@ flowchart LR
     n1["the task class contract<br/>Declares what acceptable means, and how far escalation may..."]
   end
   subgraph z1["Context — Built, Not Wired"]
-    n2["the context assembler<br/>BUILT, NO CALLER. Real, deterministic, tested — and nothing...<br/>NOT BUILT"]
-    n3["the context receipt field<br/>BUILT, UNINFORMATIVE. Present on every row, empty on every...<br/>NOT BUILT"]
-    n4["the ingestion family<br/>BUILT, ONE OF TWELVE WIRED. The writer targets tables...<br/>NOT BUILT"]
+    n2["the context assembler<br/>BUILT, NO CALLER. Real, deterministic, tested — and nothing...<br/>NOT BUILT OR NOT WIRED"]
+    n3["the context receipt field<br/>BUILT, UNINFORMATIVE. Present on every row, empty on every...<br/>NOT BUILT OR NOT WIRED"]
+    n4["the ingestion family<br/>BUILT, ONE OF TWELVE WIRED. The writer targets tables...<br/>NOT BUILT OR NOT WIRED"]
   end
   subgraph z2["The Run"]
     n5["the tier ladder<br/>Four tiers in escalation order. Three of them evaluate..."]
@@ -1531,9 +1531,9 @@ flowchart LR
   end
   subgraph z4["Measurement"]
     n11["the task bundles<br/>Twenty-eight committed tasks across seven rungs. Fixed..."]
-    n12["the ladder runner<br/>TWO ARMS, NEITHER IS CONTEXT. No arm, variant or condition...<br/>NOT BUILT"]
-    n13["the context experiment<br/>BUILT, NEVER RUN. Three nodes, zero recorded results.<br/>NOT BUILT"]
-    n14["the two plan documents<br/>PROPOSED. Each labels its own status in its own header...<br/>NOT BUILT"]
+    n12["the ladder runner<br/>TWO ARMS, NEITHER IS CONTEXT. No arm, variant or condition..."]
+    n13["the context experiment<br/>BUILT, NEVER RUN. Three nodes, zero recorded results.<br/>NOT BUILT OR NOT WIRED"]
+    n14["the two plan documents<br/>PROPOSED. Each labels its own status in its own header...<br/>NOT BUILT OR NOT WIRED"]
   end
   n0 -->|"2"| n1
   n1 -->|"3"| n6
@@ -1551,7 +1551,7 @@ flowchart LR
   n12 -.->|"13"| n13
   n13 -.->|"15"| n14
   classDef notbuilt stroke-dasharray: 5 4,fill:#f4f4f4,color:#555;
-  class n2,n3,n4,n12,n13,n14 notbuilt;
+  class n2,n3,n4,n13,n14 notbuilt;
 ```
 
 The tour, step by step:
