@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniNode Exhibit</title>
+<style>
+/* ============================================================
+   Anatomy of a Generation — museum exhibit
+   Single-file, offline, file:// safe. No imports, no fetch.
+   ============================================================ */
+:root{
+  --canvas:#F5F1E8;
+  --grid-dot:#E3DCCC;
+  --zone-laptop:#EFE9DB;
+  --zone-pc:#EAE3D2;
+  --zone-cloud:#F0EBE0;
+  --box-fill:#FDFBF6;
+  --ink:#2B2620;
+  --ink-2:#6B6357;
+  --accent-g:#C2502B;   /* graphic only, never text */
+  --accent-t:#A8431F;   /* text-safe accent */
+  --ok-t:#3F6442;
+  --fail-t:#A23425;
+  --focus:#2B5FA8;
+  --hairline:#D8CFBC;
+  --panel-w:404px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Gill Sans","Gill Sans MT","Segoe UI",Seravek,Calibri,system-ui,sans-serif;
+  --mono:"Cascadia Code","SF Mono",Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--canvas);color:var(--ink);
+  font-family:var(--sans);font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:var(--sans);color:var(--ink);background:var(--box-fill);
+  border:1.5px solid var(--ink);border-radius:10px;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
+  outline:2.5px solid var(--focus);outline-offset:2px}
+::selection{background:#E7D9C4}
+
+/* ---------- frame ---------- */
+#app{position:fixed;inset:0;display:flex}
+#stagewrap{position:relative;flex:1;min-width:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;
+  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+#scene.dragging{cursor:grabbing}
+
+/* ---------- exhibit header ---------- */
+#exhibitHead{position:absolute;top:0;left:0;right:0;padding:16px 28px 10px;
+  pointer-events:none;display:flex;align-items:center;gap:14px;z-index:5;background-color:white;
+  border-bottom:1px solid var(--hairline)}
+#exhibitTitle{pointer-events:auto;background:none;border:none;border-radius:4px;
+  font-family:var(--serif);font-size:19px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink);padding:2px 4px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}
+#exhibitTitle:hover{color:var(--accent-t)}
+#exhibitSub{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- SVG world ---------- */
+.zoneRect{stroke:var(--hairline);stroke-width:1.5}
+.zoneLabel{font-family:var(--sans);font-size:24px;letter-spacing:.12em;
+  fill:var(--ink);text-transform:uppercase;
+  paint-order:stroke;stroke-width:14px;stroke-linejoin:round}
+.wall{stroke:var(--ink-2);stroke-width:3;stroke-dasharray:10 7;opacity:.6}
+.wallLabel{font-family:var(--sans);font-size:20px;letter-spacing:.26em;
+  fill:var(--ink-2);text-transform:uppercase}
+.gateArch{fill:none;stroke:var(--ink);stroke-width:2.5}
+.gateGlow{opacity:0;transition:opacity .5s}
+.gateGlow.lit{opacity:.85}
+
+.edge{fill:none;stroke:#8A8071;stroke-width:1.6px;vector-effect:non-scaling-stroke;transition:opacity .3s}
+.edge.dashed{stroke-dasharray:6 6}
+.edge.dim{opacity:.42}
+.edge.active{stroke:var(--accent-g);stroke-width:2.6px}
+.edge.passed{stroke:var(--ink-2);stroke-width:2.2px}
+.edge.traced{stroke:var(--accent-g);opacity:.55;stroke-width:2.2px}
+.edge.ride{opacity:.16}
+.edge.ride.active,.edge.ride.passed,.edge.ride.traced{opacity:1}
+
+/* ---------- bus tracks ---------- */
+.busTrack{stroke:#B9AE97;stroke-width:14;stroke-linecap:round;opacity:.45}
+.busName{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:.18em;fill:var(--ink)}
+.node.bus:hover .busTrack{opacity:.65}
+.node.bus.lit .busTrack{stroke:var(--accent-g);opacity:.5}
+.node.bus.co .busTrack{opacity:.7}
+.packetChip{transition:opacity .45s}
+.packetChip.waiting rect{fill:var(--box-fill);stroke:var(--accent-g);stroke-width:2}
+.packetChip.waiting text{fill:var(--ink)}
+.node.bus{cursor:pointer}
+.node.bus:hover .busTrackCore{stroke-width:4}
+.node.bus.lit .busTrackCore{stroke:var(--accent-g);stroke-dasharray:none}
+.node.bus.lit .busTrack{opacity:.7}
+.node.bus.co .busTrackCore{stroke-width:4}
+
+.node rect.body{fill:var(--box-fill);stroke:var(--ink);stroke-width:1.6;rx:10}
+.node.dim rect.body{opacity:.72;stroke:var(--ink-2)}
+.node{cursor:pointer}
+.node:hover rect.body{stroke-width:2.6}
+.node:hover .halo{opacity:.3}
+.node.co rect.body{stroke-width:2.8}
+.node .halo{opacity:0;transition:opacity .45s}
+.node.lit .halo{opacity:1}
+.node.lit rect.body{stroke:var(--accent-g);stroke-width:2.4}
+.node.pulse .halo{animation:pulseH 1.8s ease-in-out infinite}
+@keyframes pulseH{0%,100%{opacity:.18}50%{opacity:.85}}
+.nName{font-family:var(--sans);font-size:20px;font-weight:600;fill:var(--ink)}
+.nSub{font-family:var(--sans);font-size:15px;fill:var(--ink-2)}
+.node.dim .nName,.node.dim .nSub{fill:var(--ink-2)}
+.containerRect{fill:none;stroke:var(--ink-2);stroke-width:1.4;stroke-dasharray:3 5;rx:16}
+.containerLabel{font-family:var(--sans);font-size:14px;letter-spacing:.2em;
+  fill:var(--ink);text-transform:uppercase}
+
+/* stop medallions */
+.stop circle{fill:var(--box-fill);stroke:var(--ink);stroke-width:1.6}
+.stop text{font-family:var(--serif);font-size:14px;fill:var(--ink);text-anchor:middle}
+.stop.visited circle{fill:var(--ink)}
+.stop.visited text{fill:var(--box-fill)}
+.stop{display:none}
+.stop.current circle{fill:var(--accent-g);stroke:var(--accent-g)}
+.stop.current text{fill:#FFF8EF}
+
+/* counter-scaled overlay things (badges, arrowheads, packet) */
+.portBadge rect{fill:var(--ink);rx:7}
+.portBadge text{font-family:var(--mono);font-size:11.5px;fill:#F5F1E8;text-anchor:middle}
+.arrowHead{fill:#8A8071;transition:opacity .3s}
+.arrowHead.active{fill:var(--accent-g)}
+.arrowHead.rideHead{opacity:.22}
+.arrowHead.rideHead.active{opacity:1}
+.packetChip rect{fill:var(--accent-g);rx:8}
+.packetChip text{font-family:var(--mono);font-size:11px;fill:#FFF8EF;text-anchor:middle}
+.edgeChip{opacity:0;transition:opacity .35s} /* topic name shows only on its own step */
+.edgeChip rect{fill:#FDFBF6;stroke:var(--hairline);rx:7}
+.edgeChip text{font-family:var(--mono);font-size:11px;fill:var(--ink-2);text-anchor:middle}
+
+/* LOD tiers — pure function of camera scale via data-lod on #scene */
+.lod1,.lod2,.nName,.nSub,.containerLabel,.busName{transition:opacity .35s}
+/* a node text is shown only while it renders at 11px or more (see updateTextLOD) */
+.lodoff{opacity:0}
+#scene[data-lod="0"] .lod1{opacity:0}
+#scene[data-lod="0"] .lod2{opacity:0}
+#scene[data-lod="1"] .lod2{opacity:0}
+#scene[data-lod="1"] .lod1{opacity:1}
+#scene[data-lod="2"] .lod1,#scene[data-lod="2"] .lod2{opacity:1}
+
+/* ---------- reading panel ---------- */
+#panel{width:var(--panel-w);flex:none;background:var(--box-fill);
+  border-left:1.5px solid var(--hairline);padding:26px 30px 30px;
+  overflow-y:auto;position:relative;z-index:6;padding-bottom:150px}
+#panel::after{content:"";position:sticky;bottom:-30px;display:block;height:30px;margin-top:-30px;
+  background:linear-gradient(rgba(253,251,246,0),var(--box-fill));pointer-events:none}
+#notice{margin:0 0 14px;border:1px solid var(--hairline);border-left:3px solid var(--accent-t);
+  border-radius:6px;background:#F8F4EA;font-size:13px;line-height:1.45;color:var(--ink-2)}
+#notice summary{cursor:pointer;padding:7px 10px;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent-t);font-weight:600;list-style:none}
+#notice summary::before{content:"\25B8  "}
+#notice[open] summary::before{content:"\25BE  "}
+#notice .nbody{padding:0 10px 9px}
+#notice code{font-family:var(--mono);font-size:12px;background:var(--canvas);border-radius:3px;padding:0 4px}
+#crumb{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+#crumb .crumbZone{cursor:pointer;border:none;background:none;color:var(--ink-2);
+  font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0}
+#crumb .crumbZone:hover{color:var(--accent-t)}
+#counter{font-family:var(--serif);font-size:15px;color:var(--ink-2);white-space:nowrap}
+#stTitle{font-family:var(--serif);font-size:28px;line-height:1.18;margin-bottom:14px}
+#stRule{border:none;border-top:1.5px solid var(--ink);width:52px;margin:0 0 16px}
+#blurb{font-size:18px;line-height:1.55;color:var(--ink);max-width:62ch}
+#blurb p+p{margin-top:10px}
+.caveat{margin-top:16px;padding:10px 12px;border:1px solid var(--hairline);
+  border-left:3px solid var(--ink-2);border-radius:6px;background:#F8F4EA}
+.caveat .tag{display:inline-block;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent-t);margin-bottom:4px;font-weight:600}
+.caveat .body{font-size:14px;line-height:1.45;color:var(--ink-2)}
+#hood{margin-top:20px}
+#hood summary{font-family:var(--serif);font-size:16px;cursor:pointer;
+  color:var(--ink);list-style:none;padding:8px 0;border-top:1px solid var(--hairline)}
+#hood summary::before{content:"▸ ";color:var(--accent-t)}
+#hood[open] summary::before{content:"▾ "}
+#hood .hoodInner{padding:6px 0 4px}
+.kv{display:flex;gap:10px;padding:5px 0;font-size:14px;align-items:baseline}
+.kv .k{flex:none;width:88px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);padding-top:2px}
+.kv .v{font-family:var(--mono);font-size:14.5px;line-height:1.5;color:var(--ink);
+  word-break:break-word;user-select:text}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-family:var(--mono);font-size:11.5px;background:var(--canvas);
+  border:1px solid var(--hairline);border-radius:7px;padding:3px 8px;color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:600}
+.stagechips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.stagechips button{font-size:12.5px;padding:3px 9px;border-radius:14px;border-width:1px}
+#compClose{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+  font-size:15px;display:none}
+#panel.comp #compClose{display:block}
+
+/* ---------- bottom controls ---------- */
+#controls{position:absolute;left:0;right:0;bottom:0;z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:0 16px 16px;pointer-events:none}
+#scrubber{pointer-events:auto;display:flex;align-items:center;gap:0;max-width:100%;
+  background:rgba(253,251,246,.96);border:1px solid var(--hairline);
+  border-radius:12px;padding:4px 10px}
+.tick{position:relative;flex:1 1 0;min-width:20px;max-width:40px;height:30px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;border:none;background:none;border-radius:6px}
+.tick .dot{width:11px;height:11px;border-radius:50%;border:1.6px solid var(--ink);background:transparent}
+.tick.visited .dot{background:var(--ink)}
+.tick.current .dot{background:var(--ink);transform:scale(1.3)}
+.tick .lbl{display:none}
+#stepper{pointer-events:auto;display:flex;align-items:center;gap:14px}
+#btnBack,#btnNext{height:56px;min-width:118px;font-size:16.5px;letter-spacing:.04em;padding:0 22px}
+#btnNext{background:var(--ink);color:var(--box-fill)}
+#btnNext:disabled,#btnBack:disabled{opacity:.35;cursor:default}
+#btnPlay{position:relative;width:56px;height:56px;border-radius:50%;font-size:17px}
+#btnPlay svg{position:absolute;inset:-1.5px;pointer-events:none}
+#btnPlay .ring{fill:none;stroke:var(--ink);stroke-width:2.5;opacity:.85}
+#hintRow{pointer-events:none;font-size:13px;letter-spacing:.06em;color:var(--ink-2);
+  display:flex;gap:18px;opacity:.85;transition:opacity .6s}
+#hintRow span.done{opacity:0}
+#scrubLabel{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);background:rgba(253,251,246,.94);border:1px solid var(--hairline);
+  border-radius:8px;padding:4px 12px;pointer-events:none;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#scrubLabel:empty{display:none}
+
+/* ---------- mini-map + fit ---------- */
+#navCluster{position:fixed;right:18px;bottom:16px;z-index:7;display:flex;
+  flex-direction:column;align-items:flex-end;gap:8px}
+#minimap{display:block;width:196px;height:96px;background:rgba(253,251,246,.92);
+  border:1px solid var(--hairline);border-radius:10px;cursor:pointer}
+#minimap .mmNode{fill:#CFC5AE}
+#minimap .mmZone{fill:none;stroke:var(--hairline)}
+#minimap .mmView{fill:rgba(43,38,32,.08);stroke:var(--ink);stroke-width:1.5}
+#btnFit{font-size:12.5px;letter-spacing:.1em;padding:7px 13px;border-radius:8px}
+
+/* ---------- resume pill ---------- */
+#resumePill{position:absolute;left:50%;transform:translateX(-50%);bottom:158px;z-index:7;
+  display:none;padding:11px 22px;border-radius:24px;background:var(--ink);
+  color:var(--box-fill);font-size:14.5px;letter-spacing:.05em;border:none}
+#resumePill.show{display:block}
+
+/* ---------- cover & terminal overlays ---------- */
+.overlay{position:absolute;inset:0;z-index:9;display:flex;align-items:flex-start;
+  justify-content:center;background:rgba(245,241,232,.93);padding:28px;overflow-y:auto}
+.overlay[hidden]{display:none}
+.card{margin:auto;max-width:660px;text-align:center;background:var(--box-fill);
+  border:1px solid var(--hairline);border-radius:24px;padding:44px 56px;
+  box-shadow:0 12px 52px rgba(43,38,32,.16)}
+.card .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--accent-t);margin-bottom:18px}
+.card h1{font-family:var(--serif);font-size:54px;line-height:1.06;font-weight:500;margin-bottom:18px}
+.card h2{font-family:var(--serif);font-size:36px;line-height:1.1;font-weight:500;margin-bottom:16px}
+.card .rule{border:none;border-top:1.5px solid var(--ink);width:64px;margin:0 auto 18px}
+.card .promise{font-size:18.5px;line-height:1.55;color:var(--ink);max-width:54ch;margin:0 auto 22px}
+.legend{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+.legend .li{display:flex;align-items:center;gap:8px;font-size:12.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sw{width:22px;height:14px;border:1px solid var(--hairline);border-radius:3px}
+.sw.wallsw{background:repeating-linear-gradient(90deg,var(--ink-2) 0 6px,transparent 6px 11px);border:none;height:3px;width:30px}
+.sw.bussw{background:repeating-linear-gradient(90deg,var(--ink-2) 0 10px,transparent 10px 16px);border:none;height:6px;width:30px;border-radius:3px;box-shadow:0 0 0 3px rgba(185,174,151,.45)}
+.sw.pk{width:13px;height:13px;border-radius:50%;background:var(--accent-g);border:none}
+.card .instr{font-size:14px;letter-spacing:.05em;color:var(--ink-2);margin-bottom:26px}
+.card .specimen{font-size:12.5px;letter-spacing:.06em;color:var(--ink-2);margin-top:26px}
+.card .specimen .mono{font-family:var(--mono)}
+#btnBegin,#btnReplay,#btnExplore{height:58px;padding:0 34px;font-size:17px;letter-spacing:.04em}
+#btnBegin,#btnReplay{background:var(--ink);color:var(--box-fill)}
+#btnExplore{margin-left:12px}
+#btnReplay,#btnExplore{margin-top:4px}
+
+/* ---------- dev readout ---------- */
+#devOut{position:absolute;top:14px;right:14px;z-index:8;display:none;
+  font-family:var(--mono);font-size:12px;background:var(--ink);color:#F5F1E8;
+  padding:6px 10px;border-radius:6px}
+#devOut.show{display:block}
+
+/* ---------- narrow layout (phones, small tablets) ---------- */
+@media (max-width:899px){
+  #app{flex-direction:column}
+  /* the controls sit below the diagram, never over it */
+  #stagewrap{order:1;flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+  #scene{position:relative;inset:auto;flex:1 1 0;min-height:0;height:auto}
+  #controls{position:static;background:var(--canvas);border-top:1px solid var(--hairline);padding-top:8px}
+  #panel{width:auto;flex:0 0 36%;border-left:none;border-top:1.5px solid var(--hairline);
+    order:2;padding:14px 18px 22px}
+  #exhibitHead{padding:8px 12px;gap:8px}
+  #exhibitTitle{font-size:14px;letter-spacing:.1em;padding:2px 0;max-width:62%}
+  #exhibitSub{display:none}
+  #audienceSel{font-size:12px;padding:4px 22px 4px 8px}
+  #hintRow{display:none}
+  #minimap{display:none}
+  #navCluster{position:absolute;top:50px;bottom:auto;right:10px}
+  #btnFit{font-size:11.5px;padding:6px 10px}
+  #controls{padding:0 10px 10px;gap:6px}
+  #scrubber{padding:2px 6px}
+  .tick{min-width:14px;height:24px}
+  #scrubLabel{display:none}
+  #btnBack,#btnNext{height:46px;min-width:96px;font-size:15px;padding:0 14px}
+  #btnPlay{width:46px;height:46px}
+  #stepper{gap:10px}
+  #resumePill{bottom:116px}
+  #crumb{margin-bottom:8px;font-size:10.5px;letter-spacing:.1em;overflow-wrap:anywhere}
+  #stTitle{font-size:21px;margin-bottom:10px}
+  #stRule{margin-bottom:10px}
+  #blurb{font-size:16px;line-height:1.5}
+  .overlay{position:fixed;z-index:30;padding:14px}
+  .card{padding:24px 18px;border-radius:18px}
+  .card h1{font-size:32px}
+  .card h2{font-size:27px}
+  .card .promise{font-size:16px;margin-bottom:16px}
+  .card .instr{margin-bottom:18px}
+  .card .specimen{margin-top:18px}
+  .legend{gap:8px 14px;margin-bottom:16px}
+  #btnBegin,#btnReplay,#btnExplore{height:50px;padding:0 24px;font-size:16px}
+  #btnExplore{margin-left:0;margin-top:10px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .node .halo,.gateGlow,.lod1,.lod2,.packetChip,.nName,.nSub,.containerLabel,.busName{transition:none}
+  .node.pulse .halo{animation:none;opacity:.6}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stagewrap">
+    <svg id="scene" data-lod="2" aria-label="System map: the path of one generation request"></svg>
+
+    <div id="exhibitHead">
+      <button id="exhibitTitle" title="Return to the cover">Anatomy of a Generation</button>
+      <span id="exhibitSub">OmniNode · Self-Extending Agent</span>
+    </div>
+
+    <button id="resumePill">▶&nbsp; Resume tour</button>
+
+    <div id="navCluster">
+      <svg id="minimap" aria-label="Mini-map"></svg>
+      <button id="btnFit" title="Frame the whole map">⤢&nbsp;FIT ALL</button>
+    </div>
+
+    <div id="controls">
+      <div id="hintRow">
+        <span id="hintDrag">drag to explore</span>
+        <span id="hintClick">click any component</span>
+        <span id="hintHood">“under the hood” for the code</span>
+      </div>
+      <div id="scrubLabel"></div>
+      <div id="scrubber" role="group" aria-label="Stage scrubber" tabindex="0"></div>
+      <div id="stepper">
+        <button id="btnBack">◀&nbsp; Back</button>
+        <button id="btnPlay" aria-label="Play narration steps" title="Autoplay">
+          <svg viewBox="0 0 60 60"><circle class="ring" cx="30" cy="30" r="27.5"
+            stroke-dasharray="172.8" stroke-dashoffset="172.8"/></svg>
+          <span id="playGlyph">▶</span>
+        </button>
+        <button id="btnNext">Next&nbsp; ▶</button>
+      </div>
+    </div>
+
+    <div id="devOut"></div>
+
+    <!-- cover -->
+    <div class="overlay" id="cover">
+      <div class="card">
+        <div class="kicker">OmniNode · An Exhibit in Sixteen Stops</div>
+        <h1>Anatomy of a&nbsp;Generation</h1>
+        <hr class="rule">
+        <p class="promise">Follow one generation request through a living system —
+          from a typed sentence, across a private tunnel, down a ladder of models,
+          through a validation gate, and back to the screen as a brand-new tool.</p>
+        <div class="legend">
+          <span class="li"><span class="sw" style="background:var(--zone-laptop)"></span>the laptop</span>
+          <span class="li"><span class="sw" style="background:var(--zone-pc)"></span>the lab server</span>
+          <span class="li"><span class="sw" style="background:var(--zone-cloud)"></span>the cloud</span>
+          <span class="li"><span class="sw wallsw"></span>network boundary</span>
+          <span class="li"><span class="sw bussw"></span>message bus</span>
+          <span class="li"><span class="sw pk"></span>the request</span>
+        </div>
+        <p class="instr">Next or → to begin &nbsp;·&nbsp; drag to explore &nbsp;·&nbsp; click any component</p>
+        <button id="btnBegin">Begin the tour</button>
+        <p class="specimen">Specimen: a real run from June 2026 — model <span class="mono">Qwen3.6-35B-A3B</span> ·
+          1 attempt · 888 ms · contract-pass ≈94% across ~172 recorded generations.<br>
+          This exhibit is a static record, not a live view.</p>
+      </div>
+    </div>
+
+    <!-- terminal -->
+    <div class="overlay" id="terminal" hidden>
+      <div class="card">
+        <div class="kicker">Journey complete</div>
+        <h2>One sentence in.<br>One working tool out.</h2>
+        <hr class="rule">
+        <p class="promise">Described, built, validated, registered, invoked — and every
+          step of it recorded as an event with one correlation id. The system is one
+          tool larger than it was a minute ago.</p>
+        <div>
+          <button id="btnReplay">↺&nbsp; Replay</button>
+          <button id="btnExplore">Explore the map</button>
+        </div>
+        <p class="specimen">Specimen values, recorded June 2026: <span class="mono">746dde85</span> ·
+          <span class="mono">Qwen3.6-35B-A3B</span> · 1 attempt · 888 ms</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- reading panel -->
+  <aside id="panel" aria-label="Reading panel">
+    <button id="compClose" aria-label="Back to the tour">✕</button>
+    <details id="notice" hidden><summary id="noticeSum"></summary><div class="nbody" id="noticeBody"></div></details>
+    <div id="crumb">
+      <button class="crumbZone" id="crumbText" title="About this component"></button>
+      <span id="counter"></span>
+    </div>
+    <h2 id="stTitle"></h2>
+    <hr id="stRule">
+    <div id="liveWrap" aria-live="polite">
+      <div id="blurb"></div>
+      <div id="caveatBox"></div>
+    </div>
+    <details id="hood">
+      <summary>Under the hood</summary>
+      <div class="hoodInner" id="hoodInner"></div>
+    </details>
+  </aside>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   DATA — the exhibit content. This is the ONLY block you edit.
+   The engine below is generic. World coords: x 0..W, y 0..H.
+   ----------------------------------------------------------------
+   CONTRACT (every field the engine reads):
+   META   : {docTitle,title,subtitle, cover:{kicker,h1,promise,instr,
+            legend:[{label,style}], specimenHTML}, terminal:{kicker,h2,
+            promise,specimenHTML}, specimen:{packetLabel}}
+   WORLD  : {x,y,w,h}  the canvas bounds
+   ZONES  : [{id,label,x,y,w,h,fill,dim?}]  labelled regions
+   WALLS  : [{x1,y1,x2,y2,opacity?,label?,lx?,ly?}]  dashed boundaries
+   GATES  : [{x,y0,y1,top?,bottom?,opacity?,label?,ly?}]  arch crossings
+            that glow during any stage with gate:true
+   CONTAINERS:[{id,label,x,y,w,h}]  dashed grouping boxes
+   NODES  : [{id,x,y,w,h,name,sub,port?,dim?,type?('bus'),stops:[n..],
+            zone,desc}]  components; type:'bus' renders as a track
+   EDGES  : [{id,pts:[[x,y]...],dashed?,dim?,ride?}]  polyline hops;
+            ride:true => the packet visibly travels a bus spine
+   TRACE_ORDER:[edgeId..]  edges drawn faint on the terminal recap
+   EDGE_STAGE:{edgeId:stageN}  which stage "owns" each traced edge
+   EDGE_TOPICS:{edgeId:topicString}  topic chip shown near an edge
+   CHIP_STAGE:{edgeId:stageN}  the stage that reveals that chip
+   CHIP_AT:{edgeId:[x,y]}  optional manual chip placement
+   STAGES : [{n,short,title,crumb, focus:[id..], highlight:[id..],
+            pulse?:[id..], packets?:[{e:edgeId,rev?}], park?:[x,y],
+            hold?, gate?, focusPad?, blurb:[para..],
+            caveat?:{tag,text}, hood:[{k,v,chip?,chips?}]}]
+   Hood values: chip:true renders v (a topic string) as a chip;
+   chips:true renders v (an array) as chips; else v is plain text.
+   ============================================================ */
+const META = {"docTitle": "The Read/Write Asymmetry at the API Boundary — OmniNode", "title": "The Read/Write Asymmetry at the API Boundary", "subtitle": "The API reads projections and writes commands. It never writes truth.", "cover": {"kicker": "OmniNode Architecture Tutorial", "h1": "Reads&nbsp;Rows,<br>Writes&nbsp;Commands", "promise": "Follow one number from a dashboard panel back to the relation that holds it, the reducer that wrote it, and the tenant binding that scopes it — then follow one user action forward into a command on the bus, and see why the answer that comes back is a handle rather than a result.", "instr": "Next or → to begin &nbsp;·&nbsp; drag to explore &nbsp;·&nbsp; click any component", "legend": [{"label": "clients", "style": "background:var(--zone-laptop)"}, {"label": "api boundary", "style": "background:var(--zone-pc)"}, {"label": "event bus", "style": "background:var(--zone-cloud)"}, {"label": "runtime & reducers", "style": "background:var(--zone-pc)"}, {"label": "relations & row security", "style": "background:var(--zone-laptop)"}, {"label": "evidence", "style": "background:var(--zone-cloud)"}, {"label": "the message", "style": "background:var(--accent-g);border-radius:50%;width:13px;height:13px;border:none"}], "specimenHTML": "A teaching exhibit generated from the verified tutorial spec. Static record, not a live view."}, "terminal": {"kicker": "Tour complete", "h2": "A handle, then a receipt", "promise": "Nothing the API returned was created by the API. The number came from a relation a reducer wrote from an event; the acknowledgement was a promise that a command reached the bus. What makes either believable is a surface that can say it does not know.", "specimenHTML": "The Read/Write Asymmetry at the API Boundary"}, "specimen": {"packetLabel": "one delegation"}};
+const WORLD = {"x": 0, "y": 0, "w": 3012, "h": 1100};
+const ZONES = [{"id": "z1", "label": "Clients", "x": 60, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-laptop)"}, {"id": "z2", "label": "API Boundary", "x": 552, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-pc)"}, {"id": "z3", "label": "Event Bus", "x": 1044, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-cloud)"}, {"id": "z4", "label": "Runtime & Reducers", "x": 1536, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-pc)"}, {"id": "z5", "label": "Relations & Row Security", "x": 2028, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-laptop)"}, {"id": "z6", "label": "Evidence", "x": 2520, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-cloud)"}];
+const WALLS = [];
+const GATES = [{"x": 1998, "y0": 300, "y1": 440, "top": 170, "bottom": 950, "label": "TENANT", "ly": 820}];
+const CONTAINERS = [];
+const NODES = [{"id": "n1", "x": 156, "y": 325, "w": 240, "h": 120, "name": "Savings Panel", "sub": "asks for one number; holds none of its own, renders whatever state comes back", "stops": [1, 10, 16], "zone": "Clients", "desc": "asks for one number; holds none of its own, renders whatever state comes back"}, {"id": "n2", "x": 156, "y": 675, "w": 240, "h": 120, "name": "Submitting Client", "sub": "takes an action: submits work and waits on a correlation handle", "stops": [11, 12], "zone": "Clients", "desc": "takes an action: submits work and waits on a correlation handle"}, {"id": "n4", "x": 648, "y": 220, "w": 240, "h": 120, "name": "Credential Resolver", "sub": "turns a verified token or API key into one tenant identity; never reads a tenant from the request", "stops": [7, 8], "zone": "API Boundary", "desc": "turns a verified token or API key into one tenant identity; never reads a tenant from the request"}, {"id": "n5", "x": 648, "y": 360, "w": 240, "h": 120, "name": "Projection Reader", "sub": "SELECT-only; named columns, an explicit tenant predicate, and three honest answers", "stops": [2, 6, 8, 9, 10], "zone": "API Boundary", "desc": "SELECT-only; named columns, an explicit tenant predicate, and three honest answers"}, {"id": "n3", "x": 648, "y": 500, "w": 240, "h": 120, "name": "API Gateway", "sub": "the HTTP boundary; mounts every router and runs the fail-fast startup checks", "stops": [1, 2, 8, 11], "zone": "API Boundary", "desc": "the HTTP boundary; mounts every router and runs the fail-fast startup checks"}, {"id": "n6", "x": 648, "y": 640, "w": 240, "h": 120, "name": "Command Writer", "sub": "resolves an allowlisted contract, takes the topic from it, and publishes or refuses", "stops": [11, 12, 13, 14], "zone": "API Boundary", "desc": "resolves an allowlisted contract, takes the topic from it, and publishes or refuses"}, {"id": "n7", "x": 648, "y": 780, "w": 240, "h": 120, "name": "Status & Receipt Reader", "sub": "reads the submission row back under the same tenant predicate; another tenant gets a not-found", "stops": [14, 15], "zone": "API Boundary", "desc": "reads the submission row back under the same tenant predicate; another tenant gets a not-found"}, {"id": "n8", "x": 1064, "y": 550, "w": 392, "h": 20, "name": "Event Bus", "sub": "carries every command out and every terminal event back", "stops": [3, 12, 14], "zone": "Event Bus", "desc": "carries every command out and every terminal event back", "type": "bus"}, {"id": "n9", "x": 1632, "y": 325, "w": 240, "h": 120, "name": "Runtime Node Mesh", "sub": "does the work the command asked for and publishes a terminal event", "stops": [3], "zone": "Runtime & Reducers", "desc": "does the work the command asked for and publishes a terminal event"}, {"id": "n10", "x": 1632, "y": 675, "w": 240, "h": 120, "name": "Projection Reducer", "sub": "subscribes to terminals and upserts one flat row per correlation id, tenant stamped", "stops": [3, 4], "zone": "Runtime & Reducers", "desc": "subscribes to terminals and upserts one flat row per correlation id, tenant stamped"}, {"id": "n12", "x": 2124, "y": 238, "w": 240, "h": 120, "name": "Tenant Projections", "sub": "the read-optimised relations a panel's number actually comes from", "stops": [2, 3, 4, 5, 7, 9, 10], "zone": "Relations & Row Security", "desc": "the read-optimised relations a panel's number actually comes from"}, {"id": "n13", "x": 2124, "y": 412, "w": 240, "h": 120, "name": "Row Security Policy", "sub": "compares each row's tenant to the session setting; unset means zero rows, never a default", "stops": [5, 6, 9], "zone": "Relations & Row Security", "desc": "compares each row's tenant to the session setting; unset means zero rows, never a default"}, {"id": "n14", "x": 2124, "y": 588, "w": 240, "h": 120, "name": "Constrained Read Role", "sub": "owns nothing and cannot bypass the policy, which is what makes the policy real", "stops": [6], "zone": "Relations & Row Security", "desc": "owns nothing and cannot bypass the policy, which is what makes the policy real"}, {"id": "n11", "x": 2124, "y": 762, "w": 240, "h": 120, "name": "Submission Ledger", "sub": "one row per admitted request, keyed on the immutable tenant; the status read's boundary", "stops": [13, 14, 15], "zone": "Relations & Row Security", "desc": "one row per admitted request, keyed on the immutable tenant; the status read's boundary"}, {"id": "n15", "x": 2616, "y": 325, "w": 240, "h": 120, "name": "Receipt Renderer", "sub": "hashes the exact persisted row so an answer can be checked later by someone else", "stops": [15, 16], "zone": "Evidence", "desc": "hashes the exact persisted row so an answer can be checked later by someone else"}, {"id": "n16", "x": 2616, "y": 675, "w": 240, "h": 120, "name": "Evidence Reader", "sub": "pins which surface may define which fact, and refuses an answer it cannot measure", "stops": [16], "zone": "Evidence", "desc": "pins which surface may define which fact, and refuses an answer it cannot measure"}];
+const EDGES = [{"id": "e1", "pts": [[396, 385], [522, 385], [522, 560], [648, 560]]}, {"id": "e2", "pts": [[648, 560], [596, 560], [596, 280], [648, 280]]}, {"id": "e3", "pts": [[648, 560], [596, 560], [596, 420], [648, 420]]}, {"id": "e4", "pts": [[888, 420], [928, 420], [928, 110], [2084, 110], [2084, 298], [2124, 298]], "dashed": true}, {"id": "e5", "pts": [[2124, 472], [2072, 472], [2072, 298], [2124, 298]]}, {"id": "e6", "pts": [[2124, 648], [2072, 648], [2072, 472], [2124, 472]]}, {"id": "e7", "pts": [[1872, 735], [1998, 735], [1998, 298], [2124, 298]], "dashed": true}, {"id": "e8", "pts": [[1632, 385], [1544, 385], [1544, 560], [1456, 560]], "ride": true}, {"id": "e9", "pts": [[1456, 560], [1544, 560], [1544, 735], [1632, 735]], "ride": true}, {"id": "e10", "pts": [[396, 735], [522, 735], [522, 560], [648, 560]]}, {"id": "e11", "pts": [[648, 560], [596, 560], [596, 700], [648, 700]]}, {"id": "e12", "pts": [[888, 700], [928, 700], [928, 1010], [2084, 1010], [2084, 822], [2124, 822]], "dashed": true}, {"id": "e13", "pts": [[888, 700], [976, 700], [976, 560], [1064, 560]], "ride": true}, {"id": "e14", "pts": [[1064, 560], [976, 560], [976, 560], [888, 560]], "ride": true}, {"id": "e15", "pts": [[888, 840], [928, 840], [928, 1010], [2084, 1010], [2084, 822], [2124, 822]], "dashed": true}, {"id": "e16", "pts": [[888, 840], [928, 840], [928, 1010], [2576, 1010], [2576, 385], [2616, 385]]}, {"id": "e17", "pts": [[2616, 385], [2564, 385], [2564, 735], [2616, 735]]}, {"id": "e18", "pts": [[396, 735], [522, 735], [522, 840], [648, 840]]}];
+const TRACE_ORDER = ["e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "e10", "e11", "e12", "e13", "e14", "e15", "e16", "e17", "e18"];
+const EDGE_STAGE = {"e1": 10, "e3": 2, "e4": 10, "e8": 3, "e9": 3, "e7": 4, "e5": 5, "e6": 6, "e2": 8, "e10": 11, "e11": 12, "e12": 14, "e13": 14, "e14": 14, "e15": 14, "e16": 15, "e17": 16};
+const EDGE_TOPICS = {};
+const CHIP_STAGE = {};
+const CHIP_AT = {};
+const STAGES = [{"n": 1, "short": "Panel asks", "title": "A panel asks for a number it does not own", "title_plain": "The screen asks a question", "title_exec": "The interface is a renderer, not a source", "crumb": "Savings Panel -> API Gateway", "focus": ["n1", "n3"], "highlight": ["n1"], "blurb": ["Someone logs in and a panel wants to show them how much delegation has saved them. The panel does not compute that number, does not cache it, and does not know which relation holds it. It issues one authenticated GET and renders whatever state comes back.", "The response is deliberately three-valued rather than two. There is an ok state, an explicit insufficient-data state, and a real failure. The first two are both successful responses, because an honest \"there are not enough rows to say\" must not be dressed up as an error — and must not be dressed up as a zero either. Only an unreachable or unconfigured source produces a failure, because then there is no figure at all and inventing one would be worse than refusing."], "blurb_plain": ["A page wants to show you a total. It does not work the total out itself — it asks a service for it and shows whatever the service says, including the answer \"I do not have enough information yet.\" That third possible answer matters: a blank is not the same as a zero."], "blurb_exec": ["Every figure a customer sees is fetched, not computed at the edge. That means there is exactly one place a number can be wrong, and one place to fix it — rather than each screen quietly maintaining its own version of the truth."], "hood": [{"k": "route", "v": "GET /v1/tenants/me/savings", "chip": true}, {"k": "states", "v": "ok | insufficient_data", "chip": true}, {"k": "note", "v": "both states are a 200; only an absent or unreachable source is a 503"}, {"k": "note", "v": "the as_of timestamp is always real, even when the numbers are zero"}], "pulse": ["n1"], "packets": [{"e": "e1"}]}, {"n": 2, "short": "Which relation", "title": "The number lives in a relation, not in the API", "title_plain": "The total is stored, not calculated on demand", "title_exec": "Reporting is separated from operations", "crumb": "Projection Reader -> Tenant Projections", "focus": ["n3", "n5", "n12"], "highlight": ["n5", "n12"], "blurb": ["The answer is four sub-selects, not a live computation: two sums over a savings relation, a count over a delegation relation, and the later of their two latest timestamps. Every one of those reads a row some other process wrote at some earlier time.", "Those relations live in a different database from the rest of the control plane, so the service carries a second, read-only connection pool that exists only for them. It is lazy and fail-soft on purpose: if its connection string is unset these endpoints refuse and nothing else is affected. A missing analytics pool must never be able to take down authentication or work submission."], "blurb_plain": ["The service does not add anything up live. It reads totals out of tables that were filled in earlier, as the work happened. Those tables are in a separate database with their own read-only connection, so if that database is missing, only the totals break — not logging in."], "blurb_exec": ["Analytics reads are physically isolated from the systems that run customer work. An outage in reporting cannot cascade into an outage in the product, and the reporting data can be scaled or restored on its own schedule."], "hood": [{"k": "reads", "v": "savings_estimates, delegation_events", "chip": true}, {"k": "pool", "v": "second, read-only, separate database", "chip": true}, {"k": "note", "v": "one connection cannot span two databases, so the split is structural, not stylistic"}, {"k": "note", "v": "unset connection string refuses these endpoints only"}], "pulse": ["n5"], "packets": [{"e": "e3"}, {"e": "e4"}]}, {"n": 3, "short": "Who wrote it", "title": "A reducer wrote that row, from a bus event", "title_plain": "Someone else filled the table in", "title_exec": "Truth is recorded once, at the source", "crumb": "Event Bus -> Projection Reducer -> Tenant Projections", "focus": ["n9", "n8", "n10", "n12"], "highlight": ["n10"], "blurb": ["Walk one step further back. A projection reducer subscribes to the delegation terminal topics and upserts one flat row per correlation id. That mechanism is the subject of the projections tutorial and is not re-taught here.", "What matters at the API boundary is that all of the reducer's write paths go through a single write function. A row must not be durable on one adapter and invisible on another, because a reader cannot tell those two states apart — from the API's side, a row that exists on one path and not another is indistinguishable from a run that never happened, and no amount of care in the reader recovers the difference."], "blurb_plain": ["When a job finishes it announces itself. A separate small program is listening, and it writes one tidy row about what happened. The service that answers your question later just reads that row — it was not there when the work ran."], "blurb_exec": ["The record of what happened is written by the system that did the work, not reconstructed afterwards by whoever needs a report. That is what makes two different reports of the same period agree."], "hood": [{"k": "topic", "v": "onex.evt.omnibase-infra.delegation-completed.v1", "chip": true}, {"k": "topic", "v": "onex.evt.omnibase-infra.delegation-failed.v1", "chip": true}, {"k": "dedup", "v": "one row per correlation id", "chip": true}, {"k": "note", "v": "every write path funnels through one function so no path can be durable while another is invisible"}], "pulse": ["n8", "n10"], "packets": [{"e": "e8"}, {"e": "e9"}, {"e": "e7"}]}, {"n": 4, "short": "Tenant column", "title": "The relation grew a tenant column", "title_plain": "Each row had to learn whose it is", "title_exec": "Multi-tenancy is a migration, not a setting", "crumb": "migration -> Tenant Projections", "focus": ["n12", "n10"], "highlight": ["n12"], "blurb": ["These relations did not start life multi-tenant. Each acquired a tenant column in a migration, with an interim single-tenant default, because the projection writer builds its insert column list from the row's own keys — so the first write that actually carried a tenant failed against a real database, while the in-memory adapter the unit tests used had no schema to violate and masked the gap entirely.", "Look at that default from the reader's chair, because this is the trap. A default on a tenant column means an untenanted write does not fail — it succeeds, into a bucket. The row is real, durable, and attributed to the wrong tenant, and nothing in the write path said so. That is why the writer-side guard runs before the row is built rather than after: a refused write must produce zero rows, never a default-tenant row a later reader will faithfully render."], "blurb_plain": ["The tables originally had no idea which customer a row belonged to, because there was only one. Adding that column came with a default value — which sounds harmless, but it means a row with no owner quietly gets filed under the wrong one instead of being rejected."], "blurb_exec": ["Serving a second customer safely required changing stored data, not flipping a flag. The interim default is recorded as a known risk with a named control, rather than left as an unexamined convenience."], "hood": [{"k": "column", "v": "tenant_id", "chip": true}, {"k": "interim", "v": "column default absorbs an unstamped write", "chip": true}, {"k": "note", "v": "the writer guard raises before the upsert, so a refused write leaves zero rows"}, {"k": "note", "v": "an in-memory test adapter has no schema and will not reproduce this class of defect"}], "pulse": ["n12"], "packets": [{"e": "e7"}]}, {"n": 5, "short": "Row security", "title": "Row security turns the column into a boundary", "title_plain": "The database itself enforces who sees what", "title_exec": "Isolation is enforced at the lowest layer", "crumb": "Row Security Policy -> Tenant Projections", "focus": ["n13", "n12"], "highlight": ["n13"], "blurb": ["A column is not a boundary. A later migration makes it one: enable row-level security, force it, and install a policy whose read and write clauses both compare the row's tenant to a session setting.", "State the fail-closed property forwards, because it is easy to get backwards. An unset session setting reads as null; comparing a tenant to null yields null rather than true; the predicate does not match, and zero rows are visible. There is no default-tenant fallback anywhere in the policy, by design. The consequence is the single most important sentence for anyone who will later read a row count off one of these relations: an unbound session sees an empty relation that is indistinguishable from an empty relation."], "blurb_plain": ["Rather than trusting every query to remember to filter by customer, the database refuses to hand over rows unless the connection has said who it is acting for. If it has not said, it gets nothing — not an error, just nothing. That last part matters later."], "blurb_exec": ["Customer separation does not depend on every future query being written correctly. It is enforced by the data store, which is the control an auditor can actually test rather than review."], "hood": [{"k": "setting", "v": "app.tenant_id", "chip": true}, {"k": "policy", "v": "tenant_isolation", "chip": true}, {"k": "fail-closed", "v": "unset setting -> zero rows, no fallback", "chip": true}, {"k": "note", "v": "the migration refuses to run at all unless the constrained read role already exists"}], "pulse": ["n13"], "packets": [{"e": "e5"}], "gate": true}, {"n": 6, "short": "The read role", "title": "The connecting role is the real control", "title_plain": "Who you log in as decides whether the rules apply", "title_exec": "The control is the credential, not the configuration", "crumb": "Constrained Read Role -> Row Security Policy", "focus": ["n14", "n13", "n5"], "highlight": ["n14"], "blurb": ["Here is the trap a policy alone walks straight into. The database silently bypasses row security for a relation's owner and for any superuser or bypass-flagged role. So the connecting role, not the policy, is the actual isolation control. A perfectly correct policy on a relation you connect to as its owner enforces nothing, and the query output says so nowhere: you simply get all the rows.", "The role that the read path uses is therefore created owning nothing, with both bypass attributes off, and both are re-asserted on every apply rather than trusted. This is also why the API's own reader treats its session setting as defence in depth and keeps an explicit tenant predicate in every statement as the primary control."], "blurb_plain": ["The database has a rule about who can see which rows — but it politely ignores that rule for the account that owns the table. So the protection is only real if the reading program logs in as a deliberately limited account. That account is created with its privileges switched off, and re-checked every time."], "blurb_exec": ["A correctly written isolation rule can still protect nothing if the service connects with an over-privileged account. Treating the connecting identity as the control is what turns a policy on paper into a control in practice."], "hood": [{"k": "role", "v": "owns nothing, cannot bypass row security", "chip": true}, {"k": "note", "v": "both bypass attributes are re-asserted on every apply, never assumed"}, {"k": "note", "v": "the reader keeps an explicit tenant predicate as the primary control regardless"}, {"k": "note", "v": "if one tenant ever sees another's rows, look at the connection string before the policy"}], "pulse": ["n14"], "packets": [{"e": "e6"}], "gate": true}, {"n": 7, "short": "Slug to identity", "title": "One identifier form, converted in one transaction", "title_plain": "Two halves of the system used different names for the same customer", "title_exec": "Identity drift shows up as silence, not as errors", "crumb": "migration -> Tenant Projections", "focus": ["n12", "n4"], "highlight": ["n12"], "blurb": ["The tenant column started as a human-readable name and had to become the canonical identifier, and the reason is a genuinely instructive bug. The submission ledger keys tenancy on the canonical form; the dashboard read seam carries the canonical form into the session setting. With the projection column still holding names, the policy predicate never matched for a canonically-keyed caller — and because row security is forced on that relation, the result was zero rows, not an error. The page rendered empty for every real customer while their rows sat physically present under the old key.", "The conversion is one type change inside a guarded transaction whose mapping has no catch-all branch. That single omission is the whole safety argument: a value the mapping does not cover becomes null, the column's existing not-null constraint rejects it, and the statement aborts. A partially converted column, a silently invented identifier, and a sentinel value are unreachable outcomes rather than things somebody has to remember not to do."], "blurb_plain": ["One part stored the customer by a readable name, another looked them up by an identifier. The two never matched, so the page came back empty — not broken, just empty, which is much harder to notice. Fixing it meant rewriting the stored values in one careful step that would abort rather than guess."], "blurb_exec": ["The most expensive class of defect here is the one that returns a plausible empty page instead of failing. Converting to a single identity form removes a whole family of them, and the conversion was written so that a partial result is impossible."], "hood": [{"k": "symptom", "v": "zero rows, not an error", "chip": true}, {"k": "safety", "v": "mapping has no catch-all branch, so an unmapped row aborts the whole change", "chip": true}, {"k": "note", "v": "a mapping relation was considered and rejected: it lives in another database, unreachable from the policy"}, {"k": "note", "v": "one of the two relations is still on the old column type, which the reader has to survive"}], "pulse": ["n12"]}, {"n": 8, "short": "Credential names it", "title": "The tenant comes from the credential, never from the request", "title_plain": "You cannot ask for someone else's data", "title_exec": "Authorisation cannot be argued with", "crumb": "API Gateway -> Credential Resolver", "focus": ["n3", "n4", "n5"], "highlight": ["n4"], "blurb": ["The reader accepts exactly two credential kinds. A bearer token is verified and resolved to a tenant identity; an API key is resolved to its tenant record. Both already carry the canonical identity, so there is no lookup step to get wrong. Anything that is neither is refused.", "Two properties are load-bearing and both are stated in the code rather than left to be inferred. Reading a tenant identifier out of the request is forbidden — there is no parameter, header, or body field on these routes that can name a tenant. And a credential whose tenant identity is not in the canonical form is refused rather than used: the parse happens once, at the boundary, and a value that will not parse becomes a refusal instead of a predicate that silently addresses a different partition."], "blurb_plain": ["There is no field anywhere in the request where you could type a different customer's name. The only thing that decides whose data you get is the login credential you presented. If that credential is malformed, the request is refused rather than guessed at."], "blurb_exec": ["The scope of every read is derived from the verified credential alone. There is no parameter a client could pass — by mistake or otherwise — that widens what it can see."], "hood": [{"k": "accepts", "v": "verified bearer token or tenant API key", "chip": true}, {"k": "forbidden", "v": "reading a tenant identifier out of the request", "chip": true}, {"k": "note", "v": "a credential carrying a non-canonical tenant identity is refused, not coerced"}, {"k": "note", "v": "a cross-tenant not-found and a nonexistent-id not-found render identical bodies, so existence never leaks"}], "pulse": ["n4"], "packets": [{"e": "e2"}]}, {"n": 9, "short": "Bound twice", "title": "The read binds the tenant twice, in two parameter types", "title_plain": "The customer's identity is stated twice, on purpose", "title_exec": "Defence in depth, with the failure mode documented", "crumb": "Projection Reader -> Tenant Projections", "focus": ["n5", "n12", "n13"], "highlight": ["n5"], "blurb": ["The one parsed identity is bound twice on its way into the database, and both bindings are deliberate. It is bound as an explicit parameterised predicate, which is the primary control for the reason the previous stop gave. And it is bound as the session setting the policies compare against, scoped to that transaction so it resets itself and no identity can leak onto a pooled connection.", "Then there is the wrinkle. Because the two relations' tenant columns are still different types, one parameter cannot serve both — the driver sends each language type as its matching database type, and there is no comparison operator between the two. A single parameter did not make these endpoints slow; it made them fail outright, on the same process that had answered correctly minutes earlier. The fix binds the same value under two names whose types match their columns, and rejects sprinkling casts through the statements, which would also make every tenant predicate unindexable and would have to be unpicked one by one when a column is finally converted."], "blurb_plain": ["The query says who it is for, and the connection separately tells the database who it is acting for. Either alone could fail quietly; together they cover each other. A small type mismatch between two tables briefly broke this, which is why the same value is now sent in two matching shapes."], "blurb_exec": ["Two independent mechanisms scope every read, so a mistake in one does not expose data. The incident that forced the current design is recorded next to the code, which is what stops it being reintroduced by the next change."], "hood": [{"k": "binding 1", "v": "explicit parameterised tenant predicate", "chip": true}, {"k": "binding 2", "v": "transaction-scoped session setting", "chip": true}, {"k": "note", "v": "the same value is bound under two parameter names, one per column type"}, {"k": "note", "v": "casts were rejected: they hide the seam and make every tenant predicate unindexable"}], "pulse": ["n5", "n13"], "packets": [{"e": "e4"}], "gate": true}, {"n": 10, "short": "Three answers", "title": "Three answers, not two — and a second surface with the opposite tenant posture", "title_plain": "\"I have no rows\" and \"that table does not exist\" are different answers", "title_exec": "The system distinguishes empty from broken", "crumb": "Projection Reader -> client", "focus": ["n5", "n12", "n1"], "highlight": ["n5"], "blurb": ["The correlation-ledger read answers found, not-found, or projection-absent, and all three are successful responses. The third is not a nicety: folding \"the relation is not there\" into \"no such row\" would let a missing sink read as a successful empty answer, which is the same silent-blinding class that once had a dozen protected relations returning empty pages instead of their rows. The three states fall out of a real failure taxonomy — an undefined relation is one exception, any other driver error is another, and a query that runs and returns nothing is simply empty.", "Two smaller disciplines are worth copying wholesale. The statement names its columns rather than selecting everything, so an upstream schema addition cannot silently widen what a caller receives. And the verbatim event body is withheld unless the caller explicitly asks for it, because the default read must be safe to paste into a terminal, a log, or an issue. Meanwhile a separate internal reader serves a contract-declared topic-to-relation map with the same refusal discipline but the opposite tenant posture: it will accept a tenant named in the request, because it is an internal surface addressed by a trusted peer. Knowing which of the two you are reading is the whole point."], "blurb_plain": ["If the service answered \"nothing found\" when the storage was simply missing, you would think you had a real answer. So it says which it is. It also never dumps the raw contents of an event unless you ask, because that text is safe to read but not always safe to paste somewhere public."], "blurb_exec": ["A missing pipeline and a genuinely quiet period look identical unless something deliberately tells them apart. Reporting that distinction is what prevents confident decisions being made on data that was never collected."], "hood": [{"k": "states", "v": "found | not_found | projection_absent", "chip": true}, {"k": "note", "v": "all three are a 200; only a real failure is not"}, {"k": "note", "v": "columns are named explicitly so an upstream addition cannot widen the response"}, {"k": "note", "v": "the internal reader accepts a caller-supplied tenant; this public one never does"}], "pulse": ["n5"], "packets": [{"e": "e4"}, {"e": "e1"}]}, {"n": 11, "short": "Action, not row", "title": "A user action becomes a command, not a row", "title_plain": "Asking for work is not the same as doing it", "title_exec": "The ingress is an allowlist, not a general inbox", "crumb": "Submitting Client -> Command Writer", "focus": ["n2", "n3", "n6"], "highlight": ["n6"], "blurb": ["Now the user does something. The submission endpoint authenticates first and resolves an immutable principal — a tenant identity and a principal derived from it. The mutable display name is deliberately not part of that structure, so no surface inside the gateway can authorise on a name that can be changed.", "The body is parsed into a model that forbids unknown fields, so a caller-supplied topic or routing field arrives as a validation error rather than being quietly ignored — the difference between a request that is refused and a request that is silently reinterpreted. Then the submitted type is resolved against a deny-by-default catalogue. A type not in the catalogue is refused before anything is published. A type that is in the catalogue but fenced — fully declared, fully validated at startup, and deliberately not submittable because no runtime is fit to service it — is refused with its own distinct reason, because reporting it as unknown would send someone hunting for an entry that is sitting right there."], "blurb_plain": ["When you submit a job, the service does not go and do it. It checks that this kind of job is one it is allowed to accept at all, then passes the request along. Anything not on the approved list is turned down immediately, and being turned down tells you which of the two reasons applied."], "blurb_exec": ["Only the specific kinds of work this deployment is prepared to service can be submitted at all. Adding a new one is a reviewed change to a declared catalogue, not a configuration tweak or a code path someone can reach by guessing."], "hood": [{"k": "route", "v": "POST /v1/workflows", "chip": true}, {"k": "posture", "v": "deny by default", "chip": true}, {"k": "note", "v": "unknown fields in the body are a validation error, never an ignored key"}, {"k": "note", "v": "a declared-but-fenced type is refused with its own reason; a catalogue that is entirely fenced fails startup"}], "pulse": ["n2"], "packets": [{"e": "e10"}, {"e": "e11"}]}, {"n": 12, "short": "From contract", "title": "The topic comes from the contract, never from the caller", "title_plain": "The caller cannot choose where their request goes", "title_exec": "Routing is governed, and the contract is published", "crumb": "Command Writer -> contract catalogue", "focus": ["n6", "n8", "n2"], "highlight": ["n6"], "blurb": ["This is the load-bearing line of the whole write path, and it is one assignment: the command topic is read off the resolved contract entry. It is a property of the contract, not of the request. And the catalogue does not even hold a literal topic string — each entry names a symbolic constant resolved against an approved constants module, so the catalogue cannot mint an undeclared topic even by mistake.", "The payload schema on each entry forbids additional properties, which is what stops the ingress degrading into a generic pass-through. The schema is also advertised rather than merely enforced: a client can fetch the servable catalogue and read the exact shape it will be held to before it submits, rather than discovering a limit by exceeding it and spending a round trip on a refusal. The declared size ceiling carries its own boundary statement — it is a blast-radius bound, not a model-fit check. Whether a request fits the model that will eventually serve it is decided downstream by the component that knows each option's capacity, not guessed at the front door."], "blurb_plain": ["Requests travel to a named destination inside the system. That destination comes from the approved description of the job type, never from anything the sender wrote. The sender can also read those descriptions in advance, so the rules are discoverable rather than learned by being rejected."], "blurb_exec": ["A client can neither choose nor influence where its request is delivered internally, and it can read the contract it is held to up front. That combination removes both a security surface and the most common source of integration friction."], "hood": [{"k": "topic", "v": "onex.cmd.omnibase-infra.delegation-request.v1", "chip": true}, {"k": "source", "v": "the contract entry, via a symbolic constant", "chip": true}, {"k": "note", "v": "the catalogue holds no literal topic string, so it cannot mint an undeclared one"}, {"k": "note", "v": "the size ceiling bounds blast radius; model fit is decided downstream by the router"}], "pulse": ["n6"], "packets": [{"e": "e11"}]}, {"n": 13, "short": "Gates that refuse", "title": "Every admission gate fails closed, and each leaves its own record", "title_plain": "When a check cannot run, the answer is no", "title_exec": "Limits hold under failure and under load", "crumb": "Command Writer -> Submission Ledger", "focus": ["n6", "n11"], "highlight": ["n6"], "blurb": ["Between the allowlist and the publish there are three more gates, and the interesting thing about all three is what they do when they cannot decide. A per-principal rate limit is keyed on the immutable principal, at a rate resolved from the same authenticated object, so there is no reverse lookup to get wrong. If its backend is unreachable the request is refused rather than admitted: an unreachable backend must never silently become an open door. And when the limit does reject, the rejection is recorded durably before the refusal is returned — if that record cannot be written the response becomes a different failure instead, because a rejection nobody can prove was emitted is indistinguishable from a silently dropped request.", "The third gate is the monthly quota, and it has real concurrency thinking in it. The count is read under a tenant-scoped advisory lock held on the same transaction as the insert that follows, so two requests arriving together one below the limit cannot both see room: the second waits until the first commits, then re-reads a count that already includes it. The code also records which absences are meaningful — a monthly rejection deliberately writes no row, and the durable record for it is the absence of a submission at that slot, unlike the rate-limit path which has its own events relation."], "blurb_plain": ["There are limits on how much work you can submit. If the system that tracks those limits is unavailable, the request is refused rather than waved through. And if two requests arrive at the same moment with only one slot left, only one of them gets it — they are made to queue behind each other rather than both being told yes."], "blurb_exec": ["Usage limits are not advisory. They are enforced in a way that survives an outage of the limiting infrastructure and a burst of simultaneous requests, and every rejection leaves a record that can be produced later."], "hood": [{"k": "gate 1", "v": "per-principal rate limit, fail closed", "chip": true}, {"k": "gate 2", "v": "payload checked against the contract-declared schema", "chip": true}, {"k": "gate 3", "v": "monthly quota under a tenant-scoped advisory lock", "chip": true}, {"k": "note", "v": "a rejection that cannot be recorded becomes a different refusal, never an unproven one"}], "pulse": ["n6"], "packets": [{"e": "e12"}]}, {"n": 14, "short": "Hand back", "title": "Record, publish, then acknowledge — and the outcome returns over the bus", "title_plain": "You get a receipt number, not an answer", "title_exec": "An acknowledgement is a provable claim", "crumb": "Command Writer -> Event Bus -> Status Reader", "focus": ["n6", "n8", "n11", "n7"], "highlight": ["n8"], "blurb": ["The ordering is chosen and the reason is stated in one clause: the submission row is written before the publish so that status reads never lie. The envelope is built with every field populated — no partial-envelope path exists, which is why the causation identifier has a defined default rather than being nullable. Then the row is inserted as accepted, the envelope is published, and the row is updated to published.", "The publisher raises on every failure path, and the first of those is having no client library at all. The service's other, fail-open publisher would have returned silently in that case — tolerable for a background side effect, disqualifying for an ingress that must return an acknowledgement, because the caller would receive an identifier for a message that was never written to the log. A failed publish is a refusal with the row marked accordingly. There is no path on which a submission is acknowledged without a successful publish.", "The response is an acceptance carrying identifiers and nothing else — no result, because there is no result yet. The outcome comes back the way everything else does. A background consumer subscribes by pattern over every terminal topic it knows, dispatches per topic rather than guessing from message content, and closes the row out. It joins on the correlation identifier, not on the gateway's own identifier, because the gateway minted that one and the runtime never saw it."], "blurb_plain": ["The reply tells you the request was accepted and definitely sent onward — nothing more. The work happens elsewhere and announces when it is done, and a listener writes that result onto the same record. If sending onward had failed, you would have been told, rather than handed a number for something that never left."], "blurb_exec": ["Accepting a request means it was durably recorded and successfully dispatched — nothing weaker. That removes the failure mode where a customer holds a reference to work the platform never actually started."], "hood": [{"k": "response", "v": "accepted, with workflow, envelope and correlation identifiers", "chip": true}, {"k": "order", "v": "record -> publish -> acknowledge", "chip": true}, {"k": "join", "v": "terminal events match on correlation id, never on the gateway's own id", "chip": true}, {"k": "note", "v": "the publisher raises even when no client library is present; a failed publish is never an acceptance"}], "pulse": ["n6", "n8"], "packets": [{"e": "e12"}, {"e": "e13"}, {"e": "e14"}, {"e": "e15"}]}, {"n": 15, "short": "The receipt", "title": "The receipt proves which exact row the answer came from", "title_plain": "A tamper-evident summary of one job", "title_exec": "Claims are independently checkable", "crumb": "Status & Receipt Reader -> Receipt Renderer", "focus": ["n7", "n15", "n11"], "highlight": ["n15"], "blurb": ["A status read tells you what the record says. A receipt tells you which record state that was, and lets somebody else check it later without trusting the service that rendered it. It is a pure read, hash and shape step over a row someone else wrote — it owns none of the writes, and every field is traced to the column it came from.", "Four fields have no column and are computed instead. Two are hashes: one over the canonical form of the whole persisted row, proving exactly which state was rendered; one over just the terminal-outcome subset, which is the part that came from the completion event rather than from the submission. That narrower hash is mirrored byte for byte by an independent replay verifier elsewhere, so widening it is a cross-component contract change rather than a local edit. The fourth is the verifier identity, and it is required from the caller and never defaulted — this surface records who checked a run, which must never silently collapse into who ran it."], "blurb_plain": ["You can ask for a signed-style summary of a finished job. It includes fingerprints of the exact stored record, so if anyone later changes that record the fingerprints stop matching. You also have to say who you are when you ask, because the point is to record who checked — not who ran it."], "blurb_exec": ["Each completed unit of work can produce evidence that a third party can verify without trusting the system that produced it. That is the difference between a platform that reports outcomes and one that can prove them."], "hood": [{"k": "route", "v": "GET /v1/workflows/{id}/receipt", "chip": true}, {"k": "hash 1", "v": "over the whole persisted row", "chip": true}, {"k": "hash 2", "v": "over the terminal-outcome subset only", "chip": true}, {"k": "note", "v": "the verifier identity is required from the caller and never defaulted to the service itself"}], "pulse": ["n15"], "packets": [{"e": "e16"}]}, {"n": 16, "short": "What may be read", "title": "A grader may not invent a surface, and a client may not create one", "title_plain": "Knowing when you do not know", "title_exec": "Verification that cannot quietly pass", "crumb": "Receipt Renderer -> Evidence Reader", "focus": ["n15", "n16", "n1"], "highlight": ["n16"], "blurb": ["The last read is not made by a customer. It is made by a grader — anything that wants to assert the platform did what it said. A shared evidence reader owns, per graded fact, which surface is allowed to define it, and distinguishes four outcomes rather than two: measured, absent, not-measured, and refused. Absent is a real negative a grader may act on. Not-measured means nothing was established either way — the producer could not have carried the field, or the read could not tell a zero from a refusal. Refused means the value is a stringified exception, so the step that produced it failed rather than answered.", "Two of its refusals are the mirror image of things earlier in this tour. A count of zero, on a check where zero is the passing answer, is not-measured unless the same call carried a positive control that returned rows — because a protected relation answers zero to a blind session exactly as it answers zero when genuinely empty. And a fact whose identifier is not in the registry is a hard failure, not a quiet unknown, because a grader asking for an unregistered fact has invented a surface of record.", "The client side of the same rule is enforced mechanically, with one honest qualification. A compliance test bans every database driver and raw network module across the dashboard's component tree, a lint rule bans non-authoritative read origins, and one module decides the single origin every read and every command post targets. But the dashboard's own server tier can, in one of its data-source modes, connect to the store directly. The default is not that mode and the credential is held as a reference rather than a literal — but the capability is real. \"The client never touches the database\" is true of the browser and false of the bridge, and a reader who takes the slogan literally will misjudge that process."], "blurb_plain": ["Automated checks are only allowed to read a fact from the one place that defines it, and they have to say \"I could not tell\" rather than \"no\" when the answer was unreadable. A zero is only accepted as a real zero if the same check proved it could have seen something."], "blurb_exec": ["Automated assurance distinguishes a proven negative from an unmeasured one, so a broken check reads as broken rather than as a clean bill of health. That is what makes the resulting evidence worth showing to a customer or an auditor."], "hood": [{"k": "statuses", "v": "measured | absent | not_measured | refused", "chip": true}, {"k": "control", "v": "a passing zero needs a positive control in the same call", "chip": true}, {"k": "note", "v": "an unregistered fact is a hard failure, not a quiet unknown"}, {"k": "note", "v": "the browser tier is barred from every database driver; the server bridge is not"}], "pulse": ["n16"], "packets": [{"e": "e17"}]}];
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const scene=$('scene');
+const SVGNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(SVGNS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]); if(parent)parent.appendChild(e); return e;}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const easeC=t=>.5-.5*Math.cos(Math.PI*clamp(t,0,1));
+
+/* Fit a node label to its box: wrap to width (breaking long identifiers on
+   / _ . : etc.), shrink the font toward minSize when lines run too tall OR a
+   single line is too wide, and ellipsize only as a last resort. Uses inline
+   style.fontSize so it beats the .nName/.nSub stylesheet rule (a presentation
+   attribute would lose the cascade). Returns the baseline y of the last line
+   so the caller can stack the sub below the name. */
+function fitLabel(g,text,x,y,maxW,maxH,size,minSize,cls){
+  const t=el('text',{class:cls,x:x,y:y},g);
+  text=String(text==null?'':text);
+  const fit=s=>{t.textContent=s;return t.getComputedTextLength();};
+  function breakLong(w){const segs=w.split(/([/_.,:>=()-])/),u=[];let b='';
+    for(const s of segs){b+=s;if(/[/_.,:>=()-]$/.test(b)){u.push(b);b='';}}if(b)u.push(b);
+    return u.length?u:[w];}
+  function lines(sz){t.style.fontSize=sz+'px';const ws=[];
+    for(const raw of text.split(/\s+/)){if(!raw)continue;if(fit(raw)<=maxW){ws.push(raw);continue;}
+      let cur='';for(const uu of breakLong(raw)){if(cur&&fit(cur+uu)>maxW){ws.push(cur);cur=uu;}else cur+=uu;}
+      if(cur)ws.push(cur);}
+    const ls=[];let cur='';
+    for(const w of ws){const c=cur?cur+' '+w:w;if(cur&&fit(c)>maxW){ls.push(cur);cur=w;}else cur=c;}
+    if(cur)ls.push(cur);return ls.length?ls:[''];}
+  let sz=size,ls=lines(sz);
+  const tooMany=()=>ls.length>Math.max(1,Math.floor(maxH/(sz*1.12)));
+  const tooWide=()=>Math.max.apply(null,ls.map(l=>fit(l)))>maxW+0.5;
+  while((tooMany()||tooWide())&&sz>minSize){sz-=0.5;ls=lines(sz);}
+  const cap=Math.max(1,Math.floor(maxH/(sz*1.12)));
+  if(ls.length>cap){ls=ls.slice(0,cap);t.style.fontSize=sz+'px';
+    let last=ls[cap-1];while(last.length>1&&fit(last+'…')>maxW)last=last.slice(0,-1);
+    ls[cap-1]=last.replace(/[\s/_.,:>=()-]+$/,'')+'…';}
+  t.textContent='';t.style.fontSize=sz+'px';const lh=sz*1.12;
+  ls.forEach((ln,i)=>{const ts=el('tspan',{x:x,y:(y+i*lh).toFixed(1)},t);ts.textContent=ln;});
+  if(/nName|nSub/.test(cls))lodTexts.push({t:t,k:11.05/sz,on:true});
+  return y+(ls.length-1)*lh;
+}
+
+/* ---------- build the world ---------- */
+let lodTexts=[], world, counterScaled=[], nodeEls={}, edgeEls={}, stopEls={}, edgeChipEls=[], gateGlowEls=[];
+function buildScene(){
+  const defs=el('defs',{},scene);
+  const pat=el('pattern',{id:'dots',width:24,height:24,patternUnits:'userSpaceOnUse'},defs);
+  el('circle',{cx:12,cy:12,r:1.15,fill:'var(--grid-dot)'},pat);
+  const halo=el('radialGradient',{id:'haloG'},defs);
+  el('stop',{offset:'0%','stop-color':'#C2502B','stop-opacity':.32},halo);
+  el('stop',{offset:'70%','stop-color':'#C2502B','stop-opacity':.10},halo);
+  el('stop',{offset:'100%','stop-color':'#C2502B','stop-opacity':0},halo);
+
+  world=el('g',{id:'world'},scene);
+  el('rect',{x:WORLD.x,y:WORLD.y,width:WORLD.w,height:WORLD.h,fill:'url(#dots)','pointer-events':'none'},world);
+
+  for(const z of ZONES){
+    el('rect',{class:'zoneRect',x:z.x,y:z.y,width:z.w,height:z.h,rx:18,fill:z.fill,
+      opacity:z.dim?0.75:1},world);
+  }
+  /* walls (dashed boundaries, optional rotated label) */
+  for(const w of WALLS){
+    el('line',{class:'wall',x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,opacity:w.opacity==null?1:w.opacity},world);
+    if(w.label){const lx=w.lx==null?w.x1-26:w.lx, ly=w.ly==null?830:w.ly;
+      el('text',{class:'wallLabel',x:lx,y:ly,transform:`rotate(-90 ${lx} ${ly})`},world).textContent=w.label;}
+  }
+  /* gates (arch crossings that can glow during a stage) */
+  for(const gt of GATES){
+    const top=gt.top==null?140:gt.top, bot=gt.bottom==null?1060:gt.bottom, op=gt.opacity==null?1:gt.opacity;
+    el('line',{class:'wall',x1:gt.x,y1:top,x2:gt.x,y2:gt.y0-14,opacity:op},world);
+    el('line',{class:'wall',x1:gt.x,y1:gt.y1+14,x2:gt.x,y2:bot,opacity:op},world);
+    const glow=el('rect',{class:'gateGlow',x:gt.x-26,y:gt.y0-20,width:52,height:gt.y1-gt.y0+40,rx:24,fill:'url(#haloG)'},world);
+    el('rect',{class:'gateArch',x:gt.x-13,y:gt.y0,width:26,height:gt.y1-gt.y0,rx:13},world);
+    if(gt.label){const ly=gt.ly==null?830:gt.ly;
+      el('text',{class:'wallLabel',x:gt.x-26,y:ly,transform:`rotate(-90 ${gt.x-26} ${ly})`},world).textContent=gt.label;}
+    gateGlowEls.push(glow);
+  }
+
+  /* containers (dashed grouping boxes) */
+  for(const c of CONTAINERS){
+    el('rect',{class:'containerRect',x:c.x,y:c.y,width:c.w,height:c.h,rx:16},world);
+    {const ct=el('text',{class:'containerLabel',x:c.x+18,y:c.y+30},world);ct.textContent=c.label;lodTexts.push({t:ct,k:11.05/14,on:true});}
+  }
+
+  /* edges under nodes */
+  const edgeLayer=el('g',{},world);
+  for(const ed of EDGES){
+    const d='M'+ed.pts.map(p=>p.join(' ')).join(' L');
+    const cls='edge'+(ed.dashed?' dashed':'')+(ed.dim?' dim':'')+(ed.ride?' ride':'');
+    edgeEls[ed.id]={path:el('path',{class:cls,d},edgeLayer),def:ed};
+  }
+  /* zone titles: above the edges (so no line strikes through one), below the nodes */
+  const zoneLayer=el('g',{},world);
+  for(const z of ZONES){fitLabel(zoneLayer,z.label,z.x+22,z.y+38,z.w-44,64,24,14,'zoneLabel');
+    /* a halo in the zone's own colour, so a line passing behind the title is not seen through it */
+    zoneLayer.lastChild.style.stroke=z.fill;}
+  /* nodes */
+  for(const n of NODES){
+    if(n.type==='bus'){
+      const g=el('g',{class:'node bus','data-id':n.id},world);
+      const cy=n.y+n.h/2;
+      el('rect',{class:'halo',x:n.x-16,y:cy-26,width:n.w+32,height:52,rx:24,fill:'url(#haloG)'},g);
+      el('line',{class:'busTrack',x1:n.x,y1:cy,x2:n.x+n.w,y2:cy},g);
+      const bn=el('text',{class:'busName',x:n.x+2,y:cy-22},g);bn.textContent=n.name;lodTexts.push({t:bn,k:11.05/20,on:true});
+      const sb=el('text',{class:'nSub',x:n.x+n.w-10,y:cy-20,'text-anchor':'end'},g);
+      sb.textContent=n.sub;lodTexts.push({t:sb,k:11.05/15,on:true});
+      let bmx=n.x+32;
+      for(const s of n.stops){
+        const sg=el('g',{class:'stop','data-stop':s},g);
+        el('circle',{cx:bmx,cy:cy,r:13},sg);
+        el('text',{x:bmx,y:cy+4.5},sg).textContent=s;
+        (stopEls[s]=stopEls[s]||[]).push(sg);
+        bmx+=30;
+      }
+      nodeEls[n.id]={g,def:n};
+      continue;
+    }
+    const g=el('g',{class:'node'+(n.dim?' dim':''),'data-id':n.id},world);
+    el('rect',{class:'halo',x:n.x-14,y:n.y-14,width:n.w+28,height:n.h+28,rx:20,fill:'url(#haloG)'},g);
+    el('rect',{class:'body',x:n.x,y:n.y,width:n.w,height:n.h,rx:10},g);
+    var _nb=fitLabel(g,n.name,n.x+18,n.y+30,n.w-30,Math.min(n.h*0.52,44),20,13,'nName');
+    fitLabel(g,n.sub,n.x+18,Math.max(_nb+19,n.y+54),n.w-30,(n.y+n.h)-Math.max(_nb+19,n.y+54)-12,15,10.5,'nSub');
+    /* stop medallions */
+    let mx=n.x+n.w-16;
+    for(const s of [...n.stops].reverse()){
+      const sg=el('g',{class:'stop','data-stop':s},g);
+      el('circle',{cx:mx,cy:n.y,r:13},sg);
+      const t=el('text',{x:mx,y:n.y+4.5},sg); t.textContent=s;
+      (stopEls[s]=stopEls[s]||[]).push(sg);
+      mx-=30;
+    }
+    /* port badge — counter-scaled */
+    if(n.port){
+      const bw=n.port.length*7.4+16;
+      const bg=el('g',{class:'portBadge lod1'},world);
+      el('rect',{x:-bw/2,y:-11,width:bw,height:22,rx:7},bg);
+      el('text',{x:0,y:4},bg).textContent=n.port;
+      counterScaled.push({el:bg,x:n.x+24,y:n.y+n.h});
+    }
+    nodeEls[n.id]={g,def:n};
+  }
+  /* arrowheads — counter-scaled */
+  for(const ed of EDGES){
+    const pts=ed.pts, a=pts[pts.length-2], b=pts[pts.length-1];
+    const ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;
+    const g=el('g',{class:'arrowHeadG'},world);
+    const p=el('path',{class:'arrowHead'+(ed.ride?' rideHead':''),'data-edge':ed.id,
+      d:'M0 0 L-11 -5.5 L-11 5.5 Z',transform:`rotate(${ang})`},g);
+    if(ed.dim)p.setAttribute('opacity',.45);
+    counterScaled.push({el:g,x:b[0],y:b[1]});
+    edgeEls[ed.id].head=p;
+  }
+  /* topic chips on event-carrying edges (visible at close zoom) */
+  /* EDGE_TOPICS / CHIP_STAGE / CHIP_AT come from the DATA block above */
+  for(const id in EDGE_TOPICS){
+    const t=EDGE_TOPICS[id], path=edgeEls[id].path;
+    const len=path.getTotalLength();
+    const p=CHIP_AT[id]?{x:CHIP_AT[id][0],y:CHIP_AT[id][1]}:path.getPointAtLength(len/2);
+    const label=t.split('.').slice(0,2).join('.')+'…'+t.split('.').slice(-2).join('.');
+    const g=el('g',{class:'edgeChip'},world);
+    const w=label.length*6.6+14;
+    el('rect',{x:-w/2,y:-12,width:w,height:22},g);
+    el('text',{x:0,y:3},g).textContent=label;
+    counterScaled.push({el:g,x:p.x,y:p.y-16});
+    edgeChipEls.push({el:g,stage:CHIP_STAGE[id]});
+  }
+  /* packet chip — counter-scaled, hidden until used */
+  const pk=el('g',{class:'packetChip',visibility:'hidden'},world);
+  el('rect',{x:-38,y:-13,width:76,height:26},pk);
+  el('text',{x:0,y:4},pk).textContent=META.specimen.packetLabel;
+  packet.el=pk; counterScaled.push(packet.cs={el:pk,x:0,y:0});
+  /* parked message — shown while a stage declares park:[x,y] */
+  const pp=el('g',{class:'packetChip',visibility:'hidden'},world);
+  el('rect',{x:-38,y:-13,width:76,height:26},pp);
+  el('text',{x:0,y:4},pp).textContent=META.specimen.packetLabel;
+  pp.classList.add('waiting');
+  parkPkg.el=pp; counterScaled.push(parkPkg.cs={el:pp,x:0,y:0});
+}
+
+/* ---------- camera ---------- */
+const cam={x:1260,y:560,k:.5};
+let minK=.2, maxK=3, camTween=null;
+function vp(){return {w:scene.clientWidth,h:scene.clientHeight}}
+const isPhone=()=>matchMedia('(max-width:899px)').matches;
+function safeRect(){
+  const v=vp(), c=$('controls'), top=isPhone()?52:70;
+  const bottom=isPhone()?6:(c&&c.offsetHeight?c.offsetHeight:140)+6;
+  return {x:isPhone()?8:24,y:top,w:v.w-(isPhone()?16:48),h:Math.max(120,v.h-top-bottom)};
+}
+function fitScale(pad=48){
+  const s=safeRect();
+  return Math.min((s.w-pad)/WORLD.w,(s.h-pad)/WORLD.h);
+}
+function applyCam(){
+  const v=vp();
+  world.setAttribute('transform',
+    `translate(${v.w/2-cam.x*cam.k} ${v.h/2-cam.y*cam.k}) scale(${cam.k})`);
+  for(const c of counterScaled)
+    c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);
+  updateLOD(); updateTextLOD(); drawMiniView(); if(devOn)devShow();
+}
+function updateTextLOD(){
+  for(const x of lodTexts){const on=cam.k>=x.k;if(on!==x.on){x.on=on;x.t.classList.toggle('lodoff',!on);}}
+}
+let lodCur=2;
+function updateLOD(){
+  /* tiers: names 21px, secondary 13.5px, chips 11.5px — hide below ~11px on screen */
+  let lod = cam.k>=0.9 ? 2 : cam.k>=0.58 ? 1 : 0;
+  /* hysteresis */
+  if(lod<lodCur){ if(lodCur===2&&cam.k>0.86)lod=2; if(lodCur>=1&&lod===0&&cam.k>0.54)lod=1; }
+  if(lod!==lodCur){lodCur=lod;scene.dataset.lod=lod;}
+}
+function bboxOf(ids,pad=70,F){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const id of ids){const n=NODES.find(n=>n.id===id);
+    x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+n.w);y1=Math.max(y1,n.y+n.h);}
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  /* frame ~2x the focus area so the guided zoom sits about half as close */
+  if(F==null)F=isPhone()?1:1.12;
+  const w=(x1-x0+2*pad)*F, h=(y1-y0+2*pad)*F;
+  return {x:cx-w/2,y:cy-h/2,w,h,cx,cy};
+}
+function solveCam(bb,zoomCap,floorK){
+  const s=safeRect(), v=vp();
+  let k=clamp(Math.min(s.w/bb.w,s.h/bb.h),Math.max(minK,floorK||0),zoomCap||maxK);
+  const scx=s.x+s.w/2, scy=s.y+s.h/2;
+  return {x:bb.cx-(scx-v.w/2)/k, y:bb.cy-(scy-v.h/2)/k, k};
+}
+/* Camera for a stage: frame every focus node, but never zoom out so far that
+   node labels drop below a readable size; if the focus is too wide to fit
+   legibly, frame the highlighted components instead. */
+function stageCam(st){
+  const pad=st.focusPad||(isPhone()?50:90), floor=isPhone()?0.55:0.6;
+  const cap=isPhone()?1.3:1.5;
+  let to=solveCam(bboxOf(st.focus,pad),cap);
+  if(to.k<floor){
+    const hl=(st.highlight&&st.highlight.length)?st.highlight:st.focus;
+    to=solveCam(bboxOf(hl,pad),cap,floor);
+    /* still wider than the screen at a readable scale: frame the lit component alone,
+       so no box is cut off at the edge */
+    const fits=(bb)=>{const sr=safeRect();return bb.w*to.k<=sr.w+1&&bb.h*to.k<=sr.h+1;};
+    if(to.k<=floor+1e-6&&!fits(bboxOf(hl,pad)))to=solveCam(bboxOf(hl.slice(0,1),pad),cap,floor);
+  }
+  return to;
+}
+function camDist(a,b){const km=(a.k+b.k)/2;return Math.hypot((a.x-b.x)*km,(a.y-b.y)*km);}
+function tweenCam(to,done){
+  if(camTween)cancelAnimationFrame(camTween.raf),camTween=null;
+  if(RM){Object.assign(cam,to);applyCam();done&&done();return;}
+  const from={...cam}, d=camDist(from,to), v=vp();
+  const dur=clamp(200+d*.4,300,900);
+  /* Van Wijk-lite: long jumps dip through an overview scale */
+  let kMid=null;
+  if(d>1.5*v.w){
+    const ub={x:Math.min(from.x,to.x)-300,y:Math.min(from.y,to.y)-300,
+      w:Math.abs(from.x-to.x)+600,h:Math.abs(from.y-to.y)+600};
+    kMid=clamp(Math.min(vp().w/ub.w,vp().h/ub.h),minK,Math.min(from.k,to.k));
+  }
+  const t0=performance.now();
+  const tw=camTween={to};
+  function frame(now){
+    const u=easeC((now-t0)/dur);
+    cam.x=lerp(from.x,to.x,u); cam.y=lerp(from.y,to.y,u);
+    cam.k=kMid? (u<.5? lerp(from.k,kMid,easeC(u*2)) : lerp(kMid,to.k,easeC(u*2-1)))
+              : lerp(from.k,to.k,u);
+    applyCam();
+    if((now-t0)<dur && camTween===tw)tw.raf=requestAnimationFrame(frame);
+    else{ if(camTween===tw){camTween=null; Object.assign(cam,to); applyCam(); done&&done();} }
+  }
+  tw.raf=requestAnimationFrame(frame);
+}
+function cancelCamTween(snap){const tw=camTween;
+  if(tw){cancelAnimationFrame(tw.raf);camTween=null;
+    if(snap&&tw.to){Object.assign(cam,tw.to);applyCam();}}}
+
+/* ---------- packet ---------- */
+const packet={el:null,cs:null,raf:null,queue:[],onDone:null};
+const parkPkg={el:null,cs:null};
+function clearPacket(){
+  if(packet.raf)cancelAnimationFrame(packet.raf),packet.raf=null;
+  if(packet.t)clearTimeout(packet.t),packet.t=null;
+  if(packet.fade)clearTimeout(packet.fade),packet.fade=null;
+  packet.queue=[];packet.prev=null;packet.onDone=null;packet.hold=false;
+  packet.el.style.opacity=1;
+  packet.el.setAttribute('visibility','hidden');
+  document.querySelectorAll('.edge.active,.edge.passed').forEach(e=>e.classList.remove('active','passed'));
+  document.querySelectorAll('.arrowHead.active').forEach(e=>e.classList.remove('active'));
+}
+function runPackets(list,done,hold){
+  clearPacket(); packet.queue=[...list]; packet.onDone=done; packet.hold=!!hold;
+  nextPacket();
+}
+function nextPacket(){
+  /* accent budget: demote the just-traveled edge before lighting the next */
+  if(packet.prev){packet.prev.path.classList.remove('active');
+    packet.prev.path.classList.add('passed');
+    packet.prev.head&&packet.prev.head.classList.remove('active');packet.prev=null;}
+  const item=packet.queue.shift();
+  if(!item){
+    /* journey over: a held parcel stays (it parked); a consumed one fades out */
+    if(!packet.hold){
+      if(RM)packet.el.setAttribute('visibility','hidden');
+      else{packet.el.style.opacity=0;
+        packet.fade=setTimeout(()=>{packet.el.setAttribute('visibility','hidden');
+          packet.el.style.opacity=1;},520);}
+    }
+    packet.onDone&&packet.onDone();return;
+  }
+  const ee=edgeEls[item.e], path=ee.path, len=path.getTotalLength();
+  if(packet.queue.length)packet.prev=ee;
+  path.classList.remove('passed');
+  path.classList.add('active'); ee.head&&ee.head.classList.add('active');
+  if(RM){const p=path.getPointAtLength(item.rev?0:len);
+    packet.cs.x=p.x;packet.cs.y=p.y;applyCamOne(packet.cs);
+    showChip(packet.el);
+    packet.t=setTimeout(nextPacket,160);return;}
+  const ride=!!ee.def.ride;
+  /* bus rides travel ~30% slower than HTTP/direct hops */
+  const dur=clamp(len*cam.k*(ride?1.17:0.9), ride?585:450, ride?1300:1000), t0=performance.now();
+  showChip(packet.el);
+  function frame(now){
+    let u=easeC((now-t0)/dur); if(item.rev)u=1-u;
+    const p=path.getPointAtLength(u*len);
+    packet.cs.x=p.x;packet.cs.y=p.y;applyCamOne(packet.cs);
+    if((now-t0)<dur)packet.raf=requestAnimationFrame(frame);
+    else{packet.raf=null;nextPacket();}
+  }
+  packet.raf=requestAnimationFrame(frame);
+}
+function applyCamOne(c){c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);}
+
+/* ---------- state machine ---------- */
+const S={mode:'cover',idx:1,cameraMode:'guided',playing:false,visited:new Set()};
+/* reading level: plain | exec | technical — shared across all exhibits via localStorage (master control on the index) */
+let audience=(function(){try{return localStorage.getItem('onexAudience')||'plain';}catch(e){return 'plain';}})();
+let hoodOpen=false, compMode=null, blurbRaf=null;
+
+function setCameraMode(m){
+  S.cameraMode=m;
+  $('resumePill').classList.toggle('show',m==='free'&&S.mode==='tour');
+  if(m==='free')stopPlay();
+}
+function stageByN(n){return STAGES[n-1];}
+
+function goStage(n,opts={}){
+  if(!(n>=1)){return;} /* also rejects undefined/NaN */
+  clearDwell();
+  if(opts.via&&opts.via!=='auto'&&S.playing)stopPlay();
+  if(n>STAGES.length){goTerminal();return;}
+  compMode=null;$('panel').classList.remove('comp');
+  S.mode='tour';S.idx=n;S.visited.add(n);
+  $('cover').hidden=true;$('terminal').hidden=true;
+  setCameraMode('guided');
+  hintDone('hintClick',opts.via==='node');
+  const st=stageByN(n);
+  /* visuals */
+  clearPacket();
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  (st.highlight||[]).forEach((id,i)=>nodeEls[id].g.classList.add(i===0?'lit':'co'));
+  gateGlowEls.forEach(g=>g.classList.toggle('lit',!!st.gate));
+  if(st.park){parkPkg.cs.x=st.park[0];parkPkg.cs.y=st.park[1];applyCamOne(parkPkg.cs);
+    showChip(parkPkg.el);}
+  else{parkPkg.el.style.opacity=1;parkPkg.el.setAttribute('visibility','hidden');}
+  document.querySelectorAll('.edge.traced').forEach(e=>e.classList.remove('traced'));
+  for(const c of edgeChipEls)c.el.style.opacity=(c.stage===st.n)?1:0;
+  updateStops();updateScrubber();updateButtons();renderPanel(st);
+  const to=stageCam(st);
+  tweenCam(to,()=>{
+    if(st.packets&&st.packets.length)runPackets(st.packets,()=>afterPackets(st),st.hold);
+    else afterPackets(st);
+  });
+}
+function afterPackets(st){
+  for(const id of st.pulse||[])nodeEls[id].g.classList.add('pulse');
+  if(S.playing)armDwell(st);
+}
+/* fade a chip in when it first appears (a message being created) */
+function showChip(elm){
+  if(elm.getAttribute('visibility')==='visible')return;
+  elm.setAttribute('visibility','visible');
+  if(RM){elm.style.opacity=1;return;}
+  elm.style.opacity=0;requestAnimationFrame(()=>elm.style.opacity=1);
+}
+const WORLD_BB=()=>({x:WORLD.x-48,y:WORLD.y-48,w:WORLD.w+96,h:WORLD.h+96,cx:WORLD.w/2,cy:WORLD.h/2});
+function goCover(){
+  S.mode='cover';stopPlay();clearPacket();cancelCamTween();compMode=null;
+  parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
+  edgeChipEls.forEach(c=>c.el.style.opacity=0);
+  $('panel').classList.remove('comp');
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  gateGlowEls.forEach(g=>g.classList.remove('lit'));
+  $('cover').hidden=false;$('terminal').hidden=true;
+  setCameraMode('guided');
+  Object.assign(cam,solveCam(WORLD_BB()));applyCam();
+  renderPanel(stageByN(1));updateScrubber();updateButtons();
+}
+function goTerminal(){
+  S.mode='terminal';stopPlay();clearPacket();stopTyping();
+  parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
+  edgeChipEls.forEach(c=>c.el.style.opacity=0);
+  $('terminal').hidden=false;
+  for(const id of TRACE_ORDER)
+    if(S.visited.has(EDGE_STAGE[id]))edgeEls[id].path.classList.add('traced');
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  gateGlowEls.forEach(g=>g.classList.remove('lit'));
+  tweenCam(solveCam(WORLD_BB()));updateButtons();
+}
+function updateStops(){
+  for(const k in stopEls)for(const g of stopEls[k]){
+    const n=+k;g.classList.toggle('current',S.mode==='tour'&&n===S.idx);
+    g.classList.toggle('visited',S.visited.has(n)&&!(S.mode==='tour'&&n===S.idx));
+  }
+}
+
+/* ---------- panel ---------- */
+function chipHTML(t){const pre=t.split('.').slice(0,2).join('.');
+  const tail=t.split('.').slice(-2).join('.');
+  return `<span class="chip" title="${t}">${pre}…<b>${tail}</b></span>`;}
+/* reveal the blurb letter by letter (steady, time-based, not human-cadenced) */
+let blurbFull=null;
+function stopTyping(){if(blurbRaf)cancelAnimationFrame(blurbRaf),blurbRaf=null;}
+/* a tap on the blurb finishes the typing at once */
+function finishTyping(){if(blurbRaf&&blurbFull){stopTyping();blurbFull();}}
+function typeBlurb(paras,instant){
+  stopTyping();
+  const host=$('blurb'), live=$('liveWrap');
+  host.innerHTML='';
+  if(RM||instant){host.innerHTML=paras.map(p=>`<p>${p}</p>`).join('');live.setAttribute('aria-busy','false');return;}
+  const ps=paras.map(()=>{const e=document.createElement('p');host.appendChild(e);return e;});
+  const lens=paras.map(p=>p.length), total=lens.reduce((a,b)=>a+b,0);
+  const MS=Math.min(2,500/Math.max(total,1)), t0=performance.now(); /* ~2ms/char, never more than 0.5s */
+  blurbFull=()=>{ps.forEach((e,i)=>{e.textContent=paras[i];});live.setAttribute('aria-busy','false');};
+  live.setAttribute('aria-busy','true');
+  (function step(now){
+    const shown=Math.min(total,Math.floor((now-t0)/MS));
+    let rem=shown;
+    for(let i=0;i<ps.length;i++){const take=Math.min(lens[i],rem);ps[i].textContent=paras[i].slice(0,take);rem-=take;}
+    if(shown<total)blurbRaf=requestAnimationFrame(step);
+    else{blurbRaf=null;live.setAttribute('aria-busy','false');}
+  })(performance.now());
+}
+function renderPanel(st,instant){
+  const p=$('panel');
+  /* pick the field for the chosen reading level, falling back to the technical text */
+  const pick=(b)=>st[b+'_'+audience]!==undefined?st[b+'_'+audience]:st[b];
+  $('crumbText').textContent=st.crumb;
+  $('counter').textContent=String(st.n).padStart(2,'0')+' / '+String(STAGES.length).padStart(2,'0');
+  $('stTitle').textContent=pick('title');
+  typeBlurb(pick('blurb'),instant);
+  /* caveat does NOT fall back to the technical text — it shows only if authored for this level */
+  const cav=audience==='technical'?st.caveat:(st['caveat_'+audience]||null);
+  $('caveatBox').innerHTML=cav?
+    `<div class="caveat"><span class="tag">${cav.tag}</span><div class="body">${cav.text}</div></div>`:'';
+  /* the "under the hood" panel is inherently technical — only show it at the technical level */
+  if(audience==='technical'){
+    $('hood').style.display='';
+    let rows='';
+    for(const h of st.hood){
+      let v;
+      if(h.chips)v=`<div class="chips">${h.v.map(chipHTML).join('')}</div>
+        <div style="margin-top:6px">${h.v.map(t=>`<div class="v" style="font-size:11.5px">${t}</div>`).join('')}</div>`;
+      else if(h.chip)v=`<div class="chips">${chipHTML(h.v)}</div>
+        <div class="v" style="font-size:11.5px;margin-top:6px">${h.v}</div>`;
+      else v=`<div class="v">${h.v}</div>`;
+      rows+=`<div class="kv"><div class="k">${h.k}</div><div style="flex:1">${v}</div></div>`;
+    }
+    $('hoodInner').innerHTML=rows;
+    $('hood').open=hoodOpen;
+  } else {
+    $('hood').style.display='none';
+  }
+}
+function renderComponent(node){
+  compMode=node.id;$('panel').classList.add('comp');stopTyping();
+  $('crumbText').textContent=node.zone;
+  $('counter').textContent='component';
+  $('stTitle').textContent=node.name;
+  $('blurb').innerHTML=`<p>${node.desc}</p>`;
+  $('caveatBox').innerHTML='';
+  $('hoodInner').innerHTML=`<div class="kv"><div class="k">stops here</div>
+    <div class="stagechips">${node.stops.map(s=>
+      `<button data-go="${s}">${String(s).padStart(2,'0')} · ${stageByN(s).short}</button>`).join('')}</div></div>`;
+  $('hood').open=true;
+}
+$('blurb').addEventListener('click',()=>{if(blurbRaf&&!compMode)renderPanel(stageByN(S.idx),true);});
+$('hood').addEventListener('toggle',()=>{if(!compMode)hoodOpen=$('hood').open;hintDone('hintHood',$('hood').open);});
+$('hoodInner').addEventListener('click',e=>{
+  const b=e.target.closest('[data-go]');if(b)goStage(+b.dataset.go,{via:'chip'});
+});
+$('crumbText').addEventListener('click',()=>{
+  if(S.mode!=='tour')return;
+  const st=stageByN(S.idx);
+  const nid=(st.highlight&&st.highlight[0]);
+  if(nid)renderComponent(nodeEls[nid].def);
+});
+$('compClose').addEventListener('click',()=>{compMode=null;$('panel').classList.remove('comp');renderPanel(stageByN(S.idx));});
+
+/* ---------- scrubber / stepper / autoplay ---------- */
+const scrub=$('scrubber');
+for(const st of STAGES){
+  const b=document.createElement('button');
+  b.className='tick';b.dataset.n=st.n;b.title=`${st.n}. ${st.title}`;b.tabIndex=-1;
+  b.innerHTML=`<span class="dot"></span><span class="lbl">${st.short}</span>`;
+  b.addEventListener('click',()=>goStage(st.n,{via:'scrub'}));
+  scrub.appendChild(b);
+}
+scrub.addEventListener('keydown',e=>{
+  const go=k=>{e.stopPropagation();e.preventDefault();goStage(k,{via:'key'});};
+  if(e.key==='ArrowRight')go(S.mode==='cover'?1:S.idx+1);
+  else if(e.key==='ArrowLeft')go(S.idx-1);
+  else if(e.key==='Home')go(1);
+  else if(e.key==='End')go(STAGES.length);
+});
+function updateScrubber(){
+  scrub.querySelectorAll('.tick').forEach(t=>{
+    const n=+t.dataset.n;
+    t.classList.toggle('current',S.mode==='tour'&&n===S.idx);
+    t.classList.toggle('visited',S.visited.has(n));
+  });
+  $('scrubLabel').textContent=S.mode==='tour'
+    ? String(S.idx).padStart(2,'0')+' · '+stageByN(S.idx).short : '';
+}
+function updateButtons(){
+  $('btnBack').disabled=(S.mode==='tour'&&S.idx<=1)||S.mode==='cover';
+  $('btnNext').disabled=S.mode==='terminal';
+  $('btnNext').textContent=S.mode==='tour'&&S.idx===STAGES.length?'Finish ▶':'Next ▶';
+}
+$('btnNext').addEventListener('click',()=>{
+  if(S.mode==='cover')goStage(1,{via:'btn'});
+  else goStage(S.idx+1,{via:'btn'});
+});
+$('blurb').addEventListener('click',finishTyping);
+$('btnBack').addEventListener('click',()=>{
+  if(S.mode==='terminal'){$('terminal').hidden=true;goStage(STAGES.length,{via:'btn'});}
+  else if(S.mode==='tour')goStage(S.idx-1,{via:'btn'});
+});
+$('btnBegin').addEventListener('click',()=>goStage(1));
+$('btnReplay').addEventListener('click',()=>{S.visited.clear();goStage(1);});
+$('btnExplore').addEventListener('click',()=>{
+  $('terminal').hidden=true;S.mode='tour';S.idx=STAGES.length;setCameraMode('free');
+  const last=stageByN(STAGES.length), nid=(last.highlight&&last.highlight[0])||last.focus[0];
+  renderComponent(nodeEls[nid].def);updateButtons();
+});
+$('exhibitTitle').addEventListener('click',goCover);
+/* reading-level dropdown — self-injected so it travels with the engine (no chrome dependency) */
+(function setupAudience(){
+  const head=$('exhibitHead'); if(!head) return;
+  if(!document.getElementById('audienceCss')){
+    const st=document.createElement('style'); st.id='audienceCss';
+    st.textContent="#audienceSel{pointer-events:auto;margin-left:auto;font-family:var(--sans);font-size:12.5px;letter-spacing:.02em;color:var(--ink);background:var(--box-fill);border:1.5px solid var(--ink-2);border-radius:8px;padding:5px 26px 5px 9px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}#audienceSel:hover{border-color:var(--ink)}";
+    document.head.appendChild(st);
+  }
+  let sel=$('audienceSel');
+  if(!sel){
+    sel=document.createElement('select'); sel.id='audienceSel'; sel.title='Reading level'; sel.setAttribute('aria-label','Reading level');
+    sel.innerHTML='<option value="plain">Plain-language</option><option value="exec">Executive</option><option value="technical">Technical</option>';
+    head.appendChild(sel);
+  }
+  sel.value=audience;
+  sel.addEventListener('change',e=>{audience=e.target.value;try{localStorage.setItem('onexAudience',audience);}catch(_){}if(!compMode)renderPanel(stageByN(S.idx));});
+  /* live-sync if the master control (or another tab) changes the level */
+  window.addEventListener('storage',e=>{if(e.key==='onexAudience'&&e.newValue&&e.newValue!==audience){audience=e.newValue;sel.value=audience;if(!compMode)renderPanel(stageByN(S.idx));}});
+})();
+$('resumePill').addEventListener('click',()=>{
+  setCameraMode('guided');
+  tweenCam(stageCam(stageByN(S.idx)));
+});
+$('btnFit').addEventListener('click',()=>{
+  setCameraMode('free');
+  tweenCam(solveCam(WORLD_BB()));
+});
+
+/* autoplay */
+let dwellT=null,dwellStart=0,dwellLen=0,ringRaf=null;
+const RING_C=172.8;
+function wordsOf(st){return st.blurb.join(' ').split(/\s+/).length;}
+function armDwell(st){
+  clearDwell();
+  dwellLen=clamp(4000+wordsOf(st)*350,10000,30000);dwellStart=performance.now();
+  dwellT=setTimeout(()=>{if(S.idx>=STAGES.length)goTerminal();else goStage(S.idx+1,{via:'auto'});},dwellLen);
+  ringTick();
+}
+function ringTick(){
+  const u=clamp((performance.now()-dwellStart)/dwellLen,0,1);
+  document.querySelector('#btnPlay .ring').setAttribute('stroke-dashoffset',RING_C*(1-u));
+  if(S.playing)ringRaf=requestAnimationFrame(ringTick);
+}
+function clearDwell(){
+  if(dwellT)clearTimeout(dwellT),dwellT=null;
+  if(ringRaf)cancelAnimationFrame(ringRaf),ringRaf=null;
+  document.querySelector('#btnPlay .ring').setAttribute('stroke-dashoffset',RING_C);
+}
+function stopPlay(){S.playing=false;$('playGlyph').textContent='▶';
+  $('btnPlay').setAttribute('aria-label','Play narration steps');clearDwell();}
+$('btnPlay').addEventListener('click',()=>{
+  if(S.playing){stopPlay();return;}
+  S.playing=true;$('playGlyph').textContent='❚❚';
+  $('btnPlay').setAttribute('aria-label','Pause narration');
+  if(S.mode!=='tour')goStage(1);
+  else if(S.cameraMode==='free'){setCameraMode('guided');
+    const st=stageByN(S.idx);tweenCam(stageCam(st),()=>armDwell(st));}
+  else armDwell(stageByN(S.idx));
+});
+
+/* ---------- input: pan / zoom / pinch / taps ---------- */
+const pointers=new Map();
+let dragInfo=null,pinch0=null;
+scene.addEventListener('pointerdown',e=>{
+  idleKick();
+  try{scene.setPointerCapture(e.pointerId);}catch(_){/* synthetic/stale pointer */}
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1){
+    /* §6/§7: input completes the in-flight transition and pauses autoplay */
+    cancelCamTween(true);if(S.playing)stopPlay();
+    dragInfo={x0:e.clientX,y0:e.clientY,cx:cam.x,cy:cam.y,moved:false,target:e.target};
+  }else if(pointers.size===2){
+    const [a,b]=[...pointers.values()];
+    pinch0={d:Math.hypot(a.x-b.x,a.y-b.y),k:cam.k,
+      mx:(a.x+b.x)/2,my:(a.y+b.y)/2,cx:cam.x,cy:cam.y};
+    dragInfo=null;
+  }
+});
+scene.addEventListener('pointermove',e=>{
+  if(!pointers.has(e.pointerId))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch0&&pointers.size===2){
+    const [a,b]=[...pointers.values()];
+    const d=Math.hypot(a.x-b.x,a.y-b.y);
+    cancelCamTween(true);setCameraMode('free');
+    const k=clamp(pinch0.k*d/pinch0.d,minK,maxK);
+    const v=vp();
+    /* keep pinch midpoint anchored */
+    const wx=pinch0.cx+(pinch0.mx-v.w/2)/pinch0.k, wy=pinch0.cy+(pinch0.my-v.h/2)/pinch0.k;
+    cam.k=k;cam.x=wx-(pinch0.mx-v.w/2)/k;cam.y=wy-(pinch0.my-v.h/2)/k;
+    clampPan();applyCam();return;
+  }
+  if(dragInfo){
+    const dx=e.clientX-dragInfo.x0,dy=e.clientY-dragInfo.y0;
+    if(!dragInfo.moved&&Math.hypot(dx,dy)>8){
+      dragInfo.moved=true;scene.classList.add('dragging');
+      cancelCamTween();setCameraMode('free');hintDone('hintDrag',true);
+    }
+    if(dragInfo.moved){
+      cam.x=dragInfo.cx-dx/cam.k;cam.y=dragInfo.cy-dy/cam.k;
+      clampPan();applyCam();
+    }
+  }
+});
+function endPointer(e){
+  /* pointer capture retargets pointerup to the svg — use the pointerdown target */
+  if(e.type==='pointerup'&&dragInfo&&!dragInfo.moved){
+    const ng=dragInfo.target&&dragInfo.target.closest&&dragInfo.target.closest('.node');
+    if(ng){const n=nodeEls[ng.dataset.id].def;
+      const next=n.stops.find(s=>!S.visited.has(s))??n.stops[0];
+      if(next!=null)goStage(next,{via:'node'});else renderComponent(n);}
+  }
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinch0=null;
+  if(pointers.size===0){dragInfo=null;scene.classList.remove('dragging');}
+}
+scene.addEventListener('pointerup',endPointer);
+scene.addEventListener('pointercancel',endPointer);
+scene.addEventListener('dblclick',e=>{
+  /* capture retargeting defeats e.target — hit-test by position */
+  const t=document.elementFromPoint(e.clientX,e.clientY);
+  if(t&&t.closest&&t.closest('.node'))return;
+  cancelCamTween(true);setCameraMode('free');
+  zoomAt(e.clientX,e.clientY,1.6);
+});
+scene.addEventListener('wheel',e=>{
+  e.preventDefault();idleKick();
+  cancelCamTween(true);setCameraMode('free');
+  let dy=e.deltaY; if(e.deltaMode===1)dy*=16;
+  const f=Math.exp(-dy*(e.ctrlKey?0.012:0.0022));
+  zoomAt(e.clientX,e.clientY,f);
+},{passive:false});
+function zoomAt(sx,sy,f){
+  const v=vp(),k=clamp(cam.k*f,minK,maxK);
+  const wx=cam.x+(sx-v.w/2)/cam.k, wy=cam.y+(sy-v.h/2)/cam.k;
+  cam.x=wx-(sx-v.w/2)/k;cam.y=wy-(sy-v.h/2)/k;cam.k=k;
+  clampPan();applyCam();
+}
+function clampPan(){
+  cam.x=clamp(cam.x,WORLD.x,WORLD.x+WORLD.w);
+  cam.y=clamp(cam.y,WORLD.y,WORLD.y+WORLD.h);
+}
+
+/* ---------- keyboard ---------- */
+addEventListener('keydown',e=>{
+  idleKick();
+  const t=e.target;
+  if(t.closest&&t.closest('button,input,textarea,select,summary,#scrubber'))return;
+  if(e.key==='ArrowRight'){goStage(S.mode==='cover'?1:S.idx+1,{via:'key'});e.preventDefault();}
+  else if(e.key==='ArrowLeft'){goStage(S.idx-1,{via:'key'});e.preventDefault();}
+  else if(e.key==='Home'){goStage(1,{via:'key'});e.preventDefault();}
+  else if(e.key==='End'){goStage(STAGES.length,{via:'key'});e.preventDefault();}
+  else if(e.key==='Escape'){if(compMode){compMode=null;$('panel').classList.remove('comp');renderPanel(stageByN(S.idx));}}
+  else if(e.key==='g'){devOn=!devOn;$('devOut').classList.toggle('show',devOn);}
+});
+
+/* ---------- minimap ---------- */
+const mm=$('minimap');let mmView;
+function buildMini(){
+  mm.setAttribute('viewBox',`0 0 ${WORLD.w} ${WORLD.h}`);
+  for(const z of ZONES)el('rect',{class:'mmZone',x:z.x,y:z.y,width:z.w,height:z.h,rx:30},mm);
+  for(const n of NODES)el('rect',{class:'mmNode',x:n.x,y:n.y,width:n.w,height:n.h,rx:14},mm);
+  for(const w of WALLS)el('line',{x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,stroke:'var(--ink-2)','stroke-width':8,'stroke-dasharray':'30 22',opacity:.5},mm);
+  for(const gt of GATES)el('line',{x1:gt.x,y1:gt.top==null?140:gt.top,x2:gt.x,y2:gt.bottom==null?1060:gt.bottom,stroke:'var(--ink-2)','stroke-width':8,'stroke-dasharray':'30 22',opacity:.5},mm);
+  mmView=el('rect',{class:'mmView',x:0,y:0,width:100,height:100},mm);
+}
+function drawMiniView(){
+  const v=vp();
+  const w=v.w/cam.k,h=v.h/cam.k;
+  mmView.setAttribute('x',cam.x-w/2);mmView.setAttribute('y',cam.y-h/2);
+  mmView.setAttribute('width',w);mmView.setAttribute('height',h);
+}
+mm.addEventListener('click',e=>{
+  const r=mm.getBoundingClientRect();
+  /* invert preserveAspectRatio 'meet' letterboxing */
+  const s=Math.min(r.width/WORLD.w,r.height/WORLD.h);
+  const ox=(r.width-WORLD.w*s)/2, oy=(r.height-WORLD.h*s)/2;
+  const wx=clamp((e.clientX-r.left-ox)/s,0,WORLD.w);
+  const wy=clamp((e.clientY-r.top-oy)/s,0,WORLD.h);
+  cancelCamTween();setCameraMode('free');
+  tweenCam({x:wx,y:wy,k:cam.k});
+});
+
+/* ---------- hints / idle / dev ---------- */
+const hintsDone={};
+function hintDone(id,yes){if(yes&&!hintsDone[id]){hintsDone[id]=true;$(id).classList.add('done');}}
+let idleT=null;
+function idleKick(){
+  if(idleT)clearTimeout(idleT);
+  idleT=setTimeout(()=>{if(S.mode!=='cover'&&!S.playing)goCover();else idleKick();},180000);
+}
+['pointerdown','wheel','keydown'].forEach(ev=>addEventListener(ev,idleKick,{passive:ev!=='wheel'}));
+let devOn=false,devMouse={x:0,y:0};
+scene.addEventListener('pointermove',e=>{devMouse={x:e.clientX,y:e.clientY};if(devOn)devShow();});
+function devShow(){
+  const v=vp();
+  const wx=Math.round(cam.x+(devMouse.x-v.w/2)/cam.k);
+  const wy=Math.round(cam.y+(devMouse.y-v.h/2)/cam.k);
+  $('devOut').textContent=`x ${wx} · y ${wy} · k ${cam.k.toFixed(2)}`;
+}
+
+/* ---------- boot / resize ---------- */
+function recalibrate(){
+  cancelCamTween(false);
+  minK=fitScale();maxK=3;
+  if(S.cameraMode==='guided'){
+    if(S.mode==='tour'){Object.assign(cam,stageCam(stageByN(S.idx)));}
+    else Object.assign(cam,solveCam(WORLD_BB()));
+  } else cam.k=Math.max(cam.k,minK);
+  applyCam();
+}
+addEventListener('resize',recalibrate);
+function applyMeta(){
+  document.title=META.docTitle||META.title;
+  $('exhibitTitle').textContent=META.title;
+  $('exhibitSub').textContent=META.subtitle;
+  const C=META.cover||{}, q=(root,s)=>document.querySelector(root+' '+s);
+  if(C.kicker)q('#cover','.kicker').textContent=C.kicker;
+  if(C.h1)q('#cover','h1').innerHTML=C.h1;
+  if(C.promise)q('#cover','.promise').innerHTML=C.promise;
+  if(C.instr)q('#cover','.instr').innerHTML=C.instr;
+  if(C.specimenHTML)q('#cover','.specimen').innerHTML=C.specimenHTML;
+  if(C.legend)q('#cover','.legend').innerHTML=C.legend.map(li=>
+    `<span class="li"><span class="sw" style="${li.style||''}"></span>${li.label}</span>`).join('');
+  const TM=META.terminal||{};
+  if(TM.kicker)q('#terminal','.kicker').textContent=TM.kicker;
+  if(TM.h2)q('#terminal','h2').innerHTML=TM.h2;
+  if(TM.promise)q('#terminal','.promise').innerHTML=TM.promise;
+  if(TM.specimenHTML)q('#terminal','.specimen').innerHTML=TM.specimenHTML;
+}
+function applyNotice(){
+  const N=(typeof NOTICE!=='undefined')?NOTICE:null; if(!N)return;
+  $('noticeSum').textContent=N.summary; $('noticeBody').innerHTML=N.html; $('notice').hidden=false;
+}
+applyMeta();applyNotice();
+buildScene();buildMini();
+recalibrate();goCover();idleKick();
+</script>
+</body>
+</html>

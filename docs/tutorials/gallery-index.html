@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniNode Repository Tours</title>
+<link rel="stylesheet" href="site.css">
+</head><body>
+<div class="wrap">
+  <nav class="topnav" aria-label="Tutorials"><a href="index.html">Concept tutorials</a><a href="gallery-index.html" aria-current="page">Repository tours</a><a href="occ-dod-sea-ideal-flow.html">How done is proven</a></nav>
+  <div class="kicker">OmniNode &middot; Repository Tours</div>
+  <h1>Repository Tours</h1>
+  <p class="lead">One guided, interactive tour per OmniNode repository: what it owns, how its components connect, the key flows through it, and the gotchas. For the concept tutorials (overlays, model routing, delivery and more), start from the <a href="index.html">concept tutorials</a>.</p>
+
+  <div class="masterbar">
+    <span class="ml">Reading level</span>
+    <select id="masterLevel" title="Reading level for every tutorial" aria-label="Reading level">
+      <option value="plain">Plain-language</option>
+      <option value="exec">Executive</option>
+      <option value="technical">Technical</option>
+    </select>
+    <span class="note">Sets the level for every tour you open.</span>
+  </div>
+
+  <h2 class="sec">11 repositories</h2>
+  <div class="grid">
+    <a class="card" href="knowledge-base.html"><div class="k">knowledge-base</div><div class="t">OmniNode Knowledge Base</div><div class="s">Public, validation-gated architectural provenance repo: doctrine, ADRs, TDDs, pivots, deep-dives, experiments, evidence and plans, with a Pydantic frontmatter schema and a sanitization gate keeping the public record clean.</div></a>
+    <a class="card" href="omnibase_compat.html"><div class="k">omnibase_compat</div><div class="t">omnibase_compat — cross-repo structural compatibility shim</div><div class="s">A temporary, zero-upstream-dependency package that owns stable enums, wire DTOs, and event envelopes shared across OmniNode repos without creating an import cycle through core/spi/infra.</div></a>
+    <a class="card" href="omnibase_core.html"><div class="k">omnibase_core</div><div class="t">omnibase_core — the platform kernel</div><div class="s">The platform kernel: owns the four node archetypes, contracts, core Pydantic models, and the validation tooling that downstream OmniNode repos consume.</div></a>
+    <a class="card" href="omnibase_infra.html"><div class="k">omnibase_infra</div><div class="t">omnibase_infra — Infrastructure Runtime</div><div class="s">The infrastructure implementation layer of the platform: a single-process runtime host that loads contract-declared nodes, routes Kafka events through a message dispatch engine, and performs all external I/O behind handlers — depends on omnibase_core (models) and omnibase_spi (protocols); core must not import it.</div></a>
+    <a class="card" href="omnibase_spi.html"><div class="k">omnibase_spi</div><div class="t">omnibase_spi — the protocol boundary layer</div><div class="s">Service Provider Interface package: 231 runtime-checkable Python Protocol contracts across 39 domains plus narrow data-only wire contracts that implementation repos (omnibase_infra, product repos) satisfy, while importing shared models from omnibase_core.</div></a>
+    <a class="card" href="omniclaude.html"><div class="k">omniclaude</div><div class="t">omniclaude — Claude Code plugin layer for the platform</div><div class="s">Thin Claude Code plugin (hooks, agent routing, skill/agent definitions, hook payload models) that connects Claude Code sessions to the Runtime; all business logic lives in omnimarket nodes.</div></a>
+    <a class="card" href="omnidash.html"><div class="k">omnidash</div><div class="t">OmniDash — Composable Widget Dashboard</div><div class="s">A Vite + React 19 single-page app that discovers, mounts, and arranges self-contained per-widget components in a drag-and-drop grid; widgets render projection/API truth and never own backend state.</div></a>
+    <a class="card" href="omniintelligence.html"><div class="k">omniintelligence</div><div class="t">OmniIntelligence: the Intelligence Platform</div><div class="s">Pattern learning, code-quality scoring, intent classification, evaluation, and Claude Code hook processing delivered as 59 first-class Nodes (thin-shell node.py + handler modules) wired onto Kafka by a contract-driven dispatch engine.</div></a>
+    <a class="card" href="omnimemory.html"><div class="k">omnimemory</div><div class="t">OmniMemory: Memory Persistence & Retrieval Domain</div><div class="s">The domain repo owning memory persistence, semantic recall, and intent-graph retrieval via four-archetype nodes (EFFECT/COMPUTE/REDUCER/ORCHESTRATOR) over Qdrant, Memgraph, Valkey, and Kreuzberg.</div></a>
+    <a class="card" href="onex_change_control.html"><div class="k">onex_change_control</div><div class="t">onex_change_control: Governance & Drift-Control Hub</div><div class="s">The canonical governance library for the platform: versioned Pydantic contract/day-close schemas, 22 CLI enforcement validators, 4 contract-drift Nodes, and doc-freshness/promotion tooling that downstream repos run as CI gates to prove contract compliance and stop cross-repo drift.</div></a>
+    <a class="card" href="omnimarket.html"><div class="k">omnimarket</div><div class="t">omnimarket — the node corpus</div><div class="s">The repository that owns the runtime node corpus every other tutorial in this gallery walks through: ~392 node directories (contract.yaml + handler), model routing and LLM delegation, contract-assembly codegen, and the def-B canon-shape ratchet that tracks the corpus toward definition-B.</div></a>
+  </div>
+
+  <footer>The reading level you choose above applies to every tutorial you open, and you can change it on any page.</footer>
+</div>
+<script>
+(function(){
+  var sel=document.getElementById('masterLevel');
+  try{ sel.value=localStorage.getItem('onexAudience')||'plain'; }catch(e){}
+  sel.addEventListener('change',function(){ try{ localStorage.setItem('onexAudience', sel.value); }catch(e){} });
+})();
+</script>
+</body></html>

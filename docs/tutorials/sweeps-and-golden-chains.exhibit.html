@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniNode Exhibit</title>
+<style>
+/* ============================================================
+   Anatomy of a Generation — museum exhibit
+   Single-file, offline, file:// safe. No imports, no fetch.
+   ============================================================ */
+:root{
+  --canvas:#F5F1E8;
+  --grid-dot:#E3DCCC;
+  --zone-laptop:#EFE9DB;
+  --zone-pc:#EAE3D2;
+  --zone-cloud:#F0EBE0;
+  --box-fill:#FDFBF6;
+  --ink:#2B2620;
+  --ink-2:#6B6357;
+  --accent-g:#C2502B;   /* graphic only, never text */
+  --accent-t:#A8431F;   /* text-safe accent */
+  --ok-t:#3F6442;
+  --fail-t:#A23425;
+  --focus:#2B5FA8;
+  --hairline:#D8CFBC;
+  --panel-w:404px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Gill Sans","Gill Sans MT","Segoe UI",Seravek,Calibri,system-ui,sans-serif;
+  --mono:"Cascadia Code","SF Mono",Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--canvas);color:var(--ink);
+  font-family:var(--sans);font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:var(--sans);color:var(--ink);background:var(--box-fill);
+  border:1.5px solid var(--ink);border-radius:10px;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
+  outline:2.5px solid var(--focus);outline-offset:2px}
+::selection{background:#E7D9C4}
+
+/* ---------- frame ---------- */
+#app{position:fixed;inset:0;display:flex}
+#stagewrap{position:relative;flex:1;min-width:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;
+  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+#scene.dragging{cursor:grabbing}
+
+/* ---------- exhibit header ---------- */
+#exhibitHead{position:absolute;top:0;left:0;right:0;padding:16px 28px 10px;
+  pointer-events:none;display:flex;align-items:center;gap:14px;z-index:5;background-color:white;
+  border-bottom:1px solid var(--hairline)}
+#exhibitTitle{pointer-events:auto;background:none;border:none;border-radius:4px;
+  font-family:var(--serif);font-size:19px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink);padding:2px 4px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}
+#exhibitTitle:hover{color:var(--accent-t)}
+#exhibitSub{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- SVG world ---------- */
+.zoneRect{stroke:var(--hairline);stroke-width:1.5}
+.zoneLabel{font-family:var(--sans);font-size:24px;letter-spacing:.12em;
+  fill:var(--ink);text-transform:uppercase;
+  paint-order:stroke;stroke-width:14px;stroke-linejoin:round}
+.wall{stroke:var(--ink-2);stroke-width:3;stroke-dasharray:10 7;opacity:.6}
+.wallLabel{font-family:var(--sans);font-size:20px;letter-spacing:.26em;
+  fill:var(--ink-2);text-transform:uppercase}
+.gateArch{fill:none;stroke:var(--ink);stroke-width:2.5}
+.gateGlow{opacity:0;transition:opacity .5s}
+.gateGlow.lit{opacity:.85}
+
+.edge{fill:none;stroke:#8A8071;stroke-width:1.6px;vector-effect:non-scaling-stroke;transition:opacity .3s}
+.edge.dashed{stroke-dasharray:6 6}
+.edge.dim{opacity:.42}
+.edge.active{stroke:var(--accent-g);stroke-width:2.6px}
+.edge.passed{stroke:var(--ink-2);stroke-width:2.2px}
+.edge.traced{stroke:var(--accent-g);opacity:.55;stroke-width:2.2px}
+.edge.ride{opacity:.16}
+.edge.ride.active,.edge.ride.passed,.edge.ride.traced{opacity:1}
+
+/* ---------- bus tracks ---------- */
+.busTrack{stroke:#B9AE97;stroke-width:14;stroke-linecap:round;opacity:.45}
+.busName{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:.18em;fill:var(--ink)}
+.node.bus:hover .busTrack{opacity:.65}
+.node.bus.lit .busTrack{stroke:var(--accent-g);opacity:.5}
+.node.bus.co .busTrack{opacity:.7}
+.packetChip{transition:opacity .45s}
+.packetChip.waiting rect{fill:var(--box-fill);stroke:var(--accent-g);stroke-width:2}
+.packetChip.waiting text{fill:var(--ink)}
+.node.bus{cursor:pointer}
+.node.bus:hover .busTrackCore{stroke-width:4}
+.node.bus.lit .busTrackCore{stroke:var(--accent-g);stroke-dasharray:none}
+.node.bus.lit .busTrack{opacity:.7}
+.node.bus.co .busTrackCore{stroke-width:4}
+
+.node rect.body{fill:var(--box-fill);stroke:var(--ink);stroke-width:1.6;rx:10}
+.node.dim rect.body{opacity:.72;stroke:var(--ink-2)}
+.node{cursor:pointer}
+.node:hover rect.body{stroke-width:2.6}
+.node:hover .halo{opacity:.3}
+.node.co rect.body{stroke-width:2.8}
+.node .halo{opacity:0;transition:opacity .45s}
+.node.lit .halo{opacity:1}
+.node.lit rect.body{stroke:var(--accent-g);stroke-width:2.4}
+.node.pulse .halo{animation:pulseH 1.8s ease-in-out infinite}
+@keyframes pulseH{0%,100%{opacity:.18}50%{opacity:.85}}
+.nName{font-family:var(--sans);font-size:20px;font-weight:600;fill:var(--ink)}
+.nSub{font-family:var(--sans);font-size:15px;fill:var(--ink-2)}
+.node.dim .nName,.node.dim .nSub{fill:var(--ink-2)}
+.containerRect{fill:none;stroke:var(--ink-2);stroke-width:1.4;stroke-dasharray:3 5;rx:16}
+.containerLabel{font-family:var(--sans);font-size:14px;letter-spacing:.2em;
+  fill:var(--ink);text-transform:uppercase}
+
+/* stop medallions */
+.stop circle{fill:var(--box-fill);stroke:var(--ink);stroke-width:1.6}
+.stop text{font-family:var(--serif);font-size:14px;fill:var(--ink);text-anchor:middle}
+.stop.visited circle{fill:var(--ink)}
+.stop.visited text{fill:var(--box-fill)}
+.stop{display:none}
+.stop.current circle{fill:var(--accent-g);stroke:var(--accent-g)}
+.stop.current text{fill:#FFF8EF}
+
+/* counter-scaled overlay things (badges, arrowheads, packet) */
+.portBadge rect{fill:var(--ink);rx:7}
+.portBadge text{font-family:var(--mono);font-size:11.5px;fill:#F5F1E8;text-anchor:middle}
+.arrowHead{fill:#8A8071;transition:opacity .3s}
+.arrowHead.active{fill:var(--accent-g)}
+.arrowHead.rideHead{opacity:.22}
+.arrowHead.rideHead.active{opacity:1}
+.packetChip rect{fill:var(--accent-g);rx:8}
+.packetChip text{font-family:var(--mono);font-size:11px;fill:#FFF8EF;text-anchor:middle}
+.edgeChip{opacity:0;transition:opacity .35s} /* topic name shows only on its own step */
+.edgeChip rect{fill:#FDFBF6;stroke:var(--hairline);rx:7}
+.edgeChip text{font-family:var(--mono);font-size:11px;fill:var(--ink-2);text-anchor:middle}
+
+/* LOD tiers — pure function of camera scale via data-lod on #scene */
+.lod1,.lod2,.nName,.nSub,.containerLabel,.busName{transition:opacity .35s}
+/* a node text is shown only while it renders at 11px or more (see updateTextLOD) */
+.lodoff{opacity:0}
+#scene[data-lod="0"] .lod1{opacity:0}
+#scene[data-lod="0"] .lod2{opacity:0}
+#scene[data-lod="1"] .lod2{opacity:0}
+#scene[data-lod="1"] .lod1{opacity:1}
+#scene[data-lod="2"] .lod1,#scene[data-lod="2"] .lod2{opacity:1}
+
+/* ---------- reading panel ---------- */
+#panel{width:var(--panel-w);flex:none;background:var(--box-fill);
+  border-left:1.5px solid var(--hairline);padding:26px 30px 30px;
+  overflow-y:auto;position:relative;z-index:6;padding-bottom:150px}
+#panel::after{content:"";position:sticky;bottom:-30px;display:block;height:30px;margin-top:-30px;
+  background:linear-gradient(rgba(253,251,246,0),var(--box-fill));pointer-events:none}
+#notice{margin:0 0 14px;border:1px solid var(--hairline);border-left:3px solid var(--accent-t);
+  border-radius:6px;background:#F8F4EA;font-size:13px;line-height:1.45;color:var(--ink-2)}
+#notice summary{cursor:pointer;padding:7px 10px;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent-t);font-weight:600;list-style:none}
+#notice summary::before{content:"\25B8  "}
+#notice[open] summary::before{content:"\25BE  "}
+#notice .nbody{padding:0 10px 9px}
+#notice code{font-family:var(--mono);font-size:12px;background:var(--canvas);border-radius:3px;padding:0 4px}
+#crumb{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+#crumb .crumbZone{cursor:pointer;border:none;background:none;color:var(--ink-2);
+  font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0}
+#crumb .crumbZone:hover{color:var(--accent-t)}
+#counter{font-family:var(--serif);font-size:15px;color:var(--ink-2);white-space:nowrap}
+#stTitle{font-family:var(--serif);font-size:28px;line-height:1.18;margin-bottom:14px}
+#stRule{border:none;border-top:1.5px solid var(--ink);width:52px;margin:0 0 16px}
+#blurb{font-size:18px;line-height:1.55;color:var(--ink);max-width:62ch}
+#blurb p+p{margin-top:10px}
+.caveat{margin-top:16px;padding:10px 12px;border:1px solid var(--hairline);
+  border-left:3px solid var(--ink-2);border-radius:6px;background:#F8F4EA}
+.caveat .tag{display:inline-block;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent-t);margin-bottom:4px;font-weight:600}
+.caveat .body{font-size:14px;line-height:1.45;color:var(--ink-2)}
+#hood{margin-top:20px}
+#hood summary{font-family:var(--serif);font-size:16px;cursor:pointer;
+  color:var(--ink);list-style:none;padding:8px 0;border-top:1px solid var(--hairline)}
+#hood summary::before{content:"▸ ";color:var(--accent-t)}
+#hood[open] summary::before{content:"▾ "}
+#hood .hoodInner{padding:6px 0 4px}
+.kv{display:flex;gap:10px;padding:5px 0;font-size:14px;align-items:baseline}
+.kv .k{flex:none;width:88px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);padding-top:2px}
+.kv .v{font-family:var(--mono);font-size:14.5px;line-height:1.5;color:var(--ink);
+  word-break:break-word;user-select:text}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-family:var(--mono);font-size:11.5px;background:var(--canvas);
+  border:1px solid var(--hairline);border-radius:7px;padding:3px 8px;color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:600}
+.stagechips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.stagechips button{font-size:12.5px;padding:3px 9px;border-radius:14px;border-width:1px}
+#compClose{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+  font-size:15px;display:none}
+#panel.comp #compClose{display:block}
+
+/* ---------- bottom controls ---------- */
+#controls{position:absolute;left:0;right:0;bottom:0;z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:0 16px 16px;pointer-events:none}
+#scrubber{pointer-events:auto;display:flex;align-items:center;gap:0;max-width:100%;
+  background:rgba(253,251,246,.96);border:1px solid var(--hairline);
+  border-radius:12px;padding:4px 10px}
+.tick{position:relative;flex:1 1 0;min-width:20px;max-width:40px;height:30px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;border:none;background:none;border-radius:6px}
+.tick .dot{width:11px;height:11px;border-radius:50%;border:1.6px solid var(--ink);background:transparent}
+.tick.visited .dot{background:var(--ink)}
+.tick.current .dot{background:var(--ink);transform:scale(1.3)}
+.tick .lbl{display:none}
+#stepper{pointer-events:auto;display:flex;align-items:center;gap:14px}
+#btnBack,#btnNext{height:56px;min-width:118px;font-size:16.5px;letter-spacing:.04em;padding:0 22px}
+#btnNext{background:var(--ink);color:var(--box-fill)}
+#btnNext:disabled,#btnBack:disabled{opacity:.35;cursor:default}
+#btnPlay{position:relative;width:56px;height:56px;border-radius:50%;font-size:17px}
+#btnPlay svg{position:absolute;inset:-1.5px;pointer-events:none}
+#btnPlay .ring{fill:none;stroke:var(--ink);stroke-width:2.5;opacity:.85}
+#hintRow{pointer-events:none;font-size:13px;letter-spacing:.06em;color:var(--ink-2);
+  display:flex;gap:18px;opacity:.85;transition:opacity .6s}
+#hintRow span.done{opacity:0}
+#scrubLabel{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);background:rgba(253,251,246,.94);border:1px solid var(--hairline);
+  border-radius:8px;padding:4px 12px;pointer-events:none;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#scrubLabel:empty{display:none}
+
+/* ---------- mini-map + fit ---------- */
+#navCluster{position:fixed;right:18px;bottom:16px;z-index:7;display:flex;
+  flex-direction:column;align-items:flex-end;gap:8px}
+#minimap{display:block;width:196px;height:96px;background:rgba(253,251,246,.92);
+  border:1px solid var(--hairline);border-radius:10px;cursor:pointer}
+#minimap .mmNode{fill:#CFC5AE}
+#minimap .mmZone{fill:none;stroke:var(--hairline)}
+#minimap .mmView{fill:rgba(43,38,32,.08);stroke:var(--ink);stroke-width:1.5}
+#btnFit{font-size:12.5px;letter-spacing:.1em;padding:7px 13px;border-radius:8px}
+
+/* ---------- resume pill ---------- */
+#resumePill{position:absolute;left:50%;transform:translateX(-50%);bottom:158px;z-index:7;
+  display:none;padding:11px 22px;border-radius:24px;background:var(--ink);
+  color:var(--box-fill);font-size:14.5px;letter-spacing:.05em;border:none}
+#resumePill.show{display:block}
+
+/* ---------- cover & terminal overlays ---------- */
+.overlay{position:absolute;inset:0;z-index:9;display:flex;align-items:flex-start;
+  justify-content:center;background:rgba(245,241,232,.93);padding:28px;overflow-y:auto}
+.overlay[hidden]{display:none}
+.card{margin:auto;max-width:660px;text-align:center;background:var(--box-fill);
+  border:1px solid var(--hairline);border-radius:24px;padding:44px 56px;
+  box-shadow:0 12px 52px rgba(43,38,32,.16)}
+.card .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--accent-t);margin-bottom:18px}
+.card h1{font-family:var(--serif);font-size:54px;line-height:1.06;font-weight:500;margin-bottom:18px}
+.card h2{font-family:var(--serif);font-size:36px;line-height:1.1;font-weight:500;margin-bottom:16px}
+.card .rule{border:none;border-top:1.5px solid var(--ink);width:64px;margin:0 auto 18px}
+.card .promise{font-size:18.5px;line-height:1.55;color:var(--ink);max-width:54ch;margin:0 auto 22px}
+.legend{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+.legend .li{display:flex;align-items:center;gap:8px;font-size:12.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sw{width:22px;height:14px;border:1px solid var(--hairline);border-radius:3px}
+.sw.wallsw{background:repeating-linear-gradient(90deg,var(--ink-2) 0 6px,transparent 6px 11px);border:none;height:3px;width:30px}
+.sw.bussw{background:repeating-linear-gradient(90deg,var(--ink-2) 0 10px,transparent 10px 16px);border:none;height:6px;width:30px;border-radius:3px;box-shadow:0 0 0 3px rgba(185,174,151,.45)}
+.sw.pk{width:13px;height:13px;border-radius:50%;background:var(--accent-g);border:none}
+.card .instr{font-size:14px;letter-spacing:.05em;color:var(--ink-2);margin-bottom:26px}
+.card .specimen{font-size:12.5px;letter-spacing:.06em;color:var(--ink-2);margin-top:26px}
+.card .specimen .mono{font-family:var(--mono)}
+#btnBegin,#btnReplay,#btnExplore{height:58px;padding:0 34px;font-size:17px;letter-spacing:.04em}
+#btnBegin,#btnReplay{background:var(--ink);color:var(--box-fill)}
+#btnExplore{margin-left:12px}
+#btnReplay,#btnExplore{margin-top:4px}
+
+/* ---------- dev readout ---------- */
+#devOut{position:absolute;top:14px;right:14px;z-index:8;display:none;
+  font-family:var(--mono);font-size:12px;background:var(--ink);color:#F5F1E8;
+  padding:6px 10px;border-radius:6px}
+#devOut.show{display:block}
+
+/* ---------- narrow layout (phones, small tablets) ---------- */
+@media (max-width:899px){
+  #app{flex-direction:column}
+  /* the controls sit below the diagram, never over it */
+  #stagewrap{order:1;flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+  #scene{position:relative;inset:auto;flex:1 1 0;min-height:0;height:auto}
+  #controls{position:static;background:var(--canvas);border-top:1px solid var(--hairline);padding-top:8px}
+  #panel{width:auto;flex:0 0 36%;border-left:none;border-top:1.5px solid var(--hairline);
+    order:2;padding:14px 18px 22px}
+  #exhibitHead{padding:8px 12px;gap:8px}
+  #exhibitTitle{font-size:14px;letter-spacing:.1em;padding:2px 0;max-width:62%}
+  #exhibitSub{display:none}
+  #audienceSel{font-size:12px;padding:4px 22px 4px 8px}
+  #hintRow{display:none}
+  #minimap{display:none}
+  #navCluster{position:absolute;top:50px;bottom:auto;right:10px}
+  #btnFit{font-size:11.5px;padding:6px 10px}
+  #controls{padding:0 10px 10px;gap:6px}
+  #scrubber{padding:2px 6px}
+  .tick{min-width:14px;height:24px}
+  #scrubLabel{display:none}
+  #btnBack,#btnNext{height:46px;min-width:96px;font-size:15px;padding:0 14px}
+  #btnPlay{width:46px;height:46px}
+  #stepper{gap:10px}
+  #resumePill{bottom:116px}
+  #crumb{margin-bottom:8px;font-size:10.5px;letter-spacing:.1em;overflow-wrap:anywhere}
+  #stTitle{font-size:21px;margin-bottom:10px}
+  #stRule{margin-bottom:10px}
+  #blurb{font-size:16px;line-height:1.5}
+  .overlay{position:fixed;z-index:30;padding:14px}
+  .card{padding:24px 18px;border-radius:18px}
+  .card h1{font-size:32px}
+  .card h2{font-size:27px}
+  .card .promise{font-size:16px;margin-bottom:16px}
+  .card .instr{margin-bottom:18px}
+  .card .specimen{margin-top:18px}
+  .legend{gap:8px 14px;margin-bottom:16px}
+  #btnBegin,#btnReplay,#btnExplore{height:50px;padding:0 24px;font-size:16px}
+  #btnExplore{margin-left:0;margin-top:10px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .node .halo,.gateGlow,.lod1,.lod2,.packetChip,.nName,.nSub,.containerLabel,.busName{transition:none}
+  .node.pulse .halo{animation:none;opacity:.6}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stagewrap">
+    <svg id="scene" data-lod="2" aria-label="System map: the path of one generation request"></svg>
+
+    <div id="exhibitHead">
+      <button id="exhibitTitle" title="Return to the cover">Anatomy of a Generation</button>
+      <span id="exhibitSub">OmniNode · Self-Extending Agent</span>
+    </div>
+
+    <button id="resumePill">▶&nbsp; Resume tour</button>
+
+    <div id="navCluster">
+      <svg id="minimap" aria-label="Mini-map"></svg>
+      <button id="btnFit" title="Frame the whole map">⤢&nbsp;FIT ALL</button>
+    </div>
+
+    <div id="controls">
+      <div id="hintRow">
+        <span id="hintDrag">drag to explore</span>
+        <span id="hintClick">click any component</span>
+        <span id="hintHood">“under the hood” for the code</span>
+      </div>
+      <div id="scrubLabel"></div>
+      <div id="scrubber" role="group" aria-label="Stage scrubber" tabindex="0"></div>
+      <div id="stepper">
+        <button id="btnBack">◀&nbsp; Back</button>
+        <button id="btnPlay" aria-label="Play narration steps" title="Autoplay">
+          <svg viewBox="0 0 60 60"><circle class="ring" cx="30" cy="30" r="27.5"
+            stroke-dasharray="172.8" stroke-dashoffset="172.8"/></svg>
+          <span id="playGlyph">▶</span>
+        </button>
+        <button id="btnNext">Next&nbsp; ▶</button>
+      </div>
+    </div>
+
+    <div id="devOut"></div>
+
+    <!-- cover -->
+    <div class="overlay" id="cover">
+      <div class="card">
+        <div class="kicker">OmniNode · An Exhibit in Sixteen Stops</div>
+        <h1>Anatomy of a&nbsp;Generation</h1>
+        <hr class="rule">
+        <p class="promise">Follow one generation request through a living system —
+          from a typed sentence, across a private tunnel, down a ladder of models,
+          through a validation gate, and back to the screen as a brand-new tool.</p>
+        <div class="legend">
+          <span class="li"><span class="sw" style="background:var(--zone-laptop)"></span>the laptop</span>
+          <span class="li"><span class="sw" style="background:var(--zone-pc)"></span>the lab server</span>
+          <span class="li"><span class="sw" style="background:var(--zone-cloud)"></span>the cloud</span>
+          <span class="li"><span class="sw wallsw"></span>network boundary</span>
+          <span class="li"><span class="sw bussw"></span>message bus</span>
+          <span class="li"><span class="sw pk"></span>the request</span>
+        </div>
+        <p class="instr">Next or → to begin &nbsp;·&nbsp; drag to explore &nbsp;·&nbsp; click any component</p>
+        <button id="btnBegin">Begin the tour</button>
+        <p class="specimen">Specimen: a real run from June 2026 — model <span class="mono">Qwen3.6-35B-A3B</span> ·
+          1 attempt · 888 ms · contract-pass ≈94% across ~172 recorded generations.<br>
+          This exhibit is a static record, not a live view.</p>
+      </div>
+    </div>
+
+    <!-- terminal -->
+    <div class="overlay" id="terminal" hidden>
+      <div class="card">
+        <div class="kicker">Journey complete</div>
+        <h2>One sentence in.<br>One working tool out.</h2>
+        <hr class="rule">
+        <p class="promise">Described, built, validated, registered, invoked — and every
+          step of it recorded as an event with one correlation id. The system is one
+          tool larger than it was a minute ago.</p>
+        <div>
+          <button id="btnReplay">↺&nbsp; Replay</button>
+          <button id="btnExplore">Explore the map</button>
+        </div>
+        <p class="specimen">Specimen values, recorded June 2026: <span class="mono">746dde85</span> ·
+          <span class="mono">Qwen3.6-35B-A3B</span> · 1 attempt · 888 ms</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- reading panel -->
+  <aside id="panel" aria-label="Reading panel">
+    <button id="compClose" aria-label="Back to the tour">✕</button>
+    <details id="notice" hidden><summary id="noticeSum"></summary><div class="nbody" id="noticeBody"></div></details>
+    <div id="crumb">
+      <button class="crumbZone" id="crumbText" title="About this component"></button>
+      <span id="counter"></span>
+    </div>
+    <h2 id="stTitle"></h2>
+    <hr id="stRule">
+    <div id="liveWrap" aria-live="polite">
+      <div id="blurb"></div>
+      <div id="caveatBox"></div>
+    </div>
+    <details id="hood">
+      <summary>Under the hood</summary>
+      <div class="hoodInner" id="hoodInner"></div>
+    </details>
+  </aside>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   DATA — the exhibit content. This is the ONLY block you edit.
+   The engine below is generic. World coords: x 0..W, y 0..H.
+   ----------------------------------------------------------------
+   CONTRACT (every field the engine reads):
+   META   : {docTitle,title,subtitle, cover:{kicker,h1,promise,instr,
+            legend:[{label,style}], specimenHTML}, terminal:{kicker,h2,
+            promise,specimenHTML}, specimen:{packetLabel}}
+   WORLD  : {x,y,w,h}  the canvas bounds
+   ZONES  : [{id,label,x,y,w,h,fill,dim?}]  labelled regions
+   WALLS  : [{x1,y1,x2,y2,opacity?,label?,lx?,ly?}]  dashed boundaries
+   GATES  : [{x,y0,y1,top?,bottom?,opacity?,label?,ly?}]  arch crossings
+            that glow during any stage with gate:true
+   CONTAINERS:[{id,label,x,y,w,h}]  dashed grouping boxes
+   NODES  : [{id,x,y,w,h,name,sub,port?,dim?,type?('bus'),stops:[n..],
+            zone,desc}]  components; type:'bus' renders as a track
+   EDGES  : [{id,pts:[[x,y]...],dashed?,dim?,ride?}]  polyline hops;
+            ride:true => the packet visibly travels a bus spine
+   TRACE_ORDER:[edgeId..]  edges drawn faint on the terminal recap
+   EDGE_STAGE:{edgeId:stageN}  which stage "owns" each traced edge
+   EDGE_TOPICS:{edgeId:topicString}  topic chip shown near an edge
+   CHIP_STAGE:{edgeId:stageN}  the stage that reveals that chip
+   CHIP_AT:{edgeId:[x,y]}  optional manual chip placement
+   STAGES : [{n,short,title,crumb, focus:[id..], highlight:[id..],
+            pulse?:[id..], packets?:[{e:edgeId,rev?}], park?:[x,y],
+            hold?, gate?, focusPad?, blurb:[para..],
+            caveat?:{tag,text}, hood:[{k,v,chip?,chips?}]}]
+   Hood values: chip:true renders v (a topic string) as a chip;
+   chips:true renders v (an array) as chips; else v is plain text.
+   ============================================================ */
+const META = {"docTitle": "Sweeps & Golden Chains — OmniNode", "title": "Sweeps & Golden Chains", "subtitle": "How the platform proves events reach the database projection your client reads", "cover": {"kicker": "Deterministic Truth · Audit Nodes · Kafka → Postgres", "h1": "Sweeps &amp; Golden&nbsp;Chains", "promise": "Follow a real delegation command across nine Kafka hops, through four audit nodes, and watch it land as a verified row in Postgres.", "instr": "Next or → to begin &nbsp;·&nbsp; drag to explore &nbsp;·&nbsp; click any component", "legend": [{"label": "doctrine layer", "style": "background:var(--zone-laptop)"}, {"label": "static audit nodes", "style": "background:var(--zone-pc)"}, {"label": "golden chain layer", "style": "background:var(--zone-cloud)"}, {"label": "projection + evidence", "style": "background:var(--zone-pc)"}, {"label": "skill dispatch shims", "style": "background:var(--zone-laptop)"}, {"label": "the bus", "style": "background:#B9AE97;height:6px;border-radius:3px"}, {"label": "the message", "style": "background:var(--accent-g);border-radius:50%;width:13px;height:13px;border:none"}], "specimenHTML": "A teaching exhibit generated from the verified tutorial spec. Static record, not a live view."}, "terminal": {"kicker": "Tour complete", "h2": "Chain&nbsp;Proven", "promise": "You've traced the full wire: doctrine defined what proof means, audit nodes caught drift, the golden chain registry confirmed every expected field landed in the projection table, and the evidence file is committed to version control — the system is correct.", "specimenHTML": "Sweeps & Golden Chains"}, "specimen": {"packetLabel": "bda0b379"}};
+const WORLD = {"x": 0, "y": 0, "w": 2520, "h": 1100};
+const ZONES = [{"id": "doctrine", "label": "Doctrine Layer", "x": 60, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-laptop)"}, {"id": "static-audit", "label": "Static Audit Nodes", "x": 552, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-pc)"}, {"id": "golden-chain", "label": "Golden Chain Layer", "x": 1044, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-cloud)"}, {"id": "projection", "label": "Projection + Evidence", "x": 1536, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-pc)"}, {"id": "skill-dispatch", "label": "Skill Dispatch Shims", "x": 2028, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-laptop)"}];
+const WALLS = [];
+const GATES = [{"x": 1014, "y0": 300, "y1": 440, "top": 170, "bottom": 950, "label": "PRE-COLLECTED ROWS", "ly": 820}];
+const CONTAINERS = [];
+const NODES = [{"id": "deterministic-truth-doctrine", "x": 156, "y": 480, "w": 240, "h": 120, "name": "Deterministic Truth Doctrine", "sub": "defines what counts as proof for the whole platform", "stops": [1], "zone": "Doctrine Layer", "desc": "defines what counts as proof for the whole platform"}, {"id": "node-compliance-sweep", "x": 648, "y": 270, "w": 240, "h": 120, "name": "node_compliance_sweep", "sub": "COMPUTE \u00b7 scans handler .py for HARDCODED_TOPIC / UNDECLARED_TRANSPORT", "stops": [10], "zone": "Static Audit Nodes", "desc": "COMPUTE \u00b7 scans handler .py for HARDCODED_TOPIC / UNDECLARED_TRANSPORT"}, {"id": "node-runtime-sweep", "x": 648, "y": 690, "w": 240, "h": 120, "name": "node_runtime_sweep", "sub": "COMPUTE \u00b7 wiring + FSM SLA watchdog \u2192 typed watchdog events", "stops": [11, 13], "zone": "Static Audit Nodes", "desc": "COMPUTE \u00b7 wiring + FSM SLA watchdog \u2192 typed watchdog events"}, {"id": "node-contract-drift-compute", "x": 648, "y": 480, "w": 240, "h": 120, "name": "node_contract_drift_compute", "sub": "COMPUTE \u00b7 contract topics vs handler literals \u2192 BREAKING drift", "stops": [12], "zone": "Static Audit Nodes", "desc": "COMPUTE \u00b7 contract topics vs handler literals \u2192 BREAKING drift"}, {"id": "kafka-bus", "x": 1064, "y": 530, "w": 392, "h": 20, "name": "Kafka Event Bus", "sub": "onex.{cmd|evt}.{service}.{event}.vN", "stops": [4, 6, 7, 8, 11, 12], "zone": "Golden Chain Layer", "desc": "onex.{cmd|evt}.{service}.{event}.vN", "type": "bus", "port": "Kafka topics"}, {"id": "golden-chains-yaml", "x": 1140, "y": 270, "w": 240, "h": 120, "name": "golden_chains.yaml", "sub": "Registry: 5 primary + 8 regression-guard chains \u00b7 head_topic + tail_table + expected_fields", "stops": [2, 3], "zone": "Golden Chain Layer", "desc": "Registry: 5 primary + 8 regression-guard chains \u00b7 head_topic + tail_table + expected_fields"}, {"id": "node-golden-chain-generator", "x": 1140, "y": 600, "w": 240, "h": 120, "name": "node_golden_chain_generator", "sub": "COMPUTE \u00b7 contract.yaml + AST \u2192 chain_hash (deterministic)", "stops": [3], "zone": "Golden Chain Layer", "desc": "COMPUTE \u00b7 contract.yaml + AST \u2192 chain_hash (deterministic)"}, {"id": "node-golden-chain-sweep", "x": 1140, "y": 744, "w": 240, "h": 120, "name": "node_golden_chain_sweep", "sub": "COMPUTE \u00b7 pure \u00b7 validates pre-collected projected_rows \u2192 PASS/FAIL/GATED", "stops": [2, 3, 4, 5, 6, 7, 13, 14], "zone": "Golden Chain Layer", "desc": "COMPUTE \u00b7 pure \u00b7 validates pre-collected projected_rows \u2192 PASS/FAIL/GATED"}, {"id": "node-projection-delegation", "x": 1632, "y": 270, "w": 240, "h": 120, "name": "node_projection_delegation", "sub": "REDUCER \u00b7 upserts delegation_events (dedup by correlation_id)", "stops": [4, 7, 8, 9], "zone": "Projection + Evidence", "desc": "REDUCER \u00b7 upserts delegation_events (dedup by correlation_id)"}, {"id": "projection-api", "x": 1632, "y": 480, "w": 240, "h": 120, "name": "omnimarket-projection-api", "sub": "FastAPI \u00b7 GET /projection/{topic} serves rows from the tail table", "stops": [9], "zone": "Projection + Evidence", "desc": "FastAPI \u00b7 GET /projection/{topic} serves rows from the tail table"}, {"id": "evidence-store", "x": 1632, "y": 690, "w": 240, "h": 120, "name": "docs/evidence/", "sub": "Durable artifact store \u00b7 chain-evidence.md \u00b7 occ-receipt.json", "stops": [14], "zone": "Projection + Evidence", "desc": "Durable artifact store \u00b7 chain-evidence.md \u00b7 occ-receipt.json"}, {"id": "ci-gates", "x": 2124, "y": 270, "w": 240, "h": 120, "name": "CI Gate Scripts", "sub": "check_golden_chain_coverage.py + run_runtime_sweep.py \u00b7 mandatory pre-merge", "stops": [13], "zone": "Skill Dispatch Shims", "desc": "check_golden_chain_coverage.py + run_runtime_sweep.py \u00b7 mandatory pre-merge"}, {"id": "skill-compliance-sweep", "x": 2124, "y": 480, "w": 240, "h": 120, "name": "compliance_sweep skill", "sub": "Thin shim \u00b7 omniclaude \u00b7 onex skill compliance_sweep", "stops": [10], "zone": "Skill Dispatch Shims", "desc": "Thin shim \u00b7 omniclaude \u00b7 onex skill compliance_sweep"}, {"id": "skill-golden-chain-sweep", "x": 2124, "y": 690, "w": 240, "h": 120, "name": "golden_chain_sweep skill", "sub": "Thin shim \u00b7 omniclaude \u00b7 onex node node_golden_chain_sweep", "stops": [6], "zone": "Skill Dispatch Shims", "desc": "Thin shim \u00b7 omniclaude \u00b7 onex node node_golden_chain_sweep"}];
+const EDGES = [{"id": "e-doctrine-to-static", "pts": [[396, 540], [522, 540], [522, 330], [648, 330]]}, {"id": "e-doctrine-to-runtime", "pts": [[396, 540], [522, 540], [522, 750], [648, 750]]}, {"id": "e-compliance-to-bus", "pts": [[888, 330], [982, 330], [982, 540], [1076, 540]], "ride": true}, {"id": "e-runtime-to-bus", "pts": [[888, 750], [982, 750], [982, 540], [1076, 540]], "ride": true}, {"id": "e-drift-to-bus", "pts": [[888, 540], [1076, 540]], "ride": true}, {"id": "e-chains-yaml-to-sweep", "pts": [[1140, 330], [1014, 330], [1014, 804], [1140, 804]], "dim": false}, {"id": "e-generator-to-sweep", "pts": [[1260, 720], [1260, 744]]}, {"id": "e-projection-to-sweep", "pts": [[1632, 330], [1506, 330], [1506, 804], [1380, 804]], "dim": false}, {"id": "e-sweep-to-bus", "pts": [[1140, 804], [1014, 804], [1014, 540], [1064, 540]], "ride": true}, {"id": "e-bus-to-projection", "pts": [[1444, 540], [1538, 540], [1538, 330], [1632, 330]], "ride": true}, {"id": "e-projection-to-api", "pts": [[1872, 330], [1872, 330], [1872, 540], [1872, 540]], "dim": false}, {"id": "e-sweep-to-evidence", "pts": [[1380, 804], [1506, 804], [1506, 750], [1632, 750]], "dim": false}, {"id": "e-skill-compliance-to-node", "pts": [[2124, 540], [1998, 540], [1998, 220], [1014, 220], [1014, 330], [888, 330]]}, {"id": "e-skill-gc-to-node", "pts": [[2124, 750], [1998, 750], [1998, 910], [1260, 910], [1260, 864]]}, {"id": "e-ci-to-sweep", "pts": [[2124, 330], [1998, 330], [1998, 890], [1506, 890], [1506, 804], [1380, 804]]}, {"id": "e-ci-to-runtime", "pts": [[2124, 330], [1998, 330], [1998, 920], [1014, 920], [1014, 750], [888, 750]]}, {"id": "e-runtime-watchdog-loop", "pts": [[888, 750], [888, 750]], "ride": true, "dashed": true}];
+const TRACE_ORDER = ["e-chains-yaml-to-sweep", "e-generator-to-sweep", "e-projection-to-sweep", "e-bus-to-projection", "e-sweep-to-bus", "e-skill-gc-to-node", "e-projection-to-api", "e-compliance-to-bus", "e-skill-compliance-to-node", "e-runtime-to-bus", "e-runtime-watchdog-loop", "e-drift-to-bus", "e-ci-to-sweep", "e-ci-to-runtime", "e-sweep-to-evidence"];
+const EDGE_STAGE = {"e-chains-yaml-to-sweep": 2, "e-generator-to-sweep": 3, "e-projection-to-sweep": 4, "e-bus-to-projection": 4, "e-sweep-to-bus": 6, "e-skill-gc-to-node": 6, "e-projection-to-api": 8, "e-compliance-to-bus": 10, "e-skill-compliance-to-node": 10, "e-runtime-to-bus": 11, "e-runtime-watchdog-loop": 11, "e-drift-to-bus": 12, "e-ci-to-sweep": 13, "e-ci-to-runtime": 13, "e-sweep-to-evidence": 14};
+const EDGE_TOPICS = {};
+const CHIP_STAGE = {};
+const CHIP_AT = {};
+const STAGES = [{"n": 1, "short": "Doctrine", "title": "Stop 1 \u00b7 Proof starts with doctrine, not code", "crumb": "deterministic-truth-doctrine \u2192 everything downstream", "focus": ["deterministic-truth-doctrine"], "highlight": ["deterministic-truth-doctrine"], "packets": [], "blurb": ["Before writing a single test, the platform settles a prior question: what does 'correct' mean? The answer lives in the Deterministic Truth Doctrine \u2014 a document that opens by listing things that are explicitly not truth: status fields, logs, and completion signals. Truth is established only when authoritative downstream state reflects the result, outputs are observable through approved boundaries, and results survive replay, restart, and reprocessing.", "This matters because it rules out an entire category of tests that assert a function returned a value in memory. A function can return the right value and still fail to write a row to Postgres, fail to publish a terminal event, or fail to produce a result a client can observe. The doctrine makes that distinction concrete and enforceable \u2014 not a style preference, but the definition of whether the platform is functioning correctly."], "hood": [{"k": "doctrine-source", "v": "the Deterministic Truth Doctrine \u2014 \u00a71 \"Truth Must Be Proven, Not Claimed\"; \u00a72 \"Authoritative Projections Own Truth\""}, {"k": "approved-evidence-surfaces", "v": "OCC receipts, CI checks, pull requests, Linear comments, committed manifests, approved artifact storage \u2014 \u00a715"}, {"k": "enforcement-sentence", "v": "\"Any implementation that violates this doctrine must be rejected. It must not be merged, deployed, or marked Done.\" \u2014 line 329"}], "pulse": ["deterministic-truth-doctrine"], "title_plain": "What \"done\" really means", "blurb_plain": ["Before checking any work, the team agrees on one thing: what does finished actually mean? The answer is written in a rulebook that says a status of \"done\" on a checklist counts for nothing \u2014 the work only counts when you can see the real result for yourself.", "It is the difference between a worker saying \"I finished\" and you actually seeing the finished product on the shelf."], "title_exec": "A shared, enforced definition of done", "blurb_exec": ["Everyone agrees up front that a claim of \"complete\" proves nothing \u2014 only a visible, lasting result counts. That single rule eliminates a whole class of work that looks finished on paper but quietly failed.", "It is the foundation of being able to trust a status report at all."]}, {"n": 2, "short": "Chain Registry", "title": "Stop 2 \u00b7 The chain registry: golden_chains.yaml", "crumb": "golden_chains.yaml \u2192 node_golden_chain_sweep", "focus": ["golden-chains-yaml", "node-golden-chain-sweep"], "highlight": ["golden-chains-yaml"], "packets": [{"e": "e-chains-yaml-to-sweep"}], "blurb": ["Every golden chain is three fields: a name, a head_topic (the first Kafka event in the flow), and a tail_table (the Postgres table that must contain a materialized row when the flow completes). A fourth field, expected_fields, lists exactly which columns must be present in that row. If the row exists but is missing a field, the chain status is FAIL with a per-field report. If no row exists at all, the status is TIMEOUT \u2014 or GATED if the chain is marked idle-gate=True, meaning the consumer is healthy but idle.", "The file currently holds five primary chains \u2014 registration, pattern_learning, delegation, routing, evaluation \u2014 and eight regression-guard chains targeting known failure classes. The d4_blank_content chain exists specifically to catch the case where the inference response comes back empty but the system treats it as success. New chains are added here and picked up by the sweep automatically; the sweep tool does not need to be updated to learn about them."], "hood": [{"k": "registry-file", "v": "the golden_chains.yaml registry read by the sweep node"}, {"k": "primary-chains", "v": "registration / pattern_learning / delegation / routing / evaluation (lines 7\u201338)"}, {"k": "regression-guard-chains", "v": "sea_acceptance, d3_local_routing, d1_d2_scaffold, d4_blank_content, d9_wheel_module, f1_publish_loop, delegation_inference_round_trip, delegation_projection_materialization (lines 40\u2013150)"}, {"k": "auto-pickup", "v": "\"Add new chains here \u2014 the sweep tool picks them up automatically\" \u2014 file header line 3"}], "title_plain": "The checklist of journeys to verify", "blurb_plain": ["There is a short master list of the most important journeys a request can take through the system, start to finish. For each one it names where it begins, where it should end up, and exactly what should be sitting there when it arrives.", "New journeys get added to the list and are checked automatically \u2014 nobody has to remember to test them by hand."], "title_exec": "A single, growing registry of must-pass flows", "blurb_exec": ["The handful of business-critical journeys are listed in one place, each with a clear start, a clear end, and the exact result expected. Adding a new one is automatically watched, so coverage grows without anyone wiring up a new test.", "It is a living map of what the business depends on working."]}, {"n": 3, "short": "Chain Generator", "title": "Stop 3 \u00b7 Deriving the expected chain from contract topology", "crumb": "node_golden_chain_generator \u2192 node_golden_chain_sweep", "focus": ["node-golden-chain-generator", "golden-chains-yaml", "node-golden-chain-sweep"], "highlight": ["node-golden-chain-generator"], "packets": [{"e": "e-generator-to-sweep"}], "blurb": ["Before you can validate a chain, you need to know what a valid chain looks like. node_golden_chain_generator answers that by reading a node's contract.yaml and AST-analyzing the node's generated test source, then producing an ordered list of ModelGoldenChainEntry steps. The key property is determinism: given the same contract, same generator version, and same template hash, the generator always produces the same chain_hash. If the expected sequence is unresolvable, the generator emits an UNKNOWN marker rather than guessing.", "This determinism is what makes the chain hash meaningful as an identity. When a generated chain hash changes, something in the contract or the template changed \u2014 and that change is auditable. The generator's outputs can be stored alongside contracts as a record of what the system was expected to do at a given point in time."], "hood": [{"k": "contract", "v": "the contract.yaml of the golden-chain generator node"}, {"k": "determinism-inputs", "v": "contract_hash + generator_version + template_hash + generation_profile_hash (all declared as inputs)"}, {"k": "output-chain-hash", "v": "SHA-256 of the canonical JSON-serialized chain"}, {"k": "terminal-event", "v": "onex.evt.omnimarket.golden-chain-generation-completed.v1"}], "title_plain": "Working out what a good journey looks like", "blurb_plain": ["You cannot check a journey until you know what the right path actually is. A planning step reads the written job description for each part and works out the exact correct sequence of steps \u2014 and it does it the same way every single time, so the answer is repeatable.", "If the right path cannot be worked out, it says so plainly instead of guessing."], "title_exec": "The correct path, derived and repeatable", "blurb_exec": ["The expected sequence for each journey is derived automatically from the parts' own job descriptions, and the same inputs always yield the same answer. When that expected path changes, you can see exactly what changed and why.", "Repeatable expectations are what make later drift detectable."]}, {"n": 4, "short": "Pre-collect Rows", "title": "Stop 4 \u00b7 Pre-collecting projected_rows outside the compute handler", "crumb": "Postgres delegation_events \u2192 node_golden_chain_sweep (via caller)", "focus": ["node-projection-delegation", "node-golden-chain-sweep", "kafka-bus"], "highlight": ["node-projection-delegation"], "packets": [{"e": "e-projection-to-sweep"}, {"e": "e-bus-to-projection"}], "blurb": ["The golden chain sweep handler is a pure COMPUTE node: it accepts an input, applies logic, returns an output. It does not open a database connection, does not poll Kafka, does not wait for anything. This means the caller \u2014 the skill shim, an orchestrator, or a test fixture \u2014 is responsible for pre-collecting the actual rows from the tail table and packaging them as a JSON dict keyed by chain name before invoking the handler.", "This separation keeps the handler testable without a live runtime: a test can fabricate a projected_rows dict with the right fields and verify the handler correctly classifies the chain as PASS. The tradeoff is that a TIMEOUT result from the handler is ambiguous \u2014 it could mean the tail table has no row, or it could mean the row-collection step failed before the handler was ever called. Callers must surface collection failures separately."], "hood": [{"k": "handler-input-model", "v": "GoldenChainSweepRequest.projected_rows: dict[str, dict[str, object]]"}, {"k": "purity-declaration", "v": "descriptor.purity: pure, descriptor.idempotent: true \u2014 declared on the node"}, {"k": "idle-gate-flag", "v": "GoldenChainSweepRequest.idle_gate: bool; True converts TIMEOUT to GATED (non-blocking)"}, {"k": "skill-invocation", "v": "the golden_chain_sweep skill shim passes pre-collected rows to the node"}], "gate": true, "title_plain": "Gathering the evidence before the check", "blurb_plain": ["The inspector does not go hunting for results itself \u2014 that keeps it simple and reliable. Instead, whoever runs the check first gathers up the actual finished results and hands them over as a neat package.", "It is like an auditor who only reviews the paperwork you bring, rather than rummaging through the building."], "title_exec": "Evidence is collected up front, checking stays clean", "blurb_exec": ["The act of gathering real results is kept separate from the act of judging them, so the judging step is simple, fast, and easy to trust. The tradeoff is that a \"nothing found\" verdict needs care \u2014 it could mean the work failed, or that the evidence was never collected.", "Clean separation keeps the verdict honest and the checker cheap to run."]}, {"n": 5, "short": "Handler Validates", "title": "Stop 5 \u00b7 Handler validates expected fields against pre-collected rows", "crumb": "node_golden_chain_sweep.handle \u2192 ModelChainResult per chain", "focus": ["node-golden-chain-sweep"], "highlight": ["node-golden-chain-sweep"], "packets": [{"e": "e-chains-yaml-to-sweep"}, {"e": "e-generator-to-sweep"}], "blurb": ["Inside the handler, NodeGoldenChainSweep.handle iterates every chain in the request's chain list. For each chain it looks up the chain name in the pre-collected projected_rows dict. If the name is absent, the result is TIMEOUT or GATED. If the row is present, the handler checks every name in expected_fields against the row's keys \u2014 any missing field goes into missing_fields, producing a FAIL result with a per-field list. If all expected fields are present, the result is PASS.", "Nothing in this logic touches the network or the clock. The publish_ms and projection_ms fields on ModelChainResult are available for callers to populate with timing evidence from the outer collection step, but the handler itself sets them to 0.0. Timing evidence comes from the observable system, not from the validator."], "hood": [{"k": "handle-method", "v": "NodeGoldenChainSweep.handle iterates every requested chain"}, {"k": "validate-chain", "v": "row lookup, missing-field check, TIMEOUT/GATED/FAIL/PASS branches"}, {"k": "chain-status-enum", "v": "EnumChainStatus.PASS | FAIL | ERROR | TIMEOUT | GATED"}, {"k": "missing-fields-check", "v": "missing = [f for f in chain.expected_fields if f not in row]"}], "title_plain": "The inspector compares plan to reality", "blurb_plain": ["Now the inspector goes down the list. For each journey it finds the actual finished result and compares it against what was expected \u2014 every detail that should be there. Anything missing is named specifically; if it is all present, it passes.", "No guesswork, no clock-watching \u2014 just plan versus reality, item by item."], "title_exec": "A precise, itemized pass or fail", "blurb_exec": ["Each expected result is checked detail by detail against what actually landed, and any gap is reported by name rather than as a vague failure. Pinpointed findings mean a problem can be fixed at the exact spot it occurred.", "Precise verdicts turn \"something is wrong\" into \"this one thing is missing.\""]}, {"n": 6, "short": "Sweep Result", "title": "Stop 6 \u00b7 GoldenChainSweepResult: pass/partial/fail/gated", "crumb": "node_golden_chain_sweep \u2192 GoldenChainSweepResult \u2192 skill renders table", "focus": ["node-golden-chain-sweep", "skill-golden-chain-sweep", "kafka-bus"], "highlight": ["node-golden-chain-sweep"], "packets": [{"e": "e-sweep-to-bus"}, {"e": "e-skill-gc-to-node"}], "blurb": ["After iterating all chains, the handler aggregates per-chain results into a single GoldenChainSweepResult. The overall status follows a simple rule: zero failures and zero gated = PASS; zero failures but some gated = GATED (non-blocking); any hard failure with at least one pass or gated = PARTIAL; all chains failed = FAIL.", "The result is emitted as JSON to stdout. The golden_chain_sweep skill shim in omniclaude reads that JSON and renders it as a human-readable table of chain names, statuses, and latencies. The handler itself never formats output for display \u2014 that is the skill's job, and the skill is the only place where display logic should live."], "hood": [{"k": "result-model", "v": "GoldenChainSweepResult aggregates the per-chain results"}, {"k": "status-aggregation-logic", "v": "failed==0 and gated==0 \u2192 PASS, failed==0 and gated>0 \u2192 GATED, etc."}, {"k": "terminal-event", "v": "onex.evt.omnimarket.golden-chain-sweep-completed.v1"}, {"k": "skill-render-step", "v": "the skill renders the JSON as a summary line plus a per-chain table"}], "title_plain": "The overall verdict", "blurb_plain": ["After checking every journey, the results roll up into one clear scoreboard: all good, mostly good with a few skipped, partly broken, or all broken. A simple rule decides which.", "Then a separate display turns that scoreboard into a readable summary \u2014 the inspector judges, something else presents."], "title_exec": "One roll-up scoreboard, cleanly separated from display", "blurb_exec": ["Every journey's result rolls into a single status \u2014 clean, partial, or failed \u2014 by a simple, predictable rule. Judging and presenting are kept apart, so the same verdict can be shown many ways without changing the judgment.", "A single scoreboard is what a decision-maker can read at a glance."]}, {"n": 7, "short": "Delegation 9-Hop", "title": "Stop 7 \u00b7 Concrete example: the delegation golden chain (9 hops)", "crumb": "onex.cmd.omnibase-infra.delegation-request.v1 \u2192 delegation_events table", "focus": ["kafka-bus", "node-projection-delegation", "node-golden-chain-sweep"], "highlight": ["kafka-bus"], "packets": [{"e": "e-bus-to-projection"}, {"e": "e-sweep-to-bus"}], "blurb": ["The delegation chain is the canonical end-to-end proof of the platform. It starts when a command is published to onex.cmd.omnibase-infra.delegation-request.v1. The delegation orchestrator consumes it, routing reducer selects a model, an inference effect calls the model, and on success the orchestrator publishes delegation-completed.v1. The projection delegation reducer consumes that terminal event and upserts a row into delegation_events.", "A real run of this chain is recorded with correlation_id bda0b379: model DeepSeek-V4-Flash-284B, 900 tokens, 33,772 ms, quality_score 1.0, all quality gates passing. The chain runs all 9 hops, and the projection reducer upserts the terminal event into the delegation_events table where the projection API can read it."], "hood": [{"k": "evidence-file", "v": "the committed chain-evidence record for this delegation run"}, {"k": "hop-1", "v": "onex.cmd.omnibase-infra.delegation-request.v1 \u2014 partition 3 / offset 72"}, {"k": "hop-5", "v": "onex.evt.omnibase-infra.inference-response.v1 \u2014 FSM transitions ROUTED \u2192 INFERENCE_COMPLETED"}, {"k": "hop-8a", "v": "onex.evt.omnibase-infra.delegation-completed.v1 \u2014 terminal success path"}, {"k": "hop-9", "v": "onex.evt.omniclaude.task-delegated.v1 \u2014 backward-compat event; projection_delegation reducer consumes this"}], "title_plain": "A real journey, all nine steps", "blurb_plain": ["Here is the most important journey in full: a request to hand a task off to the cheapest capable helper. It travels through nine hand-offs \u2014 picking who should do it, getting it done, and recording the finished result where anyone can look it up.", "A real run of this exact journey is on record, every step accounted for."], "title_exec": "The flagship end-to-end proof", "blurb_exec": ["The marquee journey \u2014 routing a task to the right helper and recording the outcome \u2014 is proven through all nine of its hand-offs, with a real recorded run as evidence. This is the single best demonstration that the platform works end to end.", "It is the proof you point to when someone asks \"does it actually work?\""]}, {"n": 8, "short": "Projection Reducer", "title": "Stop 8 \u00b7 node_projection_delegation: REDUCER writing the tail table", "crumb": "onex.evt.omnibase-infra.delegation-completed.v1 \u2192 delegation_events", "focus": ["node-projection-delegation", "kafka-bus"], "highlight": ["node-projection-delegation"], "packets": [{"e": "e-bus-to-projection"}, {"e": "e-projection-to-api"}], "blurb": ["The tail of the delegation chain is node_projection_delegation, a REDUCER that consumes terminal delegation events and upserts rows into the delegation_events Postgres table. The dedup key is correlation_id: re-processing the same terminal event produces an UPSERT, not a duplicate row. This makes the reducer safe to replay \u2014 the central requirement of doctrine \u00a73 (Systems Must Be Deterministic Under Replay).", "The reducer listens to multiple topics \u2014 not just the success path. It subscribes to delegation-completed.v1, delegation-failed.v1, task-delegated.v1, node-generation-completed.v1, delegate-skill-completed.v1, and delegate-skill-failed.v1. Each maps to a different kind of delegation terminal event. The golden_path field in the contract describes the intended happy-path sequence in plain language."], "hood": [{"k": "contract", "v": "the contract.yaml of the projection-delegation reducer node"}, {"k": "node-type", "v": "reducer \u2014 declared in the node contract"}, {"k": "tail-table", "v": "delegation_events (database: omnidash_analytics) \u2014 declared in the contract"}, {"k": "upsert-dedup", "v": "\"Dedup by correlation_id (UPSERT semantics)\" \u2014 contract golden_path"}], "title_plain": "Recording the final result", "blurb_plain": ["At the end of the journey, one part takes the finished outcome and files it in a permanent record. If the same outcome arrives twice, it updates the existing entry rather than creating a duplicate.", "That means the whole journey can be safely re-run without making a mess of the records."], "title_exec": "A durable, replay-safe record of outcomes", "blurb_exec": ["The final step files each outcome into a lasting record, and re-processing the same outcome updates rather than duplicates it. Being safe to re-run is what lets the system recover and re-verify without corrupting its own history.", "Clean, deduplicated records are what make later audits trustworthy."]}, {"n": 9, "short": "Projection API", "title": "Stop 9 \u00b7 Reading the tail table via the projection API", "crumb": "delegation_events Postgres \u2192 projection-api \u2192 GET /projection/delegation", "focus": ["projection-api", "node-projection-delegation"], "highlight": ["projection-api"], "packets": [{"e": "e-projection-to-api"}], "blurb": ["Once a row lands in delegation_events, clients read it through the omnimarket-projection-api FastAPI service. The route is GET /projection/{topic}. The topic map is built once at startup from the projection_api sections in each node's contract \u2014 there is no hardcoded topic whitelist in the server code.", "The projection_delegation contract declares a rich set of exposures \u2014 delegation, correlation-trace, summary, quality-gate, token-usage, and model-routing \u2014 each backed by a specific table, a column list, an ordering contract, and a freshness column. The dashboard reads these endpoints; it does not read the database directly."], "hood": [{"k": "route", "v": "@app.get(\"/projection/{topic:path}\") on the projection API server"}, {"k": "topic-map-construction", "v": "built contract-driven at startup, not from a hardcoded list"}, {"k": "contract-exposures", "v": "8 exposure entries in the projection-delegation contract"}, {"k": "topic-route", "v": "each contract-declared topic becomes one read endpoint"}], "title_plain": "Looking up the result", "blurb_plain": ["Once an outcome is on file, anyone who needs it asks through a single front desk that knows how to fetch any recorded result. What it can serve up is decided by each part's own job description, not hidden rules.", "Screens and reports all pull from this front desk \u2014 none of them reach into the records directly."], "title_exec": "One front door for reading results", "blurb_exec": ["Recorded outcomes are read through a single, well-defined access point whose offerings are declared openly rather than hardcoded. Dashboards and reports all go through it, so there is one consistent, governed way to see the truth.", "A single read path is easier to secure, audit, and trust."]}, {"n": 10, "short": "Compliance Sweep", "title": "Stop 10 \u00b7 node_compliance_sweep: catching handlers that bypass the contract", "crumb": "handler source files \u2192 ComplianceSweepResult with per-violation severity", "focus": ["node-compliance-sweep", "skill-compliance-sweep"], "highlight": ["node-compliance-sweep"], "packets": [{"e": "e-compliance-to-bus"}, {"e": "e-skill-compliance-to-node"}], "blurb": ["The compliance sweep defends against the most common technical debt in a contract-driven system: code written without reading the contract, bypassing the contract system by hardcoding what the contract is supposed to declare. The node scans handler .py files using the ast module and regular expressions, looking for four violation types: HARDCODED_TOPIC, UNDECLARED_TRANSPORT, MISSING_HANDLER_ROUTING, and LOGIC_IN_NODE.", "Each violation carries a severity (CRITICAL / ERROR / WARNING) and a line number, so the output is actionable \u2014 a developer can open the flagged file at the flagged line and fix it. The runtime-sweep CI gate runs the entry-point validation subset of this check on every push, ensuring the sweep is not advisory but mandatory."], "hood": [{"k": "handler", "v": "the compliance-sweep node handler that scans handler source"}, {"k": "violation-types", "v": "HARDCODED_TOPIC | UNDECLARED_TRANSPORT | MISSING_HANDLER_ROUTING | LOGIC_IN_NODE"}, {"k": "scan-method", "v": "Python ast module + regular expressions"}, {"k": "skill-shim", "v": "the compliance_sweep skill shim dispatches to the node"}], "title_plain": "Catching shortcuts in the work", "blurb_plain": ["One inspector specializes in catching corners being cut \u2014 work done without following the agreed job description, where someone hardcodes a detail that was supposed to be looked up. It scans the work and flags exactly where the shortcut is.", "Each flag comes with how serious it is and where to look, so it can be fixed on the spot."], "title_exec": "Detecting work that bypasses the rules", "blurb_exec": ["A dedicated check finds the most common form of corner-cutting \u2014 work that ignores its own specification \u2014 and flags it with a severity and an exact location. Catching this early keeps small shortcuts from becoming expensive debt.", "And because it runs on every change, the standard is mandatory, not optional."]}, {"n": 11, "short": "Runtime Sweep", "title": "Stop 11 \u00b7 node_runtime_sweep: wiring and FSM invariant checks", "crumb": "contract declarations + workflow observations \u2192 typed watchdog events", "focus": ["node-runtime-sweep", "kafka-bus"], "highlight": ["node-runtime-sweep"], "packets": [{"e": "e-runtime-to-bus"}, {"e": "e-runtime-watchdog-loop"}], "blurb": ["Runtime_sweep checks two things the compliance sweep cannot: whether contract-declared handlers are actually registered in the dispatch system (UNWIRED_HANDLER finding), and whether every Kafka topic that has a declared producer also has a declared consumer and vice versa (topic symmetry). These are wiring correctness checks \u2014 they catch the case where a contract was updated but the deployment was not.", "The third check is the stranded-workflow invariant. The sweep accepts a list of WorkflowObservation objects and checks whether any workflow FSM has been non-terminal past its archetype SLA. When it finds one, it emits a typed watchdog event \u2014 workflow-timeout.v1, workflow-unroutable.v1, or workflow-stalled.v1 \u2014 allowing projections and dashboards to distinguish the failure class."], "hood": [{"k": "contract", "v": "the contract.yaml of the runtime-sweep node"}, {"k": "typed-watchdog-topics", "v": "onex.evt.omnimarket.workflow-timeout.v1, onex.evt.omnimarket.workflow-unroutable.v1, onex.evt.omnimarket.workflow-stalled.v1"}, {"k": "workflow-observation-input", "v": "list[WorkflowObservation] with correlation_id, archetype, state, elapsed_ms, reached_terminal"}, {"k": "ci-gate", "v": "the runtime-sweep CI script that validates the entry-point integrity subset"}], "title_plain": "Checking everything is plugged in", "blurb_plain": ["Another inspector checks the things the first one cannot: are all the promised parts actually connected and switched on, and does every message that gets sent have someone listening for it? It catches the case where the plan was updated but the wiring was not.", "It also notices any job that has been stuck running far too long and raises a clear flag."], "title_exec": "Verifying the wiring matches the plan", "blurb_exec": ["A second check confirms the declared parts are actually connected and that every message has both a sender and a receiver \u2014 catching the gap between an updated plan and an un-updated deployment. It also flags any process stuck past its expected time.", "Catching wiring gaps before they reach customers prevents silent breakage."]}, {"n": 12, "short": "Contract Drift", "title": "Stop 12 \u00b7 node_contract_drift_compute: topic literals as drift signal", "crumb": "contract.yaml topics \u2194 handler source literals \u2192 BREAKING drift findings", "focus": ["node-contract-drift-compute", "kafka-bus"], "highlight": ["node-contract-drift-compute"], "packets": [{"e": "e-drift-to-bus"}], "blurb": ["Contract drift is the gap between what the contract says a node does and what the code actually does. The node_contract_drift_compute node measures this gap by loading the event_bus topics declared in a contract.yaml and then AST-scanning the handler source files for string literals that look like topic names. Any topic string found in the handler but absent from the contract is classified as BREAKING drift with a staleness_score of 1.0.", "A separate check_boundaries option validates Kafka boundary parity from the declared boundary manifest. There is also a distinct implementation of the full drift detection pipeline in the change-control repo as an ORCHESTRATOR \u2192 COMPUTE \u2192 REDUCER \u2192 EFFECT pipeline \u2014 distinct from the standalone COMPUTE node covered here."], "hood": [{"k": "contract", "v": "the contract.yaml of the contract-drift COMPUTE node"}, {"k": "breaking-drift-classification", "v": "\"handler-only topic literals are classified as BREAKING drift\" \u2014 contract description"}, {"k": "staleness-scores-output", "v": "dict[str, float] where 0.0 = clean, 1.0 = fully stale"}, {"k": "golden-chain-test-example", "v": "its golden-chain test is the canonical example of COMPUTE node test structure"}], "title_plain": "Spotting when the work drifts from its description", "blurb_plain": ["Over time, what a part actually does can quietly drift away from its written job description. One inspector measures that gap by comparing the description against the real work, and flags anything the work does that was never written down.", "A drift like that is treated as a serious break, not a minor note."], "title_exec": "Measuring the gap between spec and reality", "blurb_exec": ["This check measures how far a part has drifted from its own written description and flags anything the work does that the description never declared. Catching drift keeps documentation honest and prevents undocumented behavior in production.", "When spec and reality diverge, this is what makes it visible before it bites."]}, {"n": 13, "short": "CI Gates", "title": "Stop 13 \u00b7 CI gates make sweeps mandatory, not advisory", "crumb": "git diff \u2192 check_golden_chain_coverage.py \u2192 fail or pass CI", "focus": ["ci-gates", "node-golden-chain-sweep", "node-runtime-sweep"], "highlight": ["ci-gates"], "packets": [{"e": "e-ci-to-sweep"}, {"e": "e-ci-to-runtime"}], "blurb": ["A detection system that can be ignored is not an enforcement system. The platform principle (doctrine \u00a79) is that the system must detect violations immediately and surface errors clearly. The two CI scripts translate that principle into mechanical gates.", "The coverage gate runs a git diff, identifies which live-path nodes were changed, and verifies each has a corresponding golden-chain test file. It is baseline-friendly \u2014 it only gates nodes touched by the current diff. The entry-point gate validates that every registered node entry point has a contract and an importable handler class. Both scripts are plain Python: the same check that runs in CI runs identically in a pre-commit hook."], "hood": [{"k": "coverage-gate", "v": "\"baseline-friendly: CI and pre-commit enforce only nodes touched by the current diff\" \u2014 gate header"}, {"k": "entry-point-gate", "v": "\"Exits 1 if any broken entry points are detected\" \u2014 gate docstring"}, {"k": "nodes-dir", "v": "the gate walks the nodes directory under the source tree"}, {"k": "plain-python-design", "v": "\"Designed for plain-Python CI execution without the Claude Code harness\" \u2014 gate docstring"}], "title_plain": "Making the checks impossible to skip", "blurb_plain": ["A check that can be ignored is no check at all. So these inspections are wired into the gate every change must pass through \u2014 if an important journey was changed without a matching check, the gate simply will not open.", "The very same inspection runs on the developer's machine and at the gate, so nothing slips through."], "title_exec": "Checks enforced at the gate, not merely suggested", "blurb_exec": ["The inspections are wired as mandatory gates on every change, so unverified work cannot pass. Enforcement \u2014 rather than advice \u2014 is what guarantees the standard actually holds over time.", "A gate that always runs is the difference between a policy and a wish."]}, {"n": 14, "short": "Durable Evidence", "title": "Stop 14 \u00b7 Durable evidence files: the approved proof surface", "crumb": "golden chain run \u2192 docs/evidence/ \u2192 OCC receipt", "focus": ["evidence-store", "node-golden-chain-sweep"], "highlight": ["evidence-store"], "packets": [{"e": "e-sweep-to-evidence"}], "blurb": ["When a golden chain run completes with evidence worth preserving, the artifacts are written to the durable evidence store in version control. The 2026-05-28 delegation golden chain proof lives there as a committed evidence record. The canonical artifact set for a completed chain run includes a chain-evidence write-up, proof_results, projection_row, and occ-receipt.", "These files are the only approved completion-evidence surface outside of Postgres rows and Kafka topic offsets. The doctrine is explicit: local scratch files, session logs, and ephemeral runtime state are not completion evidence. A task is not complete without evidence in one of the approved surfaces \u2014 exactly the ones that survive restart, replay, and reprocessing."], "hood": [{"k": "evidence-file", "v": "the committed chain-evidence record for the delegation proof"}, {"k": "approved-surfaces", "v": "OCC receipts, CI checks, pull requests, Linear comments, committed manifests, approved artifact storage \u2014 doctrine \u00a715"}, {"k": "correlation-id-specimen", "v": "bda0b379-3b0a-47f6-b398-d682424bff19 \u2014 delegation chain proof, 2026-05-28"}, {"k": "disqualified-surfaces", "v": "\"Local artifacts, scratch files, and ephemeral logs are not completion evidence\" \u2014 doctrine \u00a71"}], "title_plain": "Keeping the proof on file", "blurb_plain": ["When a journey is verified with evidence worth keeping, the proof is filed away permanently alongside the work itself. These saved records are the only ones that count as real proof.", "Scratch notes and temporary logs do not count \u2014 the work is not truly done until the lasting proof is on file."], "title_exec": "Durable evidence is the only accepted proof", "blurb_exec": ["Verified results worth preserving are stored as permanent, version-controlled records \u2014 and only those lasting records count as proof. Temporary notes and logs are explicitly rejected.", "A task is not complete until durable evidence exists, which is what makes \"done\" mean something."]}];
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const scene=$('scene');
+const SVGNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(SVGNS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]); if(parent)parent.appendChild(e); return e;}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const easeC=t=>.5-.5*Math.cos(Math.PI*clamp(t,0,1));
+
+/* Fit a node label to its box: wrap to width (breaking long identifiers on
+   / _ . : etc.), shrink the font toward minSize when lines run too tall OR a
+   single line is too wide, and ellipsize only as a last resort. Uses inline
+   style.fontSize so it beats the .nName/.nSub stylesheet rule (a presentation
+   attribute would lose the cascade). Returns the baseline y of the last line
+   so the caller can stack the sub below the name. */
+function fitLabel(g,text,x,y,maxW,maxH,size,minSize,cls){
+  const t=el('text',{class:cls,x:x,y:y},g);
+  text=String(text==null?'':text);
+  const fit=s=>{t.textContent=s;return t.getComputedTextLength();};
+  function breakLong(w){const segs=w.split(/([/_.,:>=()-])/),u=[];let b='';
+    for(const s of segs){b+=s;if(/[/_.,:>=()-]$/.test(b)){u.push(b);b='';}}if(b)u.push(b);
+    return u.length?u:[w];}
+  function lines(sz){t.style.fontSize=sz+'px';const ws=[];
+    for(const raw of text.split(/\s+/)){if(!raw)continue;if(fit(raw)<=maxW){ws.push(raw);continue;}
+      let cur='';for(const uu of breakLong(raw)){if(cur&&fit(cur+uu)>maxW){ws.push(cur);cur=uu;}else cur+=uu;}
+      if(cur)ws.push(cur);}
+    const ls=[];let cur='';
+    for(const w of ws){const c=cur?cur+' '+w:w;if(cur&&fit(c)>maxW){ls.push(cur);cur=w;}else cur=c;}
+    if(cur)ls.push(cur);return ls.length?ls:[''];}
+  let sz=size,ls=lines(sz);
+  const tooMany=()=>ls.length>Math.max(1,Math.floor(maxH/(sz*1.12)));
+  const tooWide=()=>Math.max.apply(null,ls.map(l=>fit(l)))>maxW+0.5;
+  while((tooMany()||tooWide())&&sz>minSize){sz-=0.5;ls=lines(sz);}
+  const cap=Math.max(1,Math.floor(maxH/(sz*1.12)));
+  if(ls.length>cap){ls=ls.slice(0,cap);t.style.fontSize=sz+'px';
+    let last=ls[cap-1];while(last.length>1&&fit(last+'…')>maxW)last=last.slice(0,-1);
+    ls[cap-1]=last.replace(/[\s/_.,:>=()-]+$/,'')+'…';}
+  t.textContent='';t.style.fontSize=sz+'px';const lh=sz*1.12;
+  ls.forEach((ln,i)=>{const ts=el('tspan',{x:x,y:(y+i*lh).toFixed(1)},t);ts.textContent=ln;});
+  if(/nName|nSub/.test(cls))lodTexts.push({t:t,k:11.05/sz,on:true});
+  return y+(ls.length-1)*lh;
+}
+
+/* ---------- build the world ---------- */
+let lodTexts=[], world, counterScaled=[], nodeEls={}, edgeEls={}, stopEls={}, edgeChipEls=[], gateGlowEls=[];
+function buildScene(){
+  const defs=el('defs',{},scene);
+  const pat=el('pattern',{id:'dots',width:24,height:24,patternUnits:'userSpaceOnUse'},defs);
+  el('circle',{cx:12,cy:12,r:1.15,fill:'var(--grid-dot)'},pat);
+  const halo=el('radialGradient',{id:'haloG'},defs);
+  el('stop',{offset:'0%','stop-color':'#C2502B','stop-opacity':.32},halo);
+  el('stop',{offset:'70%','stop-color':'#C2502B','stop-opacity':.10},halo);
+  el('stop',{offset:'100%','stop-color':'#C2502B','stop-opacity':0},halo);
+
+  world=el('g',{id:'world'},scene);
+  el('rect',{x:WORLD.x,y:WORLD.y,width:WORLD.w,height:WORLD.h,fill:'url(#dots)','pointer-events':'none'},world);
+
+  for(const z of ZONES){
+    el('rect',{class:'zoneRect',x:z.x,y:z.y,width:z.w,height:z.h,rx:18,fill:z.fill,
+      opacity:z.dim?0.75:1},world);
+  }
+  /* walls (dashed boundaries, optional rotated label) */
+  for(const w of WALLS){
+    el('line',{class:'wall',x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,opacity:w.opacity==null?1:w.opacity},world);
+    if(w.label){const lx=w.lx==null?w.x1-26:w.lx, ly=w.ly==null?830:w.ly;
+      el('text',{class:'wallLabel',x:lx,y:ly,transform:`rotate(-90 ${lx} ${ly})`},world).textContent=w.label;}
+  }
+  /* gates (arch crossings that can glow during a stage) */
+  for(const gt of GATES){
+    const top=gt.top==null?140:gt.top, bot=gt.bottom==null?1060:gt.bottom, op=gt.opacity==null?1:gt.opacity;
+    el('line',{class:'wall',x1:gt.x,y1:top,x2:gt.x,y2:gt.y0-14,opacity:op},world);
+    el('line',{class:'wall',x1:gt.x,y1:gt.y1+14,x2:gt.x,y2:bot,opacity:op},world);
+    const glow=el('rect',{class:'gateGlow',x:gt.x-26,y:gt.y0-20,width:52,height:gt.y1-gt.y0+40,rx:24,fill:'url(#haloG)'},world);
+    el('rect',{class:'gateArch',x:gt.x-13,y:gt.y0,width:26,height:gt.y1-gt.y0,rx:13},world);
+    if(gt.label){const ly=gt.ly==null?830:gt.ly;
+      el('text',{class:'wallLabel',x:gt.x-26,y:ly,transform:`rotate(-90 ${gt.x-26} ${ly})`},world).textContent=gt.label;}
+    gateGlowEls.push(glow);
+  }
+
+  /* containers (dashed grouping boxes) */
+  for(const c of CONTAINERS){
+    el('rect',{class:'containerRect',x:c.x,y:c.y,width:c.w,height:c.h,rx:16},world);
+    {const ct=el('text',{class:'containerLabel',x:c.x+18,y:c.y+30},world);ct.textContent=c.label;lodTexts.push({t:ct,k:11.05/14,on:true});}
+  }
+
+  /* edges under nodes */
+  const edgeLayer=el('g',{},world);
+  for(const ed of EDGES){
+    const d='M'+ed.pts.map(p=>p.join(' ')).join(' L');
+    const cls='edge'+(ed.dashed?' dashed':'')+(ed.dim?' dim':'')+(ed.ride?' ride':'');
+    edgeEls[ed.id]={path:el('path',{class:cls,d},edgeLayer),def:ed};
+  }
+  /* zone titles: above the edges (so no line strikes through one), below the nodes */
+  const zoneLayer=el('g',{},world);
+  for(const z of ZONES){fitLabel(zoneLayer,z.label,z.x+22,z.y+38,z.w-44,64,24,14,'zoneLabel');
+    /* a halo in the zone's own colour, so a line passing behind the title is not seen through it */
+    zoneLayer.lastChild.style.stroke=z.fill;}
+  /* nodes */
+  for(const n of NODES){
+    if(n.type==='bus'){
+      const g=el('g',{class:'node bus','data-id':n.id},world);
+      const cy=n.y+n.h/2;
+      el('rect',{class:'halo',x:n.x-16,y:cy-26,width:n.w+32,height:52,rx:24,fill:'url(#haloG)'},g);
+      el('line',{class:'busTrack',x1:n.x,y1:cy,x2:n.x+n.w,y2:cy},g);
+      const bn=el('text',{class:'busName',x:n.x+2,y:cy-22},g);bn.textContent=n.name;lodTexts.push({t:bn,k:11.05/20,on:true});
+      const sb=el('text',{class:'nSub',x:n.x+n.w-10,y:cy-20,'text-anchor':'end'},g);
+      sb.textContent=n.sub;lodTexts.push({t:sb,k:11.05/15,on:true});
+      let bmx=n.x+32;
+      for(const s of n.stops){
+        const sg=el('g',{class:'stop','data-stop':s},g);
+        el('circle',{cx:bmx,cy:cy,r:13},sg);
+        el('text',{x:bmx,y:cy+4.5},sg).textContent=s;
+        (stopEls[s]=stopEls[s]||[]).push(sg);
+        bmx+=30;
+      }
+      nodeEls[n.id]={g,def:n};
+      continue;
+    }
+    const g=el('g',{class:'node'+(n.dim?' dim':''),'data-id':n.id},world);
+    el('rect',{class:'halo',x:n.x-14,y:n.y-14,width:n.w+28,height:n.h+28,rx:20,fill:'url(#haloG)'},g);
+    el('rect',{class:'body',x:n.x,y:n.y,width:n.w,height:n.h,rx:10},g);
+    var _nb=fitLabel(g,n.name,n.x+18,n.y+30,n.w-30,Math.min(n.h*0.52,44),20,13,'nName');
+    fitLabel(g,n.sub,n.x+18,Math.max(_nb+19,n.y+54),n.w-30,(n.y+n.h)-Math.max(_nb+19,n.y+54)-12,15,10.5,'nSub');
+    /* stop medallions */
+    let mx=n.x+n.w-16;
+    for(const s of [...n.stops].reverse()){
+      const sg=el('g',{class:'stop','data-stop':s},g);
+      el('circle',{cx:mx,cy:n.y,r:13},sg);
+      const t=el('text',{x:mx,y:n.y+4.5},sg); t.textContent=s;
+      (stopEls[s]=stopEls[s]||[]).push(sg);
+      mx-=30;
+    }
+    /* port badge — counter-scaled */
+    if(n.port){
+      const bw=n.port.length*7.4+16;
+      const bg=el('g',{class:'portBadge lod1'},world);
+      el('rect',{x:-bw/2,y:-11,width:bw,height:22,rx:7},bg);
+      el('text',{x:0,y:4},bg).textContent=n.port;
+      counterScaled.push({el:bg,x:n.x+24,y:n.y+n.h});
+    }
+    nodeEls[n.id]={g,def:n};
+  }
+  /* arrowheads — counter-scaled */
+  for(const ed of EDGES){
+    const pts=ed.pts, a=pts[pts.length-2], b=pts[pts.length-1];
+    const ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;
+    const g=el('g',{class:'arrowHeadG'},world);
+    const p=el('path',{class:'arrowHead'+(ed.ride?' rideHead':''),'data-edge':ed.id,
+      d:'M0 0 L-11 -5.5 L-11 5.5 Z',transform:`rotate(${ang})`},g);
+    if(ed.dim)p.setAttribute('opacity',.45);
+    counterScaled.push({el:g,x:b[0],y:b[1]});
+    edgeEls[ed.id].head=p;
+  }
+  /* topic chips on event-carrying edges (visible at close zoom) */
+  /* EDGE_TOPICS / CHIP_STAGE / CHIP_AT come from the DATA block above */
+  for(const id in EDGE_TOPICS){
+    const t=EDGE_TOPICS[id], path=edgeEls[id].path;
+    const len=path.getTotalLength();
+    const p=CHIP_AT[id]?{x:CHIP_AT[id][0],y:CHIP_AT[id][1]}:path.getPointAtLength(len/2);
+    const label=t.split('.').slice(0,2).join('.')+'…'+t.split('.').slice(-2).join('.');
+    const g=el('g',{class:'edgeChip'},world);
+    const w=label.length*6.6+14;
+    el('rect',{x:-w/2,y:-12,width:w,height:22},g);
+    el('text',{x:0,y:3},g).textContent=label;
+    counterScaled.push({el:g,x:p.x,y:p.y-16});
+    edgeChipEls.push({el:g,stage:CHIP_STAGE[id]});
+  }
+  /* packet chip — counter-scaled, hidden until used */
+  const pk=el('g',{class:'packetChip',visibility:'hidden'},world);
+  el('rect',{x:-38,y:-13,width:76,height:26},pk);
+  el('text',{x:0,y:4},pk).textContent=META.specimen.packetLabel;
+  packet.el=pk; counterScaled.push(packet.cs={el:pk,x:0,y:0});
+  /* parked message — shown while a stage declares park:[x,y] */
+  const pp=el('g',{class:'packetChip',visibility:'hidden'},world);
+  el('rect',{x:-38,y:-13,width:76,height:26},pp);
+  el('text',{x:0,y:4},pp).textContent=META.specimen.packetLabel;
+  pp.classList.add('waiting');
+  parkPkg.el=pp; counterScaled.push(parkPkg.cs={el:pp,x:0,y:0});
+}
+
+/* ---------- camera ---------- */
+const cam={x:1260,y:560,k:.5};
+let minK=.2, maxK=3, camTween=null;
+function vp(){return {w:scene.clientWidth,h:scene.clientHeight}}
+const isPhone=()=>matchMedia('(max-width:899px)').matches;
+function safeRect(){
+  const v=vp(), c=$('controls'), top=isPhone()?52:70;
+  const bottom=isPhone()?6:(c&&c.offsetHeight?c.offsetHeight:140)+6;
+  return {x:isPhone()?8:24,y:top,w:v.w-(isPhone()?16:48),h:Math.max(120,v.h-top-bottom)};
+}
+function fitScale(pad=48){
+  const s=safeRect();
+  return Math.min((s.w-pad)/WORLD.w,(s.h-pad)/WORLD.h);
+}
+function applyCam(){
+  const v=vp();
+  world.setAttribute('transform',
+    `translate(${v.w/2-cam.x*cam.k} ${v.h/2-cam.y*cam.k}) scale(${cam.k})`);
+  for(const c of counterScaled)
+    c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);
+  updateLOD(); updateTextLOD(); drawMiniView(); if(devOn)devShow();
+}
+function updateTextLOD(){
+  for(const x of lodTexts){const on=cam.k>=x.k;if(on!==x.on){x.on=on;x.t.classList.toggle('lodoff',!on);}}
+}
+let lodCur=2;
+function updateLOD(){
+  /* tiers: names 21px, secondary 13.5px, chips 11.5px — hide below ~11px on screen */
+  let lod = cam.k>=0.9 ? 2 : cam.k>=0.58 ? 1 : 0;
+  /* hysteresis */
+  if(lod<lodCur){ if(lodCur===2&&cam.k>0.86)lod=2; if(lodCur>=1&&lod===0&&cam.k>0.54)lod=1; }
+  if(lod!==lodCur){lodCur=lod;scene.dataset.lod=lod;}
+}
+function bboxOf(ids,pad=70,F){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const id of ids){const n=NODES.find(n=>n.id===id);
+    x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+n.w);y1=Math.max(y1,n.y+n.h);}
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  /* frame ~2x the focus area so the guided zoom sits about half as close */
+  if(F==null)F=isPhone()?1:1.12;
+  const w=(x1-x0+2*pad)*F, h=(y1-y0+2*pad)*F;
+  return {x:cx-w/2,y:cy-h/2,w,h,cx,cy};
+}
+function solveCam(bb,zoomCap,floorK){
+  const s=safeRect(), v=vp();
+  let k=clamp(Math.min(s.w/bb.w,s.h/bb.h),Math.max(minK,floorK||0),zoomCap||maxK);
+  const scx=s.x+s.w/2, scy=s.y+s.h/2;
+  return {x:bb.cx-(scx-v.w/2)/k, y:bb.cy-(scy-v.h/2)/k, k};
+}
+/* Camera for a stage: frame every focus node, but never zoom out so far that
+   node labels drop below a readable size; if the focus is too wide to fit
+   legibly, frame the highlighted components instead. */
+function stageCam(st){
+  const pad=st.focusPad||(isPhone()?50:90), floor=isPhone()?0.55:0.6;
+  const cap=isPhone()?1.3:1.5;
+  let to=solveCam(bboxOf(st.focus,pad),cap);
+  if(to.k<floor){
+    const hl=(st.highlight&&st.highlight.length)?st.highlight:st.focus;
+    to=solveCam(bboxOf(hl,pad),cap,floor);
+    /* still wider than the screen at a readable scale: frame the lit component alone,
+       so no box is cut off at the edge */
+    const fits=(bb)=>{const sr=safeRect();return bb.w*to.k<=sr.w+1&&bb.h*to.k<=sr.h+1;};
+    if(to.k<=floor+1e-6&&!fits(bboxOf(hl,pad)))to=solveCam(bboxOf(hl.slice(0,1),pad),cap,floor);
+  }
+  return to;
+}
+function camDist(a,b){const km=(a.k+b.k)/2;return Math.hypot((a.x-b.x)*km,(a.y-b.y)*km);}
+function tweenCam(to,done){
+  if(camTween)cancelAnimationFrame(camTween.raf),camTween=null;
+  if(RM){Object.assign(cam,to);applyCam();done&&done();return;}
+  const from={...cam}, d=camDist(from,to), v=vp();
+  const dur=clamp(200+d*.4,300,900);
+  /* Van Wijk-lite: long jumps dip through an overview scale */
+  let kMid=null;
+  if(d>1.5*v.w){
+    const ub={x:Math.min(from.x,to.x)-300,y:Math.min(from.y,to.y)-300,
+      w:Math.abs(from.x-to.x)+600,h:Math.abs(from.y-to.y)+600};
+    kMid=clamp(Math.min(vp().w/ub.w,vp().h/ub.h),minK,Math.min(from.k,to.k));
+  }
+  const t0=performance.now();
+  const tw=camTween={to};
+  function frame(now){
+    const u=easeC((now-t0)/dur);
+    cam.x=lerp(from.x,to.x,u); cam.y=lerp(from.y,to.y,u);
+    cam.k=kMid? (u<.5? lerp(from.k,kMid,easeC(u*2)) : lerp(kMid,to.k,easeC(u*2-1)))
+              : lerp(from.k,to.k,u);
+    applyCam();
+    if((now-t0)<dur && camTween===tw)tw.raf=requestAnimationFrame(frame);
+    else{ if(camTween===tw){camTween=null; Object.assign(cam,to); applyCam(); done&&done();} }
+  }
+  tw.raf=requestAnimationFrame(frame);
+}
+function cancelCamTween(snap){const tw=camTween;
+  if(tw){cancelAnimationFrame(tw.raf);camTween=null;
+    if(snap&&tw.to){Object.assign(cam,tw.to);applyCam();}}}
+
+/* ---------- packet ---------- */
+const packet={el:null,cs:null,raf:null,queue:[],onDone:null};
+const parkPkg={el:null,cs:null};
+function clearPacket(){
+  if(packet.raf)cancelAnimationFrame(packet.raf),packet.raf=null;
+  if(packet.t)clearTimeout(packet.t),packet.t=null;
+  if(packet.fade)clearTimeout(packet.fade),packet.fade=null;
+  packet.queue=[];packet.prev=null;packet.onDone=null;packet.hold=false;
+  packet.el.style.opacity=1;
+  packet.el.setAttribute('visibility','hidden');
+  document.querySelectorAll('.edge.active,.edge.passed').forEach(e=>e.classList.remove('active','passed'));
+  document.querySelectorAll('.arrowHead.active').forEach(e=>e.classList.remove('active'));
+}
+function runPackets(list,done,hold){
+  clearPacket(); packet.queue=[...list]; packet.onDone=done; packet.hold=!!hold;
+  nextPacket();
+}
+function nextPacket(){
+  /* accent budget: demote the just-traveled edge before lighting the next */
+  if(packet.prev){packet.prev.path.classList.remove('active');
+    packet.prev.path.classList.add('passed');
+    packet.prev.head&&packet.prev.head.classList.remove('active');packet.prev=null;}
+  const item=packet.queue.shift();
+  if(!item){
+    /* journey over: a held parcel stays (it parked); a consumed one fades out */
+    if(!packet.hold){
+      if(RM)packet.el.setAttribute('visibility','hidden');
+      else{packet.el.style.opacity=0;
+        packet.fade=setTimeout(()=>{packet.el.setAttribute('visibility','hidden');
+          packet.el.style.opacity=1;},520);}
+    }
+    packet.onDone&&packet.onDone();return;
+  }
+  const ee=edgeEls[item.e], path=ee.path, len=path.getTotalLength();
+  if(packet.queue.length)packet.prev=ee;
+  path.classList.remove('passed');
+  path.classList.add('active'); ee.head&&ee.head.classList.add('active');
+  if(RM){const p=path.getPointAtLength(item.rev?0:len);
+    packet.cs.x=p.x;packet.cs.y=p.y;applyCamOne(packet.cs);
+    showChip(packet.el);
+    packet.t=setTimeout(nextPacket,160);return;}
+  const ride=!!ee.def.ride;
+  /* bus rides travel ~30% slower than HTTP/direct hops */
+  const dur=clamp(len*cam.k*(ride?1.17:0.9), ride?585:450, ride?1300:1000), t0=performance.now();
+  showChip(packet.el);
+  function frame(now){
+    let u=easeC((now-t0)/dur); if(item.rev)u=1-u;
+    const p=path.getPointAtLength(u*len);
+    packet.cs.x=p.x;packet.cs.y=p.y;applyCamOne(packet.cs);
+    if((now-t0)<dur)packet.raf=requestAnimationFrame(frame);
+    else{packet.raf=null;nextPacket();}
+  }
+  packet.raf=requestAnimationFrame(frame);
+}
+function applyCamOne(c){c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);}
+
+/* ---------- state machine ---------- */
+const S={mode:'cover',idx:1,cameraMode:'guided',playing:false,visited:new Set()};
+/* reading level: plain | exec | technical — shared across all exhibits via localStorage (master control on the index) */
+let audience=(function(){try{return localStorage.getItem('onexAudience')||'plain';}catch(e){return 'plain';}})();
+let hoodOpen=false, compMode=null, blurbRaf=null;
+
+function setCameraMode(m){
+  S.cameraMode=m;
+  $('resumePill').classList.toggle('show',m==='free'&&S.mode==='tour');
+  if(m==='free')stopPlay();
+}
+function stageByN(n){return STAGES[n-1];}
+
+function goStage(n,opts={}){
+  if(!(n>=1)){return;} /* also rejects undefined/NaN */
+  clearDwell();
+  if(opts.via&&opts.via!=='auto'&&S.playing)stopPlay();
+  if(n>STAGES.length){goTerminal();return;}
+  compMode=null;$('panel').classList.remove('comp');
+  S.mode='tour';S.idx=n;S.visited.add(n);
+  $('cover').hidden=true;$('terminal').hidden=true;
+  setCameraMode('guided');
+  hintDone('hintClick',opts.via==='node');
+  const st=stageByN(n);
+  /* visuals */
+  clearPacket();
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  (st.highlight||[]).forEach((id,i)=>nodeEls[id].g.classList.add(i===0?'lit':'co'));
+  gateGlowEls.forEach(g=>g.classList.toggle('lit',!!st.gate));
+  if(st.park){parkPkg.cs.x=st.park[0];parkPkg.cs.y=st.park[1];applyCamOne(parkPkg.cs);
+    showChip(parkPkg.el);}
+  else{parkPkg.el.style.opacity=1;parkPkg.el.setAttribute('visibility','hidden');}
+  document.querySelectorAll('.edge.traced').forEach(e=>e.classList.remove('traced'));
+  for(const c of edgeChipEls)c.el.style.opacity=(c.stage===st.n)?1:0;
+  updateStops();updateScrubber();updateButtons();renderPanel(st);
+  const to=stageCam(st);
+  tweenCam(to,()=>{
+    if(st.packets&&st.packets.length)runPackets(st.packets,()=>afterPackets(st),st.hold);
+    else afterPackets(st);
+  });
+}
+function afterPackets(st){
+  for(const id of st.pulse||[])nodeEls[id].g.classList.add('pulse');
+  if(S.playing)armDwell(st);
+}
+/* fade a chip in when it first appears (a message being created) */
+function showChip(elm){
+  if(elm.getAttribute('visibility')==='visible')return;
+  elm.setAttribute('visibility','visible');
+  if(RM){elm.style.opacity=1;return;}
+  elm.style.opacity=0;requestAnimationFrame(()=>elm.style.opacity=1);
+}
+const WORLD_BB=()=>({x:WORLD.x-48,y:WORLD.y-48,w:WORLD.w+96,h:WORLD.h+96,cx:WORLD.w/2,cy:WORLD.h/2});
+function goCover(){
+  S.mode='cover';stopPlay();clearPacket();cancelCamTween();compMode=null;
+  parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
+  edgeChipEls.forEach(c=>c.el.style.opacity=0);
+  $('panel').classList.remove('comp');
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  gateGlowEls.forEach(g=>g.classList.remove('lit'));
+  $('cover').hidden=false;$('terminal').hidden=true;
+  setCameraMode('guided');
+  Object.assign(cam,solveCam(WORLD_BB()));applyCam();
+  renderPanel(stageByN(1));updateScrubber();updateButtons();
+}
+function goTerminal(){
+  S.mode='terminal';stopPlay();clearPacket();stopTyping();
+  parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
+  edgeChipEls.forEach(c=>c.el.style.opacity=0);
+  $('terminal').hidden=false;
+  for(const id of TRACE_ORDER)
+    if(S.visited.has(EDGE_STAGE[id]))edgeEls[id].path.classList.add('traced');
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  gateGlowEls.forEach(g=>g.classList.remove('lit'));
+  tweenCam(solveCam(WORLD_BB()));updateButtons();
+}
+function updateStops(){
+  for(const k in stopEls)for(const g of stopEls[k]){
+    const n=+k;g.classList.toggle('current',S.mode==='tour'&&n===S.idx);
+    g.classList.toggle('visited',S.visited.has(n)&&!(S.mode==='tour'&&n===S.idx));
+  }
+}
+
+/* ---------- panel ---------- */
+function chipHTML(t){const pre=t.split('.').slice(0,2).join('.');
+  const tail=t.split('.').slice(-2).join('.');
+  return `<span class="chip" title="${t}">${pre}…<b>${tail}</b></span>`;}
+/* reveal the blurb letter by letter (steady, time-based, not human-cadenced) */
+let blurbFull=null;
+function stopTyping(){if(blurbRaf)cancelAnimationFrame(blurbRaf),blurbRaf=null;}
+/* a tap on the blurb finishes the typing at once */
+function finishTyping(){if(blurbRaf&&blurbFull){stopTyping();blurbFull();}}
+function typeBlurb(paras,instant){
+  stopTyping();
+  const host=$('blurb'), live=$('liveWrap');
+  host.innerHTML='';
+  if(RM||instant){host.innerHTML=paras.map(p=>`<p>${p}</p>`).join('');live.setAttribute('aria-busy','false');return;}
+  const ps=paras.map(()=>{const e=document.createElement('p');host.appendChild(e);return e;});
+  const lens=paras.map(p=>p.length), total=lens.reduce((a,b)=>a+b,0);
+  const MS=Math.min(2,500/Math.max(total,1)), t0=performance.now(); /* ~2ms/char, never more than 0.5s */
+  blurbFull=()=>{ps.forEach((e,i)=>{e.textContent=paras[i];});live.setAttribute('aria-busy','false');};
+  live.setAttribute('aria-busy','true');
+  (function step(now){
+    const shown=Math.min(total,Math.floor((now-t0)/MS));
+    let rem=shown;
+    for(let i=0;i<ps.length;i++){const take=Math.min(lens[i],rem);ps[i].textContent=paras[i].slice(0,take);rem-=take;}
+    if(shown<total)blurbRaf=requestAnimationFrame(step);
+    else{blurbRaf=null;live.setAttribute('aria-busy','false');}
+  })(performance.now());
+}
+function renderPanel(st,instant){
+  const p=$('panel');
+  /* pick the field for the chosen reading level, falling back to the technical text */
+  const pick=(b)=>st[b+'_'+audience]!==undefined?st[b+'_'+audience]:st[b];
+  $('crumbText').textContent=st.crumb;
+  $('counter').textContent=String(st.n).padStart(2,'0')+' / '+String(STAGES.length).padStart(2,'0');
+  $('stTitle').textContent=pick('title');
+  typeBlurb(pick('blurb'),instant);
+  /* caveat does NOT fall back to the technical text — it shows only if authored for this level */
+  const cav=audience==='technical'?st.caveat:(st['caveat_'+audience]||null);
+  $('caveatBox').innerHTML=cav?
+    `<div class="caveat"><span class="tag">${cav.tag}</span><div class="body">${cav.text}</div></div>`:'';
+  /* the "under the hood" panel is inherently technical — only show it at the technical level */
+  if(audience==='technical'){
+    $('hood').style.display='';
+    let rows='';
+    for(const h of st.hood){
+      let v;
+      if(h.chips)v=`<div class="chips">${h.v.map(chipHTML).join('')}</div>
+        <div style="margin-top:6px">${h.v.map(t=>`<div class="v" style="font-size:11.5px">${t}</div>`).join('')}</div>`;
+      else if(h.chip)v=`<div class="chips">${chipHTML(h.v)}</div>
+        <div class="v" style="font-size:11.5px;margin-top:6px">${h.v}</div>`;
+      else v=`<div class="v">${h.v}</div>`;
+      rows+=`<div class="kv"><div class="k">${h.k}</div><div style="flex:1">${v}</div></div>`;
+    }
+    $('hoodInner').innerHTML=rows;
+    $('hood').open=hoodOpen;
+  } else {
+    $('hood').style.display='none';
+  }
+}
+function renderComponent(node){
+  compMode=node.id;$('panel').classList.add('comp');stopTyping();
+  $('crumbText').textContent=node.zone;
+  $('counter').textContent='component';
+  $('stTitle').textContent=node.name;
+  $('blurb').innerHTML=`<p>${node.desc}</p>`;
+  $('caveatBox').innerHTML='';
+  $('hoodInner').innerHTML=`<div class="kv"><div class="k">stops here</div>
+    <div class="stagechips">${node.stops.map(s=>
+      `<button data-go="${s}">${String(s).padStart(2,'0')} · ${stageByN(s).short}</button>`).join('')}</div></div>`;
+  $('hood').open=true;
+}
+$('blurb').addEventListener('click',()=>{if(blurbRaf&&!compMode)renderPanel(stageByN(S.idx),true);});
+$('hood').addEventListener('toggle',()=>{if(!compMode)hoodOpen=$('hood').open;hintDone('hintHood',$('hood').open);});
+$('hoodInner').addEventListener('click',e=>{
+  const b=e.target.closest('[data-go]');if(b)goStage(+b.dataset.go,{via:'chip'});
+});
+$('crumbText').addEventListener('click',()=>{
+  if(S.mode!=='tour')return;
+  const st=stageByN(S.idx);
+  const nid=(st.highlight&&st.highlight[0]);
+  if(nid)renderComponent(nodeEls[nid].def);
+});
+$('compClose').addEventListener('click',()=>{compMode=null;$('panel').classList.remove('comp');renderPanel(stageByN(S.idx));});
+
+/* ---------- scrubber / stepper / autoplay ---------- */
+const scrub=$('scrubber');
+for(const st of STAGES){
+  const b=document.createElement('button');
+  b.className='tick';b.dataset.n=st.n;b.title=`${st.n}. ${st.title}`;b.tabIndex=-1;
+  b.innerHTML=`<span class="dot"></span><span class="lbl">${st.short}</span>`;
+  b.addEventListener('click',()=>goStage(st.n,{via:'scrub'}));
+  scrub.appendChild(b);
+}
+scrub.addEventListener('keydown',e=>{
+  const go=k=>{e.stopPropagation();e.preventDefault();goStage(k,{via:'key'});};
+  if(e.key==='ArrowRight')go(S.mode==='cover'?1:S.idx+1);
+  else if(e.key==='ArrowLeft')go(S.idx-1);
+  else if(e.key==='Home')go(1);
+  else if(e.key==='End')go(STAGES.length);
+});
+function updateScrubber(){
+  scrub.querySelectorAll('.tick').forEach(t=>{
+    const n=+t.dataset.n;
+    t.classList.toggle('current',S.mode==='tour'&&n===S.idx);
+    t.classList.toggle('visited',S.visited.has(n));
+  });
+  $('scrubLabel').textContent=S.mode==='tour'
+    ? String(S.idx).padStart(2,'0')+' · '+stageByN(S.idx).short : '';
+}
+function updateButtons(){
+  $('btnBack').disabled=(S.mode==='tour'&&S.idx<=1)||S.mode==='cover';
+  $('btnNext').disabled=S.mode==='terminal';
+  $('btnNext').textContent=S.mode==='tour'&&S.idx===STAGES.length?'Finish ▶':'Next ▶';
+}
+$('btnNext').addEventListener('click',()=>{
+  if(S.mode==='cover')goStage(1,{via:'btn'});
+  else goStage(S.idx+1,{via:'btn'});
+});
+$('blurb').addEventListener('click',finishTyping);
+$('btnBack').addEventListener('click',()=>{
+  if(S.mode==='terminal'){$('terminal').hidden=true;goStage(STAGES.length,{via:'btn'});}
+  else if(S.mode==='tour')goStage(S.idx-1,{via:'btn'});
+});
+$('btnBegin').addEventListener('click',()=>goStage(1));
+$('btnReplay').addEventListener('click',()=>{S.visited.clear();goStage(1);});
+$('btnExplore').addEventListener('click',()=>{
+  $('terminal').hidden=true;S.mode='tour';S.idx=STAGES.length;setCameraMode('free');
+  const last=stageByN(STAGES.length), nid=(last.highlight&&last.highlight[0])||last.focus[0];
+  renderComponent(nodeEls[nid].def);updateButtons();
+});
+$('exhibitTitle').addEventListener('click',goCover);
+/* reading-level dropdown — self-injected so it travels with the engine (no chrome dependency) */
+(function setupAudience(){
+  const head=$('exhibitHead'); if(!head) return;
+  if(!document.getElementById('audienceCss')){
+    const st=document.createElement('style'); st.id='audienceCss';
+    st.textContent="#audienceSel{pointer-events:auto;margin-left:auto;font-family:var(--sans);font-size:12.5px;letter-spacing:.02em;color:var(--ink);background:var(--box-fill);border:1.5px solid var(--ink-2);border-radius:8px;padding:5px 26px 5px 9px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}#audienceSel:hover{border-color:var(--ink)}";
+    document.head.appendChild(st);
+  }
+  let sel=$('audienceSel');
+  if(!sel){
+    sel=document.createElement('select'); sel.id='audienceSel'; sel.title='Reading level'; sel.setAttribute('aria-label','Reading level');
+    sel.innerHTML='<option value="plain">Plain-language</option><option value="exec">Executive</option><option value="technical">Technical</option>';
+    head.appendChild(sel);
+  }
+  sel.value=audience;
+  sel.addEventListener('change',e=>{audience=e.target.value;try{localStorage.setItem('onexAudience',audience);}catch(_){}if(!compMode)renderPanel(stageByN(S.idx));});
+  /* live-sync if the master control (or another tab) changes the level */
+  window.addEventListener('storage',e=>{if(e.key==='onexAudience'&&e.newValue&&e.newValue!==audience){audience=e.newValue;sel.value=audience;if(!compMode)renderPanel(stageByN(S.idx));}});
+})();
+$('resumePill').addEventListener('click',()=>{
+  setCameraMode('guided');
+  tweenCam(stageCam(stageByN(S.idx)));
+});
+$('btnFit').addEventListener('click',()=>{
+  setCameraMode('free');
+  tweenCam(solveCam(WORLD_BB()));
+});
+
+/* autoplay */
+let dwellT=null,dwellStart=0,dwellLen=0,ringRaf=null;
+const RING_C=172.8;
+function wordsOf(st){return st.blurb.join(' ').split(/\s+/).length;}
+function armDwell(st){
+  clearDwell();
+  dwellLen=clamp(4000+wordsOf(st)*350,10000,30000);dwellStart=performance.now();
+  dwellT=setTimeout(()=>{if(S.idx>=STAGES.length)goTerminal();else goStage(S.idx+1,{via:'auto'});},dwellLen);
+  ringTick();
+}
+function ringTick(){
+  const u=clamp((performance.now()-dwellStart)/dwellLen,0,1);
+  document.querySelector('#btnPlay .ring').setAttribute('stroke-dashoffset',RING_C*(1-u));
+  if(S.playing)ringRaf=requestAnimationFrame(ringTick);
+}
+function clearDwell(){
+  if(dwellT)clearTimeout(dwellT),dwellT=null;
+  if(ringRaf)cancelAnimationFrame(ringRaf),ringRaf=null;
+  document.querySelector('#btnPlay .ring').setAttribute('stroke-dashoffset',RING_C);
+}
+function stopPlay(){S.playing=false;$('playGlyph').textContent='▶';
+  $('btnPlay').setAttribute('aria-label','Play narration steps');clearDwell();}
+$('btnPlay').addEventListener('click',()=>{
+  if(S.playing){stopPlay();return;}
+  S.playing=true;$('playGlyph').textContent='❚❚';
+  $('btnPlay').setAttribute('aria-label','Pause narration');
+  if(S.mode!=='tour')goStage(1);
+  else if(S.cameraMode==='free'){setCameraMode('guided');
+    const st=stageByN(S.idx);tweenCam(stageCam(st),()=>armDwell(st));}
+  else armDwell(stageByN(S.idx));
+});
+
+/* ---------- input: pan / zoom / pinch / taps ---------- */
+const pointers=new Map();
+let dragInfo=null,pinch0=null;
+scene.addEventListener('pointerdown',e=>{
+  idleKick();
+  try{scene.setPointerCapture(e.pointerId);}catch(_){/* synthetic/stale pointer */}
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1){
+    /* §6/§7: input completes the in-flight transition and pauses autoplay */
+    cancelCamTween(true);if(S.playing)stopPlay();
+    dragInfo={x0:e.clientX,y0:e.clientY,cx:cam.x,cy:cam.y,moved:false,target:e.target};
+  }else if(pointers.size===2){
+    const [a,b]=[...pointers.values()];
+    pinch0={d:Math.hypot(a.x-b.x,a.y-b.y),k:cam.k,
+      mx:(a.x+b.x)/2,my:(a.y+b.y)/2,cx:cam.x,cy:cam.y};
+    dragInfo=null;
+  }
+});
+scene.addEventListener('pointermove',e=>{
+  if(!pointers.has(e.pointerId))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch0&&pointers.size===2){
+    const [a,b]=[...pointers.values()];
+    const d=Math.hypot(a.x-b.x,a.y-b.y);
+    cancelCamTween(true);setCameraMode('free');
+    const k=clamp(pinch0.k*d/pinch0.d,minK,maxK);
+    const v=vp();
+    /* keep pinch midpoint anchored */
+    const wx=pinch0.cx+(pinch0.mx-v.w/2)/pinch0.k, wy=pinch0.cy+(pinch0.my-v.h/2)/pinch0.k;
+    cam.k=k;cam.x=wx-(pinch0.mx-v.w/2)/k;cam.y=wy-(pinch0.my-v.h/2)/k;
+    clampPan();applyCam();return;
+  }
+  if(dragInfo){
+    const dx=e.clientX-dragInfo.x0,dy=e.clientY-dragInfo.y0;
+    if(!dragInfo.moved&&Math.hypot(dx,dy)>8){
+      dragInfo.moved=true;scene.classList.add('dragging');
+      cancelCamTween();setCameraMode('free');hintDone('hintDrag',true);
+    }
+    if(dragInfo.moved){
+      cam.x=dragInfo.cx-dx/cam.k;cam.y=dragInfo.cy-dy/cam.k;
+      clampPan();applyCam();
+    }
+  }
+});
+function endPointer(e){
+  /* pointer capture retargets pointerup to the svg — use the pointerdown target */
+  if(e.type==='pointerup'&&dragInfo&&!dragInfo.moved){
+    const ng=dragInfo.target&&dragInfo.target.closest&&dragInfo.target.closest('.node');
+    if(ng){const n=nodeEls[ng.dataset.id].def;
+      const next=n.stops.find(s=>!S.visited.has(s))??n.stops[0];
+      if(next!=null)goStage(next,{via:'node'});else renderComponent(n);}
+  }
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinch0=null;
+  if(pointers.size===0){dragInfo=null;scene.classList.remove('dragging');}
+}
+scene.addEventListener('pointerup',endPointer);
+scene.addEventListener('pointercancel',endPointer);
+scene.addEventListener('dblclick',e=>{
+  /* capture retargeting defeats e.target — hit-test by position */
+  const t=document.elementFromPoint(e.clientX,e.clientY);
+  if(t&&t.closest&&t.closest('.node'))return;
+  cancelCamTween(true);setCameraMode('free');
+  zoomAt(e.clientX,e.clientY,1.6);
+});
+scene.addEventListener('wheel',e=>{
+  e.preventDefault();idleKick();
+  cancelCamTween(true);setCameraMode('free');
+  let dy=e.deltaY; if(e.deltaMode===1)dy*=16;
+  const f=Math.exp(-dy*(e.ctrlKey?0.012:0.0022));
+  zoomAt(e.clientX,e.clientY,f);
+},{passive:false});
+function zoomAt(sx,sy,f){
+  const v=vp(),k=clamp(cam.k*f,minK,maxK);
+  const wx=cam.x+(sx-v.w/2)/cam.k, wy=cam.y+(sy-v.h/2)/cam.k;
+  cam.x=wx-(sx-v.w/2)/k;cam.y=wy-(sy-v.h/2)/k;cam.k=k;
+  clampPan();applyCam();
+}
+function clampPan(){
+  cam.x=clamp(cam.x,WORLD.x,WORLD.x+WORLD.w);
+  cam.y=clamp(cam.y,WORLD.y,WORLD.y+WORLD.h);
+}
+
+/* ---------- keyboard ---------- */
+addEventListener('keydown',e=>{
+  idleKick();
+  const t=e.target;
+  if(t.closest&&t.closest('button,input,textarea,select,summary,#scrubber'))return;
+  if(e.key==='ArrowRight'){goStage(S.mode==='cover'?1:S.idx+1,{via:'key'});e.preventDefault();}
+  else if(e.key==='ArrowLeft'){goStage(S.idx-1,{via:'key'});e.preventDefault();}
+  else if(e.key==='Home'){goStage(1,{via:'key'});e.preventDefault();}
+  else if(e.key==='End'){goStage(STAGES.length,{via:'key'});e.preventDefault();}
+  else if(e.key==='Escape'){if(compMode){compMode=null;$('panel').classList.remove('comp');renderPanel(stageByN(S.idx));}}
+  else if(e.key==='g'){devOn=!devOn;$('devOut').classList.toggle('show',devOn);}
+});
+
+/* ---------- minimap ---------- */
+const mm=$('minimap');let mmView;
+function buildMini(){
+  mm.setAttribute('viewBox',`0 0 ${WORLD.w} ${WORLD.h}`);
+  for(const z of ZONES)el('rect',{class:'mmZone',x:z.x,y:z.y,width:z.w,height:z.h,rx:30},mm);
+  for(const n of NODES)el('rect',{class:'mmNode',x:n.x,y:n.y,width:n.w,height:n.h,rx:14},mm);
+  for(const w of WALLS)el('line',{x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,stroke:'var(--ink-2)','stroke-width':8,'stroke-dasharray':'30 22',opacity:.5},mm);
+  for(const gt of GATES)el('line',{x1:gt.x,y1:gt.top==null?140:gt.top,x2:gt.x,y2:gt.bottom==null?1060:gt.bottom,stroke:'var(--ink-2)','stroke-width':8,'stroke-dasharray':'30 22',opacity:.5},mm);
+  mmView=el('rect',{class:'mmView',x:0,y:0,width:100,height:100},mm);
+}
+function drawMiniView(){
+  const v=vp();
+  const w=v.w/cam.k,h=v.h/cam.k;
+  mmView.setAttribute('x',cam.x-w/2);mmView.setAttribute('y',cam.y-h/2);
+  mmView.setAttribute('width',w);mmView.setAttribute('height',h);
+}
+mm.addEventListener('click',e=>{
+  const r=mm.getBoundingClientRect();
+  /* invert preserveAspectRatio 'meet' letterboxing */
+  const s=Math.min(r.width/WORLD.w,r.height/WORLD.h);
+  const ox=(r.width-WORLD.w*s)/2, oy=(r.height-WORLD.h*s)/2;
+  const wx=clamp((e.clientX-r.left-ox)/s,0,WORLD.w);
+  const wy=clamp((e.clientY-r.top-oy)/s,0,WORLD.h);
+  cancelCamTween();setCameraMode('free');
+  tweenCam({x:wx,y:wy,k:cam.k});
+});
+
+/* ---------- hints / idle / dev ---------- */
+const hintsDone={};
+function hintDone(id,yes){if(yes&&!hintsDone[id]){hintsDone[id]=true;$(id).classList.add('done');}}
+let idleT=null;
+function idleKick(){
+  if(idleT)clearTimeout(idleT);
+  idleT=setTimeout(()=>{if(S.mode!=='cover'&&!S.playing)goCover();else idleKick();},180000);
+}
+['pointerdown','wheel','keydown'].forEach(ev=>addEventListener(ev,idleKick,{passive:ev!=='wheel'}));
+let devOn=false,devMouse={x:0,y:0};
+scene.addEventListener('pointermove',e=>{devMouse={x:e.clientX,y:e.clientY};if(devOn)devShow();});
+function devShow(){
+  const v=vp();
+  const wx=Math.round(cam.x+(devMouse.x-v.w/2)/cam.k);
+  const wy=Math.round(cam.y+(devMouse.y-v.h/2)/cam.k);
+  $('devOut').textContent=`x ${wx} · y ${wy} · k ${cam.k.toFixed(2)}`;
+}
+
+/* ---------- boot / resize ---------- */
+function recalibrate(){
+  cancelCamTween(false);
+  minK=fitScale();maxK=3;
+  if(S.cameraMode==='guided'){
+    if(S.mode==='tour'){Object.assign(cam,stageCam(stageByN(S.idx)));}
+    else Object.assign(cam,solveCam(WORLD_BB()));
+  } else cam.k=Math.max(cam.k,minK);
+  applyCam();
+}
+addEventListener('resize',recalibrate);
+function applyMeta(){
+  document.title=META.docTitle||META.title;
+  $('exhibitTitle').textContent=META.title;
+  $('exhibitSub').textContent=META.subtitle;
+  const C=META.cover||{}, q=(root,s)=>document.querySelector(root+' '+s);
+  if(C.kicker)q('#cover','.kicker').textContent=C.kicker;
+  if(C.h1)q('#cover','h1').innerHTML=C.h1;
+  if(C.promise)q('#cover','.promise').innerHTML=C.promise;
+  if(C.instr)q('#cover','.instr').innerHTML=C.instr;
+  if(C.specimenHTML)q('#cover','.specimen').innerHTML=C.specimenHTML;
+  if(C.legend)q('#cover','.legend').innerHTML=C.legend.map(li=>
+    `<span class="li"><span class="sw" style="${li.style||''}"></span>${li.label}</span>`).join('');
+  const TM=META.terminal||{};
+  if(TM.kicker)q('#terminal','.kicker').textContent=TM.kicker;
+  if(TM.h2)q('#terminal','h2').innerHTML=TM.h2;
+  if(TM.promise)q('#terminal','.promise').innerHTML=TM.promise;
+  if(TM.specimenHTML)q('#terminal','.specimen').innerHTML=TM.specimenHTML;
+}
+function applyNotice(){
+  const N=(typeof NOTICE!=='undefined')?NOTICE:null; if(!N)return;
+  $('noticeSum').textContent=N.summary; $('noticeBody').innerHTML=N.html; $('notice').hidden=false;
+}
+applyMeta();applyNotice();
+buildScene();buildMini();
+recalibrate();goCover();idleKick();
+</script>
+</body>
+</html>

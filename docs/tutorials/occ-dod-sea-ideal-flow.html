@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCC, DoD &amp; SEA — how the platform proves work is done</title>
+<style>
+:root{
+ --paper:#f3efe4;
+ --panel:#fffaf0;
+ --ink:#252a2d;
+ --muted:#66706b;
+ --line:#cfc6b5;
+ --contract:#245f73;
+ --evidence:#b56c32;
+ --pass:#43715a;
+ --sea:#6b5b95;
+ --focus:#1d5fd1;
+ --shadow:0 18px 60px rgba(37,42,45,.13);
+ --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+ --sans:"Gill Sans","Gill Sans MT","Segoe UI",Seravek,Calibri,system-ui,sans-serif;
+ --mono:"Cascadia Code","SF Mono",Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+ background:
+  linear-gradient(90deg, rgba(37,42,45,.035) 1px, transparent 1px),
+  linear-gradient(0deg, rgba(37,42,45,.035) 1px, transparent 1px),
+  var(--paper);
+ background-size:28px 28px;
+ color:var(--ink);
+ font-family:var(--sans);
+ overflow:hidden;
+}
+button{font:inherit;color:inherit}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+#app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 430px}
+#stage{position:relative;min-width:0;overflow:hidden}
+#map{width:100%;height:100%;display:block}
+#header{
+ position:absolute;top:0;left:0;right:0;z-index:4;
+ display:flex;align-items:center;gap:18px;
+ padding:14px 26px;background:rgba(255,250,240,.94);
+ border-bottom:1px solid var(--line);
+}
+#titleButton{
+ border:0;background:transparent;padding:2px 0;cursor:pointer;
+ font-family:var(--serif);font-size:18px;letter-spacing:.16em;
+ text-transform:uppercase;white-space:nowrap;
+}
+#titleButton:hover{color:var(--contract)}
+#subtitle{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+#backLink{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap;border-bottom:1px solid var(--line)}
+#backLink:hover{color:var(--contract)}
+#legend{
+ margin-left:auto;display:flex;gap:16px;align-items:center;
+ font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)
+}
+.legendRow{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.legendSw{width:22px;height:0;border-top:3px solid var(--line);flex:none}
+.legendSw.contract{border-color:var(--contract)}
+.legendSw.evidence{border-color:var(--evidence)}
+.legendSw.pass{border-color:var(--pass)}
+.legendSw.sea{border-color:var(--sea);border-top-style:dashed}
+#controls{
+ position:absolute;left:0;right:0;bottom:0;z-index:6;
+ background:rgba(255,250,240,.95);border-top:1px solid var(--line);
+ padding:13px 20px 16px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center
+}
+#scrubber{display:flex;gap:6px;min-width:0;overflow-x:auto;padding-bottom:2px}
+.stepDot{
+ border:1px solid var(--line);background:var(--panel);border-radius:8px;
+ min-width:74px;height:42px;padding:4px 8px;cursor:pointer;color:var(--muted)
+}
+.stepDot .num{font-family:var(--mono);font-size:11px;display:block;color:var(--muted)}
+.stepDot .short{font-size:11px;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+.stepDot.active{border-color:var(--ink);background:var(--ink);color:var(--panel)}
+.stepDot.active .num{color:var(--panel)}
+.stepDot.visited:not(.active){border-color:var(--pass);color:var(--ink)}
+#nav{display:flex;gap:10px}
+#nav button,#begin,#replay{
+ border:1.5px solid var(--ink);background:var(--panel);border-radius:8px;
+ padding:12px 18px;cursor:pointer;min-width:88px
+}
+#nav #next,#begin,#replay{background:var(--ink);color:var(--panel)}
+#nav button:disabled{opacity:.35;cursor:default}
+#panel{
+ background:var(--panel);border-left:1px solid var(--line);
+ padding:28px 32px 34px;overflow-y:auto;box-shadow:var(--shadow);z-index:7
+}
+#crumb{
+ display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+ color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px
+}
+#counter{font-family:var(--serif);white-space:nowrap}
+#panel h1{font-family:var(--serif);font-size:32px;line-height:1.1;font-weight:500;margin:0 0 14px}
+#rule{width:58px;border:0;border-top:1.5px solid var(--ink);margin:0 0 18px}
+#copy{font-size:17px;line-height:1.55}
+#copy p{margin:0 0 12px}
+#under{margin-top:22px;border-top:1px solid var(--line);padding-top:10px}
+#under summary{cursor:pointer;font-family:var(--serif);font-size:17px;list-style:none}
+#under summary::before{content:"+ ";color:var(--evidence)}
+#under[open] summary::before{content:"- "}
+.kv{display:grid;grid-template-columns:108px minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px solid rgba(207,198,181,.55)}
+.kv .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kv .v{font-size:13.5px;line-height:1.45;word-break:break-word}
+.callout{
+ margin-top:18px;border:1px solid var(--line);border-left:4px solid var(--contract);
+ border-radius:8px;background:#f8f2e7;padding:12px 14px
+}
+.callout b{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--contract);margin-bottom:5px}
+.callout span{font-size:14px;line-height:1.45;color:var(--muted)}
+.overlay{
+ position:absolute;inset:0;z-index:10;display:flex;align-items:flex-start;justify-content:center;
+ padding:28px;background:rgba(243,239,228,.94);overflow-y:auto
+}
+.overlay[hidden]{display:none}
+.card{
+ margin:auto;width:min(720px,calc(100vw - 56px));text-align:center;background:var(--panel);
+ border:1px solid var(--line);border-radius:18px;padding:42px 54px;box-shadow:var(--shadow)
+}
+.card .kicker{font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--contract);margin-bottom:16px}
+.card h2{font-family:var(--serif);font-size:52px;line-height:1.04;font-weight:500;margin:0 0 16px}
+.card p{font-size:18px;line-height:1.55;color:var(--muted);margin:0 auto 24px;max-width:60ch}
+svg text{font-family:var(--sans)}
+.zone{fill:rgba(255,250,240,.54);stroke:var(--line);stroke-width:1.2}
+.zoneTitle{font-size:15px;letter-spacing:.16em;text-transform:uppercase;fill:var(--muted)}
+.edge{fill:none;stroke:var(--line);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.edge.contract{stroke:var(--contract)}
+.edge.evidence{stroke:var(--evidence)}
+.edge.pass{stroke:var(--pass)}
+.edge.sea{stroke:var(--sea);stroke-dasharray:8 8}
+.edge.dim{opacity:.3}
+.edge.active{stroke-width:5;filter:url(#glow);opacity:1}
+.node .box{fill:var(--panel);stroke:var(--ink);stroke-width:1.4}
+.node.contract .box{stroke:var(--contract)}
+.node.evidence .box{stroke:var(--evidence)}
+.node.pass .box{stroke:var(--pass)}
+.node.sea .box{stroke:var(--sea)}
+.node.dim{opacity:.4}
+.node.active .box{stroke-width:3;filter:url(#glow)}
+.node.co .box{stroke-width:2.3}
+.nodeName{font-size:16px;font-weight:650;fill:var(--ink)}
+.nodeSub{font-size:12.5px;fill:var(--muted)}
+@media (max-width:1320px){#subtitle{display:none}}
+@media (max-width:980px){
+ body{overflow:auto}
+ #app{height:auto;min-height:100%;display:block}
+ #stage{height:68vh;min-height:420px;display:flex;flex-direction:column}
+ #header{position:static;order:0;padding:10px 14px;gap:12px}
+ #titleButton{font-size:15px;letter-spacing:.12em}
+ #subtitle,#legend{display:none}
+ #backLink{margin-left:auto}
+ #map{order:1;flex:1 1 0;min-height:0;height:auto}
+ #controls{position:static;order:2;grid-template-columns:1fr;gap:8px;padding:8px 12px 12px}
+ #nav{justify-content:center}
+ #nav button{min-width:110px}
+ .stepDot{min-width:64px;height:38px}
+ #panel{border-left:0;border-top:1px solid var(--line);padding:22px 20px 30px}
+ #panel h1{font-size:26px}
+ #copy{font-size:16px}
+ .overlay{padding:14px}
+ .card h2{font-size:32px}
+ .card p{font-size:16px;margin-bottom:18px}
+ .card{padding:26px 20px;width:100%}
+}
+</style>
+</head>
+<body>
+<div id="app">
+ <main id="stage">
+  <svg id="map" viewBox="0 0 1600 900" role="img" aria-label="Walkthrough map: contract, evidence, gates, generation, and runtime truth"></svg>
+  <header id="header">
+   <button id="titleButton">OCC · DoD · SEA</button>
+   <span id="subtitle">how completion becomes provable, not claimed</span>
+   <a id="backLink" href="index.html">All tutorials</a>
+   <div id="legend" aria-hidden="true">
+    <span class="legendRow"><span class="legendSw contract"></span>contract</span>
+    <span class="legendRow"><span class="legendSw evidence"></span>evidence</span>
+    <span class="legendRow"><span class="legendSw pass"></span>checked</span>
+    <span class="legendRow"><span class="legendSw sea"></span>generation</span>
+   </div>
+  </header>
+  <div id="controls">
+   <div id="scrubber" role="group" aria-label="Walkthrough steps"></div>
+   <div id="nav">
+    <button id="back">Back</button>
+    <button id="next">Next</button>
+   </div>
+  </div>
+  <div id="cover" class="overlay">
+   <section class="card">
+    <div class="kicker">OmniNode walkthrough</div>
+    <h2>From contract<br>to proof</h2>
+    <p>We follow one real task: a delegation job was reporting zero cost, so the savings number the platform showed meant nothing. Tickets like this live in Linear; the code lives in GitHub. This walk follows that one ticket from "here's what done means" to "merged and proven." Three words recur: a <b>contract</b> writes down what done means, <b>proof</b> is output you can run and look at, and a <b>gate</b> is an automated check that won't let the work merge until that proof is really there.</p>
+    <button id="begin">Start</button>
+   </section>
+  </div>
+  <div id="finish" class="overlay" hidden>
+   <section class="card">
+    <div class="kicker">End of walkthrough</div>
+    <h2>One ticket, fully proven</h2>
+    <p>This ticket went from a zero-cost bug to a merged fix the platform can reproduce — a contract, a passing receipt, an event trail, and a projection that all agree. That's what "done" means here: not a claim you have to trust.</p>
+    <button id="replay">Replay</button>
+   </section>
+  </div>
+ </main>
+ <aside id="panel" aria-label="Walkthrough reading panel">
+  <div id="crumb"><span id="crumbText"></span><span id="counter"></span></div>
+  <h1 id="stepTitle"></h1>
+  <hr id="rule">
+  <div id="copy"></div>
+  <div id="callout" class="callout" hidden><b id="calloutLabel"></b><span id="calloutText"></span></div>
+  <details id="under">
+   <summary>Under the hood</summary>
+   <div id="underRows"></div>
+  </details>
+ </aside>
+</div>
+<script>
+"use strict";
+const DATA={
+ zones:[
+  {id:"ticket",label:"ticket & done contract",x:40,y:92,w:360,h:300},
+  {id:"product",label:"implementation",x:430,y:92,w:360,h:300},
+  {id:"occ",label:"evidence (OCC)",x:820,y:92,w:360,h:300},
+  {id:"gate",label:"gates & merge",x:1210,y:92,w:350,h:300},
+  {id:"sea",label:"generating capabilities",x:40,y:430,w:720,h:258},
+  {id:"runtime",label:"runtime truth",x:800,y:430,w:760,h:258}
+ ],
+ nodes:[
+  {id:"linear",kind:"contract",x:72,y:152,w:296,h:82,name:"Ticket",sub:"the task, in Linear"},
+  {id:"central",kind:"contract",x:72,y:274,w:296,h:92,name:"Done contract",sub:"one contract per ticket"},
+  {id:"worktree",kind:"contract",x:462,y:152,w:296,h:82,name:"Worktree",sub:"isolated copy of the repo"},
+  {id:"repoContract",kind:"contract",x:462,y:274,w:296,h:92,name:"Deploy contract",sub:"one input to the gate"},
+  {id:"proofRun",kind:"evidence",x:852,y:152,w:296,h:82,name:"Tests & probes",sub:"run them, watch the output"},
+  {id:"receipt",kind:"evidence",x:852,y:274,w:296,h:92,name:"PASS receipt",sub:"durable record of the run"},
+  {id:"prBody",kind:"pass",x:1242,y:148,w:288,h:72,name:"Pull request",sub:"cites the ticket + proof"},
+  {id:"receiptGate",kind:"pass",x:1242,y:240,w:288,h:80,name:"Receipt Gate",sub:"checks the proof is real"},
+  {id:"merge",kind:"pass",x:1242,y:334,w:288,h:56,name:"Merge + closeout",sub:"green gate, clean tree"},
+  {id:"seaIntent",kind:"sea",x:72,y:520,w:300,h:92,name:"Capability request",sub:"a ticket, like any other"},
+  {id:"genContract",kind:"sea",x:420,y:496,w:308,h:84,name:"Generated node",sub:"contract + handler + models"},
+  {id:"validator",kind:"pass",x:420,y:600,w:308,h:84,name:"Validators",sub:"non-AI admissibility checks"},
+  {id:"eventLog",kind:"contract",x:832,y:496,w:300,h:84,name:"Event log",sub:"the shared, ordered bus"},
+  {id:"projection",kind:"contract",x:832,y:600,w:300,h:84,name:"Projection",sub:"a table of current state"},
+  {id:"dashboard",kind:"pass",x:1180,y:548,w:320,h:88,name:"Read surface",sub:"dashboard reads the projection"},
+  {id:"shape",kind:"pass",x:520,y:712,w:560,h:58,name:"Deterministic shape",sub:"same inputs + contract → same state"}
+ ],
+ edges:[
+  {id:"e1",from:"linear",to:"central",kind:"contract"},
+  {id:"e2",from:"central",to:"worktree",kind:"contract"},
+  {id:"e3",from:"worktree",to:"repoContract",kind:"contract"},
+  {id:"e4",from:"worktree",to:"proofRun",kind:"evidence"},
+  {id:"e5",from:"proofRun",to:"receipt",kind:"evidence"},
+  {id:"e6",from:"receipt",to:"central",kind:"evidence"},
+  {id:"e7",from:"central",to:"prBody",kind:"contract"},
+  {id:"e8",from:"receipt",to:"receiptGate",kind:"evidence"},
+  {id:"e9",from:"prBody",to:"receiptGate",kind:"pass"},
+  {id:"e10",from:"receiptGate",to:"merge",kind:"pass"},
+  {id:"e11",from:"central",to:"seaIntent",kind:"sea"},
+  {id:"e12",from:"seaIntent",to:"genContract",kind:"sea"},
+  {id:"e13",from:"genContract",to:"validator",kind:"sea"},
+  {id:"e14",from:"validator",to:"eventLog",kind:"pass"},
+  {id:"e15",from:"eventLog",to:"projection",kind:"contract"},
+  {id:"e16",from:"projection",to:"dashboard",kind:"pass"},
+  {id:"e17",from:"validator",to:"shape",kind:"pass"},
+  {id:"e18",from:"projection",to:"shape",kind:"contract"}
+ ],
+ steps:[
+  {
+   short:"Declare",
+   crumb:"ticket & contract",
+   title:"Done is written down before any code",
+   focus:["linear","central"],
+   edges:["e1"],
+   copy:[
+    "Our task: every delegated job reported zero cost, so the savings number the platform showed was meaningless. A ticket names the change, and it lives in Linear, our ticket tracker.",
+    "Before any code, someone writes a contract: a short file, one per ticket, that says exactly what proof will count as done. Here it is literal — a test must show a paid job now reports real cost above zero, and a free job still reports zero."
+   ],
+   callout:["the rule","If you can't write the proof down as a check, the work isn't specified yet — it's only described."],
+   hood:[["ticket","names the change, in Linear"],["contract","one per ticket, in change-control"],["declares","each check, as a command that must print PASS"]]
+  },
+  {
+   short:"Build",
+   crumb:"implementation",
+   title:"The code changes in an isolated worktree",
+   focus:["central","worktree","repoContract"],
+   edges:["e2","e3"],
+   copy:[
+    "Now the code. The fix happens in a worktree — a separate, throwaway copy of the repository — so work in progress never touches the shared code. For this ticket that's a branch in the omnimarket repo.",
+    "The fix is small: stop hardcoding the cost to zero, and compute the real cost from the job's pricing tier and token count. But writing the code is not what marks the ticket done — the contract decides that."
+   ],
+   callout:["what a worktree is","An isolated working copy of the repo. Unfinished work lives here, not on the shared main branch."],
+   hood:[["where","a per-ticket worktree, never the main tree"],["branch","a per-ticket feature branch"],["decides done","the contract, not the worktree"]]
+  },
+  {
+   short:"Prove",
+   crumb:"evidence",
+   title:"Proof is something you can run and watch",
+   focus:["worktree","proofRun"],
+   edges:["e4"],
+   copy:[
+    "Here's the plain part the platform insists on anyway: the code is run through tests. Here that's a focused test that runs the paid case and the free case and checks the numbers.",
+    "It prints '3 passed.' That output is the point. Proof isn't 'I wrote a test' — it's the result you can see when the test actually runs."
+   ],
+   callout:["what counts","A check is real when running it produces output anyone can re-run and see — not when the author says it passed."],
+   hood:[["the check","uv run pytest test_terminal_path_cost_usd.py -q"],["the output","3 passed in 0.35s"],["also run","the full suite (7824 passed) and strict type-checking"]]
+  },
+  {
+   short:"Receipt",
+   crumb:"receipt",
+   title:"The result is saved as a receipt the system can re-read",
+   focus:["proofRun","receipt","central"],
+   edges:["e5","e6"],
+   copy:[
+    "That test output is captured in a receipt: a small structured file recording what ran, the exact result, the commit it ran against, who ran it, and who verified it.",
+    "Why save it? Because a gate — an automated check we meet next — can re-read this receipt long after the terminal that ran the test is closed. The receipt is durable; the moment it was created is not."
+   ],
+   callout:["not a screenshot","A receipt is a record a machine can re-check. The runner and the verifier are different, so it isn't self-marked homework."],
+   hood:[["records","ticket, command, result, commit, runner, verifier"],["says","status: PASS, with the real output attached"],["here","runner: claude-code, verifier: claude-code-review"]]
+  },
+  {
+   short:"PR",
+   crumb:"pull request",
+   title:"The pull request points at the ticket and its proof",
+   focus:["central","prBody","receipt"],
+   edges:["e7","e8"],
+   copy:[
+    "The change is opened as a pull request — a request to merge the code into the shared repo. Its body, the description field, names the ticket and points at the proof.",
+    "An approving review is a useful signal, but on its own it doesn't satisfy the platform. The body has to point at the declared evidence, because that's what the automated check reads."
+   ],
+   callout:["fast fix","If the check fails only because the body is missing its evidence reference, you fix the description — no code change needed."],
+   hood:[["pull request","one change, one PR"],["the body","the PR's description field, must name the ticket"],["must point at","the declared proof, not just a thumbs-up"]]
+  },
+  {
+   short:"Gate",
+   crumb:"receipt gate",
+   title:"The gate only opens for real, passing proof",
+   focus:["prBody","receiptGate","receipt"],
+   edges:["e8","e9"],
+   copy:[
+    "Now the gate. The Receipt Gate reads the pull request, finds the ticket it cites, opens that ticket's contract, and checks that the matching receipts actually say PASS.",
+    "It refuses if the contract is missing, the receipt is missing, the receipt didn't pass, or the proof has no real output. The promise in the pull request and the automated gate read the exact same evidence."
+   ],
+   callout:["no bypass","You don't turn the gate green with a skip token — a tag that asks a gate to stand down. You turn it green by producing the proof."],
+   hood:[["reads","the PR body, then the cited ticket's contract"],["verifies","the paired receipts passed"],["blocks","missing, advisory-only, or output-free proof"]]
+  },
+  {
+   short:"Close",
+   crumb:"merge & closeout",
+   title:"Done means a clean merge and a clean workspace",
+   focus:["receiptGate","merge"],
+   edges:["e10"],
+   copy:[
+    "With the gate green, the change merges through the repo's normal rules. But merging isn't the finish line. Closeout means nothing is left behind: no half-staged files, no unpushed commits, and the worktree removed.",
+    "A messy workspace can hide work the receipts never covered, so leaving a clean state is part of done."
+   ],
+   callout:["closeout","Done = durable proof plus a clean workspace. One without the other isn't done."],
+   hood:[["check","nothing left staged or uncommitted"],["check","nothing left unpushed"],["then","remove the worktree"]]
+  },
+  {
+   short:"Generate",
+   crumb:"new capability",
+   title:"The same rules apply when the platform writes its own code",
+   focus:["central","seaIntent","genContract"],
+   edges:["e11","e12"],
+   copy:[
+    "One more idea, because this is where it gets interesting. Most of the platform is built from nodes. A node is one unit of capability: a contract saying what it does, plus the code that does it. Everything so far was, underneath, work on a node.",
+    "The platform can also generate a brand-new node from a plain-language request — itself filed as a ticket, like any other work. The generator writes the contract, the code, and the data types. But nothing is trusted just because a model produced it."
+   ],
+   callout:["the line","Generation proposes a candidate. It doesn't get to define done or skip the gate — same contract, same proof, same merge."],
+   hood:[["a node","a contract plus the code that fulfills it"],["requested via","a ticket describing the capability"],["output","a contract, a handler, and typed models"]]
+  },
+  {
+   short:"Validate",
+   crumb:"validation",
+   title:"Generated code passes the same automatic checks",
+   focus:["genContract","validator"],
+   edges:["e13"],
+   copy:[
+    "Before a generated node is allowed in, deterministic validators check it: does the contract parse, does the code parse, is the shape right, do the declared data types exist, and does it avoid forbidden shortcuts like reaching out to the network directly.",
+    "A model can propose the shape. These non-AI checks decide whether it's admissible — the same bar every hand-written node meets."
+   ],
+   callout:["who decides","A model proposes. Deterministic validators — plain code, no AI — decide what gets in."],
+   hood:[["checks","contract, code, handler shape, data types, I/O"],["rejects","hardcoded topics, absolute paths, raw network calls"],["result","an admissible node, or a rejection"]]
+  },
+  {
+   short:"Events",
+   crumb:"runtime truth",
+   title:"Running work leaves an event trail, not hidden state",
+   focus:["validator","eventLog","projection"],
+   edges:["e14","e15"],
+   copy:[
+    "Back to our cost number. Once the fix is live, every delegated job emits events onto the bus — a shared, ordered log. The corrected cost rides one of those events instead of sitting in a process's private memory.",
+    "Reducers fold those events into a projection: a plain table of current state. Correlation IDs tie one job's events together so the whole run can be replayed."
+   ],
+   callout:["truth lives here","Truth is the contract, the event log, and the projection — not a running process's scratch memory."],
+   hood:[["emits","the corrected cost on the task-delegated event"],["folded into","the delegation_events projection table"],["replayable","correlation IDs link command, event, and projection"]]
+  },
+  {
+   short:"Surface",
+   crumb:"read surface",
+   title:"The dashboard reads the number, it doesn't invent it",
+   focus:["projection","dashboard"],
+   edges:["e16"],
+   copy:[
+    "Finally the savings number appears on a dashboard. But the dashboard is only a reader: it renders the projection that reducers built from real events. It never computes its own version of the truth.",
+    "That's why a screenshot is strongest next to the projection or event behind it. The number on screen is no longer zero, and you can trace it back to the event that produced it."
+   ],
+   callout:["UI proof","A screenshot is strongest next to the projection or event that produced it."],
+   hood:[["reads","the delegation_events projection"],["renders","state it didn't compute itself"],["avoid","UI-only numbers, or reading the database directly, as truth"]]
+  },
+  {
+   short:"Shape",
+   crumb:"the result",
+   title:"Done is a shape the platform can re-check on its own",
+   focus:["validator","projection","shape"],
+   edges:["e17","e18"],
+   copy:[
+    "Put it together. The contract set the boundary. A validator decides what's admissible. A receipt proved the run. Events and reducers rebuild the same projection on replay. The fixed savings number isn't a claim — it's reproducible.",
+    "So a finished ticket isn't just merged code. It's a shape: a contract, a receipt, an event trail, and a projection that all agree. Anyone — or the platform itself — can check the same claim again without trusting whoever made it."
+   ],
+   callout:["the point","Completion is real when the platform can re-check the same claim, without trusting whoever made it."],
+   hood:[["the formula","same inputs, same contract, same reducer, same projection"],["proof","the receipts that recorded the run"],["generation","new nodes obey this same shape"]]
+  }
+ ]
+};
+const SVGNS="http://www.w3.org/2000/svg";
+const map=document.getElementById("map");
+const byId=id=>document.getElementById(id);
+let nodeEls={},edgeEls={},visited=new Set(),stepIndex=0;
+function svg(tag,attrs,parent=map){
+  const e=document.createElementNS(SVGNS,tag);
+  for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);
+  parent.appendChild(e);
+  return e;
+}
+function center(n){return{x:n.x+n.w/2,y:n.y+n.h/2};}
+function edgePath(a,b){
+  const ca=center(a), cb=center(b);
+  const x1=ca.x, y1=ca.y, x2=cb.x, y2=cb.y;
+  const dx=Math.abs(x2-x1);
+  if(dx>170){
+    const mx=(x1+x2)/2;
+    return `M${x1} ${y1} C${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
+  }
+  return `M${x1} ${y1} L${x2} ${y2}`;
+}
+function build(){
+  const defs=svg("defs",{});
+  const filter=svg("filter",{id:"glow",x:"-30%",y:"-30%",width:"160%",height:"160%"},defs);
+  svg("feDropShadow",{dx:"0",dy:"0",stdDeviation:"5","flood-color":"#b56c32","flood-opacity":".35"},filter);
+  DATA.zones.forEach(z=>{
+    svg("rect",{class:"zone",x:z.x,y:z.y,width:z.w,height:z.h,rx:"16"});
+    svg("text",{class:"zoneTitle",x:z.x+18,y:z.y+32}).textContent=z.label;
+  });
+  const nodeMap=Object.fromEntries(DATA.nodes.map(n=>[n.id,n]));
+  DATA.edges.forEach(ed=>{
+    const path=svg("path",{class:`edge ${ed.kind}`,d:edgePath(nodeMap[ed.from],nodeMap[ed.to])});
+    edgeEls[ed.id]=path;
+  });
+  DATA.nodes.forEach(n=>{
+    const g=svg("g",{class:`node ${n.kind}`});
+    svg("rect",{class:"box",x:n.x,y:n.y,width:n.w,height:n.h,rx:"10"},g);
+    svg("text",{class:"nodeName",x:n.x+18,y:n.y+(n.h>70?31:25)},g).textContent=n.name;
+    svg("text",{class:"nodeSub",x:n.x+18,y:n.y+(n.h>70?56:46)},g).textContent=n.sub;
+    nodeEls[n.id]=g;
+  });
+  makeScrubber();
+  render(0,true);
+}
+function makeScrubber(){
+  const scrub=byId("scrubber");
+  DATA.steps.forEach((st,i)=>{
+    const b=document.createElement("button");
+    b.className="stepDot";
+    b.innerHTML=`<span class="num">${String(i+1).padStart(2,"0")}</span><span class="short">${st.short}</span>`;
+    b.addEventListener("click",()=>render(i));
+    scrub.appendChild(b);
+  });
+}
+const narrow=matchMedia("(max-width:980px)");
+/* On narrow screens the 1600x900 map is far too small to read, so the view follows the step's focus. */
+function setView(ids){
+  let vb=[0,0,1600,900];
+  if(narrow.matches&&ids&&ids.length){
+    let ns=ids.map(id=>DATA.nodes.find(n=>n.id===id));
+    const box=a=>({x0:Math.min(...a.map(n=>n.x)),y0:Math.min(...a.map(n=>n.y)),x1:Math.max(...a.map(n=>n.x+n.w)),y1:Math.max(...a.map(n=>n.y+n.h))});
+    let b=box(ns);
+    if(b.x1-b.x0>900){ns=ns.slice(0,2);b=box(ns);}
+    const pad=40,w=Math.max(b.x1-b.x0+2*pad,640),h=Math.max(b.y1-b.y0+2*pad,360);
+    vb=[(b.x0+b.x1)/2-w/2,(b.y0+b.y1)/2-h/2,w,h];
+  }
+  map.setAttribute("viewBox",vb.map(v=>Math.round(v)).join(" "));
+}
+let currentFocus=null;
+narrow.addEventListener("change",()=>setView(currentFocus));
+function render(i,initial=false){
+  if(i<0)return;
+  if(i>=DATA.steps.length){finish();return;}
+  stepIndex=i;visited.add(i);
+  if(!initial){
+    byId("cover").hidden=true;
+    byId("finish").hidden=true;
+  }
+  const st=DATA.steps[i];
+  currentFocus=initial?null:st.focus;setView(currentFocus);
+  Object.values(nodeEls).forEach(g=>{g.classList.remove("active","co");g.classList.add("dim");});
+  Object.values(edgeEls).forEach(e=>{e.classList.remove("active");e.classList.add("dim");});
+  st.focus.forEach((id,idx)=>{
+    const g=nodeEls[id];
+    g.classList.remove("dim");g.classList.add(idx===0?"active":"co");
+  });
+  st.edges.forEach(id=>{
+    const e=edgeEls[id];
+    e.classList.remove("dim");e.classList.add("active");
+  });
+  byId("crumbText").textContent=st.crumb;
+  byId("counter").textContent=`${String(i+1).padStart(2,"0")} / ${String(DATA.steps.length).padStart(2,"0")}`;
+  byId("stepTitle").textContent=st.title;
+  byId("copy").innerHTML=st.copy.map(p=>`<p>${escapeHtml(p)}</p>`).join("");
+  if(st.callout){
+    byId("callout").hidden=false;
+    byId("calloutLabel").textContent=st.callout[0];
+    byId("calloutText").textContent=st.callout[1];
+  }else byId("callout").hidden=true;
+  byId("underRows").innerHTML=st.hood.map(row=>`<div class="kv"><div class="k">${escapeHtml(row[0])}</div><div class="v">${escapeHtml(row[1])}</div></div>`).join("");
+  document.querySelectorAll(".stepDot").forEach((b,idx)=>{
+    b.classList.toggle("active",idx===i);
+    b.classList.toggle("visited",visited.has(idx));
+  });
+  byId("back").disabled=i===0;
+  byId("next").textContent=i===DATA.steps.length-1?"Finish":"Next";
+}
+function finish(){
+  currentFocus=null;setView(null);
+  byId("finish").hidden=false;
+  byId("next").disabled=true;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+}
+byId("begin").addEventListener("click",()=>render(0));
+byId("replay").addEventListener("click",()=>{visited=new Set();byId("next").disabled=false;render(0);});
+byId("titleButton").addEventListener("click",()=>{byId("cover").hidden=false;byId("finish").hidden=true;currentFocus=null;setView(null);});
+byId("back").addEventListener("click",()=>render(stepIndex-1));
+byId("next").addEventListener("click",()=>render(stepIndex+1));
+window.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight")render(stepIndex+1);
+  if(e.key==="ArrowLeft")render(stepIndex-1);
+});
+build();
+</script>
+</body>
+</html>

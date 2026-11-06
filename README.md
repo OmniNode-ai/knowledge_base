@@ -41,6 +41,8 @@ Public evidence → [Public proof index](reference/public-proof-index.md): publi
 reproducible checks, author reports, and missing evidence. Delegation is the first shipped
 product path; ONEX is the broader platform underneath it.
 
+Interactive tutorials → [Animated walkthroughs of the design](https://omninode-ai.github.io/knowledge_base/): step-by-step diagrams of how nodes, the event bus, overlays, delegation and delivery fit together, readable at three levels. The pages are in [`docs/tutorials`](docs/tutorials).
+
 ## What this repository is
 
 This repository is the canonical home for OmniNode's external documentation. Product repositories keep only what must physically ship beside their code, and point here for everything else; [the charter](#the-charter) below says exactly what that scope includes and excludes.

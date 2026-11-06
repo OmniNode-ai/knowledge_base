@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniNode Exhibit</title>
+<style>
+/* ============================================================
+   Anatomy of a Generation — museum exhibit
+   Single-file, offline, file:// safe. No imports, no fetch.
+   ============================================================ */
+:root{
+  --canvas:#F5F1E8;
+  --grid-dot:#E3DCCC;
+  --zone-laptop:#EFE9DB;
+  --zone-pc:#EAE3D2;
+  --zone-cloud:#F0EBE0;
+  --box-fill:#FDFBF6;
+  --ink:#2B2620;
+  --ink-2:#6B6357;
+  --accent-g:#C2502B;   /* graphic only, never text */
+  --accent-t:#A8431F;   /* text-safe accent */
+  --ok-t:#3F6442;
+  --fail-t:#A23425;
+  --focus:#2B5FA8;
+  --hairline:#D8CFBC;
+  --panel-w:404px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Gill Sans","Gill Sans MT","Segoe UI",Seravek,Calibri,system-ui,sans-serif;
+  --mono:"Cascadia Code","SF Mono",Consolas,"DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--canvas);color:var(--ink);
+  font-family:var(--sans);font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:var(--sans);color:var(--ink);background:var(--box-fill);
+  border:1.5px solid var(--ink);border-radius:10px;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
+  outline:2.5px solid var(--focus);outline-offset:2px}
+::selection{background:#E7D9C4}
+
+/* ---------- frame ---------- */
+#app{position:fixed;inset:0;display:flex}
+#stagewrap{position:relative;flex:1;min-width:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;
+  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+#scene.dragging{cursor:grabbing}
+
+/* ---------- exhibit header ---------- */
+#exhibitHead{position:absolute;top:0;left:0;right:0;padding:16px 28px 10px;
+  pointer-events:none;display:flex;align-items:center;gap:14px;z-index:5;background-color:white;
+  border-bottom:1px solid var(--hairline)}
+#exhibitTitle{pointer-events:auto;background:none;border:none;border-radius:4px;
+  font-family:var(--serif);font-size:19px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink);padding:2px 4px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}
+#exhibitTitle:hover{color:var(--accent-t)}
+#exhibitSub{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- SVG world ---------- */
+.zoneRect{stroke:var(--hairline);stroke-width:1.5}
+.zoneLabel{font-family:var(--sans);font-size:24px;letter-spacing:.12em;
+  fill:var(--ink);text-transform:uppercase;
+  paint-order:stroke;stroke-width:14px;stroke-linejoin:round}
+.wall{stroke:var(--ink-2);stroke-width:3;stroke-dasharray:10 7;opacity:.6}
+.wallLabel{font-family:var(--sans);font-size:20px;letter-spacing:.26em;
+  fill:var(--ink-2);text-transform:uppercase}
+.gateArch{fill:none;stroke:var(--ink);stroke-width:2.5}
+.gateGlow{opacity:0;transition:opacity .5s}
+.gateGlow.lit{opacity:.85}
+
+.edge{fill:none;stroke:#8A8071;stroke-width:1.6px;vector-effect:non-scaling-stroke;transition:opacity .3s}
+.edge.dashed{stroke-dasharray:6 6}
+.edge.dim{opacity:.42}
+.edge.active{stroke:var(--accent-g);stroke-width:2.6px}
+.edge.passed{stroke:var(--ink-2);stroke-width:2.2px}
+.edge.traced{stroke:var(--accent-g);opacity:.55;stroke-width:2.2px}
+.edge.ride{opacity:.16}
+.edge.ride.active,.edge.ride.passed,.edge.ride.traced{opacity:1}
+
+/* ---------- bus tracks ---------- */
+.busTrack{stroke:#B9AE97;stroke-width:14;stroke-linecap:round;opacity:.45}
+.busName{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:.18em;fill:var(--ink)}
+.node.bus:hover .busTrack{opacity:.65}
+.node.bus.lit .busTrack{stroke:var(--accent-g);opacity:.5}
+.node.bus.co .busTrack{opacity:.7}
+.packetChip{transition:opacity .45s}
+.packetChip.waiting rect{fill:var(--box-fill);stroke:var(--accent-g);stroke-width:2}
+.packetChip.waiting text{fill:var(--ink)}
+.node.bus{cursor:pointer}
+.node.bus:hover .busTrackCore{stroke-width:4}
+.node.bus.lit .busTrackCore{stroke:var(--accent-g);stroke-dasharray:none}
+.node.bus.lit .busTrack{opacity:.7}
+.node.bus.co .busTrackCore{stroke-width:4}
+
+.node rect.body{fill:var(--box-fill);stroke:var(--ink);stroke-width:1.6;rx:10}
+.node.dim rect.body{opacity:.72;stroke:var(--ink-2)}
+.node{cursor:pointer}
+.node:hover rect.body{stroke-width:2.6}
+.node:hover .halo{opacity:.3}
+.node.co rect.body{stroke-width:2.8}
+.node .halo{opacity:0;transition:opacity .45s}
+.node.lit .halo{opacity:1}
+.node.lit rect.body{stroke:var(--accent-g);stroke-width:2.4}
+.node.pulse .halo{animation:pulseH 1.8s ease-in-out infinite}
+@keyframes pulseH{0%,100%{opacity:.18}50%{opacity:.85}}
+.nName{font-family:var(--sans);font-size:20px;font-weight:600;fill:var(--ink)}
+.nSub{font-family:var(--sans);font-size:15px;fill:var(--ink-2)}
+.node.dim .nName,.node.dim .nSub{fill:var(--ink-2)}
+.containerRect{fill:none;stroke:var(--ink-2);stroke-width:1.4;stroke-dasharray:3 5;rx:16}
+.containerLabel{font-family:var(--sans);font-size:14px;letter-spacing:.2em;
+  fill:var(--ink);text-transform:uppercase}
+
+/* stop medallions */
+.stop circle{fill:var(--box-fill);stroke:var(--ink);stroke-width:1.6}
+.stop text{font-family:var(--serif);font-size:14px;fill:var(--ink);text-anchor:middle}
+.stop.visited circle{fill:var(--ink)}
+.stop.visited text{fill:var(--box-fill)}
+.stop{display:none}
+.stop.current circle{fill:var(--accent-g);stroke:var(--accent-g)}
+.stop.current text{fill:#FFF8EF}
+
+/* counter-scaled overlay things (badges, arrowheads, packet) */
+.portBadge rect{fill:var(--ink);rx:7}
+.portBadge text{font-family:var(--mono);font-size:11.5px;fill:#F5F1E8;text-anchor:middle}
+.arrowHead{fill:#8A8071;transition:opacity .3s}
+.arrowHead.active{fill:var(--accent-g)}
+.arrowHead.rideHead{opacity:.22}
+.arrowHead.rideHead.active{opacity:1}
+.packetChip rect{fill:var(--accent-g);rx:8}
+.packetChip text{font-family:var(--mono);font-size:11px;fill:#FFF8EF;text-anchor:middle}
+.edgeChip{opacity:0;transition:opacity .35s} /* topic name shows only on its own step */
+.edgeChip rect{fill:#FDFBF6;stroke:var(--hairline);rx:7}
+.edgeChip text{font-family:var(--mono);font-size:11px;fill:var(--ink-2);text-anchor:middle}
+
+/* LOD tiers — pure function of camera scale via data-lod on #scene */
+.lod1,.lod2,.nName,.nSub,.containerLabel,.busName{transition:opacity .35s}
+/* a node text is shown only while it renders at 11px or more (see updateTextLOD) */
+.lodoff{opacity:0}
+#scene[data-lod="0"] .lod1{opacity:0}
+#scene[data-lod="0"] .lod2{opacity:0}
+#scene[data-lod="1"] .lod2{opacity:0}
+#scene[data-lod="1"] .lod1{opacity:1}
+#scene[data-lod="2"] .lod1,#scene[data-lod="2"] .lod2{opacity:1}
+
+/* ---------- reading panel ---------- */
+#panel{width:var(--panel-w);flex:none;background:var(--box-fill);
+  border-left:1.5px solid var(--hairline);padding:26px 30px 30px;
+  overflow-y:auto;position:relative;z-index:6;padding-bottom:150px}
+#panel::after{content:"";position:sticky;bottom:-30px;display:block;height:30px;margin-top:-30px;
+  background:linear-gradient(rgba(253,251,246,0),var(--box-fill));pointer-events:none}
+#notice{margin:0 0 14px;border:1px solid var(--hairline);border-left:3px solid var(--accent-t);
+  border-radius:6px;background:#F8F4EA;font-size:13px;line-height:1.45;color:var(--ink-2)}
+#notice summary{cursor:pointer;padding:7px 10px;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent-t);font-weight:600;list-style:none}
+#notice summary::before{content:"\25B8  "}
+#notice[open] summary::before{content:"\25BE  "}
+#notice .nbody{padding:0 10px 9px}
+#notice code{font-family:var(--mono);font-size:12px;background:var(--canvas);border-radius:3px;padding:0 4px}
+#crumb{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);
+  margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+#crumb .crumbZone{cursor:pointer;border:none;background:none;color:var(--ink-2);
+  font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0}
+#crumb .crumbZone:hover{color:var(--accent-t)}
+#counter{font-family:var(--serif);font-size:15px;color:var(--ink-2);white-space:nowrap}
+#stTitle{font-family:var(--serif);font-size:28px;line-height:1.18;margin-bottom:14px}
+#stRule{border:none;border-top:1.5px solid var(--ink);width:52px;margin:0 0 16px}
+#blurb{font-size:18px;line-height:1.55;color:var(--ink);max-width:62ch}
+#blurb p+p{margin-top:10px}
+.caveat{margin-top:16px;padding:10px 12px;border:1px solid var(--hairline);
+  border-left:3px solid var(--ink-2);border-radius:6px;background:#F8F4EA}
+.caveat .tag{display:inline-block;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent-t);margin-bottom:4px;font-weight:600}
+.caveat .body{font-size:14px;line-height:1.45;color:var(--ink-2)}
+#hood{margin-top:20px}
+#hood summary{font-family:var(--serif);font-size:16px;cursor:pointer;
+  color:var(--ink);list-style:none;padding:8px 0;border-top:1px solid var(--hairline)}
+#hood summary::before{content:"▸ ";color:var(--accent-t)}
+#hood[open] summary::before{content:"▾ "}
+#hood .hoodInner{padding:6px 0 4px}
+.kv{display:flex;gap:10px;padding:5px 0;font-size:14px;align-items:baseline}
+.kv .k{flex:none;width:88px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);padding-top:2px}
+.kv .v{font-family:var(--mono);font-size:14.5px;line-height:1.5;color:var(--ink);
+  word-break:break-word;user-select:text}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-family:var(--mono);font-size:11.5px;background:var(--canvas);
+  border:1px solid var(--hairline);border-radius:7px;padding:3px 8px;color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:600}
+.stagechips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.stagechips button{font-size:12.5px;padding:3px 9px;border-radius:14px;border-width:1px}
+#compClose{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+  font-size:15px;display:none}
+#panel.comp #compClose{display:block}
+
+/* ---------- bottom controls ---------- */
+#controls{position:absolute;left:0;right:0;bottom:0;z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:0 16px 16px;pointer-events:none}
+#scrubber{pointer-events:auto;display:flex;align-items:center;gap:0;max-width:100%;
+  background:rgba(253,251,246,.96);border:1px solid var(--hairline);
+  border-radius:12px;padding:4px 10px}
+.tick{position:relative;flex:1 1 0;min-width:20px;max-width:40px;height:30px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;border:none;background:none;border-radius:6px}
+.tick .dot{width:11px;height:11px;border-radius:50%;border:1.6px solid var(--ink);background:transparent}
+.tick.visited .dot{background:var(--ink)}
+.tick.current .dot{background:var(--ink);transform:scale(1.3)}
+.tick .lbl{display:none}
+#stepper{pointer-events:auto;display:flex;align-items:center;gap:14px}
+#btnBack,#btnNext{height:56px;min-width:118px;font-size:16.5px;letter-spacing:.04em;padding:0 22px}
+#btnNext{background:var(--ink);color:var(--box-fill)}
+#btnNext:disabled,#btnBack:disabled{opacity:.35;cursor:default}
+#btnPlay{position:relative;width:56px;height:56px;border-radius:50%;font-size:17px}
+#btnPlay svg{position:absolute;inset:-1.5px;pointer-events:none}
+#btnPlay .ring{fill:none;stroke:var(--ink);stroke-width:2.5;opacity:.85}
+#hintRow{pointer-events:none;font-size:13px;letter-spacing:.06em;color:var(--ink-2);
+  display:flex;gap:18px;opacity:.85;transition:opacity .6s}
+#hintRow span.done{opacity:0}
+#scrubLabel{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);background:rgba(253,251,246,.94);border:1px solid var(--hairline);
+  border-radius:8px;padding:4px 12px;pointer-events:none;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#scrubLabel:empty{display:none}
+
+/* ---------- mini-map + fit ---------- */
+#navCluster{position:fixed;right:18px;bottom:16px;z-index:7;display:flex;
+  flex-direction:column;align-items:flex-end;gap:8px}
+#minimap{display:block;width:196px;height:96px;background:rgba(253,251,246,.92);
+  border:1px solid var(--hairline);border-radius:10px;cursor:pointer}
+#minimap .mmNode{fill:#CFC5AE}
+#minimap .mmZone{fill:none;stroke:var(--hairline)}
+#minimap .mmView{fill:rgba(43,38,32,.08);stroke:var(--ink);stroke-width:1.5}
+#btnFit{font-size:12.5px;letter-spacing:.1em;padding:7px 13px;border-radius:8px}
+
+/* ---------- resume pill ---------- */
+#resumePill{position:absolute;left:50%;transform:translateX(-50%);bottom:158px;z-index:7;
+  display:none;padding:11px 22px;border-radius:24px;background:var(--ink);
+  color:var(--box-fill);font-size:14.5px;letter-spacing:.05em;border:none}
+#resumePill.show{display:block}
+
+/* ---------- cover & terminal overlays ---------- */
+.overlay{position:absolute;inset:0;z-index:9;display:flex;align-items:flex-start;
+  justify-content:center;background:rgba(245,241,232,.93);padding:28px;overflow-y:auto}
+.overlay[hidden]{display:none}
+.card{margin:auto;max-width:660px;text-align:center;background:var(--box-fill);
+  border:1px solid var(--hairline);border-radius:24px;padding:44px 56px;
+  box-shadow:0 12px 52px rgba(43,38,32,.16)}
+.card .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--accent-t);margin-bottom:18px}
+.card h1{font-family:var(--serif);font-size:54px;line-height:1.06;font-weight:500;margin-bottom:18px}
+.card h2{font-family:var(--serif);font-size:36px;line-height:1.1;font-weight:500;margin-bottom:16px}
+.card .rule{border:none;border-top:1.5px solid var(--ink);width:64px;margin:0 auto 18px}
+.card .promise{font-size:18.5px;line-height:1.55;color:var(--ink);max-width:54ch;margin:0 auto 22px}
+.legend{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+.legend .li{display:flex;align-items:center;gap:8px;font-size:12.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sw{width:22px;height:14px;border:1px solid var(--hairline);border-radius:3px}
+.sw.wallsw{background:repeating-linear-gradient(90deg,var(--ink-2) 0 6px,transparent 6px 11px);border:none;height:3px;width:30px}
+.sw.bussw{background:repeating-linear-gradient(90deg,var(--ink-2) 0 10px,transparent 10px 16px);border:none;height:6px;width:30px;border-radius:3px;box-shadow:0 0 0 3px rgba(185,174,151,.45)}
+.sw.pk{width:13px;height:13px;border-radius:50%;background:var(--accent-g);border:none}
+.card .instr{font-size:14px;letter-spacing:.05em;color:var(--ink-2);margin-bottom:26px}
+.card .specimen{font-size:12.5px;letter-spacing:.06em;color:var(--ink-2);margin-top:26px}
+.card .specimen .mono{font-family:var(--mono)}
+#btnBegin,#btnReplay,#btnExplore{height:58px;padding:0 34px;font-size:17px;letter-spacing:.04em}
+#btnBegin,#btnReplay{background:var(--ink);color:var(--box-fill)}
+#btnExplore{margin-left:12px}
+#btnReplay,#btnExplore{margin-top:4px}
+
+/* ---------- dev readout ---------- */
+#devOut{position:absolute;top:14px;right:14px;z-index:8;display:none;
+  font-family:var(--mono);font-size:12px;background:var(--ink);color:#F5F1E8;
+  padding:6px 10px;border-radius:6px}
+#devOut.show{display:block}
+
+/* ---------- narrow layout (phones, small tablets) ---------- */
+@media (max-width:899px){
+  #app{flex-direction:column}
+  /* the controls sit below the diagram, never over it */
+  #stagewrap{order:1;flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+  #scene{position:relative;inset:auto;flex:1 1 0;min-height:0;height:auto}
+  #controls{position:static;background:var(--canvas);border-top:1px solid var(--hairline);padding-top:8px}
+  #panel{width:auto;flex:0 0 36%;border-left:none;border-top:1.5px solid var(--hairline);
+    order:2;padding:14px 18px 22px}
+  #exhibitHead{padding:8px 12px;gap:8px}
+  #exhibitTitle{font-size:14px;letter-spacing:.1em;padding:2px 0;max-width:62%}
+  #exhibitSub{display:none}
+  #audienceSel{font-size:12px;padding:4px 22px 4px 8px}
+  #hintRow{display:none}
+  #minimap{display:none}
+  #navCluster{position:absolute;top:50px;bottom:auto;right:10px}
+  #btnFit{font-size:11.5px;padding:6px 10px}
+  #controls{padding:0 10px 10px;gap:6px}
+  #scrubber{padding:2px 6px}
+  .tick{min-width:14px;height:24px}
+  #scrubLabel{display:none}
+  #btnBack,#btnNext{height:46px;min-width:96px;font-size:15px;padding:0 14px}
+  #btnPlay{width:46px;height:46px}
+  #stepper{gap:10px}
+  #resumePill{bottom:116px}
+  #crumb{margin-bottom:8px;font-size:10.5px;letter-spacing:.1em;overflow-wrap:anywhere}
+  #stTitle{font-size:21px;margin-bottom:10px}
+  #stRule{margin-bottom:10px}
+  #blurb{font-size:16px;line-height:1.5}
+  .overlay{position:fixed;z-index:30;padding:14px}
+  .card{padding:24px 18px;border-radius:18px}
+  .card h1{font-size:32px}
+  .card h2{font-size:27px}
+  .card .promise{font-size:16px;margin-bottom:16px}
+  .card .instr{margin-bottom:18px}
+  .card .specimen{margin-top:18px}
+  .legend{gap:8px 14px;margin-bottom:16px}
+  #btnBegin,#btnReplay,#btnExplore{height:50px;padding:0 24px;font-size:16px}
+  #btnExplore{margin-left:0;margin-top:10px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .node .halo,.gateGlow,.lod1,.lod2,.packetChip,.nName,.nSub,.containerLabel,.busName{transition:none}
+  .node.pulse .halo{animation:none;opacity:.6}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stagewrap">
+    <svg id="scene" data-lod="2" aria-label="System map: the path of one generation request"></svg>
+
+    <div id="exhibitHead">
+      <button id="exhibitTitle" title="Return to the cover">Anatomy of a Generation</button>
+      <span id="exhibitSub">OmniNode · Self-Extending Agent</span>
+    </div>
+
+    <button id="resumePill">▶&nbsp; Resume tour</button>
+
+    <div id="navCluster">
+      <svg id="minimap" aria-label="Mini-map"></svg>
+      <button id="btnFit" title="Frame the whole map">⤢&nbsp;FIT ALL</button>
+    </div>
+
+    <div id="controls">
+      <div id="hintRow">
+        <span id="hintDrag">drag to explore</span>
+        <span id="hintClick">click any component</span>
+        <span id="hintHood">“under the hood” for the code</span>
+      </div>
+      <div id="scrubLabel"></div>
+      <div id="scrubber" role="group" aria-label="Stage scrubber" tabindex="0"></div>
+      <div id="stepper">
+        <button id="btnBack">◀&nbsp; Back</button>
+        <button id="btnPlay" aria-label="Play narration steps" title="Autoplay">
+          <svg viewBox="0 0 60 60"><circle class="ring" cx="30" cy="30" r="27.5"
+            stroke-dasharray="172.8" stroke-dashoffset="172.8"/></svg>
+          <span id="playGlyph">▶</span>
+        </button>
+        <button id="btnNext">Next&nbsp; ▶</button>
+      </div>
+    </div>
+
+    <div id="devOut"></div>
+
+    <!-- cover -->
+    <div class="overlay" id="cover">
+      <div class="card">
+        <div class="kicker">OmniNode · An Exhibit in Sixteen Stops</div>
+        <h1>Anatomy of a&nbsp;Generation</h1>
+        <hr class="rule">
+        <p class="promise">Follow one generation request through a living system —
+          from a typed sentence, across a private tunnel, down a ladder of models,
+          through a validation gate, and back to the screen as a brand-new tool.</p>
+        <div class="legend">
+          <span class="li"><span class="sw" style="background:var(--zone-laptop)"></span>the laptop</span>
+          <span class="li"><span class="sw" style="background:var(--zone-pc)"></span>the lab server</span>
+          <span class="li"><span class="sw" style="background:var(--zone-cloud)"></span>the cloud</span>
+          <span class="li"><span class="sw wallsw"></span>network boundary</span>
+          <span class="li"><span class="sw bussw"></span>message bus</span>
+          <span class="li"><span class="sw pk"></span>the request</span>
+        </div>
+        <p class="instr">Next or → to begin &nbsp;·&nbsp; drag to explore &nbsp;·&nbsp; click any component</p>
+        <button id="btnBegin">Begin the tour</button>
+        <p class="specimen">Specimen: a real run from June 2026 — model <span class="mono">Qwen3.6-35B-A3B</span> ·
+          1 attempt · 888 ms · contract-pass ≈94% across ~172 recorded generations.<br>
+          This exhibit is a static record, not a live view.</p>
+      </div>
+    </div>
+
+    <!-- terminal -->
+    <div class="overlay" id="terminal" hidden>
+      <div class="card">
+        <div class="kicker">Journey complete</div>
+        <h2>One sentence in.<br>One working tool out.</h2>
+        <hr class="rule">
+        <p class="promise">Described, built, validated, registered, invoked — and every
+          step of it recorded as an event with one correlation id. The system is one
+          tool larger than it was a minute ago.</p>
+        <div>
+          <button id="btnReplay">↺&nbsp; Replay</button>
+          <button id="btnExplore">Explore the map</button>
+        </div>
+        <p class="specimen">Specimen values, recorded June 2026: <span class="mono">746dde85</span> ·
+          <span class="mono">Qwen3.6-35B-A3B</span> · 1 attempt · 888 ms</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- reading panel -->
+  <aside id="panel" aria-label="Reading panel">
+    <button id="compClose" aria-label="Back to the tour">✕</button>
+    <details id="notice" hidden><summary id="noticeSum"></summary><div class="nbody" id="noticeBody"></div></details>
+    <div id="crumb">
+      <button class="crumbZone" id="crumbText" title="About this component"></button>
+      <span id="counter"></span>
+    </div>
+    <h2 id="stTitle"></h2>
+    <hr id="stRule">
+    <div id="liveWrap" aria-live="polite">
+      <div id="blurb"></div>
+      <div id="caveatBox"></div>
+    </div>
+    <details id="hood">
+      <summary>Under the hood</summary>
+      <div class="hoodInner" id="hoodInner"></div>
+    </details>
+  </aside>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   DATA — the exhibit content. This is the ONLY block you edit.
+   The engine below is generic. World coords: x 0..W, y 0..H.
+   ----------------------------------------------------------------
+   CONTRACT (every field the engine reads):
+   META   : {docTitle,title,subtitle, cover:{kicker,h1,promise,instr,
+            legend:[{label,style}], specimenHTML}, terminal:{kicker,h2,
+            promise,specimenHTML}, specimen:{packetLabel}}
+   WORLD  : {x,y,w,h}  the canvas bounds
+   ZONES  : [{id,label,x,y,w,h,fill,dim?}]  labelled regions
+   WALLS  : [{x1,y1,x2,y2,opacity?,label?,lx?,ly?}]  dashed boundaries
+   GATES  : [{x,y0,y1,top?,bottom?,opacity?,label?,ly?}]  arch crossings
+            that glow during any stage with gate:true
+   CONTAINERS:[{id,label,x,y,w,h}]  dashed grouping boxes
+   NODES  : [{id,x,y,w,h,name,sub,port?,dim?,type?('bus'),stops:[n..],
+            zone,desc}]  components; type:'bus' renders as a track
+   EDGES  : [{id,pts:[[x,y]...],dashed?,dim?,ride?}]  polyline hops;
+            ride:true => the packet visibly travels a bus spine
+   TRACE_ORDER:[edgeId..]  edges drawn faint on the terminal recap
+   EDGE_STAGE:{edgeId:stageN}  which stage "owns" each traced edge
+   EDGE_TOPICS:{edgeId:topicString}  topic chip shown near an edge
+   CHIP_STAGE:{edgeId:stageN}  the stage that reveals that chip
+   CHIP_AT:{edgeId:[x,y]}  optional manual chip placement
+   STAGES : [{n,short,title,crumb, focus:[id..], highlight:[id..],
+            pulse?:[id..], packets?:[{e:edgeId,rev?}], park?:[x,y],
+            hold?, gate?, focusPad?, blurb:[para..],
+            caveat?:{tag,text}, hood:[{k,v,chip?,chips?}]}]
+   Hood values: chip:true renders v (a topic string) as a chip;
+   chips:true renders v (an array) as chips; else v is plain text.
+   ============================================================ */
+const META = {"docTitle": "Model Routing & Delegation — OmniNode", "title": "Model Routing & Delegation", "subtitle": "How OmniNode picks the cheapest capable LLM, runs it over Kafka, quality-gates the result, and escalates up a tier ladder until the job is done.", "cover": {"kicker": "Platform Deep Dive", "h1": "Model Routing &nbsp;& Delegation", "promise": "Follow a single delegation request from first publish to cost-savings telemetry — every hop on the bus, every secret resolved at the last possible moment.", "instr": "Next or → to begin &nbsp;·&nbsp; drag to explore &nbsp;·&nbsp; click any component", "legend": [{"label": "caller / entry", "style": "background:var(--zone-laptop)"}, {"label": "kafka / redpanda bus", "style": "background:var(--zone-pc)"}, {"label": "delegation node mesh", "style": "background:var(--zone-cloud)"}, {"label": "routing config + secrets", "style": "background:var(--zone-pc)"}, {"label": "llm endpoints", "style": "background:var(--zone-laptop)"}, {"label": "the bus", "style": "background:#B9AE97;height:6px;border-radius:3px"}, {"label": "the message", "style": "background:var(--accent-g);border-radius:50%;width:13px;height:13px;border:none"}], "specimenHTML": "A teaching exhibit generated from the verified tutorial spec. Static record, not a live view."}, "terminal": {"kicker": "Tour complete", "h2": "Delegation Complete", "promise": "Every hop observable by correlation id. Every cheaper model that succeeds saves a measurable fraction of what Claude would have cost.", "specimenHTML": "Model Routing & Delegation"}, "specimen": {"packetLabel": "a3f7c2b1"}};
+const WORLD = {"x": 0, "y": 0, "w": 2520, "h": 1100};
+const ZONES = [{"id": "zone-entry", "label": "Caller / Entry", "x": 60, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-laptop)"}, {"id": "zone-bus", "label": "Kafka / Redpanda Bus", "x": 552, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-pc)"}, {"id": "zone-runtime", "label": "Delegation Node Mesh", "x": 1044, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-cloud)"}, {"id": "zone-config", "label": "Routing Config + Secrets", "x": 1536, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-pc)"}, {"id": "zone-providers", "label": "LLM Endpoints", "x": 2028, "y": 170, "w": 432, "h": 780, "fill": "var(--zone-laptop)"}];
+const WALLS = [];
+const GATES = [{"x": 1506, "y0": 300, "y1": 440, "top": 170, "bottom": 950, "label": "NETWORK", "ly": 820}];
+const CONTAINERS = [];
+const NODES = [{"id": "delegate-skill-orch", "x": 156, "y": 480, "w": 240, "h": 120, "name": "node_delegate_skill_orchestrator", "sub": "Entry-point. /delegate skill dispatches this; publishes ModelDelegationRequest.", "stops": [1, 13, 16], "zone": "Caller / Entry", "desc": "Entry-point. /delegate skill dispatches this; publishes ModelDelegationRequest."}, {"id": "kafka-bus", "x": 572, "y": 530, "w": 392, "h": 20, "name": "Kafka / Redpanda Bus", "sub": "Durable transport for every hop \u2014 cmd and evt topics.", "stops": [1, 2, 3, 7, 9, 11, 12, 13, 16], "zone": "Kafka / Redpanda Bus", "desc": "Durable transport for every hop \u2014 cmd and evt topics.", "type": "bus"}, {"id": "delegation-orch", "x": 1140, "y": 270, "w": 240, "h": 120, "name": "HandlerDelegationWorkflow", "sub": "Orchestrator FSM. Drives correlation_id-keyed state machine from RECEIVED to COMPLETED|FAILED.", "stops": [2, 3, 7, 8, 9, 11, 12, 13, 14, 16], "zone": "Delegation Node Mesh", "desc": "Orchestrator FSM. Drives correlation_id-keyed state machine from RECEIVED to COMPLETED|FAILED."}, {"id": "routing-reducer", "x": 1140, "y": 480, "w": 240, "h": 120, "name": "node_delegation_routing_reducer", "sub": "Pure REDUCER. delta picks cheapest capable tier; emits ModelRoutingDecision.", "stops": [3, 4, 5, 6, 7, 14, 15], "zone": "Delegation Node Mesh", "desc": "Pure REDUCER. delta picks cheapest capable tier; emits ModelRoutingDecision."}, {"id": "call-effect", "x": 1140, "y": 624, "w": 240, "h": 120, "name": "HandlerInferenceIntent", "sub": "EFFECT. Only node that performs outbound HTTP. Resolves secret, POSTs to LLM.", "stops": [9, 10, 11, 15], "zone": "Delegation Node Mesh", "desc": "EFFECT. Only node that performs outbound HTTP. Resolves secret, POSTs to LLM."}, {"id": "quality-gate", "x": 1140, "y": 768, "w": 240, "h": 120, "name": "node_delegation_quality_gate_reducer", "sub": "Pure REDUCER. Scores inference output; returns passed, quality_score, fallback_recommended.", "stops": [12], "zone": "Delegation Node Mesh", "desc": "Pure REDUCER. Scores inference output; returns passed, quality_score, fallback_recommended.", "port": "quality-gate-port"}, {"id": "routing-tiers-yaml", "x": 1632, "y": 270, "w": 240, "h": 120, "name": "routing_tiers.yaml", "sub": "Tier ladder: local \u2192 cheap_cloud \u2192 cheap_frontier \u2192 claude.", "stops": [4, 15], "zone": "Routing Config + Secrets", "desc": "Tier ladder: local \u2192 cheap_cloud \u2192 cheap_frontier \u2192 claude."}, {"id": "bifrost-yaml", "x": 1632, "y": 480, "w": 240, "h": 120, "name": "bifrost_delegation.yaml + overlay", "sub": "Backend endpoint map. Repo sets endpoint_url: null for local; site overlay fills real URLs.", "stops": [5, 15], "zone": "Routing Config + Secrets", "desc": "Backend endpoint map. Repo sets endpoint_url: null for local; site overlay fills real URLs."}, {"id": "secret-resolver", "x": 1632, "y": 690, "w": 240, "h": 120, "name": "secret_store_resolver", "sub": "Resolves api_key_ref \u2192 SecretStr at effect boundary. Fail-closed, never logs.", "stops": [10], "zone": "Routing Config + Secrets", "desc": "Resolves api_key_ref \u2192 SecretStr at effect boundary. Fail-closed, never logs."}, {"id": "local-providers", "x": 2124, "y": 270, "w": 240, "h": 120, "name": "Local vLLM", "sub": "Qwen3.6-35B-A3B and DS-V4-Flash served locally. Zero marginal cost.", "stops": [10], "zone": "LLM Endpoints", "desc": "Qwen3.6-35B-A3B and DS-V4-Flash served locally. Zero marginal cost."}, {"id": "cloud-providers", "x": 2124, "y": 690, "w": 240, "h": 120, "name": "Cloud LLM Providers", "sub": "OpenRouter GLM, z.ai, Gemini/Vertex, Anthropic Claude. Used only after local tiers exhaust.", "stops": [10, 15], "zone": "LLM Endpoints", "desc": "OpenRouter GLM, z.ai, Gemini/Vertex, Anthropic Claude. Used only after local tiers exhaust."}];
+const EDGES = [{"id": "e1-skill-to-bus", "pts": [[396, 540], [584, 540]], "ride": true}, {"id": "e2-bus-to-orch", "pts": [[952, 540], [1046, 540], [1046, 330], [1140, 330]], "ride": true}, {"id": "e3-orch-to-routing", "pts": [[1380, 330], [1380, 330], [1380, 540], [1380, 540]], "ride": true}, {"id": "e4-routing-to-tiers", "pts": [[1380, 540], [1506, 540], [1506, 330], [1632, 330]], "dashed": true, "dim": false}, {"id": "e5-routing-to-bifrost", "pts": [[1380, 540], [1632, 540]], "dashed": true, "dim": false}, {"id": "e6-routing-decision", "pts": [[1380, 540], [1380, 540], [1380, 330], [1380, 330]], "ride": true}, {"id": "e7-orch-to-effect", "pts": [[1380, 330], [1380, 684]], "ride": true}, {"id": "e8-effect-to-secret", "pts": [[1380, 684], [1506, 684], [1506, 750], [1632, 750]]}, {"id": "e9-effect-to-local", "pts": [[1380, 684], [1500, 684], [1500, 240], [2000, 240], [2000, 330], [2124, 330]], "dim": false}, {"id": "e9b-effect-to-cloud", "pts": [[1380, 684], [1500, 684], [1500, 870], [2000, 870], [2000, 750], [2124, 750]], "dim": false}, {"id": "e10-response-to-orch", "pts": [[1380, 684], [1380, 330]], "ride": true}, {"id": "e11-orch-to-gate", "pts": [[1380, 330], [1380, 828]], "ride": true}, {"id": "e12-gate-to-orch", "pts": [[1380, 828], [1380, 330]], "ride": true}, {"id": "e13-escalation", "pts": [[1380, 330], [1380, 330], [1380, 540], [1380, 540]], "ride": true, "dashed": true}, {"id": "e14-terminal", "pts": [[1140, 330], [1046, 330], [1046, 540], [952, 540]], "ride": true}];
+const TRACE_ORDER = ["e1-skill-to-bus", "e2-bus-to-orch", "e3-orch-to-routing", "e4-routing-to-tiers", "e5-routing-to-bifrost", "e6-routing-decision", "e7-orch-to-effect", "e8-effect-to-secret", "e9-effect-to-local", "e10-response-to-orch", "e11-orch-to-gate", "e12-gate-to-orch", "e14-terminal", "e13-escalation", "e9b-effect-to-cloud"];
+const EDGE_STAGE = {"e1-skill-to-bus": 1, "e2-bus-to-orch": 2, "e3-orch-to-routing": 3, "e4-routing-to-tiers": 4, "e5-routing-to-bifrost": 5, "e6-routing-decision": 7, "e7-orch-to-effect": 9, "e8-effect-to-secret": 10, "e9-effect-to-local": 10, "e10-response-to-orch": 11, "e11-orch-to-gate": 12, "e12-gate-to-orch": 12, "e14-terminal": 13, "e13-escalation": 14, "e9b-effect-to-cloud": 15};
+const EDGE_TOPICS = {};
+const CHIP_STAGE = {};
+const CHIP_AT = {};
+const STAGES = [{"n": 1, "short": "Request", "title": "Stop 1 \u00b7 Someone asks for LLM work", "crumb": "/delegate skill \u2192 bus", "focus": ["delegate-skill-orch", "kafka-bus"], "highlight": ["delegate-skill-orch"], "packets": [{"e": "e1-skill-to-bus"}], "blurb": ["Something in the platform needs language-model help \u2014 a developer types /delegate with task_type='test' and a code prompt. No model is named. The caller only knows what it wants done, not which model will do it.", "node_delegate_skill_orchestrator takes the typed request and publishes one ModelDelegationRequest onto the bus. Its job is now done. It waits silently on the terminal event, identified by the same correlation_id."], "hood": [{"k": "contract", "v": "declares the entry node's input DTO and publish topic"}, {"k": "topic out", "v": "onex.cmd.omnibase-infra.delegation-request.v1", "chip": true}, {"k": "wire DTO", "v": "ModelDelegationRequest \u2014 prompt, task_type, correlation_id, optional token budget"}, {"k": "entry point", "v": "the delegate-skill orchestrator node that opens the request"}], "title_plain": "Someone asks for help", "blurb_plain": ["Something in the system needs an AI to do a piece of work \u2014 say, write a test. Whoever asks doesn't pick which AI; they just describe the job and let the system sort it out.", "The request is handed off, and the asker simply waits for the finished answer to come back."], "title_exec": "A request, not a decision", "blurb_exec": ["Work begins when someone describes what they need \u2014 not which tool to use. The system, not the person, decides how to get it done.", "That keeps the asker focused on the outcome, never the plumbing."]}, {"n": 2, "short": "FSM open", "title": "Stop 2 \u00b7 Orchestrator receives the request", "crumb": "bus \u2192 delegation orchestrator FSM", "focus": ["kafka-bus", "delegation-orch"], "highlight": ["delegation-orch"], "packets": [{"e": "e2-bus-to-orch"}], "blurb": ["node_delegation_orchestrator subscribes to the delegation-request topic. When the command arrives, HandlerDelegationWorkflow creates a new DelegationWorkflowState keyed on correlation_id, transitions it to RECEIVED, and emits one ModelRoutingIntent.", "The orchestrator cannot do I/O, cannot call a model, cannot inspect routing config. Its only job is to drive the FSM \u2014 advance state on each event, emit the next intent, and eventually publish a terminal event."], "hood": [{"k": "handler", "v": "HandlerDelegationWorkflow drives the per-request state machine"}, {"k": "FSM initial state", "v": "RECEIVED \u2014 the first state the contract declares"}, {"k": "wire DTO", "v": "ModelRoutingIntent \u2014 the intent emitted to ask for a model"}, {"k": "dispatch engine", "v": "MessageDispatchEngine auto-wires the returned intent to its contract-declared publish topic"}], "title_plain": "A coordinator takes charge", "blurb_plain": ["A coordinator picks up the request and opens a case for it, tagging it so every later step can be traced back to this one job.", "Like a foreman, it never does the work itself \u2014 it only decides what should happen next."], "title_exec": "One owner, full traceability", "blurb_exec": ["A single coordinator takes ownership of the request and tracks it from start to finish under one reference.", "Nothing slips through unrecorded, and every later step ties back to the original ask."]}, {"n": 3, "short": "Routing intent", "title": "Stop 3 \u00b7 Ask the reducer which model to use", "crumb": "orchestrator \u2192 routing reducer (via bus)", "focus": ["delegation-orch", "kafka-bus", "routing-reducer"], "highlight": ["routing-reducer"], "packets": [{"e": "e3-orch-to-routing"}], "blurb": ["The ModelRoutingIntent rides onex.cmd.omnibase-infra.delegation-routing-request.v1 to the routing reducer. min_tier_name is None on this first trip \u2014 start from the cheapest available tier.", "The routing reducer is a REDUCER archetype: pure by contract. It reads files cached at startup, runs a deterministic delta function, and returns a ModelRoutingDecision. It never calls publish itself \u2014 MessageDispatchEngine handles that."], "hood": [{"k": "topic in", "v": "onex.cmd.omnibase-infra.delegation-routing-request.v1", "chip": true}, {"k": "delta entry point", "v": "the routing reducer's pure delta function that selects a tier"}, {"k": "escalation hint", "v": "min_tier_name=None on first call; set to a tier name string on escalation re-routes"}, {"k": "purity", "v": "reads lru_cached config, no I/O in the hot path"}], "title_plain": "Asking which helper to use", "blurb_plain": ["The coordinator turns to a decision-maker whose only job is to choose which helper should handle the request.", "It starts from the cheapest option, leaving room to step up later if needed."], "title_exec": "Cheapest-first by policy", "blurb_exec": ["A dedicated decision step chooses how to handle the work, always starting from the least expensive capable option.", "Trying cheap before expensive is the whole point \u2014 it is what keeps costs down."]}, {"n": 4, "short": "Load ladder", "title": "Stop 4 \u00b7 Reducer reads the tier ladder", "crumb": "routing reducer \u2192 routing_tiers.yaml", "focus": ["routing-reducer", "routing-tiers-yaml"], "highlight": ["routing-tiers-yaml"], "packets": [{"e": "e4-routing-to-tiers"}], "blurb": ["delta opens by calling _get_config, which parses and lru_caches routing_tiers.yaml. The file declares four tiers in escalation order: local \u2192 cheap_cloud \u2192 cheap_frontier \u2192 claude, each with models, backend_id, use_for task lists, and cost_per_1k_tokens.", "For a 'test' task the local tier looks good: the local coder model declares 'test' in its use_for list, at cost_per_1k_tokens: 0.0. If min_tier_name were set, delta skips every tier before that name."], "hood": [{"k": "config file", "v": "routing_tiers.yaml declares the ordered tier ladder"}, {"k": "task coverage", "v": "local tier models with use_for: [code_generation, test, research, ...]"}, {"k": "cost", "v": "local tier cost_per_1k_tokens: 0.0"}, {"k": "escalation skip", "v": "delta sets skip_until_found = min_tier_name is not None"}], "title_plain": "Reading the menu of helpers", "blurb_plain": ["The decision-maker reads a written menu of helpers, listed cheapest first: free in-house ones, then low-cost outside ones, then premium experts.", "Each entry says what kinds of jobs that helper is good at and what it costs."], "title_exec": "A ranked, written menu of options", "blurb_exec": ["Available helpers are listed in a clear order from free to premium, each tagged with what it can do and what it costs.", "Because the ranking is written down, the cheapest-first choice is consistent and auditable, not improvised."]}, {"n": 5, "short": "Endpoints", "title": "Stop 5 \u00b7 Map models to real endpoints + secrets", "crumb": "routing reducer \u2192 bifrost loader \u2192 bifrost_delegation.yaml + overlay", "focus": ["routing-reducer", "bifrost-yaml"], "highlight": ["bifrost-yaml"], "packets": [{"e": "e5-routing-to-bifrost"}], "blurb": ["Knowing the tier is not enough \u2014 delta needs a real HTTPS endpoint and a secret reference. It calls _load_bifrost_endpoints, which reads the bifrost backend map and deep-merges a site-local overlay. The base map lists local backends with endpoint_url: null by design, so no machine-specific URL is baked into the shared definition.", "The site overlay fills those nulls with complete URLs including the full chat path. Cloud backends already carry complete URLs in the base map. Every URL is posted verbatim, with no path construction in handler code."], "hood": [{"k": "bifrost config", "v": "backend map; endpoint_url is null for local backends until merged"}, {"k": "overlay", "v": "site-local overlay supplies the real per-machine endpoint URLs"}, {"k": "loader", "v": "config loader deep-merges base and overlay by backend_id identity"}, {"k": "url rule", "v": "every URL is COMPLETE and posted VERBATIM \u2014 no path construction in handler code"}], "title_plain": "Looking up where each helper lives", "blurb_plain": ["Knowing which helper to use isn't enough \u2014 the system also needs the helper's address and a key to reach it.", "These details are kept out of the shared menu and filled in locally, so no machine-specific address is baked into something everyone shares."], "title_exec": "Addresses and keys, kept separate", "blurb_exec": ["Choosing a helper is separate from knowing how to reach it; addresses and access keys are looked up on their own.", "Keeping those details out of the shared list means the same setup works on any machine without edits."]}, {"n": 6, "short": "Pick model", "title": "Stop 6 \u00b7 Pick the first capable, available tier", "crumb": "routing reducer delta \u2192 ModelRoutingDecision", "focus": ["routing-reducer"], "highlight": ["routing-reducer"], "packets": [], "blurb": ["delta iterates tiers top-down. For each it calls _select_model_for_task, checking whether any model declares the requested task_type, fits the token budget, and has a resolvable backend. A backend whose endpoint_url is still null after overlay merge is skipped. A backend with an unresolvable api_key_ref is also skipped.", "For our 'test' task, the reducer finds Qwen3.6-35B-A3B on backend local-coder with a complete URL from the overlay. It builds a ModelRoutingDecision naming the selected model, the verbatim endpoint URL, the api_key_ref (often None for local models), and a system prompt tuned for 'test' tasks."], "hood": [{"k": "delta", "v": "the routing reducer's deterministic tier-selection function"}, {"k": "model selection", "v": "_select_model_for_task \u2014 checks use_for, token budget, bifrost backend availability"}, {"k": "output DTO", "v": "ModelRoutingDecision \u2014 selected_model, endpoint_url, api_key_ref, tier_name, cost_tier, system_prompt"}, {"k": "ProtocolConfigurationError", "v": "raised if no tier has a resolvable endpoint for the task type"}], "pulse": ["routing-reducer"], "title_plain": "Pick the first one that fits", "blurb_plain": ["The decision-maker goes down the menu and picks the first cheap helper that can actually do this job and that it can reach.", "Anything missing an address or a key is skipped over."], "title_exec": "The cheapest reachable fit wins", "blurb_exec": ["The system selects the first low-cost helper that is both capable of the task and actually reachable, skipping any that aren't set up.", "This guarantees the cheapest workable choice every time, with no risk of picking an option that can't run."]}, {"n": 7, "short": "Decision", "title": "Stop 7 \u00b7 Routing decision returns", "crumb": "routing reducer \u2192 bus \u2192 orchestrator", "focus": ["routing-reducer", "kafka-bus", "delegation-orch"], "highlight": ["delegation-orch"], "packets": [{"e": "e6-routing-decision"}], "blurb": ["The ModelRoutingDecision is published on onex.evt.omnibase-infra.routing-decision.v1. The orchestrator's handle_routing_decision picks it up, transitions the FSM from RECEIVED to ROUTED, records routing_decision and current_tier_name on the workflow state.", "Notice how little the orchestrator needs to know: it receives a decision that already contains the model name, the complete URL, and the secret reference. It does not parse routing config. It just advances state and builds the next command."], "hood": [{"k": "topic", "v": "onex.evt.omnibase-infra.routing-decision.v1", "chip": true}, {"k": "handler", "v": "HandlerDelegationWorkflow.handle_routing_decision advances the FSM"}, {"k": "FSM transition", "v": "RECEIVED \u2192 ROUTED"}, {"k": "workflow state", "v": "records routing_decision, sets current_tier_name = decision.tier_name"}], "title_plain": "The choice comes back", "blurb_plain": ["The decision \u2014 which helper, where to reach it, and how \u2014 comes back to the coordinator.", "The coordinator notes the choice and moves the case forward; it never had to read the menu itself."], "title_exec": "A clean handoff of the decision", "blurb_exec": ["The coordinator receives a ready-made choice and simply advances the job, without having to understand the routing rules.", "Separating the choosing from the coordinating keeps each part simple and easy to change."]}, {"n": 8, "short": "Inference intent", "title": "Stop 8 \u00b7 Turn the decision into an inference call", "crumb": "orchestrator \u2192 ModelInferenceIntent", "focus": ["delegation-orch"], "highlight": ["delegation-orch"], "packets": [], "blurb": ["handle_routing_decision builds a ModelInferenceIntent. The critical field is base_url: it is set to decision.endpoint_url verbatim \u2014 no path is appended, no construction happens. The full chat path must already be present in the URL.", "The api_key_ref field is copied from the routing decision as-is. It is not resolved here. That happens at the last possible moment \u2014 inside the effect node, at the network boundary."], "hood": [{"k": "handler", "v": "HandlerDelegationWorkflow.handle_routing_decision builds the inference intent"}, {"k": "wire DTO", "v": "ModelInferenceIntent \u2014 base_url, api_key_ref, payload, temperature"}, {"k": "temperature map", "v": "_TASK_TEMPERATURE maps task_type to sampling temperature \u2014 \"test\": 0.3"}, {"k": "url rule", "v": "base_url = decision.endpoint_url \u2014 posted verbatim, no modification"}], "pulse": ["delegation-orch"], "title_plain": "Writing up the work order", "blurb_plain": ["The coordinator turns the choice into a clear work order: this helper, at this address, with these instructions.", "The key to reach the helper is referenced but not opened yet \u2014 that waits until the last moment."], "title_exec": "A precise, self-contained work order", "blurb_exec": ["The decision becomes an exact instruction carrying the helper, its address, and the task \u2014 nothing left to guess.", "Sensitive access keys stay sealed until the very last step, limiting exposure."]}, {"n": 9, "short": "To effect", "title": "Stop 9 \u00b7 Ship the inference intent over the bus", "crumb": "orchestrator \u2192 bus \u2192 inference effect", "focus": ["delegation-orch", "kafka-bus", "call-effect"], "highlight": ["call-effect"], "packets": [{"e": "e7-orch-to-effect"}], "blurb": ["The ModelInferenceIntent rides onex.cmd.omnibase-infra.delegation-inference-request.v1 to node_llm_delegation_call_effect. This is a handoff between a stateless orchestrator and the only node in the pipeline that touches the outside world.", "Until this moment every operation has been pure: config parsing, state transitions, intent construction \u2014 all in-process with no I/O. The bus carries the intent across that boundary. The effect node owes the bus exactly one ModelInferenceResponseData per intent, whether the call succeeds or fails."], "hood": [{"k": "topic", "v": "onex.cmd.omnibase-infra.delegation-inference-request.v1", "chip": true}, {"k": "call effect contract", "v": "declares the effect node's input intent and response event"}, {"k": "handler class", "v": "HandlerInferenceIntent \u2014 the only node that performs outbound HTTP"}, {"k": "async dispatch", "v": "handle_async runs sync handle in a thread pool so the event loop stays unblocked"}], "title_plain": "Sending the work order out", "blurb_plain": ["The work order is sent across to the one part of the system that actually reaches out to the AI.", "Up to now everything has been planning; this is the moment real outside contact begins."], "title_exec": "Crossing into the real world, once", "blurb_exec": ["The instruction is passed to the single component allowed to contact the outside world.", "Concentrating all external contact at one boundary keeps the rest of the system safe to reason about and replay."]}, {"n": 10, "short": "POST", "title": "Stop 10 \u00b7 Effect resolves the secret and calls the model", "crumb": "inference effect \u2192 secret store \u2192 LLM provider", "focus": ["call-effect", "secret-resolver", "local-providers", "cloud-providers"], "highlight": ["call-effect", "secret-resolver"], "packets": [{"e": "e8-effect-to-secret"}, {"e": "e9-effect-to-local"}], "blurb": ["HandlerInferenceIntent._call_llm is the only place in the delegation pipeline that performs outbound HTTP. First it resolves the api_key_ref: _resolve_api_key calls secret_store_resolver.resolve_api_key, which looks up the ref in ProtocolSecretStore. If the ref is declared but the store has no value, it raises \u2014 fail-closed, no silent empty key. The resolved value is a SecretStr that never appears in logs.", "Then it builds an OpenAI-compatible chat payload, sets Authorization: Bearer <resolved secret>, and calls httpx.Client.post(intent.base_url, ...). That URL is posted exactly as received. On any failure, _call_llm returns a ModelInferenceResponseData with error_message set \u2014 the failure is observable on the bus rather than silently lost."], "hood": [{"k": "_call_llm", "v": "the single method that performs the outbound HTTP POST"}, {"k": "url rule", "v": "intent.base_url carries the COMPLETE endpoint URL and is posted VERBATIM"}, {"k": "secret resolution", "v": "secret_store_resolver via ProtocolSecretStore \u2014 fail-closed, returns SecretStr"}, {"k": "failure as data", "v": "ModelInferenceResponseData(error_message=..., content=\"\") on any failure"}], "gate": true, "title_plain": "The AI is actually called", "blurb_plain": ["This is the only place that reaches out for real. It opens the key to the helper at the last second, sends the task, and waits for an answer.", "If the helper can't be reached or the key is missing, it reports the problem plainly instead of pretending it worked."], "title_exec": "The one place real work happens", "blurb_exec": ["Exactly one isolated step opens the access key and calls the chosen AI, sending the request and collecting the answer.", "Failures are surfaced honestly rather than hidden, so problems are always visible."]}, {"n": 11, "short": "Response", "title": "Stop 11 \u00b7 Inference response returns", "crumb": "inference effect \u2192 bus \u2192 orchestrator", "focus": ["call-effect", "kafka-bus", "delegation-orch"], "highlight": ["delegation-orch"], "packets": [{"e": "e10-response-to-orch"}], "blurb": ["The effect publishes ModelInferenceResponseData on onex.evt.omnibase-infra.inference-response.v1. The orchestrator's handle_inference_response inspects error_message. On transport or HTTP failure it can escalate immediately, up to the escalation ceiling the task class declares.", "On success, the FSM transitions ROUTED \u2192 INFERENCE_COMPLETED, storing inference_content, model_used, and token counts. Every inference result \u2014 success or failure \u2014 travels the bus as a named event with a correlation_id, visible in broker tooling and replayable from the topic log."], "hood": [{"k": "topic", "v": "onex.evt.omnibase-infra.inference-response.v1", "chip": true}, {"k": "response DTO", "v": "ModelInferenceResponseData \u2014 content, model_used, token counts, error_message"}, {"k": "FSM transition on success", "v": "ROUTED \u2192 INFERENCE_COMPLETED"}, {"k": "infra-error escalation cap", "v": "resolved per task class, fail-closed when the class declares none"}], "title_plain": "The answer comes back", "blurb_plain": ["The helper's answer travels back to the coordinator, which records it against the case.", "Whether it succeeded or failed, the result is logged so the whole run can be reviewed or re-run later."], "title_exec": "Every outcome is recorded", "blurb_exec": ["The answer returns and is logged against the case \u2014 success or failure alike.", "A complete, replayable record of every attempt is what makes the system trustworthy after the fact."]}, {"n": 12, "short": "Gate", "title": "Stop 12 \u00b7 Evaluate the output", "crumb": "orchestrator \u2192 quality gate reducer \u2192 bus", "focus": ["delegation-orch", "kafka-bus", "quality-gate"], "highlight": ["quality-gate"], "packets": [{"e": "e11-orch-to-gate"}, {"e": "e12-gate-to-orch"}], "blurb": ["On a successful inference response, the orchestrator emits a ModelQualityGateIntent on onex.cmd.omnibase-infra.delegation-quality-gate-request.v1. The quality-gate reducer scores the content against the task-class definition-of-done and the request-level acceptance criteria.", "It returns ModelQualityGateResult with fields passed (bool), quality_score (float), fallback_recommended (bool), and failure_reasons (list). The orchestrator's handle_gate_result reads those fields to decide: pass and complete, escalate, or terminal fail."], "hood": [{"k": "intent topic", "v": "onex.cmd.omnibase-infra.delegation-quality-gate-request.v1", "chip": true}, {"k": "result topic", "v": "onex.evt.omnibase-infra.quality-gate-result.v1", "chip": true}, {"k": "FSM transition", "v": "INFERENCE_COMPLETED \u2192 GATE_EVALUATED"}, {"k": "result fields used by orch", "v": "result.passed, result.fallback_recommended, result.quality_score, result.failure_reasons"}], "title_plain": "Is the answer good enough?", "blurb_plain": ["Before trusting the answer, the coordinator sends it to a checker that grades whether it actually meets the bar.", "The result isn't simply accepted \u2014 it has to earn a passing mark first."], "title_exec": "Results are checked, not assumed", "blurb_exec": ["Each answer is graded against a clear standard before it is accepted.", "Built-in quality checking keeps results consistent without needing a person to inspect every one."]}, {"n": 13, "short": "Pass \u2192 done", "title": "Stop 13 \u00b7 Gate passes: finish + cost telemetry", "crumb": "orchestrator \u2192 bus (terminal events)", "focus": ["delegation-orch", "kafka-bus", "delegate-skill-orch"], "highlight": ["delegation-orch"], "packets": [{"e": "e14-terminal"}], "blurb": ["If result.passed is true, handle_gate_result transitions to COMPLETED and emits three events: a ModelDelegationEvent on onex.evt.omnibase-infra.delegation-completed.v1 carrying the full result; a ModelBaselineIntent recording what the same tokens would have cost on Claude vs the zero cost of a local run; and a backward-compatible ModelTaskDelegatedEvent on onex.evt.omniclaude.task-delegated.v1 for the omnidash savings dashboard.", "The cost-savings computation is the point of the whole pipeline. Every task completed on a local or cheap-cloud model produces a baseline estimate that accumulates in the projection layer as documented savings."], "hood": [{"k": "handler", "v": "HandlerDelegationWorkflow.handle_gate_result completes the workflow"}, {"k": "terminal topic", "v": "onex.evt.omnibase-infra.delegation-completed.v1", "chip": true}, {"k": "baseline intent", "v": "ModelBaselineIntent \u2014 records what the same tokens would cost on Claude"}, {"k": "dashboard projection topic", "v": "onex.evt.omniclaude.task-delegated.v1", "chip": true}], "title_plain": "It passes \u2014 and the savings are tallied", "blurb_plain": ["If the answer is good enough, the job is marked done and the outcome is shared, including a note for the dashboard.", "The system also records how much was saved by using a cheap helper instead of the priciest expert \u2014 the real payoff of trying cheap first."], "title_exec": "Done, with the savings made visible", "blurb_exec": ["On passing, the job completes and the result is published, including a running tally of money saved versus the premium option.", "Quantifying those savings turns cheapest-first routing into a measurable business result, not just a habit."]}, {"n": 14, "short": "Fail \u2192 escalate", "title": "Stop 14 \u00b7 Gate fails: climb the ladder", "crumb": "orchestrator \u2192 routing reducer (escalation loop)", "focus": ["delegation-orch", "routing-reducer"], "highlight": ["delegation-orch"], "packets": [{"e": "e13-escalation"}], "blurb": ["If result.passed is false, handle_gate_result checks three escalation preconditions: fallback_recommended must be true, escalation_count must be below max_escalation_attempts (default 2), and next_eligible_tier must return a non-None name. If all hold, the FSM transitions GATE_EVALUATED \u2192 ESCALATING \u2192 ROUTED and re-emits a ModelRoutingIntent with min_tier_name set to the next eligible tier.", "next_eligible_tier is imported from the routing reducer module \u2014 the orchestrator does not re-parse routing_tiers.yaml independently. It also probes that the target tier has a resolvable backend for the task type, so the orchestrator cannot escalate to a tier that would immediately fail again."], "hood": [{"k": "escalation check", "v": "fallback_recommended, escalation_count < max_escalation_attempts, next_tier is not None"}, {"k": "next_eligible_tier", "v": "skips excluded tiers, probes backend availability for task_type"}, {"k": "FSM path", "v": "GATE_EVALUATED \u2192 ESCALATING \u2192 ROUTED with new routing_decision=None and incremented compliance_attempts"}, {"k": "re-emitted intent", "v": "ModelRoutingIntent(payload=request, min_tier_name=next_tier)"}], "title_plain": "It fails \u2014 try a stronger helper", "blurb_plain": ["If the answer falls short, the coordinator doesn't give up \u2014 it climbs one rung up the menu to a stronger, pricier helper and tries again.", "It only steps up when that's likely to help, and only so many times, so it never escalates forever."], "title_exec": "Automatic step-up when quality misses", "blurb_exec": ["A failed check triggers an automatic move to a more capable, more expensive helper \u2014 no human handoff required.", "Strict limits on how far it can climb keep cost and time under control while still pursuing a good result."]}, {"n": 15, "short": "Re-route", "title": "Stop 15 \u00b7 Reducer routes to the next tier", "crumb": "routing reducer (escalation) \u2192 orchestrator", "focus": ["routing-reducer", "routing-tiers-yaml", "bifrost-yaml", "call-effect", "cloud-providers"], "highlight": ["routing-reducer", "cloud-providers"], "packets": [{"e": "e3-orch-to-routing"}, {"e": "e9b-effect-to-cloud"}], "blurb": ["The escalation ModelRoutingIntent arrives with min_tier_name='cheap_cloud'. delta finds that tier name in the ordered list and skips everything before it, then selects the first model in cheap_cloud that handles 'test' \u2014 perhaps openrouter-glm-flash \u2014 with api_key_ref='OPENROUTER_API_KEY'.", "The pipeline from stop 7 onward repeats: orchestrator builds a new ModelInferenceIntent, the effect resolves the OpenRouter key and POSTs, the response comes back, the gate evaluates again. If the claude tier is reached but ANTHROPIC_API_KEY is absent from the secret store, _backend_secret_available skips those backends and delta raises ProtocolConfigurationError."], "hood": [{"k": "delta min_tier skip", "v": "skip_until_found=True until the tier name matches min_tier_name"}, {"k": "next_eligible_tier", "v": "single parsing path that fixes the tier escalation order"}, {"k": "backend secret check", "v": "_backend_secret_available \u2014 skips backends with unresolvable secret_ref"}, {"k": "availability probe", "v": "endpoint availability probe prevents stranding the FSM on an empty tier"}], "title_plain": "Re-running with the next helper", "blurb_plain": ["Now starting one rung higher, the decision-maker picks the next helper up and the whole try-and-check cycle repeats.", "If the only options left need keys the system doesn't have, it stops rather than fail blindly."], "title_exec": "The same loop, one tier higher", "blurb_exec": ["Escalation simply re-runs the same try-and-check loop starting from a higher rung, reusing all the existing machinery.", "If a needed access key is missing, it stops cleanly instead of attempting a call that can't succeed."]}, {"n": 16, "short": "No tiers", "title": "Stop 16 \u00b7 No tier left: terminal failure", "crumb": "orchestrator \u2192 bus (failed terminal event)", "focus": ["delegation-orch", "kafka-bus", "delegate-skill-orch"], "highlight": ["delegation-orch"], "packets": [{"e": "e14-terminal"}], "blurb": ["If escalation is impossible \u2014 fallback_recommended is false, the count hit the ceiling, or next_eligible_tier returned None \u2014 handle_gate_result transitions to FAILED. It builds a ModelDelegationResult with quality_passed=False and a terminal_failure_reason string naming why escalation stopped.", "It publishes a ModelDelegationEvent on onex.evt.omnibase-infra.delegation-failed.v1. The entry-point skill receives that event by correlation_id and returns the failure to its caller. The trail from first publish to terminal event is complete \u2014 every hop observable in the broker by correlation_id."], "hood": [{"k": "terminal failure reasons", "v": "four named terminal_failure_reason strings explain why escalation stopped"}, {"k": "escalation history", "v": "workflow.escalation_history \u2014 ModelDelegationEscalationAttempt per tier, with tier_name, model_used, quality_score, failure_reasons, latency_ms"}, {"k": "terminal topic", "v": "onex.evt.omnibase-infra.delegation-failed.v1", "chip": true}, {"k": "compat event", "v": "also emits ModelTaskDelegatedEvent on failure for dashboard projection continuity"}], "title_plain": "No helpers left \u2014 a clean stop", "blurb_plain": ["If every helper has been tried and none passed, the coordinator marks the job failed and says clearly why it ran out of options.", "Even a failure is announced and traceable, so the asker gets a real answer instead of silence."], "title_exec": "A clear, accountable failure", "blurb_exec": ["When all options are exhausted, the job ends with an explicit reason rather than hanging or guessing.", "A failure that is announced and fully traceable is far safer than one that disappears quietly."]}];
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const scene=$('scene');
+const SVGNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(SVGNS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]); if(parent)parent.appendChild(e); return e;}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const easeC=t=>.5-.5*Math.cos(Math.PI*clamp(t,0,1));
+
+/* Fit a node label to its box: wrap to width (breaking long identifiers on
+   / _ . : etc.), shrink the font toward minSize when lines run too tall OR a
+   single line is too wide, and ellipsize only as a last resort. Uses inline
+   style.fontSize so it beats the .nName/.nSub stylesheet rule (a presentation
+   attribute would lose the cascade). Returns the baseline y of the last line
+   so the caller can stack the sub below the name. */
+function fitLabel(g,text,x,y,maxW,maxH,size,minSize,cls){
+  const t=el('text',{class:cls,x:x,y:y},g);
+  text=String(text==null?'':text);
+  const fit=s=>{t.textContent=s;return t.getComputedTextLength();};
+  function breakLong(w){const segs=w.split(/([/_.,:>=()-])/),u=[];let b='';
+    for(const s of segs){b+=s;if(/[/_.,:>=()-]$/.test(b)){u.push(b);b='';}}if(b)u.push(b);
+    return u.length?u:[w];}
+  function lines(sz){t.style.fontSize=sz+'px';const ws=[];
+    for(const raw of text.split(/\s+/)){if(!raw)continue;if(fit(raw)<=maxW){ws.push(raw);continue;}
+      let cur='';for(const uu of breakLong(raw)){if(cur&&fit(cur+uu)>maxW){ws.push(cur);cur=uu;}else cur+=uu;}
+      if(cur)ws.push(cur);}
+    const ls=[];let cur='';
+    for(const w of ws){const c=cur?cur+' '+w:w;if(cur&&fit(c)>maxW){ls.push(cur);cur=w;}else cur=c;}
+    if(cur)ls.push(cur);return ls.length?ls:[''];}
+  let sz=size,ls=lines(sz);
+  const tooMany=()=>ls.length>Math.max(1,Math.floor(maxH/(sz*1.12)));
+  const tooWide=()=>Math.max.apply(null,ls.map(l=>fit(l)))>maxW+0.5;
+  while((tooMany()||tooWide())&&sz>minSize){sz-=0.5;ls=lines(sz);}
+  const cap=Math.max(1,Math.floor(maxH/(sz*1.12)));
+  if(ls.length>cap){ls=ls.slice(0,cap);t.style.fontSize=sz+'px';
+    let last=ls[cap-1];while(last.length>1&&fit(last+'…')>maxW)last=last.slice(0,-1);
+    ls[cap-1]=last.replace(/[\s/_.,:>=()-]+$/,'')+'…';}
+  t.textContent='';t.style.fontSize=sz+'px';const lh=sz*1.12;
+  ls.forEach((ln,i)=>{const ts=el('tspan',{x:x,y:(y+i*lh).toFixed(1)},t);ts.textContent=ln;});
+  if(/nName|nSub/.test(cls))lodTexts.push({t:t,k:11.05/sz,on:true});
+  return y+(ls.length-1)*lh;
+}
+
+/* ---------- build the world ---------- */
+let lodTexts=[], world, counterScaled=[], nodeEls={}, edgeEls={}, stopEls={}, edgeChipEls=[], gateGlowEls=[];
+function buildScene(){
+  const defs=el('defs',{},scene);
+  const pat=el('pattern',{id:'dots',width:24,height:24,patternUnits:'userSpaceOnUse'},defs);
+  el('circle',{cx:12,cy:12,r:1.15,fill:'var(--grid-dot)'},pat);
+  const halo=el('radialGradient',{id:'haloG'},defs);
+  el('stop',{offset:'0%','stop-color':'#C2502B','stop-opacity':.32},halo);
+  el('stop',{offset:'70%','stop-color':'#C2502B','stop-opacity':.10},halo);
+  el('stop',{offset:'100%','stop-color':'#C2502B','stop-opacity':0},halo);
+
+  world=el('g',{id:'world'},scene);
+  el('rect',{x:WORLD.x,y:WORLD.y,width:WORLD.w,height:WORLD.h,fill:'url(#dots)','pointer-events':'none'},world);
+
+  for(const z of ZONES){
+    el('rect',{class:'zoneRect',x:z.x,y:z.y,width:z.w,height:z.h,rx:18,fill:z.fill,
+      opacity:z.dim?0.75:1},world);
+  }
+  /* walls (dashed boundaries, optional rotated label) */
+  for(const w of WALLS){
+    el('line',{class:'wall',x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,opacity:w.opacity==null?1:w.opacity},world);
+    if(w.label){const lx=w.lx==null?w.x1-26:w.lx, ly=w.ly==null?830:w.ly;
+      el('text',{class:'wallLabel',x:lx,y:ly,transform:`rotate(-90 ${lx} ${ly})`},world).textContent=w.label;}
+  }
+  /* gates (arch crossings that can glow during a stage) */
+  for(const gt of GATES){
+    const top=gt.top==null?140:gt.top, bot=gt.bottom==null?1060:gt.bottom, op=gt.opacity==null?1:gt.opacity;
+    el('line',{class:'wall',x1:gt.x,y1:top,x2:gt.x,y2:gt.y0-14,opacity:op},world);
+    el('line',{class:'wall',x1:gt.x,y1:gt.y1+14,x2:gt.x,y2:bot,opacity:op},world);
+    const glow=el('rect',{class:'gateGlow',x:gt.x-26,y:gt.y0-20,width:52,height:gt.y1-gt.y0+40,rx:24,fill:'url(#haloG)'},world);
+    el('rect',{class:'gateArch',x:gt.x-13,y:gt.y0,width:26,height:gt.y1-gt.y0,rx:13},world);
+    if(gt.label){const ly=gt.ly==null?830:gt.ly;
+      el('text',{class:'wallLabel',x:gt.x-26,y:ly,transform:`rotate(-90 ${gt.x-26} ${ly})`},world).textContent=gt.label;}
+    gateGlowEls.push(glow);
+  }
+
+  /* containers (dashed grouping boxes) */
+  for(const c of CONTAINERS){
+    el('rect',{class:'containerRect',x:c.x,y:c.y,width:c.w,height:c.h,rx:16},world);
+    {const ct=el('text',{class:'containerLabel',x:c.x+18,y:c.y+30},world);ct.textContent=c.label;lodTexts.push({t:ct,k:11.05/14,on:true});}
+  }
+
+  /* edges under nodes */
+  const edgeLayer=el('g',{},world);
+  for(const ed of EDGES){
+    const d='M'+ed.pts.map(p=>p.join(' ')).join(' L');
+    const cls='edge'+(ed.dashed?' dashed':'')+(ed.dim?' dim':'')+(ed.ride?' ride':'');
+    edgeEls[ed.id]={path:el('path',{class:cls,d},edgeLayer),def:ed};
+  }
+  /* zone titles: above the edges (so no line strikes through one), below the nodes */
+  const zoneLayer=el('g',{},world);
+  for(const z of ZONES){fitLabel(zoneLayer,z.label,z.x+22,z.y+38,z.w-44,64,24,14,'zoneLabel');
+    /* a halo in the zone's own colour, so a line passing behind the title is not seen through it */
+    zoneLayer.lastChild.style.stroke=z.fill;}
+  /* nodes */
+  for(const n of NODES){
+    if(n.type==='bus'){
+      const g=el('g',{class:'node bus','data-id':n.id},world);
+      const cy=n.y+n.h/2;
+      el('rect',{class:'halo',x:n.x-16,y:cy-26,width:n.w+32,height:52,rx:24,fill:'url(#haloG)'},g);
+      el('line',{class:'busTrack',x1:n.x,y1:cy,x2:n.x+n.w,y2:cy},g);
+      const bn=el('text',{class:'busName',x:n.x+2,y:cy-22},g);bn.textContent=n.name;lodTexts.push({t:bn,k:11.05/20,on:true});
+      const sb=el('text',{class:'nSub',x:n.x+n.w-10,y:cy-20,'text-anchor':'end'},g);
+      sb.textContent=n.sub;lodTexts.push({t:sb,k:11.05/15,on:true});
+      let bmx=n.x+32;
+      for(const s of n.stops){
+        const sg=el('g',{class:'stop','data-stop':s},g);
+        el('circle',{cx:bmx,cy:cy,r:13},sg);
+        el('text',{x:bmx,y:cy+4.5},sg).textContent=s;
+        (stopEls[s]=stopEls[s]||[]).push(sg);
+        bmx+=30;
+      }
+      nodeEls[n.id]={g,def:n};
+      continue;
+    }
+    const g=el('g',{class:'node'+(n.dim?' dim':''),'data-id':n.id},world);
+    el('rect',{class:'halo',x:n.x-14,y:n.y-14,width:n.w+28,height:n.h+28,rx:20,fill:'url(#haloG)'},g);
+    el('rect',{class:'body',x:n.x,y:n.y,width:n.w,height:n.h,rx:10},g);
+    var _nb=fitLabel(g,n.name,n.x+18,n.y+30,n.w-30,Math.min(n.h*0.52,44),20,13,'nName');
+    fitLabel(g,n.sub,n.x+18,Math.max(_nb+19,n.y+54),n.w-30,(n.y+n.h)-Math.max(_nb+19,n.y+54)-12,15,10.5,'nSub');
+    /* stop medallions */
+    let mx=n.x+n.w-16;
+    for(const s of [...n.stops].reverse()){
+      const sg=el('g',{class:'stop','data-stop':s},g);
+      el('circle',{cx:mx,cy:n.y,r:13},sg);
+      const t=el('text',{x:mx,y:n.y+4.5},sg); t.textContent=s;
+      (stopEls[s]=stopEls[s]||[]).push(sg);
+      mx-=30;
+    }
+    /* port badge — counter-scaled */
+    if(n.port){
+      const bw=n.port.length*7.4+16;
+      const bg=el('g',{class:'portBadge lod1'},world);
+      el('rect',{x:-bw/2,y:-11,width:bw,height:22,rx:7},bg);
+      el('text',{x:0,y:4},bg).textContent=n.port;
+      counterScaled.push({el:bg,x:n.x+24,y:n.y+n.h});
+    }
+    nodeEls[n.id]={g,def:n};
+  }
+  /* arrowheads — counter-scaled */
+  for(const ed of EDGES){
+    const pts=ed.pts, a=pts[pts.length-2], b=pts[pts.length-1];
+    const ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;
+    const g=el('g',{class:'arrowHeadG'},world);
+    const p=el('path',{class:'arrowHead'+(ed.ride?' rideHead':''),'data-edge':ed.id,
+      d:'M0 0 L-11 -5.5 L-11 5.5 Z',transform:`rotate(${ang})`},g);
+    if(ed.dim)p.setAttribute('opacity',.45);
+    counterScaled.push({el:g,x:b[0],y:b[1]});
+    edgeEls[ed.id].head=p;
+  }
+  /* topic chips on event-carrying edges (visible at close zoom) */
+  /* EDGE_TOPICS / CHIP_STAGE / CHIP_AT come from the DATA block above */
+  for(const id in EDGE_TOPICS){
+    const t=EDGE_TOPICS[id], path=edgeEls[id].path;
+    const len=path.getTotalLength();
+    const p=CHIP_AT[id]?{x:CHIP_AT[id][0],y:CHIP_AT[id][1]}:path.getPointAtLength(len/2);
+    const label=t.split('.').slice(0,2).join('.')+'…'+t.split('.').slice(-2).join('.');
+    const g=el('g',{class:'edgeChip'},world);
+    const w=label.length*6.6+14;
+    el('rect',{x:-w/2,y:-12,width:w,height:22},g);
+    el('text',{x:0,y:3},g).textContent=label;
+    counterScaled.push({el:g,x:p.x,y:p.y-16});
+    edgeChipEls.push({el:g,stage:CHIP_STAGE[id]});
+  }
+  /* packet chip — counter-scaled, hidden until used */
+  const pk=el('g',{class:'packetChip',visibility:'hidden'},world);
+  el('rect',{x:-38,y:-13,width:76,height:26},pk);
+  el('text',{x:0,y:4},pk).textContent=META.specimen.packetLabel;
+  packet.el=pk; counterScaled.push(packet.cs={el:pk,x:0,y:0});
+  /* parked message — shown while a stage declares park:[x,y] */
+  const pp=el('g',{class:'packetChip',visibility:'hidden'},world);
+  el('rect',{x:-38,y:-13,width:76,height:26},pp);
+  el('text',{x:0,y:4},pp).textContent=META.specimen.packetLabel;
+  pp.classList.add('waiting');
+  parkPkg.el=pp; counterScaled.push(parkPkg.cs={el:pp,x:0,y:0});
+}
+
+/* ---------- camera ---------- */
+const cam={x:1260,y:560,k:.5};
+let minK=.2, maxK=3, camTween=null;
+function vp(){return {w:scene.clientWidth,h:scene.clientHeight}}
+const isPhone=()=>matchMedia('(max-width:899px)').matches;
+function safeRect(){
+  const v=vp(), c=$('controls'), top=isPhone()?52:70;
+  const bottom=isPhone()?6:(c&&c.offsetHeight?c.offsetHeight:140)+6;
+  return {x:isPhone()?8:24,y:top,w:v.w-(isPhone()?16:48),h:Math.max(120,v.h-top-bottom)};
+}
+function fitScale(pad=48){
+  const s=safeRect();
+  return Math.min((s.w-pad)/WORLD.w,(s.h-pad)/WORLD.h);
+}
+function applyCam(){
+  const v=vp();
+  world.setAttribute('transform',
+    `translate(${v.w/2-cam.x*cam.k} ${v.h/2-cam.y*cam.k}) scale(${cam.k})`);
+  for(const c of counterScaled)
+    c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);
+  updateLOD(); updateTextLOD(); drawMiniView(); if(devOn)devShow();
+}
+function updateTextLOD(){
+  for(const x of lodTexts){const on=cam.k>=x.k;if(on!==x.on){x.on=on;x.t.classList.toggle('lodoff',!on);}}
+}
+let lodCur=2;
+function updateLOD(){
+  /* tiers: names 21px, secondary 13.5px, chips 11.5px — hide below ~11px on screen */
+  let lod = cam.k>=0.9 ? 2 : cam.k>=0.58 ? 1 : 0;
+  /* hysteresis */
+  if(lod<lodCur){ if(lodCur===2&&cam.k>0.86)lod=2; if(lodCur>=1&&lod===0&&cam.k>0.54)lod=1; }
+  if(lod!==lodCur){lodCur=lod;scene.dataset.lod=lod;}
+}
+function bboxOf(ids,pad=70,F){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const id of ids){const n=NODES.find(n=>n.id===id);
+    x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+n.w);y1=Math.max(y1,n.y+n.h);}
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  /* frame ~2x the focus area so the guided zoom sits about half as close */
+  if(F==null)F=isPhone()?1:1.12;
+  const w=(x1-x0+2*pad)*F, h=(y1-y0+2*pad)*F;
+  return {x:cx-w/2,y:cy-h/2,w,h,cx,cy};
+}
+function solveCam(bb,zoomCap,floorK){
+  const s=safeRect(), v=vp();
+  let k=clamp(Math.min(s.w/bb.w,s.h/bb.h),Math.max(minK,floorK||0),zoomCap||maxK);
+  const scx=s.x+s.w/2, scy=s.y+s.h/2;
+  return {x:bb.cx-(scx-v.w/2)/k, y:bb.cy-(scy-v.h/2)/k, k};
+}
+/* Camera for a stage: frame every focus node, but never zoom out so far that
+   node labels drop below a readable size; if the focus is too wide to fit
+   legibly, frame the highlighted components instead. */
+function stageCam(st){
+  const pad=st.focusPad||(isPhone()?50:90), floor=isPhone()?0.55:0.6;
+  const cap=isPhone()?1.3:1.5;
+  let to=solveCam(bboxOf(st.focus,pad),cap);
+  if(to.k<floor){
+    const hl=(st.highlight&&st.highlight.length)?st.highlight:st.focus;
+    to=solveCam(bboxOf(hl,pad),cap,floor);
+    /* still wider than the screen at a readable scale: frame the lit component alone,
+       so no box is cut off at the edge */
+    const fits=(bb)=>{const sr=safeRect();return bb.w*to.k<=sr.w+1&&bb.h*to.k<=sr.h+1;};
+    if(to.k<=floor+1e-6&&!fits(bboxOf(hl,pad)))to=solveCam(bboxOf(hl.slice(0,1),pad),cap,floor);
+  }
+  return to;
+}
+function camDist(a,b){const km=(a.k+b.k)/2;return Math.hypot((a.x-b.x)*km,(a.y-b.y)*km);}
+function tweenCam(to,done){
+  if(camTween)cancelAnimationFrame(camTween.raf),camTween=null;
+  if(RM){Object.assign(cam,to);applyCam();done&&done();return;}
+  const from={...cam}, d=camDist(from,to), v=vp();
+  const dur=clamp(200+d*.4,300,900);
+  /* Van Wijk-lite: long jumps dip through an overview scale */
+  let kMid=null;
+  if(d>1.5*v.w){
+    const ub={x:Math.min(from.x,to.x)-300,y:Math.min(from.y,to.y)-300,
+      w:Math.abs(from.x-to.x)+600,h:Math.abs(from.y-to.y)+600};
+    kMid=clamp(Math.min(vp().w/ub.w,vp().h/ub.h),minK,Math.min(from.k,to.k));
+  }
+  const t0=performance.now();
+  const tw=camTween={to};
+  function frame(now){
+    const u=easeC((now-t0)/dur);
+    cam.x=lerp(from.x,to.x,u); cam.y=lerp(from.y,to.y,u);
+    cam.k=kMid? (u<.5? lerp(from.k,kMid,easeC(u*2)) : lerp(kMid,to.k,easeC(u*2-1)))
+              : lerp(from.k,to.k,u);
+    applyCam();
+    if((now-t0)<dur && camTween===tw)tw.raf=requestAnimationFrame(frame);
+    else{ if(camTween===tw){camTween=null; Object.assign(cam,to); applyCam(); done&&done();} }
+  }
+  tw.raf=requestAnimationFrame(frame);
+}
+function cancelCamTween(snap){const tw=camTween;
+  if(tw){cancelAnimationFrame(tw.raf);camTween=null;
+    if(snap&&tw.to){Object.assign(cam,tw.to);applyCam();}}}
+
+/* ---------- packet ---------- */
+const packet={el:null,cs:null,raf:null,queue:[],onDone:null};
+const parkPkg={el:null,cs:null};
+function clearPacket(){
+  if(packet.raf)cancelAnimationFrame(packet.raf),packet.raf=null;
+  if(packet.t)clearTimeout(packet.t),packet.t=null;
+  if(packet.fade)clearTimeout(packet.fade),packet.fade=null;
+  packet.queue=[];packet.prev=null;packet.onDone=null;packet.hold=false;
+  packet.el.style.opacity=1;
+  packet.el.setAttribute('visibility','hidden');
+  document.querySelectorAll('.edge.active,.edge.passed').forEach(e=>e.classList.remove('active','passed'));
+  document.querySelectorAll('.arrowHead.active').forEach(e=>e.classList.remove('active'));
+}
+function runPackets(list,done,hold){
+  clearPacket(); packet.queue=[...list]; packet.onDone=done; packet.hold=!!hold;
+  nextPacket();
+}
+function nextPacket(){
+  /* accent budget: demote the just-traveled edge before lighting the next */
+  if(packet.prev){packet.prev.path.classList.remove('active');
+    packet.prev.path.classList.add('passed');
+    packet.prev.head&&packet.prev.head.classList.remove('active');packet.prev=null;}
+  const item=packet.queue.shift();
+  if(!item){
+    /* journey over: a held parcel stays (it parked); a consumed one fades out */
+    if(!packet.hold){
+      if(RM)packet.el.setAttribute('visibility','hidden');
+      else{packet.el.style.opacity=0;
+        packet.fade=setTimeout(()=>{packet.el.setAttribute('visibility','hidden');
+          packet.el.style.opacity=1;},520);}
+    }
+    packet.onDone&&packet.onDone();return;
+  }
+  const ee=edgeEls[item.e], path=ee.path, len=path.getTotalLength();
+  if(packet.queue.length)packet.prev=ee;
+  path.classList.remove('passed');
+  path.classList.add('active'); ee.head&&ee.head.classList.add('active');
+  if(RM){const p=path.getPointAtLength(item.rev?0:len);
+    packet.cs.x=p.x;packet.cs.y=p.y;applyCamOne(packet.cs);
+    showChip(packet.el);
+    packet.t=setTimeout(nextPacket,160);return;}
+  const ride=!!ee.def.ride;
+  /* bus rides travel ~30% slower than HTTP/direct hops */
+  const dur=clamp(len*cam.k*(ride?1.17:0.9), ride?585:450, ride?1300:1000), t0=performance.now();
+  showChip(packet.el);
+  function frame(now){
+    let u=easeC((now-t0)/dur); if(item.rev)u=1-u;
+    const p=path.getPointAtLength(u*len);
+    packet.cs.x=p.x;packet.cs.y=p.y;applyCamOne(packet.cs);
+    if((now-t0)<dur)packet.raf=requestAnimationFrame(frame);
+    else{packet.raf=null;nextPacket();}
+  }
+  packet.raf=requestAnimationFrame(frame);
+}
+function applyCamOne(c){c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);}
+
+/* ---------- state machine ---------- */
+const S={mode:'cover',idx:1,cameraMode:'guided',playing:false,visited:new Set()};
+/* reading level: plain | exec | technical — shared across all exhibits via localStorage (master control on the index) */
+let audience=(function(){try{return localStorage.getItem('onexAudience')||'plain';}catch(e){return 'plain';}})();
+let hoodOpen=false, compMode=null, blurbRaf=null;
+
+function setCameraMode(m){
+  S.cameraMode=m;
+  $('resumePill').classList.toggle('show',m==='free'&&S.mode==='tour');
+  if(m==='free')stopPlay();
+}
+function stageByN(n){return STAGES[n-1];}
+
+function goStage(n,opts={}){
+  if(!(n>=1)){return;} /* also rejects undefined/NaN */
+  clearDwell();
+  if(opts.via&&opts.via!=='auto'&&S.playing)stopPlay();
+  if(n>STAGES.length){goTerminal();return;}
+  compMode=null;$('panel').classList.remove('comp');
+  S.mode='tour';S.idx=n;S.visited.add(n);
+  $('cover').hidden=true;$('terminal').hidden=true;
+  setCameraMode('guided');
+  hintDone('hintClick',opts.via==='node');
+  const st=stageByN(n);
+  /* visuals */
+  clearPacket();
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  (st.highlight||[]).forEach((id,i)=>nodeEls[id].g.classList.add(i===0?'lit':'co'));
+  gateGlowEls.forEach(g=>g.classList.toggle('lit',!!st.gate));
+  if(st.park){parkPkg.cs.x=st.park[0];parkPkg.cs.y=st.park[1];applyCamOne(parkPkg.cs);
+    showChip(parkPkg.el);}
+  else{parkPkg.el.style.opacity=1;parkPkg.el.setAttribute('visibility','hidden');}
+  document.querySelectorAll('.edge.traced').forEach(e=>e.classList.remove('traced'));
+  for(const c of edgeChipEls)c.el.style.opacity=(c.stage===st.n)?1:0;
+  updateStops();updateScrubber();updateButtons();renderPanel(st);
+  const to=stageCam(st);
+  tweenCam(to,()=>{
+    if(st.packets&&st.packets.length)runPackets(st.packets,()=>afterPackets(st),st.hold);
+    else afterPackets(st);
+  });
+}
+function afterPackets(st){
+  for(const id of st.pulse||[])nodeEls[id].g.classList.add('pulse');
+  if(S.playing)armDwell(st);
+}
+/* fade a chip in when it first appears (a message being created) */
+function showChip(elm){
+  if(elm.getAttribute('visibility')==='visible')return;
+  elm.setAttribute('visibility','visible');
+  if(RM){elm.style.opacity=1;return;}
+  elm.style.opacity=0;requestAnimationFrame(()=>elm.style.opacity=1);
+}
+const WORLD_BB=()=>({x:WORLD.x-48,y:WORLD.y-48,w:WORLD.w+96,h:WORLD.h+96,cx:WORLD.w/2,cy:WORLD.h/2});
+function goCover(){
+  S.mode='cover';stopPlay();clearPacket();cancelCamTween();compMode=null;
+  parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
+  edgeChipEls.forEach(c=>c.el.style.opacity=0);
+  $('panel').classList.remove('comp');
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  gateGlowEls.forEach(g=>g.classList.remove('lit'));
+  $('cover').hidden=false;$('terminal').hidden=true;
+  setCameraMode('guided');
+  Object.assign(cam,solveCam(WORLD_BB()));applyCam();
+  renderPanel(stageByN(1));updateScrubber();updateButtons();
+}
+function goTerminal(){
+  S.mode='terminal';stopPlay();clearPacket();stopTyping();
+  parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
+  edgeChipEls.forEach(c=>c.el.style.opacity=0);
+  $('terminal').hidden=false;
+  for(const id of TRACE_ORDER)
+    if(S.visited.has(EDGE_STAGE[id]))edgeEls[id].path.classList.add('traced');
+  document.querySelectorAll('.node.lit,.node.pulse,.node.co').forEach(e=>e.classList.remove('lit','pulse','co'));
+  gateGlowEls.forEach(g=>g.classList.remove('lit'));
+  tweenCam(solveCam(WORLD_BB()));updateButtons();
+}
+function updateStops(){
+  for(const k in stopEls)for(const g of stopEls[k]){
+    const n=+k;g.classList.toggle('current',S.mode==='tour'&&n===S.idx);
+    g.classList.toggle('visited',S.visited.has(n)&&!(S.mode==='tour'&&n===S.idx));
+  }
+}
+
+/* ---------- panel ---------- */
+function chipHTML(t){const pre=t.split('.').slice(0,2).join('.');
+  const tail=t.split('.').slice(-2).join('.');
+  return `<span class="chip" title="${t}">${pre}…<b>${tail}</b></span>`;}
+/* reveal the blurb letter by letter (steady, time-based, not human-cadenced) */
+let blurbFull=null;
+function stopTyping(){if(blurbRaf)cancelAnimationFrame(blurbRaf),blurbRaf=null;}
+/* a tap on the blurb finishes the typing at once */
+function finishTyping(){if(blurbRaf&&blurbFull){stopTyping();blurbFull();}}
+function typeBlurb(paras,instant){
+  stopTyping();
+  const host=$('blurb'), live=$('liveWrap');
+  host.innerHTML='';
+  if(RM||instant){host.innerHTML=paras.map(p=>`<p>${p}</p>`).join('');live.setAttribute('aria-busy','false');return;}
+  const ps=paras.map(()=>{const e=document.createElement('p');host.appendChild(e);return e;});
+  const lens=paras.map(p=>p.length), total=lens.reduce((a,b)=>a+b,0);
+  const MS=Math.min(2,500/Math.max(total,1)), t0=performance.now(); /* ~2ms/char, never more than 0.5s */
+  blurbFull=()=>{ps.forEach((e,i)=>{e.textContent=paras[i];});live.setAttribute('aria-busy','false');};
+  live.setAttribute('aria-busy','true');
+  (function step(now){
+    const shown=Math.min(total,Math.floor((now-t0)/MS));
+    let rem=shown;
+    for(let i=0;i<ps.length;i++){const take=Math.min(lens[i],rem);ps[i].textContent=paras[i].slice(0,take);rem-=take;}
+    if(shown<total)blurbRaf=requestAnimationFrame(step);
+    else{blurbRaf=null;live.setAttribute('aria-busy','false');}
+  })(performance.now());
+}
+function renderPanel(st,instant){
+  const p=$('panel');
+  /* pick the field for the chosen reading level, falling back to the technical text */
+  const pick=(b)=>st[b+'_'+audience]!==undefined?st[b+'_'+audience]:st[b];
+  $('crumbText').textContent=st.crumb;
+  $('counter').textContent=String(st.n).padStart(2,'0')+' / '+String(STAGES.length).padStart(2,'0');
+  $('stTitle').textContent=pick('title');
+  typeBlurb(pick('blurb'),instant);
+  /* caveat does NOT fall back to the technical text — it shows only if authored for this level */
+  const cav=audience==='technical'?st.caveat:(st['caveat_'+audience]||null);
+  $('caveatBox').innerHTML=cav?
+    `<div class="caveat"><span class="tag">${cav.tag}</span><div class="body">${cav.text}</div></div>`:'';
+  /* the "under the hood" panel is inherently technical — only show it at the technical level */
+  if(audience==='technical'){
+    $('hood').style.display='';
+    let rows='';
+    for(const h of st.hood){
+      let v;
+      if(h.chips)v=`<div class="chips">${h.v.map(chipHTML).join('')}</div>
+        <div style="margin-top:6px">${h.v.map(t=>`<div class="v" style="font-size:11.5px">${t}</div>`).join('')}</div>`;
+      else if(h.chip)v=`<div class="chips">${chipHTML(h.v)}</div>
+        <div class="v" style="font-size:11.5px;margin-top:6px">${h.v}</div>`;
+      else v=`<div class="v">${h.v}</div>`;
+      rows+=`<div class="kv"><div class="k">${h.k}</div><div style="flex:1">${v}</div></div>`;
+    }
+    $('hoodInner').innerHTML=rows;
+    $('hood').open=hoodOpen;
+  } else {
+    $('hood').style.display='none';
+  }
+}
+function renderComponent(node){
+  compMode=node.id;$('panel').classList.add('comp');stopTyping();
+  $('crumbText').textContent=node.zone;
+  $('counter').textContent='component';
+  $('stTitle').textContent=node.name;
+  $('blurb').innerHTML=`<p>${node.desc}</p>`;
+  $('caveatBox').innerHTML='';
+  $('hoodInner').innerHTML=`<div class="kv"><div class="k">stops here</div>
+    <div class="stagechips">${node.stops.map(s=>
+      `<button data-go="${s}">${String(s).padStart(2,'0')} · ${stageByN(s).short}</button>`).join('')}</div></div>`;
+  $('hood').open=true;
+}
+$('blurb').addEventListener('click',()=>{if(blurbRaf&&!compMode)renderPanel(stageByN(S.idx),true);});
+$('hood').addEventListener('toggle',()=>{if(!compMode)hoodOpen=$('hood').open;hintDone('hintHood',$('hood').open);});
+$('hoodInner').addEventListener('click',e=>{
+  const b=e.target.closest('[data-go]');if(b)goStage(+b.dataset.go,{via:'chip'});
+});
+$('crumbText').addEventListener('click',()=>{
+  if(S.mode!=='tour')return;
+  const st=stageByN(S.idx);
+  const nid=(st.highlight&&st.highlight[0]);
+  if(nid)renderComponent(nodeEls[nid].def);
+});
+$('compClose').addEventListener('click',()=>{compMode=null;$('panel').classList.remove('comp');renderPanel(stageByN(S.idx));});
+
+/* ---------- scrubber / stepper / autoplay ---------- */
+const scrub=$('scrubber');
+for(const st of STAGES){
+  const b=document.createElement('button');
+  b.className='tick';b.dataset.n=st.n;b.title=`${st.n}. ${st.title}`;b.tabIndex=-1;
+  b.innerHTML=`<span class="dot"></span><span class="lbl">${st.short}</span>`;
+  b.addEventListener('click',()=>goStage(st.n,{via:'scrub'}));
+  scrub.appendChild(b);
+}
+scrub.addEventListener('keydown',e=>{
+  const go=k=>{e.stopPropagation();e.preventDefault();goStage(k,{via:'key'});};
+  if(e.key==='ArrowRight')go(S.mode==='cover'?1:S.idx+1);
+  else if(e.key==='ArrowLeft')go(S.idx-1);
+  else if(e.key==='Home')go(1);
+  else if(e.key==='End')go(STAGES.length);
+});
+function updateScrubber(){
+  scrub.querySelectorAll('.tick').forEach(t=>{
+    const n=+t.dataset.n;
+    t.classList.toggle('current',S.mode==='tour'&&n===S.idx);
+    t.classList.toggle('visited',S.visited.has(n));
+  });
+  $('scrubLabel').textContent=S.mode==='tour'
+    ? String(S.idx).padStart(2,'0')+' · '+stageByN(S.idx).short : '';
+}
+function updateButtons(){
+  $('btnBack').disabled=(S.mode==='tour'&&S.idx<=1)||S.mode==='cover';
+  $('btnNext').disabled=S.mode==='terminal';
+  $('btnNext').textContent=S.mode==='tour'&&S.idx===STAGES.length?'Finish ▶':'Next ▶';
+}
+$('btnNext').addEventListener('click',()=>{
+  if(S.mode==='cover')goStage(1,{via:'btn'});
+  else goStage(S.idx+1,{via:'btn'});
+});
+$('blurb').addEventListener('click',finishTyping);
+$('btnBack').addEventListener('click',()=>{
+  if(S.mode==='terminal'){$('terminal').hidden=true;goStage(STAGES.length,{via:'btn'});}
+  else if(S.mode==='tour')goStage(S.idx-1,{via:'btn'});
+});
+$('btnBegin').addEventListener('click',()=>goStage(1));
+$('btnReplay').addEventListener('click',()=>{S.visited.clear();goStage(1);});
+$('btnExplore').addEventListener('click',()=>{
+  $('terminal').hidden=true;S.mode='tour';S.idx=STAGES.length;setCameraMode('free');
+  const last=stageByN(STAGES.length), nid=(last.highlight&&last.highlight[0])||last.focus[0];
+  renderComponent(nodeEls[nid].def);updateButtons();
+});
+$('exhibitTitle').addEventListener('click',goCover);
+/* reading-level dropdown — self-injected so it travels with the engine (no chrome dependency) */
+(function setupAudience(){
+  const head=$('exhibitHead'); if(!head) return;
+  if(!document.getElementById('audienceCss')){
+    const st=document.createElement('style'); st.id='audienceCss';
+    st.textContent="#audienceSel{pointer-events:auto;margin-left:auto;font-family:var(--sans);font-size:12.5px;letter-spacing:.02em;color:var(--ink);background:var(--box-fill);border:1.5px solid var(--ink-2);border-radius:8px;padding:5px 26px 5px 9px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}#audienceSel:hover{border-color:var(--ink)}";
+    document.head.appendChild(st);
+  }
+  let sel=$('audienceSel');
+  if(!sel){
+    sel=document.createElement('select'); sel.id='audienceSel'; sel.title='Reading level'; sel.setAttribute('aria-label','Reading level');
+    sel.innerHTML='<option value="plain">Plain-language</option><option value="exec">Executive</option><option value="technical">Technical</option>';
+    head.appendChild(sel);
+  }
+  sel.value=audience;
+  sel.addEventListener('change',e=>{audience=e.target.value;try{localStorage.setItem('onexAudience',audience);}catch(_){}if(!compMode)renderPanel(stageByN(S.idx));});
+  /* live-sync if the master control (or another tab) changes the level */
+  window.addEventListener('storage',e=>{if(e.key==='onexAudience'&&e.newValue&&e.newValue!==audience){audience=e.newValue;sel.value=audience;if(!compMode)renderPanel(stageByN(S.idx));}});
+})();
+$('resumePill').addEventListener('click',()=>{
+  setCameraMode('guided');
+  tweenCam(stageCam(stageByN(S.idx)));
+});
+$('btnFit').addEventListener('click',()=>{
+  setCameraMode('free');
+  tweenCam(solveCam(WORLD_BB()));
+});
+
+/* autoplay */
+let dwellT=null,dwellStart=0,dwellLen=0,ringRaf=null;
+const RING_C=172.8;
+function wordsOf(st){return st.blurb.join(' ').split(/\s+/).length;}
+function armDwell(st){
+  clearDwell();
+  dwellLen=clamp(4000+wordsOf(st)*350,10000,30000);dwellStart=performance.now();
+  dwellT=setTimeout(()=>{if(S.idx>=STAGES.length)goTerminal();else goStage(S.idx+1,{via:'auto'});},dwellLen);
+  ringTick();
+}
+function ringTick(){
+  const u=clamp((performance.now()-dwellStart)/dwellLen,0,1);
+  document.querySelector('#btnPlay .ring').setAttribute('stroke-dashoffset',RING_C*(1-u));
+  if(S.playing)ringRaf=requestAnimationFrame(ringTick);
+}
+function clearDwell(){
+  if(dwellT)clearTimeout(dwellT),dwellT=null;
+  if(ringRaf)cancelAnimationFrame(ringRaf),ringRaf=null;
+  document.querySelector('#btnPlay .ring').setAttribute('stroke-dashoffset',RING_C);
+}
+function stopPlay(){S.playing=false;$('playGlyph').textContent='▶';
+  $('btnPlay').setAttribute('aria-label','Play narration steps');clearDwell();}
+$('btnPlay').addEventListener('click',()=>{
+  if(S.playing){stopPlay();return;}
+  S.playing=true;$('playGlyph').textContent='❚❚';
+  $('btnPlay').setAttribute('aria-label','Pause narration');
+  if(S.mode!=='tour')goStage(1);
+  else if(S.cameraMode==='free'){setCameraMode('guided');
+    const st=stageByN(S.idx);tweenCam(stageCam(st),()=>armDwell(st));}
+  else armDwell(stageByN(S.idx));
+});
+
+/* ---------- input: pan / zoom / pinch / taps ---------- */
+const pointers=new Map();
+let dragInfo=null,pinch0=null;
+scene.addEventListener('pointerdown',e=>{
+  idleKick();
+  try{scene.setPointerCapture(e.pointerId);}catch(_){/* synthetic/stale pointer */}
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1){
+    /* §6/§7: input completes the in-flight transition and pauses autoplay */
+    cancelCamTween(true);if(S.playing)stopPlay();
+    dragInfo={x0:e.clientX,y0:e.clientY,cx:cam.x,cy:cam.y,moved:false,target:e.target};
+  }else if(pointers.size===2){
+    const [a,b]=[...pointers.values()];
+    pinch0={d:Math.hypot(a.x-b.x,a.y-b.y),k:cam.k,
+      mx:(a.x+b.x)/2,my:(a.y+b.y)/2,cx:cam.x,cy:cam.y};
+    dragInfo=null;
+  }
+});
+scene.addEventListener('pointermove',e=>{
+  if(!pointers.has(e.pointerId))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch0&&pointers.size===2){
+    const [a,b]=[...pointers.values()];
+    const d=Math.hypot(a.x-b.x,a.y-b.y);
+    cancelCamTween(true);setCameraMode('free');
+    const k=clamp(pinch0.k*d/pinch0.d,minK,maxK);
+    const v=vp();
+    /* keep pinch midpoint anchored */
+    const wx=pinch0.cx+(pinch0.mx-v.w/2)/pinch0.k, wy=pinch0.cy+(pinch0.my-v.h/2)/pinch0.k;
+    cam.k=k;cam.x=wx-(pinch0.mx-v.w/2)/k;cam.y=wy-(pinch0.my-v.h/2)/k;
+    clampPan();applyCam();return;
+  }
+  if(dragInfo){
+    const dx=e.clientX-dragInfo.x0,dy=e.clientY-dragInfo.y0;
+    if(!dragInfo.moved&&Math.hypot(dx,dy)>8){
+      dragInfo.moved=true;scene.classList.add('dragging');
+      cancelCamTween();setCameraMode('free');hintDone('hintDrag',true);
+    }
+    if(dragInfo.moved){
+      cam.x=dragInfo.cx-dx/cam.k;cam.y=dragInfo.cy-dy/cam.k;
+      clampPan();applyCam();
+    }
+  }
+});
+function endPointer(e){
+  /* pointer capture retargets pointerup to the svg — use the pointerdown target */
+  if(e.type==='pointerup'&&dragInfo&&!dragInfo.moved){
+    const ng=dragInfo.target&&dragInfo.target.closest&&dragInfo.target.closest('.node');
+    if(ng){const n=nodeEls[ng.dataset.id].def;
+      const next=n.stops.find(s=>!S.visited.has(s))??n.stops[0];
+      if(next!=null)goStage(next,{via:'node'});else renderComponent(n);}
+  }
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinch0=null;
+  if(pointers.size===0){dragInfo=null;scene.classList.remove('dragging');}
+}
+scene.addEventListener('pointerup',endPointer);
+scene.addEventListener('pointercancel',endPointer);
+scene.addEventListener('dblclick',e=>{
+  /* capture retargeting defeats e.target — hit-test by position */
+  const t=document.elementFromPoint(e.clientX,e.clientY);
+  if(t&&t.closest&&t.closest('.node'))return;
+  cancelCamTween(true);setCameraMode('free');
+  zoomAt(e.clientX,e.clientY,1.6);
+});
+scene.addEventListener('wheel',e=>{
+  e.preventDefault();idleKick();
+  cancelCamTween(true);setCameraMode('free');
+  let dy=e.deltaY; if(e.deltaMode===1)dy*=16;
+  const f=Math.exp(-dy*(e.ctrlKey?0.012:0.0022));
+  zoomAt(e.clientX,e.clientY,f);
+},{passive:false});
+function zoomAt(sx,sy,f){
+  const v=vp(),k=clamp(cam.k*f,minK,maxK);
+  const wx=cam.x+(sx-v.w/2)/cam.k, wy=cam.y+(sy-v.h/2)/cam.k;
+  cam.x=wx-(sx-v.w/2)/k;cam.y=wy-(sy-v.h/2)/k;cam.k=k;
+  clampPan();applyCam();
+}
+function clampPan(){
+  cam.x=clamp(cam.x,WORLD.x,WORLD.x+WORLD.w);
+  cam.y=clamp(cam.y,WORLD.y,WORLD.y+WORLD.h);
+}
+
+/* ---------- keyboard ---------- */
+addEventListener('keydown',e=>{
+  idleKick();
+  const t=e.target;
+  if(t.closest&&t.closest('button,input,textarea,select,summary,#scrubber'))return;
+  if(e.key==='ArrowRight'){goStage(S.mode==='cover'?1:S.idx+1,{via:'key'});e.preventDefault();}
+  else if(e.key==='ArrowLeft'){goStage(S.idx-1,{via:'key'});e.preventDefault();}
+  else if(e.key==='Home'){goStage(1,{via:'key'});e.preventDefault();}
+  else if(e.key==='End'){goStage(STAGES.length,{via:'key'});e.preventDefault();}
+  else if(e.key==='Escape'){if(compMode){compMode=null;$('panel').classList.remove('comp');renderPanel(stageByN(S.idx));}}
+  else if(e.key==='g'){devOn=!devOn;$('devOut').classList.toggle('show',devOn);}
+});
+
+/* ---------- minimap ---------- */
+const mm=$('minimap');let mmView;
+function buildMini(){
+  mm.setAttribute('viewBox',`0 0 ${WORLD.w} ${WORLD.h}`);
+  for(const z of ZONES)el('rect',{class:'mmZone',x:z.x,y:z.y,width:z.w,height:z.h,rx:30},mm);
+  for(const n of NODES)el('rect',{class:'mmNode',x:n.x,y:n.y,width:n.w,height:n.h,rx:14},mm);
+  for(const w of WALLS)el('line',{x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,stroke:'var(--ink-2)','stroke-width':8,'stroke-dasharray':'30 22',opacity:.5},mm);
+  for(const gt of GATES)el('line',{x1:gt.x,y1:gt.top==null?140:gt.top,x2:gt.x,y2:gt.bottom==null?1060:gt.bottom,stroke:'var(--ink-2)','stroke-width':8,'stroke-dasharray':'30 22',opacity:.5},mm);
+  mmView=el('rect',{class:'mmView',x:0,y:0,width:100,height:100},mm);
+}
+function drawMiniView(){
+  const v=vp();
+  const w=v.w/cam.k,h=v.h/cam.k;
+  mmView.setAttribute('x',cam.x-w/2);mmView.setAttribute('y',cam.y-h/2);
+  mmView.setAttribute('width',w);mmView.setAttribute('height',h);
+}
+mm.addEventListener('click',e=>{
+  const r=mm.getBoundingClientRect();
+  /* invert preserveAspectRatio 'meet' letterboxing */
+  const s=Math.min(r.width/WORLD.w,r.height/WORLD.h);
+  const ox=(r.width-WORLD.w*s)/2, oy=(r.height-WORLD.h*s)/2;
+  const wx=clamp((e.clientX-r.left-ox)/s,0,WORLD.w);
+  const wy=clamp((e.clientY-r.top-oy)/s,0,WORLD.h);
+  cancelCamTween();setCameraMode('free');
+  tweenCam({x:wx,y:wy,k:cam.k});
+});
+
+/* ---------- hints / idle / dev ---------- */
+const hintsDone={};
+function hintDone(id,yes){if(yes&&!hintsDone[id]){hintsDone[id]=true;$(id).classList.add('done');}}
+let idleT=null;
+function idleKick(){
+  if(idleT)clearTimeout(idleT);
+  idleT=setTimeout(()=>{if(S.mode!=='cover'&&!S.playing)goCover();else idleKick();},180000);
+}
+['pointerdown','wheel','keydown'].forEach(ev=>addEventListener(ev,idleKick,{passive:ev!=='wheel'}));
+let devOn=false,devMouse={x:0,y:0};
+scene.addEventListener('pointermove',e=>{devMouse={x:e.clientX,y:e.clientY};if(devOn)devShow();});
+function devShow(){
+  const v=vp();
+  const wx=Math.round(cam.x+(devMouse.x-v.w/2)/cam.k);
+  const wy=Math.round(cam.y+(devMouse.y-v.h/2)/cam.k);
+  $('devOut').textContent=`x ${wx} · y ${wy} · k ${cam.k.toFixed(2)}`;
+}
+
+/* ---------- boot / resize ---------- */
+function recalibrate(){
+  cancelCamTween(false);
+  minK=fitScale();maxK=3;
+  if(S.cameraMode==='guided'){
+    if(S.mode==='tour'){Object.assign(cam,stageCam(stageByN(S.idx)));}
+    else Object.assign(cam,solveCam(WORLD_BB()));
+  } else cam.k=Math.max(cam.k,minK);
+  applyCam();
+}
+addEventListener('resize',recalibrate);
+function applyMeta(){
+  document.title=META.docTitle||META.title;
+  $('exhibitTitle').textContent=META.title;
+  $('exhibitSub').textContent=META.subtitle;
+  const C=META.cover||{}, q=(root,s)=>document.querySelector(root+' '+s);
+  if(C.kicker)q('#cover','.kicker').textContent=C.kicker;
+  if(C.h1)q('#cover','h1').innerHTML=C.h1;
+  if(C.promise)q('#cover','.promise').innerHTML=C.promise;
+  if(C.instr)q('#cover','.instr').innerHTML=C.instr;
+  if(C.specimenHTML)q('#cover','.specimen').innerHTML=C.specimenHTML;
+  if(C.legend)q('#cover','.legend').innerHTML=C.legend.map(li=>
+    `<span class="li"><span class="sw" style="${li.style||''}"></span>${li.label}</span>`).join('');
+  const TM=META.terminal||{};
+  if(TM.kicker)q('#terminal','.kicker').textContent=TM.kicker;
+  if(TM.h2)q('#terminal','h2').innerHTML=TM.h2;
+  if(TM.promise)q('#terminal','.promise').innerHTML=TM.promise;
+  if(TM.specimenHTML)q('#terminal','.specimen').innerHTML=TM.specimenHTML;
+}
+function applyNotice(){
+  const N=(typeof NOTICE!=='undefined')?NOTICE:null; if(!N)return;
+  $('noticeSum').textContent=N.summary; $('noticeBody').innerHTML=N.html; $('notice').hidden=false;
+}
+applyMeta();applyNotice();
+buildScene();buildMini();
+recalibrate();goCover();idleKick();
+</script>
+</body>
+</html>
