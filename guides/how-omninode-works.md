@@ -55,49 +55,49 @@ and were read in the released code. Dashed boxes and arrows are declared in a co
 and are **not built end to end**.
 
 ```mermaid
-flowchart TB
+flowchart LR
   subgraph machine["Your machine"]
-    direction TB
+    direction LR
     caller["Claude Code or a terminal<br/>/onex:delegate, onex delegate"]
-    subgraph runtime["ONEX runtime: one bus per runtime, chosen at start"]
-      direction LR
-      bus(("Event bus<br/>in-memory by default,<br/>or a Kafka-compatible broker"))
-      orch["Orchestrator nodes<br/>declare the workflow"]
-      cmp["Compute nodes<br/>pure functions"]
-      red["Reducer nodes<br/>state + event = new state"]
-      eff["Effect nodes<br/>the only ones that touch the outside"]
+    subgraph runtime["ONEX runtime, one bus chosen at start"]
+      direction TB
+      orch["Orchestrator<br/>declares the workflow"]
+      cmp["Compute<br/>pure function"]
+      bus(("Event bus<br/>in-memory, or<br/>Kafka-compatible"))
+      red["Reducer<br/>state + event = new state"]
+      eff["Effect<br/>the only type that<br/>touches the outside"]
       orch <--> bus
       cmp <--> bus
       red <--> bus
       eff <--> bus
     end
-    proj[("Projections<br/>read models: SQLite locally,<br/>PostgreSQL in the container stack")]
-    ledger[("Work ledger<br/>typed rows, read with onex-work-ledger<br/>OmniNode uses it for its own work")]
+    proj[("Projections<br/>SQLite locally,<br/>PostgreSQL in containers")]
+    ledger[("Work ledger<br/>typed rows, onex-work-ledger,<br/>used by OmniNode for its own work")]
     runs["Run folder per delegation<br/>result, receipt, run record"]
-    caller --> orch
-    red --> proj
-    red --> ledger
-    eff --> runs
   end
-  model["The model you choose<br/>a server you run, or your own provider key"]
-  eff -->|"direct call, never through OmniNode"| model
+  model["The model you choose<br/>a server you run,<br/>or your own provider key"]
   subgraph server["A bus on your own servers"]
     bus2(("Event bus"))
   end
-  subgraph hosted["Hosted service: waitlist, not open to outside users"]
+  subgraph hosted["Hosted service<br/>waitlist, not open to outside users"]
     bus3(("Hosted bus"))
   end
-  bus -->|"node_bus_forwarder_effect<br/>mirrors the topics its contract declares"| bus2
+  all["Complete record of every node's actions<br/>NOT BUILT: coverage shown only for the parts above"]
+  caller --> orch
+  red --> proj
+  bus -->|"append requests"| ledger
+  eff --> runs
+  eff -->|"direct call, never through OmniNode"| model
+  bus -->|"node_bus_forwarder_effect<br/>mirrors the declared topics"| bus2
   bus2 -.->|"declared in the contract,<br/>delivery not turned on"| bus3
-  all["A complete record of every node's actions<br/>NOT BUILT: coverage is shown only for the parts above"]
   bus -.-> all
   classDef notbuilt stroke-dasharray: 6 4,fill:#f4f4f4,color:#555;
   class hosted,bus3,all notbuilt;
 ```
 
-Read it from the top: a request enters at the caller, the orchestrator turns it into events on the
+Read it from the left: a request enters at the caller, the orchestrator turns it into events on the
 bus, compute, reducer and effect nodes react to those events, and only an effect node reaches
-outside the runtime. Reducers write the state that screens and tools read. The three buses are
+outside the runtime. Reducers fold events into the projections that screens and tools read. The three buses are
 joined only by forwarding nodes, and the last hop is the part that is not built.
 
 ## One bus, one record
