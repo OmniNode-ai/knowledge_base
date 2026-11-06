@@ -318,17 +318,15 @@ that happened.
 ```mermaid
 sequenceDiagram
   autonumber
-  participant H as Claude Code
-  participant S as onex delegate<br/>(the skill's one command)
+  participant H as Claude Code<br/>skill runs onex delegate
   participant K as node_delegate_skill_orchestrator
   participant O as node_delegation_orchestrator
   participant R as node_delegation_routing_reducer
   participant E as node_llm_delegation_call_effect
   participant G as node_delegation_quality_gate_reducer
-  participant P as Consumers of the result<br/>projection, ledger mirror, routing feedback
+  participant P as Result consumers<br/>projection, ledger mirror,<br/>routing feedback
   participant M as Your model
-  H->>S: /onex:delegate with the task text
-  S->>K: onex.cmd.omnimarket.delegate-skill.v1
+  H->>K: onex.cmd.omnimarket.delegate-skill.v1<br/>from /onex:delegate and the task text
   Note over K: Claims the command so a replay is not run twice,<br/>checks the task type, resolves token and time budgets
   K->>O: onex.cmd.omnibase-infra.delegation-request.v1
   Note over O: State RECEIVED
@@ -356,8 +354,7 @@ sequenceDiagram
     O-->>K: onex.evt.omnibase-infra.delegation-failed-routed.v2<br/>or ...failed-unrouted.v2
     K-->>P: onex.evt.omnimarket.delegate-skill-failed.v1
   end
-  K-->>S: typed response: model, answer, metrics, gate verdict
-  S-->>H: the answer as it came back, with model, cost and run id
+  K-->>H: typed response: model, answer, metrics, gate verdict<br/>shown as it came back, with model, cost and run id
   Note over P: delegation projection writes one row per run,<br/>work-ledger mirror emits work-ledger-append-requested.v1,<br/>onex metering reads the projection
 ```
 
