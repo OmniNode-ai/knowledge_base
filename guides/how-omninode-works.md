@@ -266,22 +266,81 @@ consumer you run.
 ## Learning from earlier runs
 
 The aim is that a new task starts with what earlier, similar tasks taught: the typed chain of
-events from a prior run is available as context for the next one. What exists in public
-releases are the parts on either side of that idea.
+events from a prior run is available as context for the next one. This section traces what the
+released code does today for that idea, using delegation as the example, and marks each step as
+built or not built. It was read at `omnimarket 0.4.320`, `omnibase-core 0.47.67` and
+`omniclaude 0.27.0`.
 
-- The per-correlation event chain described above is the typed record of a run.
-- [`node_agent_learning_retrieval_effect`](https://github.com/OmniNode-ai/omnimarket/blob/v0.4.320/src/omnimarket/nodes/node_agent_learning_retrieval_effect/contract.yaml)
-  looks up stored learning records by error signature or by task context, using a vector store.
-  It needs a Qdrant instance that you run.
-- The context pack nodes assemble the context for a task from declared tiers, in a fixed order
-  and within a budget. [Context enrichment](../architecture/context-enrichment-pipeline.md)
-  describes the related hook pipeline, which is optional and off unless enabled.
-- The routing feedback reducer shown in the table keeps per-model counters from outcome events,
-  and its contract says routing can use them to skip models with poor success rates.
+The answer to the question this page asked before is unchanged: **recording a run is built, a
+reader for the record is built, and nothing yet reads the record back into the next task.**
 
-What is not shown: a closed loop in which prior event chains are fed to the next similar task,
-with a measured improvement. Nothing in the installed delegation plugin does this, and no public
-measurement says how much it would help. The
+```mermaid
+sequenceDiagram
+  autonumber
+  participant R as A delegation run<br/>orchestrator and effect nodes
+  participant B as Event bus
+  participant C as Run record<br/>node_projection_event_chain<br/>node_projection_delegation
+  participant F as Routing feedback<br/>node_delegation_routing_feedback_reducer<br/>node_projection_routing_feedback
+  participant V as Validator writer<br/>node_validation_report_write_effect
+  participant L as Ledger and friction<br/>work-ledger mirror, friction nodes
+  participant K as Knowledge context<br/>node_knowledge_context_assembler_orchestrator<br/>node_agent_learning_retrieval_effect
+  participant N as The next, similar task
+  Note over R,L: Recording: built
+  R->>B: onex.evt.omnimarket.delegation-call-completed.v1<br/>...delegation-escalation-triggered.v1<br/>...delegation-all-tiers-failed.v1<br/>...delegate-skill-completed.v1 or ...failed.v1
+  B->>C: events of one correlation id become chain rows,<br/>and one delegation_events row per run
+  Note over C: also folds onex.evt.omniclaude.delegation-shadow-comparison.v1,<br/>emitted by the plugin repository's hooks
+  B->>F: the three delegation outcome events
+  F->>B: onex.evt.omnimarket.routing-feedback-updated.v1<br/>counters per model and task type
+  B->>F: the projection writes the delegation_routing_feedback table
+  V->>B: onex.evt.platform.validator-run.v1 per run<br/>onex.evt.platform.validator-triggered.v1 per failing validator
+  Note over V,B: no node in the repository consumes these two topics,<br/>they are read by tooling outside it
+  B->>L: delegate-skill-completed.v1 and failed.v1
+  L->>B: onex.cmd.omnimarket.work-ledger-append-requested.v1<br/>a typed ledger row
+  Note over L: friction rows are rolled up by<br/>onex.cmd.omnimarket.friction-rollup-requested.v1<br/>then ...friction-rollup-completed.v1,<br/>and a surface with 3 or more events, or a severe one,<br/>opens a ticket through the triage orchestrator,<br/>which needs a ticket adapter you supply
+  rect rgb(244, 244, 244)
+    Note over K,N: Reading back: built as parts, NOT WIRED into a delegation
+    N-->>K: onex.cmd.omnimarket.knowledge-context-requested.v1<br/>NOT BUILT as a caller: nothing publishes this command
+    K-->>N: onex.evt.omnimarket.knowledge-context-assembled.v1<br/>up to four backends, one of them prior learnings from Qdrant
+    F-->>R: NOT BUILT: no routing code reads delegation_routing_feedback<br/>to skip a model with a poor record
+    C-->>N: NOT BUILT: no step feeds a prior chain to a new task
+  end
+  N->>R: the request's optional context_pack text is put before the prompt<br/>the installed local path sends it empty
+```
+
+What each part is, in words:
+
+1. **The record of a run is built.** A delegation run emits typed events, and two projections turn
+   them into queryable rows: one row per delegation, and a per-correlation event chain. The
+   plugin repository's hooks also emit shadow-comparison events, which the delegation projection
+   folds into its own table.
+2. **Routing feedback is built as a counter, and its reader is missing.** The reducer counts
+   completions, escalations and all-tiers-failed outcomes per model and task type, publishes the
+   result and a projection stores it. Its contract says routing can use the counters to skip models
+   with poor success rates. In the released code no routing step reads the stored counters, so the
+   counters do not change a route today.
+3. **Validator firing counts exist as events, with no consumer in the corpus.** The writer
+   publishes a run event and one triggered event per failing validator. The count of how often each
+   rule fires is therefore available to whoever reads those topics, and nothing in the repository
+   acts on it.
+4. **Ledger and friction rows are built, and they inform people.** The mirror turns delegation
+   outcomes into typed ledger rows. The friction rollup counts friction by class, cost and
+   recurrence, and the triage orchestrator opens a ticket for a recurring surface when an adapter is
+   supplied. The reader of that output is a person or a later session, not the next delegation.
+5. **The read-back side is built as parts.** The knowledge context assembler fans a request out to
+   up to four backends and returns a bundle with graceful degradation, one backend being the
+   retrieval of prior agent learnings from a vector store you run. No code in `omnimarket 0.4.320`, `omniclaude 0.27.0` or the latest `omniintelligence`
+   release publishes the command that starts it. The worker that builds task context still assembles it
+   from local signals and says in its own comments that the assembler is not yet wired. The
+   context-pack orchestrator is called by the context compaction workflow, not by a delegation.
+6. **The one live seam is a text field.** A delegation request can carry a `context_pack` string,
+   which the workflow puts before the prompt and hashes into the event. Whoever builds the request
+   decides what goes in it, and the installed local path sends an empty one.
+
+So the statement on this page still holds at these releases: a closed loop in which prior event
+chains are fed to the next similar task is **not built**, and no public measurement says how much
+it would help. The pieces on both sides exist and have tests, and the join between them is the work
+that is left. Context enrichment in the plugin repository is a separate, optional hook pipeline
+described in [Context enrichment](../architecture/context-enrichment-pipeline.md). The
 [overview page](what-is-omninode.md) makes the same statement about memory and enrichment.
 
 ## The way in: the delegation plugin
