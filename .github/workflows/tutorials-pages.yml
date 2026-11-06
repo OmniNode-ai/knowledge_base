@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2026 OmniNode.ai Inc.
+# SPDX-License-Identifier: MIT
+#
+# Publish the interactive tutorials (docs/tutorials) as a static site on GitHub Pages.
+#
+# The pages are self-contained HTML files: no build step and no external assets. The site root is
+# the docs/tutorials folder, so its index is the site's front page. Pages must be enabled for this
+# repository with the source set to GitHub Actions; until then the deploy job is the only thing
+# that fails, and nothing else in the repository depends on it.
+
+name: Tutorials site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/tutorials/**"
+      - ".github/workflows/tutorials-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: tutorials-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/tutorials
+      - id: deployment
+        uses: actions/deploy-pages@v4

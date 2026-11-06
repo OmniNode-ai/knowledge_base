@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniNode Interactive Tutorials</title>
+<link rel="stylesheet" href="site.css"></head><body>
+<div class="wrap">
+  <nav class="topnav" aria-label="Tutorials"><a href="index.html" aria-current="page">Concept tutorials</a><a href="gallery-index.html">Repository tours</a><a href="occ-dod-sea-ideal-flow.html">How done is proven</a></nav>
+  <div class="kicker">OmniNode · Interactive Architecture Tutorials</div>
+  <h1>Interactive Architecture Tutorials</h1>
+  <p class="lead">Guided, interactive walks through how the platform is built — the primitives, the node types, the runtime, and the flows that tie them together. Each tutorial is a self-contained "museum exhibit": step through the diagram, or read it at the level that suits you.</p>
+
+  <div class="masterbar">
+    <span class="ml">Reading level</span>
+    <select id="masterLevel" title="Reading level for every tutorial" aria-label="Reading level">
+      <option value="plain">Plain-language</option>
+      <option value="exec">Executive</option>
+      <option value="technical">Technical</option>
+    </select>
+    <span class="note">Master control — sets the level for <em>every</em> tutorial you open. You can still change it on any page.</span>
+  </div>
+
+  <h2 class="sec">Node types</h2>
+  <div class="grid">
+    <a class="card" href="node-effect.exhibit.html"><div class="t">Effect</div><div class="s">The only part allowed to touch the outside world.</div></a>
+  </div>
+
+  <h2 class="sec">The runtime & the loop</h2>
+  <div class="grid">
+    <a class="card" href="overlays.exhibit.html"><div class="t">Overlays</div><div class="s">Tuning behavior by layering settings, with no code change.</div></a>
+    <a class="card" href="projections-dashboard.exhibit.html"><div class="t">Projections & the dashboard</div><div class="s">How results become something you can see.</div></a>
+    <a class="card" href="model-routing-delegation.exhibit.html"><div class="t">Model routing & the savings ladder</div><div class="s">Cheapest-first: try local, escalate only when needed.</div></a>
+  </div>
+
+  <h2 class="sec">Going deeper</h2>
+  <div class="grid">
+    <a class="card" href="repo-layering.exhibit.html"><div class="t">How the codebase is layered</div><div class="s">Where a model, a protocol, or an implementation belongs.</div></a>
+    <a class="card" href="validators-gates.exhibit.html"><div class="t">Validators & gates</div><div class="s">Rules enforced automatically, not by good intentions.</div></a>
+    <a class="card" href="runtime-wiring-onex-run-node.exhibit.html"><div class="t">From package to running node</div><div class="s">How a definition on disk becomes a live, listening service.</div></a>
+    <a class="card" href="endpoint-resolution-bifrost.exhibit.html"><div class="t">Endpoint resolution</div><div class="s">How a model name turns into a real address and key.</div></a>
+    <a class="card" href="event-envelope-correlation.exhibit.html"><div class="t">The event envelope</div><div class="s">The wrapper that lets any run be traced and replayed.</div></a>
+    <a class="card" href="node-generation-sea.exhibit.html"><div class="t">Generating new capabilities</div><div class="s">How the platform writes new pieces of itself — held to the same rules.</div></a>
+    <a class="card" href="skills-and-hooks.exhibit.html"><div class="t">Skills & hooks</div><div class="s">The boundary where a command becomes real work.</div></a>
+    <a class="card" href="sweeps-and-golden-chains.exhibit.html"><div class="t">Sweeps & golden chains</div><div class="s">How the system proves, end to end, that it still works.</div></a>
+  </div>
+
+  <h2 class="sec">Product surface (customer-facing)</h2>
+  <div class="grid">
+    <a class="card" href="gateway.exhibit.html"><div class="t">The Gateway</div><div class="s">How a customer's own runtime turns a stored credential into a cloud session — and refuses when it can't prove it should.</div></a>
+    <a class="card" href="tenants-and-identity.exhibit.html"><div class="t">Tenants &amp; Identity</div><div class="s">Who a request is for, and what stops one tenant's rows reaching another.</div></a>
+    <a class="card" href="delegation-as-a-product.exhibit.html"><div class="t">Delegation as a Product</div><div class="s">How a developer buys and uses delegation — two entry surfaces, one evidence trail.</div></a>
+    <a class="card" href="provider-keys-by-reference.exhibit.html"><div class="t">Provider Keys by Reference</div><div class="s">A customer's API key becomes an opaque reference the moment it enters the platform.</div></a>
+    <a class="card" href="onex-api-projection-reader.exhibit.html"><div class="t">onex-api: Reader &amp; Writer</div><div class="s">How the HTTP boundary reads a projection and writes a command — never a row.</div></a>
+  </div>
+
+  <h2 class="sec">Delivery &amp; change control</h2>
+  <div class="grid">
+    <a class="card" href="delivery-chain-lab-to-prod.exhibit.html"><div class="t">The Delivery Chain: Lab to Production</div><div class="s">How a merged commit becomes running software, gated by a sha-keyed lab-pass receipt.</div></a>
+    <a class="card" href="change-control-end-to-end.exhibit.html"><div class="t">Change Control End to End</div><div class="s">How a ticket is proven complete by machine, not by a checked box.</div></a>
+    <a class="card" href="secrets-and-configuration.exhibit.html"><div class="t">Secrets &amp; Configuration</div><div class="s">How a node gets its URLs, config and keys when none of them live in the environment.</div></a>
+  </div>
+
+  <h2 class="sec">Operations</h2>
+  <div class="grid">
+    <a class="card" href="ci-on-the-fleet.exhibit.html"><div class="t">CI on the Fleet</div><div class="s">How a pushed branch's checks land on a machine, and which contexts can actually block a merge.</div></a>
+    <a class="card" href="ledger-and-lanes.exhibit.html"><div class="t">The Ledger and the Lanes</div><div class="s">How dozens of concurrent agent lanes claim, place and commit work without colliding.</div></a>
+    <a class="card" href="evals-and-context-service.exhibit.html"><div class="t">Evals &amp; the Context Service</div><div class="s">How the platform judges a cheaper model's work — and the context layer that isn't wired yet.</div></a>
+  </div>
+
+  <footer>The reading level you choose above applies to every tutorial you open, and you can change it on any page.</footer>
+</div>
+<script>
+(function(){
+  var sel=document.getElementById('masterLevel');
+  try{ sel.value=localStorage.getItem('onexAudience')||'plain'; }catch(e){}
+  sel.addEventListener('change',function(){ try{ localStorage.setItem('onexAudience', sel.value); }catch(e){} });
+})();
+</script>
+</body></html>
