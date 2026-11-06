@@ -34,6 +34,54 @@ State of this page: checked on 2026-11-06 against `omnibase-core 0.47.67`, `omni
 0.38.76` and `omnimarket 0.4.320`. The section [How this was checked](#how-this-was-checked)
 says which commands were run and which were only read in source.
 
+## The path at a glance
+
+The diagram follows both paths from the first command to the first delegation. Green boxes are
+commands that were run for this page on 2026-11-06. Hatched boxes were read in the source or in
+the tool's help and were not run for this page. The section
+[How this was checked](#how-this-was-checked) gives the detail for each.
+
+```mermaid
+flowchart TD
+  start(["One machine you control<br/>uv, a supported computer, a model to send work to"]) --> i1
+  subgraph p1["Path 1: the tool, no containers"]
+    direction TB
+    i1["1. uv tool install ...<br/>onex --version"]
+    i2["2. onex local init<br/>identity and runtime declaration under ~/.omninode"]
+    d{"3. Which model?"}
+    m1["Model server you run:<br/>write bifrost_overrides.yaml<br/>with the complete endpoint_url"]
+    m2["Your provider key:<br/>onex secret set llm.openrouter.api_key<br/>asks for the key, never prints it"]
+    refuse["Neither declared:<br/>onex delegate refuses before any model<br/>nothing ran, nothing was spent"]
+    dl["4. onex delegate 'say hello in one word'"]
+    rec["Answer, then model, cost and run id<br/>run folder: result.txt, receipt.json, run.json"]
+    met["5. onex metering: runs, tokens, spend against a baseline<br/>onex dashboard: local page on a loopback address"]
+    plug["6. Optional: claude plugin install,<br/>then /onex:delegate in Claude Code"]
+    i1 --> i2 --> d
+    d --> m1 --> dl
+    d --> m2 --> dl
+    d --> refuse
+    dl --> rec --> met
+    rec --> plug
+  end
+  subgraph p2["Path 2: the container stack on the same machine, optional"]
+    direction TB
+    c1["git clone omnibase_infra at the checked tag<br/>uv sync, make local-env<br/>writes generated passwords and a model overlay"]
+    c2["Edit model_endpoint in the overlay<br/>to your model's complete URL"]
+    c3["make up-local<br/>builds the runtime image, boots broker, PostgreSQL, cache, runtime"]
+    c4["make status-local<br/>migration gate, health on ports 8085 and 8086, delegate consumer group"]
+    c5["make delegate-local PROMPT=...<br/>delegation through the broker, projections fill"]
+    c1 --> c2 --> c3 --> c4 --> c5
+  end
+  rec -.->|"want the event flow and projections"| c1
+  c5 -.-> next["Not a quickstart step, not built end to end:<br/>mirror to a second bus, hosted service,<br/>local to server to hosted chain"]
+  classDef ran fill:#eef6ee,stroke:#4a7c4a;
+  classDef read stroke-dasharray: 5 4,fill:#f6f6f6,color:#444;
+  classDef nb stroke-dasharray: 2 3,fill:#fbf3e4,stroke:#b08a3a;
+  class i1,i2,m1,dl,rec,refuse ran;
+  class m2,met,plug,c1,c2,c3,c4,c5 read;
+  class next nb;
+```
+
 ## What you need
 
 | You need | Path | Detail |
