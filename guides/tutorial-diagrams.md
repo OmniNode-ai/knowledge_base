@@ -25,9 +25,9 @@ edge order, and each edge is labelled with the number of the tour step it belong
 the tutorial itself shows. A **dashed grey box marked NOT BUILT OR NOT WIRED** is a part the tutorial labels as
 proposed, built but never called, never run or not wired yet, and a dashed arrow is a path the tutorial draws as optional or conditional.
 
-To open an animated tutorial, clone the repository and open the file in a browser. A workflow that
-publishes the folder as a site is in the repository, but GitHub Pages is not turned on for it yet, so there is
-no hosted copy at the moment. For the three diagrams that come first, see
+To open an animated tutorial, use the hosted copy at <https://omninode-ai.github.io/knowledge_base/>, which a
+workflow publishes from the `docs/tutorials` folder, or clone the repository and open the file in a browser.
+For the three diagrams that come first, see
 [How OmniNode works](how-omninode-works.md) and the [Self-hosted quickstart](self-hosted-quickstart.md).
 
 Each section gives the diagram, then the steps of the tour in plain words.
@@ -282,60 +282,6 @@ The tour, step by step:
 
 
 ## Going deeper
-
-### How the codebase is layered
-
-Where a model, a protocol, or an implementation belongs.
-
-Tutorial file: [`docs/tutorials/repo-layering.exhibit.html`](../docs/tutorials/repo-layering.exhibit.html) (GitHub shows its source; open it in a browser from a clone to run it)
-
-```mermaid
-flowchart LR
-  subgraph z0["omnibase_compat"]
-    n0["compat pyproject.toml<br/>Only pydantic + typing-extensions as runtime deps —..."]
-    n1["EnumNodeKind<br/>StrEnum of the four node archetypes, helper methods..."]
-    n2["EventEnvelopeV1Minimal<br/>Narrow wire envelope using str for schema_version, frozen..."]
-  end
-  subgraph z1["omnibase_core"]
-    n3["ModelEventEnvelope(T)<br/>Generic runtime envelope with correlation, security..."]
-    n4["ModelHandlerDescriptor<br/>Canonical frozen handler representation: name, version..."]
-    n5["validate-no-transport-imports<br/>AST-based pre-commit + CI hook, rejects transport library..."]
-  end
-  subgraph z2["omnibase_spi"]
-    n6["ProtocolHandler<br/>@runtime_checkable Protocol: handler_type, initialize..."]
-    n7["ProtocolEventBusService<br/>@runtime_checkable Protocol for event bus lifecycle, infra..."]
-    n8["DEPENDENCY-DIRECTION.md<br/>Written rule: spi→core allowed, core→spi forbidden..."]
-  end
-  subgraph z3["omnibase_infra"]
-    n9["MessageDispatchEngine<br/>Pure-routing dispatch engine, imports ModelEventEnvelope..."]
-    n10(("EventBusKafka"))
-    n11["infra pyproject.toml<br/>Pins omnibase-core=0.44.0,=0.22.0,0.23.0 — authoritative..."]
-  end
-  n1 -->|"4"| n3
-  n2 -->|"4"| n3
-  n4 -->|"6"| n6
-  n6 -.->|"6"| n4
-  n3 -->|"9"| n9
-  n7 -->|"9"| n10
-  n9 -->|"9"| n10
-```
-
-The tour, step by step:
-
-1. A four-floor building, one-way stairs
-2. The ground floor: the shared basics
-3. The ground floor is temporary, with move-out dates
-4. The second floor: the real vocabulary
-5. A guard that won’t let heavy gear onto the second floor
-6. The third floor: written job descriptions
-7. The job descriptions borrow downward, never the reverse
-8. Keep the shared shapes downstairs, not next to the job descriptions
-9. The top floor: the parts that actually do the work
-10. Workers fit the job by shape, not by paperwork
-11. The top floor can reach straight down to the basics
-12. Get the order wrong and the building won’t open
-13. The simple rule for where anything goes
-14. You can check the whole thing in two minutes
 
 ### Validators & gates
 
@@ -1695,55 +1641,6 @@ The tour, step by step:
 9. The official template for every heading
 10. How it all fits together
 
-### omnibase_compat — cross-repo structural compatibility shim
-
-A temporary, zero-upstream-dependency package that owns stable enums, wire DTOs, and event envelopes shared across OmniNode repos without creating an import cycle through core/spi/infra.
-
-Tour file: [`docs/tutorials/omnibase_compat.html`](../docs/tutorials/omnibase_compat.html) (GitHub shows its source; open it in a browser from a clone to run it)
-
-```mermaid
-flowchart TB
-  root["omnibase_compat — cross-repo structural compatibility shim"]
-  n0["1 event envelope<br/>minimal cross-repo envelope"]
-  root --> n0
-  n1["2 project-tracker models<br/>frozen wire DTOs"]
-  root --> n1
-  n2["3 enums<br/>provenance-tracked StrEnum copies"]
-  root --> n2
-  n3["4 contracts<br/>domain wire DTOs"]
-  root --> n3
-  n4["5 overseer<br/>routing decisions and agent scopes"]
-  root --> n4
-  n5["6 routing + telemetry<br/>policy and telemetry DTOs"]
-  root --> n5
-  n6["7 protocols + adapters<br/>cross-repo protocols and adapter"]
-  root --> n6
-  n7["8 experimental registry<br/>in-memory artifact registry"]
-  root --> n7
-  n8["9 upstream-dep validator<br/>AST import-boundary scan"]
-  root --> n8
-  n9["10 infra-edge checker<br/>dependency-closure scan"]
-  root --> n9
-  n10["11 retention checker<br/>migration-metadata enforcer"]
-  root --> n10
-```
-
-The tour, step by step:
-
-1. A shared shelf of common parts
-2. A standard shipping label for messages
-3. Ready-made forms for project tracking
-4. A shared list of allowed words
-5. Order forms for the system's main jobs
-6. The rules for who handles what
-7. The settings and progress notes for routing
-8. Shared plugs and a translator
-9. A scratch pad for experiments
-10. A guard that blocks the wrong neighbors
-11. A second guard, checking the fine print
-12. An expiry-date checker
-13. How it all fits — and the one warning
-
 ### omnibase_core — the platform kernel
 
 The platform kernel: owns the four node archetypes, contracts, core Pydantic models, and the validation tooling that downstream OmniNode repos consume.
@@ -2129,7 +2026,7 @@ flowchart TB
   root --> n8
   n9["10 runtime + seams<br/>in-process wiring, seam boundaries"]
   root --> n9
-  n10["11 layering position<br/>depends on compat → core → spi"]
+  n10["11 layering position<br/>depends on core → spi"]
   root --> n10
 ```
 

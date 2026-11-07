@@ -21,10 +21,9 @@
     <span class="note">Sets the level for every tour you open.</span>
   </div>
 
-  <h2 class="sec">11 repositories</h2>
+  <h2 class="sec">10 repositories</h2>
   <div class="grid">
     <a class="card" href="knowledge-base.html"><div class="k">knowledge-base</div><div class="t">OmniNode Knowledge Base</div><div class="s">Public, validation-gated architectural provenance repo: doctrine, ADRs, TDDs, pivots, deep-dives, experiments, evidence and plans, with a Pydantic frontmatter schema and a sanitization gate keeping the public record clean.</div></a>
-    <a class="card" href="omnibase_compat.html"><div class="k">omnibase_compat</div><div class="t">omnibase_compat — cross-repo structural compatibility shim</div><div class="s">A temporary, zero-upstream-dependency package that owns stable enums, wire DTOs, and event envelopes shared across OmniNode repos without creating an import cycle through core/spi/infra.</div></a>
     <a class="card" href="omnibase_core.html"><div class="k">omnibase_core</div><div class="t">omnibase_core — the platform kernel</div><div class="s">The platform kernel: owns the four node archetypes, contracts, core Pydantic models, and the validation tooling that downstream OmniNode repos consume.</div></a>
     <a class="card" href="omnibase_infra.html"><div class="k">omnibase_infra</div><div class="t">omnibase_infra — Infrastructure Runtime</div><div class="s">The infrastructure implementation layer of the platform: a single-process runtime host that loads contract-declared nodes, routes Kafka events through a message dispatch engine, and performs all external I/O behind handlers — depends on omnibase_core (models) and omnibase_spi (protocols); core must not import it.</div></a>
     <a class="card" href="omnibase_spi.html"><div class="k">omnibase_spi</div><div class="t">omnibase_spi — the protocol boundary layer</div><div class="s">Service Provider Interface package: 231 runtime-checkable Python Protocol contracts across 39 domains plus narrow data-only wire contracts that implementation repos (omnibase_infra, product repos) satisfy, while importing shared models from omnibase_core.</div></a>
