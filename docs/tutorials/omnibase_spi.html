@@ -68,7 +68,8 @@ button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
   paint-order:stroke;stroke-width:14px;stroke-linejoin:round}
 .wall{stroke:var(--ink-2);stroke-width:3;stroke-dasharray:10 7;opacity:.6}
 .wallLabel{font-family:var(--sans);font-size:20px;letter-spacing:.26em;
-  fill:var(--ink-2);text-transform:uppercase}
+  fill:var(--ink-2);text-transform:uppercase;
+  paint-order:stroke;stroke:var(--canvas);stroke-width:12px;stroke-linejoin:round}
 .gateArch{fill:none;stroke:var(--ink);stroke-width:2.5}
 .gateGlow{opacity:0;transition:opacity .5s}
 .gateGlow.lit{opacity:.85}
@@ -125,8 +126,7 @@ button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
 .stop.current text{fill:#FFF8EF}
 
 /* counter-scaled overlay things (badges, arrowheads, packet) */
-.portBadge rect{fill:var(--ink);rx:7}
-.portBadge text{font-family:var(--mono);font-size:11.5px;fill:#F5F1E8;text-anchor:middle}
+.portLine{font-family:var(--mono);font-size:12px;fill:var(--accent-t);transition:opacity .35s}
 .arrowHead{fill:#8A8071;transition:opacity .3s}
 .arrowHead.active{fill:var(--accent-g)}
 .arrowHead.rideHead{opacity:.22}
@@ -138,7 +138,7 @@ button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
 .edgeChip text{font-family:var(--mono);font-size:11px;fill:var(--ink-2);text-anchor:middle}
 
 /* LOD tiers — pure function of camera scale via data-lod on #scene */
-.lod1,.lod2,.nName,.nSub,.containerLabel,.busName{transition:opacity .35s}
+.lod1,.lod2,.nName,.nSub,.containerLabel,.busName,.zoneLabel,.wallLabel{transition:opacity .35s}
 /* a node text is shown only while it renders at 11px or more (see updateTextLOD) */
 .lodoff{opacity:0}
 #scene[data-lod="0"] .lod1{opacity:0}
@@ -319,7 +319,7 @@ button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{
 }
 
 @media (prefers-reduced-motion:reduce){
-  .node .halo,.gateGlow,.lod1,.lod2,.packetChip,.nName,.nSub,.containerLabel,.busName{transition:none}
+  .node .halo,.gateGlow,.lod1,.lod2,.packetChip,.nName,.nSub,.containerLabel,.busName,.portLine,.zoneLabel,.wallLabel{transition:none}
   .node.pulse .halo{animation:none;opacity:.6}
 }
 </style>
@@ -555,12 +555,12 @@ function fitLabel(g,text,x,y,maxW,maxH,size,minSize,cls){
     ls[cap-1]=last.replace(/[\s/_.,:>=()-]+$/,'')+'…';}
   t.textContent='';t.style.fontSize=sz+'px';const lh=sz*1.12;
   ls.forEach((ln,i)=>{const ts=el('tspan',{x:x,y:(y+i*lh).toFixed(1)},t);ts.textContent=ln;});
-  if(/nName|nSub/.test(cls))lodTexts.push({t:t,k:11.05/sz,on:true});
+  if(/nName|nSub|busName/.test(cls))lodTexts.push({t:t,k:11.05/sz,on:true});
   return y+(ls.length-1)*lh;
 }
 
 /* ---------- build the world ---------- */
-let lodTexts=[], world, counterScaled=[], nodeEls={}, edgeEls={}, stopEls={}, edgeChipEls=[], gateGlowEls=[];
+let wallLabels=[], lodTexts=[], world, counterScaled=[], nodeEls={}, edgeEls={}, stopEls={}, edgeChipEls=[], gateGlowEls=[];
 function buildScene(){
   const defs=el('defs',{},scene);
   const pat=el('pattern',{id:'dots',width:24,height:24,patternUnits:'userSpaceOnUse'},defs);
@@ -581,7 +581,7 @@ function buildScene(){
   for(const w of WALLS){
     el('line',{class:'wall',x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2,opacity:w.opacity==null?1:w.opacity},world);
     if(w.label){const lx=w.lx==null?w.x1-26:w.lx, ly=w.ly==null?830:w.ly;
-      el('text',{class:'wallLabel',x:lx,y:ly,transform:`rotate(-90 ${lx} ${ly})`},world).textContent=w.label;}
+      wallLabels.push({text:w.label,x:lx,y:ly});}
   }
   /* gates (arch crossings that can glow during a stage) */
   for(const gt of GATES){
@@ -591,7 +591,7 @@ function buildScene(){
     const glow=el('rect',{class:'gateGlow',x:gt.x-26,y:gt.y0-20,width:52,height:gt.y1-gt.y0+40,rx:24,fill:'url(#haloG)'},world);
     el('rect',{class:'gateArch',x:gt.x-13,y:gt.y0,width:26,height:gt.y1-gt.y0,rx:13},world);
     if(gt.label){const ly=gt.ly==null?830:gt.ly;
-      el('text',{class:'wallLabel',x:gt.x-26,y:ly,transform:`rotate(-90 ${gt.x-26} ${ly})`},world).textContent=gt.label;}
+      wallLabels.push({text:gt.label,x:gt.x-26,y:ly});}
     gateGlowEls.push(glow);
   }
 
@@ -612,7 +612,12 @@ function buildScene(){
   const zoneLayer=el('g',{},world);
   for(const z of ZONES){fitLabel(zoneLayer,z.label,z.x+22,z.y+38,z.w-44,64,24,14,'zoneLabel');
     /* a halo in the zone's own colour, so a line passing behind the title is not seen through it */
-    zoneLayer.lastChild.style.stroke=z.fill;}
+    zoneLayer.lastChild.style.stroke=z.fill;lodTexts.push({t:zoneLayer.lastChild,k:0,on:true});}
+  /* wall and gate labels: with the zone titles, above the lines, below the nodes */
+  for(const w of wallLabels){
+    const wt=el('text',{class:'wallLabel',x:w.x,y:w.y,transform:`rotate(-90 ${w.x} ${w.y})`},zoneLayer);
+    wt.textContent=w.text;lodTexts.push({t:wt,k:0,on:true,rot:[w.x,w.y]});
+  }
   /* nodes */
   for(const n of NODES){
     if(n.type==='bus'){
@@ -620,9 +625,8 @@ function buildScene(){
       const cy=n.y+n.h/2;
       el('rect',{class:'halo',x:n.x-16,y:cy-26,width:n.w+32,height:52,rx:24,fill:'url(#haloG)'},g);
       el('line',{class:'busTrack',x1:n.x,y1:cy,x2:n.x+n.w,y2:cy},g);
-      const bn=el('text',{class:'busName',x:n.x+2,y:cy-22},g);bn.textContent=n.name;lodTexts.push({t:bn,k:11.05/20,on:true});
-      const sb=el('text',{class:'nSub',x:n.x+n.w-10,y:cy-20,'text-anchor':'end'},g);
-      sb.textContent=n.sub;lodTexts.push({t:sb,k:11.05/15,on:true});
+      const bnY=fitLabel(g,n.name,n.x+2,cy+32,Math.max(n.w-4,120),24,20,13,'busName');
+      fitLabel(g,n.sub,n.x+2,bnY+22,Math.max(n.w-4,120),40,15,11,'nSub');
       let bmx=n.x+32;
       for(const s of n.stops){
         const sg=el('g',{class:'stop','data-stop':s},g);
@@ -638,7 +642,7 @@ function buildScene(){
     el('rect',{class:'halo',x:n.x-14,y:n.y-14,width:n.w+28,height:n.h+28,rx:20,fill:'url(#haloG)'},g);
     el('rect',{class:'body',x:n.x,y:n.y,width:n.w,height:n.h,rx:10},g);
     var _nb=fitLabel(g,n.name,n.x+18,n.y+30,n.w-30,Math.min(n.h*0.52,44),20,13,'nName');
-    fitLabel(g,n.sub,n.x+18,Math.max(_nb+19,n.y+54),n.w-30,(n.y+n.h)-Math.max(_nb+19,n.y+54)-12,15,10.5,'nSub');
+    fitLabel(g,n.sub,n.x+18,Math.max(_nb+19,n.y+54),n.w-30,(n.y+n.h)-Math.max(_nb+19,n.y+54)-12-(n.port?18:0),15,10.5,'nSub');
     /* stop medallions */
     let mx=n.x+n.w-16;
     for(const s of [...n.stops].reverse()){
@@ -650,11 +654,15 @@ function buildScene(){
     }
     /* port badge — counter-scaled */
     if(n.port){
-      const bw=n.port.length*7.4+16;
-      const bg=el('g',{class:'portBadge lod1'},world);
-      el('rect',{x:-bw/2,y:-11,width:bw,height:22,rx:7},bg);
-      el('text',{x:0,y:4},bg).textContent=n.port;
-      counterScaled.push({el:bg,x:n.x+24,y:n.y+n.h});
+      /* the caption is the node's last line, inside its box, one line truncated to the box width; the full text
+         is its tooltip. (A pill below the node overlapped the next node whenever the gap between nodes was
+         smaller than the pill, and a pill of fixed screen size overlapped its neighbours at every scale.) */
+      const fs=12, maxC=Math.max(6,Math.floor((n.w-34)/(fs*0.6)));
+      let txt=String(n.port); if(txt.length>maxC)txt=txt.slice(0,maxC-1).replace(/[\s,.;:]+$/,'')+'…';
+      const pt=el('text',{class:'portLine',x:n.x+18,y:n.y+n.h-12},g);
+      pt.textContent='\u25B8 '+txt;
+      const ttl=document.createElementNS('http://www.w3.org/2000/svg','title');ttl.textContent=String(n.port);pt.appendChild(ttl);
+      lodTexts.push({t:pt,k:11.05/fs,on:true});
     }
     nodeEls[n.id]={g,def:n};
   }
@@ -708,7 +716,7 @@ function safeRect(){
 }
 function fitScale(pad=48){
   const s=safeRect();
-  return Math.min((s.w-pad)/WORLD.w,(s.h-pad)/WORLD.h);
+  const c=contentBox();return Math.min((s.w-pad)/c.w,(s.h-pad)/c.h);
 }
 function applyCam(){
   const v=vp();
@@ -718,8 +726,25 @@ function applyCam(){
     c.el.setAttribute('transform',`translate(${c.x} ${c.y}) scale(${1/cam.k})`);
   updateLOD(); updateTextLOD(); drawMiniView(); if(devOn)devShow();
 }
+/* A text is shown only while it renders at 11 px or more (k) AND lies wholly inside the stage, clear of the
+   floating controls: a label cut by the frame edge or hidden behind a control reads as a defect, so it waits
+   until the camera brings it fully into view. World boxes are measured once, on first use. */
 function updateTextLOD(){
-  for(const x of lodTexts){const on=cam.k>=x.k;if(on!==x.on){x.on=on;x.t.classList.toggle('lodoff',!on);}}
+  const v=vp(), m=6, c=$('controls');
+  const bot=isPhone()?m:(c&&c.offsetHeight?c.offsetHeight+m:140);
+  const tx=v.w/2-cam.x*cam.k, ty=v.h/2-cam.y*cam.k;
+  for(const x of lodTexts){
+    if(!x.bb){let q;try{q=x.t.getBBox();}catch(e){q={x:0,y:0,width:0,height:0};}
+      if(x.rot){ /* rotate(-90 cx cy): (px,py) -> (cx+py-cy, cy-px+cx) */
+        const [cx,cy]=x.rot, pts=[[q.x,q.y],[q.x+q.width,q.y],[q.x,q.y+q.height],[q.x+q.width,q.y+q.height]].map(([px,py])=>[cx+py-cy,cy-(px-cx)]);
+        const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+        q={x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};}
+      x.bb=q;}
+    const b=x.bb, x0=b.x*cam.k+tx, x1=(b.x+b.width)*cam.k+tx, y0=b.y*cam.k+ty, y1=(b.y+b.height)*cam.k+ty;
+    const inside=x0>=m&&x1<=v.w-m&&y0>=m&&y1<=v.h-bot;
+    const on=cam.k>=x.k&&inside;
+    if(on!==x.on){x.on=on;x.t.classList.toggle('lodoff',!on);}
+  }
 }
 let lodCur=2;
 function updateLOD(){
@@ -748,19 +773,45 @@ function solveCam(bb,zoomCap,floorK){
 /* Camera for a stage: frame every focus node, but never zoom out so far that
    node labels drop below a readable size; if the focus is too wide to fit
    legibly, frame the highlighted components instead. */
-function stageCam(st){
+function stageCamRaw(st){
   const pad=st.focusPad||(isPhone()?50:90), floor=isPhone()?0.55:0.6;
   const cap=isPhone()?1.3:1.5;
+  const fits=(bb,k)=>{const sr=safeRect();return bb.w*k<=sr.w+1&&bb.h*k<=sr.h+1;};
   let to=solveCam(bboxOf(st.focus,pad),cap);
   if(to.k<floor){
     const hl=(st.highlight&&st.highlight.length)?st.highlight:st.focus;
-    to=solveCam(bboxOf(hl,pad),cap,floor);
-    /* still wider than the screen at a readable scale: frame the lit component alone,
-       so no box is cut off at the edge */
-    const fits=(bb)=>{const sr=safeRect();return bb.w*to.k<=sr.w+1&&bb.h*to.k<=sr.h+1;};
-    if(to.k<=floor+1e-6&&!fits(bboxOf(hl,pad)))to=solveCam(bboxOf(hl.slice(0,1),pad),cap,floor);
+    const hb=bboxOf(hl,pad), at=solveCam(hb,cap,floor);
+    if(fits(hb,at.k))return at;                 /* the highlighted components fit at a readable scale */
+    if(isPhone()){                              /* phone: frame the lit component alone, never a cut-off box */
+      const lb=bboxOf(hl.slice(0,1),pad); return solveCam(lb,cap,floor);
+    }
+    /* desktop: show the whole drawing, centred, even below the readable scale (text that is too small is
+       hidden, see updateTextLOD), rather than cutting boxes at the edges or leaving empty bands */
+    return solveCam(WORLD_BB(),cap);
   }
   return to;
+}
+/* Slide the framed view so the drawing fills the stage instead of leaving an empty band above or below it, while
+   every focus component stays inside the safe area. */
+function stageCam(st){
+  let to=stageCamRaw(st);
+  if(isPhone())return to;
+  const s=safeRect(), v=vp(), c=contentBox(), f=bboxOf(st.focus,0,1), k=to.k;
+  const sx=(wx)=>(wx-to.x)*k+v.w/2, sy=(wy)=>(wy-to.y)*k+v.h/2;
+  const dy=axisShift(sy(c.y),sy(c.y+c.h),sy(f.y),sy(f.y+f.h),s.y,s.y+s.h);
+  const dx=axisShift(sx(c.x),sx(c.x+c.w),sx(f.x),sx(f.x+f.w),s.x,s.x+s.w);
+  return {x:to.x+dx/k,y:to.y+dy/k,k};
+}
+/* screen shift (positive = content moves down/right is negative camera) for one axis: bring the content's near edge to
+   the safe edge, limited so the focus stays inside the safe area */
+function axisShift(c0,c1,f0,f1,s0,s1){
+  const m=24; let d=0;
+  if(c1-c0<=s1-s0)return (c0+c1)/2-(s0+s1)/2;  /* the whole drawing fits on this axis: centre it */
+  if(c0>s0+m)d=c0-(s0+m);                    /* empty band at the start: move the view toward the content */
+  else if(c1<s1-m)d=-((s1-m)-c1);            /* empty band at the end */
+  if(d>0)d=Math.min(d,f0-s0); else if(d<0)d=Math.max(d,f1-s1);
+  /* d>0 means the content moves up/left on screen, so the camera centre moves by +d */
+  return d>0?Math.max(0,d):Math.min(0,d);
 }
 function camDist(a,b){const km=(a.k+b.k)/2;return Math.hypot((a.x-b.x)*km,(a.y-b.y)*km);}
 function tweenCam(to,done){
@@ -900,7 +951,16 @@ function showChip(elm){
   if(RM){elm.style.opacity=1;return;}
   elm.style.opacity=0;requestAnimationFrame(()=>elm.style.opacity=1);
 }
-const WORLD_BB=()=>({x:WORLD.x-48,y:WORLD.y-48,w:WORLD.w+96,h:WORLD.h+96,cx:WORLD.w/2,cy:WORLD.h/2});
+/* the box the fit-all view frames: what is drawn (zones, nodes, containers), not the authored canvas,
+   so a diagram does not sit low with empty bands above or below it */
+function contentBox(){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const b of [...ZONES,...NODES,...(typeof CONTAINERS!=='undefined'?CONTAINERS:[])]){
+    x0=Math.min(x0,b.x);y0=Math.min(y0,b.y);x1=Math.max(x1,b.x+b.w);y1=Math.max(y1,b.y+b.h);}
+  if(x0>x1){x0=WORLD.x;y0=WORLD.y;x1=WORLD.x+WORLD.w;y1=WORLD.y+WORLD.h;}
+  return {x:x0,y:y0,w:x1-x0,h:y1-y0};
+}
+const WORLD_BB=()=>{const c=contentBox();return {x:c.x-40,y:c.y-40,w:c.w+80,h:c.h+80,cx:c.x+c.w/2,cy:c.y+c.h/2};};
 function goCover(){
   S.mode='cover';stopPlay();clearPacket();cancelCamTween();compMode=null;
   parkPkg.el&&parkPkg.el.setAttribute('visibility','hidden');
