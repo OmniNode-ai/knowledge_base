@@ -97,8 +97,15 @@ _NAMING_PATTERNS: dict[str, re.Pattern[str]] = {
 #                  artifacts: the brand asset set and its BRAND.md rules
 #                  summary. BRAND.md is hand-written public prose, so it is
 #                  registered here to be sanitization-scanned; it carries no
-#                  frontmatter and is not indexed.
+#                  frontmatter and is not indexed. It also holds the
+#                  tutorials section (docs/tutorials): self-contained HTML
+#                  pages and one stylesheet, public prose a reader opens in a
+#                  browser, so they are sanitization-scanned like Markdown.
 GENERATED_CONTENT_DIRS = ["indexes", "docs"]
+
+# File suffixes scanned for sanitization inside GENERATED_CONTENT_DIRS. The
+# brand set's SVG and PNG files are image assets, not prose, and stay out.
+GENERATED_CONTENT_SUFFIXES = (".md", ".html", ".css")
 
 # Repository-root files that are content (public prose or checked-in data),
 # scanned for sanitization but exempt from frontmatter validation. Charter
@@ -300,7 +307,9 @@ def _find_sanitization_targets(root: Path) -> list[Path]:
     for dir_name in GENERATED_CONTENT_DIRS:
         gen_dir = root / dir_name
         if gen_dir.is_dir():
-            files.extend(sorted(gen_dir.rglob("*.md")))
+            files.extend(
+                sorted(p for p in gen_dir.rglob("*") if p.is_file() and p.suffix in GENERATED_CONTENT_SUFFIXES)
+            )
     for dir_name in PLATFORM_SANITIZED_DIRS:
         platform_dir = root / dir_name
         if platform_dir.is_dir():
