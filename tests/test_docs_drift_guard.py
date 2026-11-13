@@ -398,24 +398,15 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
     resolve to 6 files; 5 landed 2026-08-25 (2 corrected before publication)
     and 1 (DASH_INTEGRATION_TRUTH_BOUNDARY.md) is quarantined in-repo
     (cutover_state: not-started) pending a cross-repo omnidash-side pass, so
-    it still contributes a row. onex_change_control is the seventh, fully
-    migrated in its own single pass (2026-08-25): every docs/standards/**,
-    docs/policy/**, and docs/governance/** candidate has a row except
-    docs/standards/doctrine_clauses.yaml and docs/standards/doctrine_coverage.md,
-    both reclassified bucket A -> B and retained in-repo unthinned as a
-    generator/generated-output pair (see the repo's manifest notes).
-    omnibase_infra and omniintelligence each carry one further row beyond
-    their own bucket_a_candidates batch: docs/standards/STANDARD_DOC_LAYOUT.md,
+    it still contributes a row. omnibase_infra and omniintelligence each
+    carry one further row beyond their own bucket_a_candidates batch:
+    docs/standards/STANDARD_DOC_LAYOUT.md,
     landed separately under Wave 2 item C7 (shared_layout_template), which
     reconciles that document's independently-diverged copies across
     omniclaude, omnibase_core, omnibase_infra, and omniintelligence into one
     canonical reference/standard-doc-layout.md — hence infra_prefixes
     includes docs/standards/ and the infra row count is 51, not 50.
-    omnibase_compat is the eighth, landed 2026-08-26 as the first repo
-    migrated under the full-tree sweep and the triage-first rule: 3 rows,
-    each carrying an explicit triage_verdict, one of them the manifest's
-    first `deleted` row (a superseded plan removed rather than published).
-    omnidash is the ninth, landed 2026-08-26 under the same full-tree sweep:
+    omnidash is the seventh, landed 2026-08-26 under a full-tree sweep:
     13 rows out of 25 triaged candidates — 11 moved (9 unchanged, 2 corrected
     against live source) and 2 deleted as pure navigation indexes. The other
     12 candidates carry a DO_NOT_MIGRATE verdict and deliberately have no row
@@ -439,8 +430,6 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
         "omnibase_infra",
         "omnimarket",
         "omniintelligence",
-        "onex_change_control",
-        "omnibase_compat",
         "omnidash",
     }
     assert set(repos_with_rows) == expected_repos, (
@@ -515,9 +504,9 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
     # deployment topology (bucket C); application-migration-ledger.md is a
     # dated point-in-time evidence record that hits taxonomy decision-rule
     # test 1 / bucket D before it can reach test 3 / bucket C — corrected
-    # from an initial bucket-C classification to match its sibling row in
-    # the occ_rows section below and the taxonomy's own stop-at-first-match
-    # ordering). A further 9 bucket A -> C reclassifications dropped to
+    # from an initial bucket-C classification to match the taxonomy's own
+    # stop-at-first-match ordering). A further 9 bucket A -> C
+    # reclassifications dropped to
     # not-started 2026-10-18: runbooks that recorded OmniNode's own CI runner
     # fleet and agent-lane operations, which the README charter excludes.
     assert len(pointer_live) == 27
@@ -557,64 +546,7 @@ def test_real_manifest_is_inert_except_where_wave_2_has_landed_rows() -> None:
         assert row["correctness_status"] == "broken"
         assert row["source_path"].startswith(("docs/architecture/delegation-", "docs/reference/node-catalog.md"))
 
-    occ_rows = repos_with_rows["onex_change_control"]
-    assert len(occ_rows) == 5
-    occ_prefixes = ("docs/standards/", "docs/policy/", "docs/governance/")
-    for row in occ_rows:
-        assert row["bucket"] in {"A", "D"}
-        assert row["source_path"].startswith(occ_prefixes)
-    # 2026-04-27-required-gates-rollout.md is the one bucket-D row: reclassified
-    # from bucket A 2026-08-26 (self-hoster's-book scope ruling) — a dated
-    # point-in-time rollout snapshot that should have matched taxonomy decision
-    # rule test 1 at migration time and never reached bucket A. Dropped to
-    # not-started; OCC remains the sole evidence authority for point-in-time
-    # rollout/evidence records, this repository does not host them.
-    occ_a_rows = [r for r in occ_rows if r["bucket"] == "A"]
-    assert len(occ_a_rows) == 4
-    for row in occ_a_rows:
-        assert row["cutover_state"] == "moved"
-    occ_d_rows = [r for r in occ_rows if r["bucket"] == "D"]
-    assert len(occ_d_rows) == 1
-    assert occ_d_rows[0]["source_path"] == "docs/governance/2026-04-27-required-gates-rollout.md"
-    assert occ_d_rows[0]["cutover_state"] == "not-started"
-    # doctrine_clauses.yaml + doctrine_coverage.md are deliberately absent —
-    # reclassified bucket B, stay in-repo as the generator/generated-output
-    # pair (the repo's own CI dry-run-validates the registry on every PR).
-    occ_source_paths = {r["source_path"] for r in occ_rows}
-    assert "docs/standards/doctrine_clauses.yaml" not in occ_source_paths
-    assert "docs/standards/doctrine_coverage.md" not in occ_source_paths
-
-    # omnibase_compat is the eighth repo with landed rows, and the first
-    # whose rows come from a full-tree sweep rather than a curated candidate
-    # list: its entire documentation tree outside the root README is nine
-    # files, of which exactly three needed a disposition. Two migrated (one
-    # unchanged, one corrected against the live release workflow) and one was
-    # deleted as superseded. The deleted row is the first `deleted`
-    # cutover_state in the manifest — it records a judgment, not a move, so
-    # it has no destination page and deliberately carries no pointer_redirect.
-    # Both migrated rows are now `pointer-live`, not `moved`: the repo-side
-    # thin-out landed on the source repository's default branch and each of
-    # the two source files was read back from that branch carrying the
-    # pointer line verbatim.
-    compat_rows = repos_with_rows["omnibase_compat"]
-    assert len(compat_rows) == 3
-    for row in compat_rows:
-        assert row["bucket"] == "A"
-        assert row["triage_verdict"] in {"MIGRATE_AS_IS", "CORRECT_THEN_MIGRATE", "DELETE"}
-        assert row["verification_evidence"]
-    compat_pointer_live = [r for r in compat_rows if r["cutover_state"] == "pointer-live"]
-    assert len(compat_pointer_live) == 2
-    for row in compat_pointer_live:
-        assert row["destination"].startswith(("reference/", "runbooks/"))
-        assert row["pointer_redirect"].strip() == guard.POINTER_STRING
-    compat_deleted = [r for r in compat_rows if r["cutover_state"] == "deleted"]
-    assert len(compat_deleted) == 1
-    assert compat_deleted[0]["source_path"] == "docs/plans/release-workflow.md"
-    assert compat_deleted[0]["triage_verdict"] == "DELETE"
-    assert compat_deleted[0]["destination"] == "deleted-not-migrated"
-    assert "pointer_redirect" not in compat_deleted[0]
-
-    # omnidash is the ninth repo with landed rows and the second full-tree
+    # omnidash is the seventh repo with landed rows and the first full-tree
     # sweep. 25 candidates were triaged against live source before anything
     # moved; 13 earned a row. The 11 pointer-live rows spread across four sections
     # (five renumbered decision records, two architecture pages, one guide,
