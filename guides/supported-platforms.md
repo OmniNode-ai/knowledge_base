@@ -14,11 +14,11 @@ computer, not on which quickstart you follow.
 
 | Platform | How it installs | Prebuilt wheels |
 |----------|-----------------|-----------------|
-| macOS on Apple Silicon (M1 and newer) | `uv tool install`, nothing extra | Yes |
-| Linux, x86_64 | `uv tool install`, nothing extra | Yes |
-| Linux, arm64 | `uv tool install`, nothing extra | Yes |
+| macOS on Apple Silicon (M1 and newer) | `curl -fsSL https://omninode.ai/install.sh \| bash`, nothing extra | Yes |
+| Linux, x86_64 | `curl -fsSL https://omninode.ai/install.sh \| bash`, nothing extra | Yes |
+| Linux, arm64 | `curl -fsSL https://omninode.ai/install.sh \| bash`, nothing extra | Yes |
 | macOS on Intel | **Built from source**: extra prerequisites, follow the section below | No |
-| Windows | Not tested | Not applicable |
+| Windows | Inside WSL, as on Linux | Not applicable |
 
 "Prebuilt wheels" matters because one required dependency, `cryptography` (version 50 or newer,
 held there on purpose to stay ahead of published security advisories), ships no macOS x86_64
@@ -40,11 +40,12 @@ do not have it, which also installs Apple's command line tools):
 brew install openssl@3 rust uv
 ```
 
-Then point the build at that OpenSSL explicitly and install as usual, in the same terminal window:
+Then run the installer (`curl -fsSL https://omninode.ai/install.sh | bash`), which finds Homebrew's
+OpenSSL and Rust and builds only what has no prebuilt package. To install by hand instead, point the build at that OpenSSL explicitly, in the same terminal window:
 
 ```bash
 export OPENSSL_DIR="$(brew --prefix openssl@3)"
-uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
+uv tool install --python 3.12 omninode-onex
 ```
 
 `OPENSSL_DIR` pins the build to Homebrew's OpenSSL, which matters if another OpenSSL is also
@@ -61,9 +62,9 @@ The first install compiles `cryptography` and takes several minutes longer than 
 platforms; later installs and upgrades reuse the result. It ends with the same `Installed`
 line described in the [quickstart](onex-plugin-quickstart.md), and `onex --version` works.
 
-The `install.sh` installer detects an Intel Mac before it clones or installs anything. It
-prints this path, checks for the three prerequisites, sets `OPENSSL_DIR` for you, and stops
-with the exact `brew` command for anything missing.
+The installer detects an Intel Mac before it installs anything. It checks for Homebrew's
+`openssl@3` and a working `cargo`, sets `OPENSSL_DIR` for you, and stops with the exact `brew`
+command for anything missing.
 
 If you would rather not build from source, run the same install inside a Linux container.
 The steps are identical to the Linux path.
