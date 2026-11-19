@@ -35,12 +35,12 @@ This ADR applies to the skill-backing-node liveness validator only. It does not 
 
 2. **`omniclaude` as code home** — Rejected: `omniclaude` is a good invocation surface but the wrong ownership layer. Agent plugin code should not own shared architectural validators.
 
-3. **`omnibase_compat` as code home** — Rejected: the compatibility layer should stay focused on DTOs and transitional seams, not become a general validator bucket.
+3. **`omnibase_compat` (retired and archived 2026-11; its code moved to omnibase_core) as code home** — Rejected: the compatibility layer should stay focused on DTOs and transitional seams, not become a general validator bucket.
 
 ## Consequences
 
 - The competing validator sections in the two older plans are retired and replaced with pointers to this ADR.
-- The implementation targets `omnibase_core` for code, not `omnimarket`, `omniclaude`, or `omnibase_compat`.
+- The implementation targets `omnibase_core` for code, not `omnimarket`, `omniclaude`, or `omnibase_compat` (retired and archived 2026-11; its code moved to omnibase_core).
 - `omniclaude` and `omnimarket` remain the enforcement surfaces, not the ownership home.
 - Pre-commit (local author feedback) and CI (shared enforcement) form complementary gates — neither alone is sufficient.
 

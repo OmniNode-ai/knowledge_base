@@ -80,7 +80,7 @@ The rule for deciding where any individual document belongs is written down, not
 | [`reference/`](reference/README.md) | Cross-repository factual reference |
 | [`runbooks/`](runbooks/README.md) | Parameterized operational procedures |
 
-Migration status (2026-10-17): platform documentation from `omnibase_core`, `omnibase_infra`, `omniclaude`, `omnimarket`, `omnimemory`, `omniintelligence`, `omnidash`, `omnibase_compat` and `onex_change_control` has migrated here, and more than 400 documents are published across the sections above. Per-document state is in [`migration-manifest.yaml`](migration-manifest.yaml).
+Migration status (2026-10-17): platform documentation from `omnibase_core`, `omnibase_infra`, `omniclaude`, `omnimarket`, `omnimemory`, `omniintelligence`, `omnidash` and `onex_change_control` has migrated here, and more than 400 documents are published across the sections above. Per-document state is in [`migration-manifest.yaml`](migration-manifest.yaml).
 
 Its `correctness_status` field records what the source document was found to be when it was audited, not the state of the published page: most documents marked `stale` or `broken` there were corrected before they were published. The published page's own frontmatter `status` is the label to read.
 

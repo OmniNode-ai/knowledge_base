@@ -293,7 +293,7 @@ floors to R-core-1 keeps them co-resolvable.
   - In a fresh venv holding only R-core-1 installed from the package index, this import succeeds:
     `from omnibase_core.models.delegation.wire import ModelDelegationDispatchRequest, ModelDelegationDispatchResult`
     and `from omnibase_core.protocols.runtime import ProtocolDelegationDispatchPort`.
-  - `uv pip show omnibase-core` in that venv lists no `omnibase-compat` requirement.
+  - `uv pip show omnibase-core` in that venv lists no `omnibase-compat` (retired and archived 2026-11; its code moved to omnibase_core) requirement.
   - The negative stub in the protocol test makes the generated module fail `mypy --strict`.
   - `uv run python scripts/ci/check_import_ratchet.py` on this PR's branch reports 65
     `protocols_to_models` edges, the same count as `main`. The negative control: reverting the

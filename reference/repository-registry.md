@@ -34,7 +34,6 @@ installer. This is the literal content of `repos.yaml`.
 | `omnibase_core` | python | Core models, contracts, validators, CLI |
 | `omnibase_infra` | python | Infrastructure services, Kafka, Postgres |
 | `omnibase_spi` | python | Service provider interface protocols |
-| `omnibase_compat` | python | Shared structural package for cross-repo enums and DTOs |
 | `omniclaude` | python | Claude Code agent plugin, hooks, skills |
 | `omnidash` | node | Composable widget dashboard (Vite + React) |
 | `omniintelligence` | python | Intelligence nodes — intent, drift, review |

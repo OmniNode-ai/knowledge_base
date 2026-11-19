@@ -81,7 +81,7 @@ must be rebuilt from. Workspace mode needs explicit build-args:
 
 - `BUILD_SOURCE=workspace`
 - `OMNI_HOME=<omni_home>`
-- the sibling REF args (`OMNIBASE_COMPAT_REF`, `OMNIMARKET_REF`,
+- the sibling REF args (`OMNIMARKET_REF`,
   `ONEX_CHANGE_CONTROL_REF`) + `RUNTIME_VERSION`
 - and `scripts/runtime_build/stage_workspace.sh` must vendor the local siblings
   into `workspace/sibling-repos/` before the build.

@@ -328,7 +328,7 @@ def check_dod_meta_validation(state: ModelDodVerifyState, contract: ModelTicketC
 
 4. **Rollback authority:** If the hostile_reviewer gate blocks a PR that should merge (gate false positive), who has authority to bypass? Current proposal: team-lead can merge with `--no-verify` override and must file a bypass ticket with reason. Requires human decision.
 
-5. **Migration freeze:** `omnibase_compat` and affected repos have `.migration_freeze` active. The `overnight_sessions` projection table requires a migration. Does the freeze apply to projection tables or only to core schema migrations? Requires human decision before Wave 0 migration task.
+5. **Migration freeze:** `omnibase_compat` (retired and archived 2026-11; its code moved to omnibase_core) and affected repos have `.migration_freeze` active. The `overnight_sessions` projection table requires a migration. Does the freeze apply to projection tables or only to core schema migrations? Requires human decision before Wave 0 migration task.
 
 ---
 

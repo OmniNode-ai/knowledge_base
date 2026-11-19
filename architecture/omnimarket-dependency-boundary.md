@@ -65,7 +65,6 @@ careful classification before removal:
 
 - `aiokafka`
 - `asyncpg`
-- `omnibase-compat`
 - `onex-change-control`
 
 ## Validation
