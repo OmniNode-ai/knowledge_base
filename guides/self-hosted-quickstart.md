@@ -82,7 +82,7 @@ flowchart LR
 
 | You need | Path | Detail |
 |---|---|---|
-| A supported computer | 1 and 2 | Apple Silicon Mac, or Linux on x86_64 or arm64, install from prebuilt wheels. Intel Mac builds from source. Windows is not tested. See [Supported platforms](supported-platforms.md). |
+| A supported computer | 1 and 2 | Apple Silicon Mac, or Linux on x86_64 or arm64, install from prebuilt wheels. Intel Mac and Windows are not supported yet. See [Supported platforms](supported-platforms.md). |
 | `uv` | 1 and 2 | Installs the tool and fetches Python 3.12 for it. `curl -LsSf https://astral.sh/uv/install.sh \| sh`, then `uv tool update-shell` and a new terminal window if `uv` is not found. |
 | A model to send work to | 1 and 2 | Either a server you run that speaks the OpenAI chat-completions API (llama.cpp, vLLM or similar), or your own key with a provider such as OpenRouter. OmniNode does not sell inference. |
 | Docker with Compose v2, `make` and `openssl` | 2 only | The stack and its generated passwords. |
@@ -221,7 +221,7 @@ describes this profile next to the larger operator stack and its limits.
 
 - **The hosted service is not open.** Accounts are granted from a waitlist and nothing above
   needs one. See [Connecting to the cloud](connecting-to-the-cloud.md).
-- **Windows is not tested.** Intel Mac works only by building from source.
+- **Intel Mac and Windows are not supported yet.**
 - **One machine only.** Both paths are single-machine. Running the broker and the runtime across
   several machines is the larger stack in [Self-hosting the full stack](getting-started-self-hosted.md),
   which needs credentials and model addresses that this page does not provision.
