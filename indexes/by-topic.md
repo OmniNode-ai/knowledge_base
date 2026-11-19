@@ -791,10 +791,6 @@ Knowledge base artifacts grouped by topic.
 - **[Dependency Injection](../architecture/onex-dependency-injection.md)** (architecture)
 - **[Dependency Inversion in ONEX Architecture](../architecture/onex-dependency-inversion.md)** (architecture)
 
-## dependency-boundary
-
-- **[omnibase_compat Structural Inventory](../reference/omnibase-compat-structural-inventory.md)** (reference)
-
 ## dependency-injection
 
 - **[ADR-0030: Protocol-Based Dependency Injection Architecture](../adrs/ADR-0030-protocol-based-di-architecture.md)** (adr)
@@ -1014,7 +1010,6 @@ Knowledge base artifacts grouped by topic.
 ## enums
 
 - **[ADR-0035: Status Taxonomy and Categorical Organization](../adrs/ADR-0035-status-taxonomy-and-categorical-organization.md)** (adr)
-- **[omnibase_compat Structural Inventory](../reference/omnibase-compat-structural-inventory.md)** (reference)
 - **[Enums API Reference - omnibase_core](../reference/omnibase-core-api-enums.md)** (reference)
 
 ## envelope
@@ -1812,12 +1807,6 @@ Knowledge base artifacts grouped by topic.
 - **[ONEX Change Control — Versioning Policy](../reference/onex-change-control-versioning-policy.md)** (reference)
 - **[DoD Receipt Hashing, Append-Only, and Supersession](../reference/receipt-hashing-and-supersession.md)** (reference)
 
-## omnibase-compat
-
-- **[Repository Map and Runtime Concepts](../architecture/repository-map-and-runtime-concepts.md)** (architecture)
-- **[omnibase_compat Structural Inventory](../reference/omnibase-compat-structural-inventory.md)** (reference)
-- **[omnibase_compat Release](../runbooks/omnibase-compat-release.md)** (runbook)
-
 ## omnibase-core
 
 - **[Architecture Overview - omnibase_core](../architecture/omnibase-core-overview.md)** (architecture)
@@ -2522,10 +2511,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[OmniMemory Environment Variables](../reference/omnimemory-environment-variables.md)** (reference)
 
-## pypi
-
-- **[omnibase_compat Release](../runbooks/omnibase-compat-release.md)** (runbook)
-
 ## pytest
 
 - **[Async Hang Debugging Guide](../guides/async-hang-debugging.md)** (guide)
@@ -2624,10 +2609,6 @@ Knowledge base artifacts grouped by topic.
 - **[Policy Registry Trust Model](../architecture/omnibase-infra-policy-registry-trust-model.md)** (architecture)
 - **[Pipeline Runner and Hook Registry Guide](../guides/onex-pipeline-hook-registry.md)** (guide)
 - **[OmniDash ComponentManifest Schema](../reference/omnidash-component-manifest.md)** (reference)
-
-## release
-
-- **[omnibase_compat Release](../runbooks/omnibase-compat-release.md)** (runbook)
 
 ## release-coordination
 
@@ -3301,10 +3282,6 @@ Knowledge base artifacts grouped by topic.
 - **[OmniDash ComponentManifest Schema](../reference/omnidash-component-manifest.md)** (reference)
 - **[OmniDash DashboardDefinition Schema](../reference/omnidash-dashboard-definition.md)** (reference)
 - **[OmniDash Implementation Status](../reference/omnidash-implementation-status.md)** (reference)
-
-## wire-dtos
-
-- **[omnibase_compat Structural Inventory](../reference/omnibase-compat-structural-inventory.md)** (reference)
 
 ## wire-schema
 

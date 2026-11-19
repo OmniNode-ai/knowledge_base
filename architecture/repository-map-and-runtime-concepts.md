@@ -3,7 +3,7 @@ type: architecture
 status: accepted
 date: "2026-08-28"
 title: "Repository Map and Runtime Concepts"
-topics: [omnibase-core, omnibase-spi, omnibase-infra, omnibase-compat, runtime, overview]
+topics: [omnibase-core, omnibase-spi, omnibase-infra, runtime, overview]
 refs: []
 ---
 
@@ -36,7 +36,7 @@ Two things, in order:
 
 There are two different senses of "how the repositories connect", and conflating them is the most common source of confusion.
 
-The first is **build-time layering**: which package may `import` which other package. That is a strict, one-way, mechanically enforced staircase across four packages.
+The first is **build-time layering**: which package may `import` which other package. That is a strict, one-way, mechanically enforced staircase across three packages.
 
 The second is **runtime connection**: how a capability in one repository invokes a capability in another. That is not imports at all — it is messages on a bus, resolved by contract at runtime.
 
@@ -44,23 +44,22 @@ A repository's position in the import staircase tells you almost nothing about w
 
 ### Axis 1 — the build-time staircase
 
-Four packages form the platform substrate. Each may import only from layers below it.
+Three packages form the platform substrate. Each may import only from layers below it.
 
 ```
-omnibase_compat  ->  omnibase_core  ->  omnibase_spi  ->  omnibase_infra
-   (floor)            (vocabulary)       (protocols)      (implementations)
+omnibase_core  ->  omnibase_spi  ->  omnibase_infra
+ (vocabulary)     (protocols)     (implementations)
 ```
 
 | Package | Owns | Must not own |
 |---|---|---|
-| `omnibase_compat` | Wire DTOs, enums, and primitives shared across repositories. Zero upstream runtime dependencies. | Business logic, persistence, implementation adapters. It is a staging area with expiry discipline, not a permanent home. |
 | `omnibase_core` | The platform vocabulary: domain models, the four node archetypes, contract resolution, validators, the command-line surface. | Transport libraries. A build-time guard rejects any core module importing a transport client. |
 | `omnibase_spi` | Runtime-checkable protocol definitions — the interfaces implementations must satisfy. Imports core for the model types those signatures mention. | Implementations, and any import of the implementation layer. |
 | `omnibase_infra` | Concrete implementations: the event bus, the runtime host, persistence, the dispatch path, and a large node population. | Nothing below it may import it. |
 
 Two properties make this checkable rather than aspirational:
 
-- **The dependency declarations are the proof.** Each package's project metadata names its allowed upstreams. You can verify the whole staircase by reading four dependency lists, without reading any Python.
+- **The dependency declarations are the proof.** Each package's project metadata names its allowed upstreams. You can verify the whole staircase by reading three dependency lists, without reading any Python.
 - **Inversion fails loudly.** Import the wrong direction and the interpreter raises a circular-import error at startup. The failure mode is immediate and unambiguous by design.
 
 **One sanctioned exception, and it is registered rather than folklore.** The local-runtime protocol family lives in `omnibase_core`, not in `omnibase_spi`. The reason is structural: `omnibase_spi` hard-depends on `omnibase_core`, and core's own boundary check forbids listing spi among core's dependencies — so a spi placement would force `core -> spi -> core`. Core's local runtime consumes these protocols, so core is the only non-circular home. The same reasoning puts the message-handler protocol in core, since it references core model types.
@@ -92,7 +91,7 @@ The placement rule is one sentence: **put an artifact in the lowest layer that s
 
 Worked through:
 
-- A model two or more repositories need → `omnibase_core`. Not the compat floor (temporary staging), and not duplicated per repository.
+- A model two or more repositories need → `omnibase_core`, not duplicated per repository.
 - A model only one product repository needs → that repository.
 - A protocol interface → `omnibase_spi`, unless it references core-resident runtime types, in which case consult the exception registry.
 - A concrete implementation of a protocol → `omnibase_infra`, or the product repository owning the capability.

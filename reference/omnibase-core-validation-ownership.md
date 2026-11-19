@@ -139,7 +139,6 @@ details.
 |------|--------------|
 | `omnibase_infra` | Docs links, topic naming, local path checks, contract/runtime boundary checks. |
 | `omnibase_spi` | Docs links, protocol export validation patterns, local path checks. |
-| `omnibase_compat` | CI/dev-only validation patterns where safe; no runtime Core dependency just for validation. |
 | `omnimarket` | Docs links, topic/event-surface checks, local path checks. |
 | `omniintelligence` | Topic/event-surface checks, docs links, local path checks. |
 | `omnimemory` | Topic/event-surface checks, docs links, local path checks. |

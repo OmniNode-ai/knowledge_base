@@ -43,8 +43,7 @@ jobs:
       check-external: true
 ```
 
-For repos **without** omnibase_core as a dependency (omnidash, omninode_infra, omniweb,
-omnibase_compat):
+For repos **without** omnibase_core as a dependency (omnidash, omninode_infra, omniweb):
 
 ```yaml
 jobs:

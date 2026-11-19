@@ -340,7 +340,6 @@ Knowledge base artifacts grouped by type.
 - **[Repository Registry](../reference/repository-registry.md)** — current
 - **[Standard Documentation Layout](../reference/standard-doc-layout.md)** — current
 - **[Typed-Metadata Policy](../reference/typed-metadata-policy.md)** — current
-- **[omnibase_compat Structural Inventory](../reference/omnibase-compat-structural-inventory.md)** — current
 - **[OmniDash ComponentManifest Schema](../reference/omnidash-component-manifest.md)** — current
 - **[OmniDash DashboardDefinition Schema](../reference/omnidash-dashboard-definition.md)** — current
 - **[OmniDash Implementation Status](../reference/omnidash-implementation-status.md)** — current
@@ -434,7 +433,6 @@ Knowledge base artifacts grouped by type.
 - **[Application database cutover receipts](../runbooks/application-database-cutover-receipts.md)** — current
 - **[Apply Migrations Runbook](../runbooks/apply-migrations.md)** — current
 - **[Kafka/Redpanda Reconnect Tuning and Broker Recovery](../runbooks/kafka-reconnect-and-broker-recovery.md)** — current
-- **[omnibase_compat Release](../runbooks/omnibase-compat-release.md)** — current
 - **[Starting OmniMemory Services](../runbooks/omnimemory-starting-memory-services.md)** — current
 - **[Agent Actions Consumer - Operational Runbook](../runbooks/omnibase-infra-agent-actions-consumer.md)** — current
 - **[Database Index Monitoring Runbook](../runbooks/omnibase-infra-database-index-monitoring.md)** — current
