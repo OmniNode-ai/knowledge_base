@@ -100,8 +100,8 @@ uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarke
 onex --version
 ```
 
-The second command prints `onex version 0.47.67` or newer. Keep `--python 3.12` as written. On an
-Intel Mac follow the from-source steps in [Supported platforms](supported-platforms.md#intel-macos-build-from-source) first.
+The second command prints `onex version 0.47.67` or newer. Keep `--python 3.12` as written. Intel
+Macs are not supported yet; see [Supported platforms](supported-platforms.md).
 
 **2. Give the machine its identity, once.**
 

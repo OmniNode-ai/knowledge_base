@@ -32,7 +32,7 @@ There are two ways to use it, and both use the same `onex` command-line tool:
 
 | You need | How to get it |
 |----------|---------------|
-| A supported computer | Apple Silicon Mac or Linux (x86_64, arm64) installs from prebuilt wheels. **Intel Mac: supported by building from source**, which needs a few extra steps; read [Supported platforms](supported-platforms.md) before step 1. |
+| A supported computer | Apple Silicon Mac or Linux (x86_64, arm64). Intel Macs, Windows and Alpine Linux are not supported yet; see [Supported platforms](supported-platforms.md). |
 | A terminal | macOS: the **Terminal** app (Applications → Utilities). Linux: any shell. |
 | `uv` (only for the manual install line in step 1; the installer brings its own) | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
 | A model to send work to | **Either** an account with a model provider and an API key from it (OpenRouter is the simplest: [openrouter.ai](https://openrouter.ai), and it has free models), **or** a model server you run yourself that speaks the OpenAI chat-completions API (llama.cpp, vLLM, or similar). |
@@ -68,13 +68,15 @@ curl -fsSL https://omninode.ai/install.sh | bash
 
 It installs omninode-onex with uv into your home directory; no sudo or git. It downloads a pinned uv and checks its sha256 if you have no recent uv, and lets uv fetch Python 3.12 if needed. It puts exactly two commands on PATH: `onex` and `omni-agent`. If `~/.local/bin` is not on PATH, it prints the line to add. Re-running is safe; a newer installer upgrades in place. It refuses, without changing anything, if an `onex` it did not install is already in uv's bin directory, and names the file.
 
-Supported: macOS Apple Silicon; Linux x86_64 and arm64 (glibc). Intel Macs need `brew install openssl@3 rust` first (see [Supported platforms](supported-platforms.md#intel-macos-build-from-source)). Windows via WSL.
+Supported: macOS Apple Silicon; Linux x86_64 and arm64 (glibc). Not supported yet: Intel Macs, Windows and musl-based Linux such as Alpine; the installer stops with a message on them (see [Supported platforms](supported-platforms.md)).
 
-Manual alternative:
+If you already have `uv`, this line does the same install:
 
 ```bash
-uv tool install --python 3.12 omninode-onex
+uv tool install --python 3.12 --no-build omninode-onex
 ```
+
+`--no-build` installs only prebuilt packages and never compiles anything on your machine.
 
 Check with `onex --version`, in a new terminal window if the installer asked you to update PATH.
 **The first `onex` command can take up to a minute** while Python prepares itself; later ones
