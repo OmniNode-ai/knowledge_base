@@ -82,6 +82,10 @@ Check with `onex --version`, in a new terminal window if the installer asked you
 **The first `onex` command can take up to a minute** while Python prepares itself; later ones
 start faster.
 
+After you install, type `onex` with no arguments in your terminal to open the ONEX app. Inside it,
+use `/config` to set up a model, type a task and press Enter to delegate it, and use `/dashboard`
+to start and open the local dashboard; the rest of the guide shows these steps as separate commands.
+
 To update later, run the install command again. Do not use `uv run onex ...`: `uv run` uses the
 environment of whatever project folder you are in, so it only works by coincidence. Call the
 plain `onex` command.
