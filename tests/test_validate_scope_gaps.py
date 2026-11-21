@@ -46,6 +46,27 @@ def test_github_is_a_registered_sanitization_scanned_location() -> None:
     assert validate._is_registered_location(path, _REPO_ROOT)
 
 
+def test_config_ratchet_file_is_a_registered_sanitization_scanned_location() -> None:
+    """A checked-in ratchet baseline lives under config/. Leaving it
+    unregistered fails the repository-wide location sweep; registering it keeps
+    it inside the sanitization scan rather than exempting it."""
+    path = _REPO_ROOT / "config" / "ledger_file_census_ratchet.yaml"
+    assert path.is_file()
+    assert validate._is_registered_location(path, _REPO_ROOT)
+    targets = {p.relative_to(_REPO_ROOT).as_posix() for p in validate._find_sanitization_targets(_REPO_ROOT)}
+    assert "config/ledger_file_census_ratchet.yaml" in targets
+
+
+def test_unregistered_config_file_control_still_fails_closed(tmp_path: Path) -> None:
+    """Positive control: a file under a directory that is NOT registered is
+    still reported, so registering config/ did not turn the sweep off."""
+    stray = tmp_path / "stray_dir" / "x.yaml"
+    stray.parent.mkdir()
+    stray.write_text("a: 1\n")
+    errors = validate.check_registered_locations(tmp_path)
+    assert any("unregistered location" in e for e in errors)
+
+
 def test_workflow_files_are_in_the_sanitization_target_set() -> None:
     """A workflow is a `.yml`; a markdown-only target set would still miss it.
     Extension-scoped scanning is the other half of this failure mode."""
