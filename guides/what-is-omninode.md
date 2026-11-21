@@ -72,7 +72,7 @@ Everything in this list installs from public packages (`omnibase-core`, `omnibas
 
 | Capability | How you reach it |
 |---|---|
-| Local install | One `uv tool install` line gives you the `onex` command. Apple Silicon Mac and Linux install from prebuilt wheels; Intel Mac builds from source. See [Supported platforms](supported-platforms.md). |
+| Local install | One `uv tool install` line gives you the `onex` command. Apple Silicon Mac and Linux install from prebuilt wheels; Intel Mac and Windows are not supported yet. See [Supported platforms](supported-platforms.md). |
 | Machine identity | `onex local init`, once per machine. |
 | Delegation to your own model or your own key | `onex delegate`. A model server that speaks the OpenAI chat-completions API, or an OpenRouter or GLM key registered with `onex secret set`. |
 | Receipts | `receipt.json` in every run folder, naming who answered. |

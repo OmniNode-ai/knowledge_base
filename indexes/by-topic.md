@@ -1435,10 +1435,6 @@ Knowledge base artifacts grouped by topic.
 
 - **[Dual-Binding Test Cases — the Harness Convention](../reference/dual-binding-cases.md)** (reference)
 
-## intel
-
-- **[Supported Platforms](../guides/supported-platforms.md)** (guide)
-
 ## intent
 
 - **[ModelIntent Architecture](../architecture/onex-model-intent-architecture.md)** (architecture)
@@ -1510,6 +1506,10 @@ Knowledge base artifacts grouped by topic.
 ## lifecycle
 
 - **[ADR-0005: Dispatch Lifecycle Canonical Source](../adrs/ADR-0005-dispatch-lifecycle-canonical.md)** (adr)
+
+## linux
+
+- **[Supported Platforms](../guides/supported-platforms.md)** (guide)
 
 ## llm
 
