@@ -132,7 +132,11 @@ ROOT_SANITIZED_FILES = {
 # scoped to part of the tree reports green over the rest, so the directory is
 # scanned rather than assumed harmless. Its files carry no frontmatter and are
 # not indexed, exactly like GENERATED_CONTENT_DIRS.
-PLATFORM_SANITIZED_DIRS = [".github"]
+#
+# `config` holds checked-in machine-read baselines (the work-ledger file census
+# ratchet). It is registered so its files are scanned like any other public
+# content, never left as an unscanned location.
+PLATFORM_SANITIZED_DIRS = [".github", "config"]
 
 # File suffixes scanned for sanitization inside PLATFORM_SANITIZED_DIRS.
 # Broader than the markdown-only artifact scan: a workflow is a `.yml`, and

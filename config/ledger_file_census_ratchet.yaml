@@ -1,0 +1,9 @@
+# The shrink-only count of files in this repository that read or write the ledger file.
+# A repository whose count rises above its row fails the hook; a row is only ever lowered.
+# The `files` table holds the files that hold such a reader or writer, with their line counts (run the
+# census node with --per-file): a file with no row, or with more lines than its row, fails the census.
+# A row is only ever lowered, and a file is only ever dropped.
+ratchet:
+  knowledge_base: 0
+files:
+  knowledge_base: {}
