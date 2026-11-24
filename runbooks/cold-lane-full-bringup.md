@@ -18,6 +18,11 @@ warm path.
 
 Evidence baseline: `.onex_state/runtime-e2e-2026-06-21/02-dev-deploy/`.
 
+The deploy script this runbook was written against, `scripts/deploy-runtime.sh`, no longer exists
+(removed 2026-10-08). The same logic is the `onex-runtime-deploy` command, backed by
+`src/omnibase_infra/handlers/handler_runtime_deploy.sh`, and the flags used below (`--cold`,
+`--execute`, `--restart`, `--force`, `--print-compose-cmd`) are unchanged.
+
 > **Scope (corrected — see "Partially cold governed lanes" below).**
 > `--cold` is available on the **dev** lane (compose project `omnibase-infra`,
 > the fully mutable test platform) and on the **stability-test** lane. It is
@@ -42,7 +47,7 @@ Evidence baseline: `.onex_state/runtime-e2e-2026-06-21/02-dev-deploy/`.
 | What the final `up` touches | `RUNTIME_SERVICES` subset only, `up -d --no-deps` | the WHOLE `--profile runtime` project, `up -d` (honors `depends_on`) |
 | Build source | whatever `BUILD_SOURCE` selects (default `release`) | forced `workspace` (merged-dev siblings) |
 | Requires `OMNI_HOME` | only if `BUILD_SOURCE=workspace` | yes (workspace build) |
-| Command | `./scripts/deploy-runtime.sh --execute --restart` | `OMNI_HOME=… ./scripts/deploy-runtime.sh --execute --cold` |
+| Command | `onex-runtime-deploy --repository-root <infra-checkout> --execute --restart` | `OMNI_HOME=… onex-runtime-deploy --repository-root <infra-checkout> --execute --cold` |
 
 Both paths share the same cold-start preflight (core-infra readiness, broker
 partition cap, the forward/intelligence migration one-shots, and a raised
@@ -74,15 +79,14 @@ the consumer/projection fleet all stay down. `--profile runtime` (or `full`) is
 
 ### Gotcha 2 — workspace build-args, not the default `release`
 
-`deploy-runtime.sh` defaults `BUILD_SOURCE=release`, which builds the runtime
+`onex-runtime-deploy` defaults `BUILD_SOURCE=release`, which builds the runtime
 image from the **published PyPI packages**. A release image cannot carry
 **un-released merged-dev code**, which is exactly what a cold/GC-reclaimed lane
 must be rebuilt from. Workspace mode needs explicit build-args:
 
 - `BUILD_SOURCE=workspace`
 - `OMNI_HOME=<omni_home>`
-- the sibling REF args (`OMNIMARKET_REF`,
-  `ONEX_CHANGE_CONTROL_REF`) + `RUNTIME_VERSION`
+- the sibling REF arg (`OMNIMARKET_REF`) + `RUNTIME_VERSION`
 - and `scripts/runtime_build/stage_workspace.sh` must vendor the local siblings
   into `workspace/sibling-repos/` before the build.
 
@@ -115,7 +119,7 @@ written), `stage_workspace.sh` aborts with exit 3. The correct fix is to advance
 ### 1. Preview (dry-run)
 
 ```bash
-OMNI_HOME="$OMNI_HOME" ./scripts/deploy-runtime.sh --cold
+OMNI_HOME="$OMNI_HOME" onex-runtime-deploy --repository-root <infra-checkout> --cold
 ```
 
 Dry-run stops before any mutation and shows what would be deployed (version, SHA,
@@ -124,7 +128,7 @@ compose project, profile, and the workspace build source).
 ### 2. Inspect the exact compose commands
 
 ```bash
-OMNI_HOME="$OMNI_HOME" ./scripts/deploy-runtime.sh --cold --print-compose-cmd
+OMNI_HOME="$OMNI_HOME" onex-runtime-deploy --repository-root <infra-checkout> --cold --print-compose-cmd
 ```
 
 This prints the build command (with `BUILD_SOURCE=workspace` and the sibling REF
@@ -134,7 +138,7 @@ build-args) and the "Full stack up" command
 ### 3. Execute the cold full bring-up
 
 ```bash
-OMNI_HOME="$OMNI_HOME" ./scripts/deploy-runtime.sh --execute --cold
+OMNI_HOME="$OMNI_HOME" onex-runtime-deploy --repository-root <infra-checkout> --execute --cold
 ```
 
 This will, in order:
@@ -191,8 +195,8 @@ The old scope note gave one rationale for excluding all three governed lanes: a
 cold build produces a workspace, non-main-lineage image the prod-promotion gate
 refuses. That rationale is **correct for prod and does not transfer to
 stability-test**. The stability lane is built in workspace mode *by design* — its
-own sanctioned refresh script sets `BUILD_SOURCE=workspace` against the merged-dev
-ref. A workspace image is precisely what the candidate-proving lane is supposed to
+own sanctioned refresh script sets `BUILD_SOURCE=workspace` and builds from the pinned
+release tags of its release set; it never runs a dev ref and has no default ref. A workspace image is precisely what the candidate-proving lane is supposed to
 run; that is the lane's whole purpose. Judge stays excluded on separate grounds
 (declared read-only).
 
@@ -218,9 +222,9 @@ ONEX_DEPLOY_REASON="repair partially-cold stability lane — <what is missing>" 
 OMNI_HOME="$OMNI_HOME" \
 OMNIBASE_INFRA_COMPOSE_PROJECT=omnibase-infra-stability-test \
 BUILD_SOURCE=workspace \
-DEPLOY_REF=origin/dev \
+DEPLOY_REF=<pinned omnibase_infra release tag> \
 RUNTIME_BUILD_SERVICES_OVERRIDE="omninode-runtime runtime-effects runtime-worker projection-api" \
-  ./scripts/deploy-runtime.sh --execute --force --cold
+  onex-runtime-deploy --repository-root <infra-checkout> --execute --force --cold
 ```
 
 `RUNTIME_BUILD_SERVICES_OVERRIDE` is **required** on this lane. Without it,
