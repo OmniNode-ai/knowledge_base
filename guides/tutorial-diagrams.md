@@ -1028,6 +1028,8 @@ The tour, step by step:
 
 How the HTTP boundary reads a projection and writes a command — never a row.
 
+As of 2026-11-22 onex-api is retired and the runtime is one runtime. This diagram was drawn for the pre-retirement runtime and is kept as a record of that design, not as the current path.
+
 Tutorial file: [`docs/tutorials/onex-api-projection-reader.exhibit.html`](../docs/tutorials/onex-api-projection-reader.exhibit.html) (GitHub shows its source; open it in a browser from a clone to run it)
 
 ```mermaid
