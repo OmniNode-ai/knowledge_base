@@ -6,8 +6,8 @@ All knowledge base artifacts sorted by date.
 
 ## 2026-11
 
+- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide) — 2026-11-24
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide) — 2026-11-06
-- **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide) — 2026-11-06
 - **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide) — 2026-11-06
 - **[OmniUI ONEX models schema mirror and its provenance record](../reference/omniui-onex-models-schema-mirror.md)** (reference) — 2026-11-01
 ## 2026-10

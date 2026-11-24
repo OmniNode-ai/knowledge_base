@@ -1,7 +1,7 @@
 ---
 type: guide
 status: current
-date: "2026-11-06"
+date: "2026-11-24"
 title: "Self-hosted quickstart: run OmniNode on one machine"
 topics: [getting-started, self-hosting, quickstart, delegation, install, docker]
 refs:
@@ -30,15 +30,17 @@ There are two paths on one machine. Start with the first.
 | Time | A few minutes plus the model setup | Several minutes for the first image build and boot |
 | Use it to | Hand work to your own model and see what it cost | See the event flow and the projections described in [How OmniNode works](how-omninode-works.md) |
 
-State of this page: checked on 2026-11-06 against `omnibase-core 0.47.67`, `omnibase-infra
-0.38.76` and `omnimarket 0.4.320`. The section [How this was checked](#how-this-was-checked)
-says which commands were run and which were only read in source.
+State of this page: path 1 was re-run on 2026-11-24 against `omnibase-core 0.47.78`,
+`omnibase-infra 0.38.83` and `omnimarket 0.4.326`. Path 2 was last checked, from source only,
+on 2026-11-06 against `omnibase-infra 0.38.76`. The section
+[How this was checked](#how-this-was-checked) says which commands were run and which were only
+read in source.
 
 ## The path at a glance
 
 Two diagrams follow, one per path, from the first command to the first delegation. Green boxes
-are commands that were run for this page on 2026-11-06. Dashed grey boxes were read in the source
-or in the tool's help and were not run for this page. The section
+are commands that were run for this page on 2026-11-24. Dashed grey boxes were not run for this
+page: they were read in the source or in the tool's help. The section
 [How this was checked](#how-this-was-checked) gives the detail for each.
 
 Path 1, the tool, with no containers:
@@ -52,13 +54,14 @@ flowchart LR
   d -->|"neither"| refuse["onex delegate refuses<br/>before any model:<br/>nothing ran, nothing spent"]
   m1 --> dl["4 onex delegate<br/>'say hello in one word'"]
   m2 --> dl
-  dl --> rec["Answer, then model,<br/>cost and run id<br/>run folder: result.txt,<br/>receipt.json, run.json"]
+  dl --> rec["Model, cost and run id (stderr),<br/>then the answer, then the<br/>artifacts line (stdout)<br/>run folder: result.txt,<br/>receipt.json, run.json,<br/>workflow_result.json"]
+  dl --> veto["Reply without the ANSWER<br/>marker line: ends<br/>quality_veto, exit code 1"]
   rec --> met["5 onex metering<br/>onex dashboard"]
   rec --> plug["6 Optional: plugin install,<br/>then /onex:delegate<br/>in Claude Code"]
   classDef ran fill:#eef6ee,stroke:#4a7c4a;
   classDef read stroke-dasharray: 5 4,fill:#f6f6f6,color:#444;
-  class i1,i2,m1,dl,rec,refuse ran;
-  class m2,met,plug read;
+  class i1,i2,m1,dl,rec,refuse,veto,met ran;
+  class m2,plug read;
 ```
 
 Path 2, the container stack on the same machine. It is optional and was not started for this
@@ -100,7 +103,8 @@ uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarke
 onex --version
 ```
 
-The second command prints `onex version 0.47.67` or newer. Keep `--python 3.12` as written. On an
+The second command prints `onex version 0.47.78` or newer. On 2026-11-24 the install line above
+resolved to `omnibase-core 0.47.78`, `omnibase-infra 0.38.83` and `omnimarket 0.4.326`. Keep `--python 3.12` as written. On an
 Intel Mac follow the from-source steps in [Supported platforms](supported-platforms.md#intel-macos-build-from-source) first.
 
 **2. Give the machine its identity, once.**
@@ -142,11 +146,36 @@ A GLM Coding Plan key is refused by design. The [Delegation quickstart](onex-plu
 onex delegate "say hello in one word"
 ```
 
-You should see the model's answer, then a line naming the model, the cost and the run id, then a
-line listing `result.txt`, `receipt.json` and `run.json`. The run folder is
-`~/.onex_state/runs/<run id>/`, and `receipt.json` names the backend, the endpoint and the model
-that answered. If you skip step 3, the command refuses before it reaches any model and tells you
-to declare one.
+The output has three parts, and the order on a terminal is not answer-first:
+
+1. Several diagnostic lines on stderr, ending with `onex delegate: model <id>, cost $<amount>,
+   run <run id>, full receipt <path>`. This is the line that names the model, the cost and the
+   run id.
+2. The model's answer, on stdout.
+3. A `delegate artifacts:` line on stdout, listing `result.txt`, `receipt.json` and `run.json`
+   with their full paths and the `state_root` they sit under.
+
+The run folder is `~/.onex_state/runs/<run id>/`. It holds four files, not the three the
+artifacts line lists: `result.txt`, `receipt.json`, `run.json` and `workflow_result.json`.
+`receipt.json` names the backend, the endpoint and the model that answered.
+`workflow_result.json` is the terminal result of the run, with `result` and `exit_code` at its
+top. If you skip step 3, the command refuses before it reaches any model, exits with code 1 and
+tells you to declare one.
+
+**The reply must carry a `### ANSWER` line.** For the default task class (`document`, which the
+tool falls back to when nothing in the request matches another class) the tool takes as the answer
+only the text after a line reading `### ANSWER`. A reply without that line ends the run as
+`quality_veto`: the command exits with code 1, prints `returned_to_caller: quality_veto; no model
+you chose finished the task; do the task in this session`, and prints no answer. The one unmarked
+reply that is accepted is a single word on one line, when the request asked for one word, as in
+the example above. When the marker is present the printed answer starts after it. A model that does
+not write the marker is vetoed on every try, and the same rung is tried three times before the
+run ends. To see which case you are in, open `receipt.json` in the
+run folder: each entry under `attempts` carries `acceptance_decision`, `acceptance_reason`
+(`deterministic_floor_failed`) and `error_message`, which reads `DELIVERABLE_EXTRACTION:
+ambiguous_unmarked_deliverable` for a missing marker. `onex delegate --json` prints the same
+receipt as one line, and `workflow_result.json` repeats the reason as `terminal_failure_reason` inside its
+`terminal_payload`.
 
 **5. See the spend and the runs.**
 
@@ -155,10 +184,24 @@ onex metering
 onex dashboard
 ```
 
-`onex metering` totals runs, tokens and spend against a baseline model. `onex dashboard` serves a
-local page on a loopback address only and prints the address, which carries a token that changes
-on each start. Its first run downloads the dashboard pages and checks them against a pinned
-checksum.
+`onex metering` totals runs, tokens and spend against a baseline model. A run that recorded no
+measured cost is counted as unknown, never as zero. After one delegation to a model server you run
+yourself, the check printed `Runs 1`, the token totals, and then `Spent`, `Would have cost` and
+`Saved` all as `unknown`, with `unknown (spend) 1` and `measured over 0 of 1 runs`. The baseline
+line still prints: `claude-sonnet-5-5` at its per-1k-token prices. The summary line of
+`onex delegate` printed `cost $0.0000` for the same run, so a zero there is not a measurement:
+trust the metering page. `onex metering --json` prints the same figures as one JSON object. A run
+on a provider key was not run for this page.
+
+`onex dashboard` serves a local page on a loopback address only. It stays in the foreground and
+prints one line, `onex dashboard: http://127.0.0.1:<port>/`, with the port chosen at each start.
+**That printed address carries no token, and a request to it without the token is answered
+`401` with `token_required`.** Get the working address from a second terminal with
+`onex dashboard open`, which opens the page in your browser with this start's token in the
+address; the token changes on each start. `onex dashboard start` starts the server in the
+background and returns, printing `Dashboard: success` and no address, so `onex dashboard open` is
+how you reach that one too. `onex dashboard stop` ends the background server. Its first run
+downloads the dashboard pages into `~/.omninode/dashboard/bundles/`.
 
 **6. Optional: use it from Claude Code.**
 
@@ -167,8 +210,11 @@ claude plugin marketplace add OmniNode-ai/omniclaude
 claude plugin install onex@omninode-tools
 ```
 
-Restart Claude Code and run `/onex:delegate <task>`. The plugin is one skill that runs
-`onex delegate`.
+Both commands succeeded on a clean machine: `claude plugin list` then showed `onex@omninode-tools`
+at version 0.3.3, enabled, and the plugin directory holds a `delegate` skill. Restart Claude Code
+and run `/onex:delegate <task>`; that last step needs a logged-in Claude Code and was not run for
+this page. The plugin is one skill that runs `onex delegate`, so the `### ANSWER` rule in step 4
+applies to it as well.
 
 On this path the event bus is in memory, and a run's record is the run folder plus a local SQLite
 table. Nothing is sent anywhere except your call to your own model or provider.
@@ -219,6 +265,12 @@ describes this profile next to the larger operator stack and its limits.
 
 ## What is not supported or not built yet
 
+- **`onex setup` does not exist.** The first lines of `onex --help` say `Quickstart (new
+  developer): onex setup`, and `onex dashboard status` says to run `onex setup --action repair
+  --component dashboard` when no dashboard is running. `setup` is not in the command list
+  that `onex --help` prints, and `onex setup` ends with `Error: No such command 'setup'` and exit
+  code 2, both on 0.47.78. Use `onex local init` (step 2) for first-time setup and
+  `onex dashboard start` (step 5) for the dashboard.
 - **The hosted service is not open.** Accounts are granted from a waitlist and nothing above
   needs one. See [Connecting to the cloud](connecting-to-the-cloud.md).
 - **Windows is not tested.** Intel Mac works only by building from source.
@@ -238,14 +290,21 @@ describes this profile next to the larger operator stack and its limits.
 
 ## How this was checked
 
-| Step | How it was checked on 2026-11-06 |
+Path 1 was re-run on 2026-11-24 on a Linux machine, as a user with an empty home directory and no
+`ONEX_*` variables set, from the install line in step 1.
+
+| Step | How it was checked |
 |---|---|
-| Install, `onex --version`, `onex local init` | Run on a Linux machine with an empty home directory. The install resolved `omnibase-core 0.47.67`, `omnibase-infra 0.38.76` and `omnimarket 0.4.320`. |
-| Delegation refusal without a model | Run in the same empty home. It refused before reaching any model, with the message that no local model is declared. |
-| Declare a model, `onex delegate`, the run folder, `onex metering` | Run in an empty home against a minimal local server that implements the chat-completions route and answers a fixed sentence, so the path from command to receipt was exercised with no provider. The receipt named the declared endpoint and model. This does not exercise a real model or a provider key. |
-| `onex secret set`, `onex dashboard` | Command names and options read from the installed tool's help. Not run end to end for this page. |
-| Plugin install | Marketplace and plugin names read from the `omniclaude 0.27.0` manifests. Not run for this page. |
-| Path 2 commands | Make targets, the `local` bundle, the env and overlay templates and the ports read from the `omnibase-infra 0.38.76` source. The stack was not started for this page, so image build time, boot time and health are not measured here. |
+| Install, `onex --version`, `onex local init` | Run. The install resolved `omnibase-core 0.47.78`, `omnibase-infra 0.38.83` and `omnimarket 0.4.326`; `onex --version` printed `onex version 0.47.78`; `onex local init` minted the tenant identity and wrote the runtime declaration under `~/.omninode/`. |
+| Delegation refusal without a model | Run. It refused before reaching any model, exit code 1, with the message that no local model is declared. |
+| Declare a model, `onex delegate`, the run folder | Run against a minimal local server that implements the chat-completions route and answers a fixed sentence, so the path from command to receipt was exercised with no provider. The receipt named the declared endpoint and model. The output order and the four-file run folder in step 4 are from these runs. This does not exercise a real model or a provider key. |
+| The `### ANSWER` rule | Run twice against that server with the request `say hello in one word`: a one-word reply with no marker was accepted; a multi-word reply with no marker ended `quality_veto` with exit code 1 after three tries; the same reply after a `### ANSWER` line was accepted and printed without the marker line. |
+| `onex metering` | Run after one delegation to that server: spend, would-have-cost and saved all `unknown`. Not run against a provider key. |
+| `onex dashboard` | Run. The printed address answered `401` without a token and `200` with the token that `onex dashboard open` supplies. `start`, `status`, `stop` and `open` were run. The first start fetched the dashboard pages into `~/.omninode/dashboard/bundles/`. |
+| `onex setup` | Run: `No such command 'setup'`, exit code 2. |
+| `onex secret set` | Run only without a value: it refused with `no value was supplied`, exit code 1, and said to pipe the value in or run it on a terminal. Registering a real key was not run. |
+| Plugin install | Run: `claude plugin marketplace add` and `claude plugin install` succeeded on a clean home. `/onex:delegate` inside Claude Code was not run. |
+| Path 2 commands | Not re-run on 2026-11-24: the check machine has no `make`. As checked on 2026-11-06: make targets, the `local` bundle, the env and overlay templates and the ports read from the `omnibase-infra 0.38.76` source. The stack was not started, so image build time, boot time and health are not measured. |
 
 The [public proof index](../reference/public-proof-index.md) records what has been inspected and
 what has not.
