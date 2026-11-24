@@ -6,6 +6,11 @@ All knowledge base artifacts sorted by date.
 
 ## 2026-11
 
+- **[Handler Authoring Guide](../guides/handler-authoring-guide.md)** (guide) — 2026-11-24
+- **[Build Your First Node](../guides/omnibase-core-first-node.md)** (guide) — 2026-11-24
+- **[What is a Node?](../guides/onex-node-building-01-what-is-a-node.md)** (guide) — 2026-11-24
+- **[COMPUTE Node Tutorial](../guides/onex-node-building-03-compute-node-tutorial.md)** (guide) — 2026-11-24
+- **[Node Building Guide](../guides/onex-node-building-overview.md)** (guide) — 2026-11-24
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide) — 2026-11-06
 - **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide) — 2026-11-06
 - **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide) — 2026-11-06
@@ -75,7 +80,6 @@ All knowledge base artifacts sorted by date.
 - **[Validation Protocol Compliance](../architecture/onex-validation-protocol-compliance.md)** (architecture) — 2026-09-02
 - **[Wire Schema Contract Specification](../architecture/wire-schema-contract-spec.md)** (architecture) — 2026-09-02
 - **[Authoring Governance YAML Artifacts](../guides/authoring-governance-yaml-artifacts.md)** (guide) — 2026-09-02
-- **[Build Your First Node](../guides/omnibase-core-first-node.md)** (guide) — 2026-09-02
 - **[Installation Guide - omnibase_core](../guides/omnibase-core-installation.md)** (guide) — 2026-09-02
 - **[Integration Testing Guide - omnibase_core](../guides/omnibase-core-integration-testing.md)** (guide) — 2026-09-02
 - **[Model Validation Demo: Support Ticket Classification](../guides/omnibase-core-model-validation-demo.md)** (guide) — 2026-09-02
@@ -127,16 +131,13 @@ All knowledge base artifacts sorted by date.
 - **[Mixin Development Best Practices](../guides/onex-mixin-development-05-best-practices.md)** (guide) — 2026-09-02
 - **[Mixin Development Guide](../guides/onex-mixin-development-overview.md)** (guide) — 2026-09-02
 - **[Mixin-Subcontract Mapping Guide](../guides/onex-mixin-subcontract-mapping.md)** (guide) — 2026-09-02
-- **[What is a Node?](../guides/onex-node-building-01-what-is-a-node.md)** (guide) — 2026-09-02
 - **[Node Types](../guides/onex-node-building-02-node-types.md)** (guide) — 2026-09-02
-- **[COMPUTE Node Tutorial](../guides/onex-node-building-03-compute-node-tutorial.md)** (guide) — 2026-09-02
 - **[EFFECT Node Tutorial: Build a File Backup System](../guides/onex-node-building-04-effect-node-tutorial.md)** (guide) — 2026-09-02
 - **[REDUCER Node Tutorial: Build a Pure FSM Metrics Aggregator](../guides/onex-node-building-05-reducer-node-tutorial.md)** (guide) — 2026-09-02
 - **[ORCHESTRATOR Node Tutorial: Build a Data Processing Pipeline](../guides/onex-node-building-06-orchestrator-node-tutorial.md)** (guide) — 2026-09-02
 - **[Patterns Catalog -- Common ONEX Node Patterns](../guides/onex-node-building-07-patterns-catalog.md)** (guide) — 2026-09-02
 - **[Common Pitfalls - What to Avoid When Building Nodes](../guides/onex-node-building-08-common-pitfalls.md)** (guide) — 2026-09-02
 - **[Agent Templates for ONEX Node Development](../guides/onex-node-building-10-agent-templates.md)** (guide) — 2026-09-02
-- **[Node Building Guide](../guides/onex-node-building-overview.md)** (guide) — 2026-09-02
 - **[ORCHESTRATOR Node Template](../guides/onex-orchestrator-node-template.md)** (guide) — 2026-09-02
 - **[Pipeline Runner and Hook Registry Guide](../guides/onex-pipeline-hook-registry.md)** (guide) — 2026-09-02
 - **[Cache Tuning for Production Deployment](../guides/onex-production-cache-tuning.md)** (guide) — 2026-09-02
@@ -317,7 +318,6 @@ All knowledge base artifacts sorted by date.
 - **[Untitled](../architecture/shared-enum-ownership.md)** (architecture) — 2026-07-21
 - **[Snapshot Publishing Architecture](../architecture/snapshot-publishing.md)** (architecture) — 2026-07-21
 - **[Topic Catalog Architecture](../architecture/topic-catalog-architecture.md)** (architecture) — 2026-07-21
-- **[Handler Authoring Guide](../guides/handler-authoring-guide.md)** (guide) — 2026-07-21
 - **[MCP Integration Guide](../guides/mcp-integration-guide.md)** (guide) — 2026-07-21
 - **[2-Way Registration: A Complete ONEX Example](../guides/registration-example.md)** (guide) — 2026-07-21
 - **[Cold-lane full bring-up (deps + migration one-shots + full `--profile runtime`)](../runbooks/cold-lane-full-bringup.md)** (runbook) — 2026-07-21
