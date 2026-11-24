@@ -6,6 +6,7 @@ All knowledge base artifacts sorted by date.
 
 ## 2026-11
 
+- **[Supported Platforms](../guides/supported-platforms.md)** (guide) — 2026-11-19
 - **[How OmniNode works](../guides/how-omninode-works.md)** (guide) — 2026-11-06
 - **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** (guide) — 2026-11-06
 - **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** (guide) — 2026-11-06
@@ -18,7 +19,6 @@ All knowledge base artifacts sorted by date.
 - **[Delegation quickstart](../guides/onex-plugin-quickstart.md)** (guide) — 2026-10-06
 ## 2026-09
 
-- **[Supported Platforms](../guides/supported-platforms.md)** (guide) — 2026-09-30
 - **[Shared delegation dispatch port: one protocol, one model, validators that read only their own repo](../plans/2026-09-27-shared-delegation-dispatch-port.md)** (plan) — 2026-09-27
 - **[Connecting to the OmniNode Cloud](../guides/connecting-to-the-cloud.md)** (guide) — 2026-09-23
 - **[Drift Control System — Design](../architecture/drift-control-system.md)** (architecture) — 2026-09-02

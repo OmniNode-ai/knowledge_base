@@ -32,9 +32,9 @@ There are two ways to use it, and both use the same `onex` command-line tool:
 
 | You need | How to get it |
 |----------|---------------|
-| A supported computer | Apple Silicon Mac or Linux (x86_64, arm64) installs from prebuilt wheels. **Intel Mac: supported by building from source**, which needs a few extra steps; read [Supported platforms](supported-platforms.md) before step 1. |
+| A supported computer | Apple Silicon Mac or Linux (x86_64, arm64). Intel Macs, Windows and Alpine Linux are not supported yet; see [Supported platforms](supported-platforms.md). |
 | A terminal | macOS: the **Terminal** app (Applications → Utilities). Linux: any shell. |
-| `uv` (it can install Python 3.12) | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
+| `uv` (only for the manual install line in step 1; the installer brings its own) | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
 | A model to send work to | **Either** an account with a model provider and an API key from it (OpenRouter is the simplest: [openrouter.ai](https://openrouter.ai), and it has free models), **or** a model server you run yourself that speaks the OpenAI chat-completions API (llama.cpp, vLLM, or similar). |
 | Claude Code (only for step 7) | The [Claude Code CLI](https://claude.com/claude-code), signed in. Steps 1 to 6 do not need it. |
 
@@ -60,49 +60,35 @@ Check that `uv` is ready: `uv --version` prints a version number.
 
 ## Step 1 — Install the `onex` tool
 
-> **Intel Mac?** Run `uname -m`. If it prints `x86_64`, do the [Intel macOS from-source
-> setup](supported-platforms.md#intel-macos-build-from-source) first (three Homebrew packages
-> and one environment variable), then come back and run the command below. Skipping it makes the
-> install fail while compiling `cryptography`.
+On macOS or Linux:
 
 ```bash
-uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
+curl -fsSL https://omninode.ai/install.sh | bash
 ```
 
-This downloads about 175 packages and takes a minute or two. It ends with a line starting
-`Installed` that lists the executables, and that list includes `onex`. The list also carries
-several `check-*` and `validate-*` helper programs; you do not need them.
+It installs omninode-onex with uv into your home directory; no sudo or git. It downloads a pinned uv and checks its sha256 if you have no recent uv, and lets uv fetch Python 3.12 if needed. It puts exactly two commands on PATH: `onex` and `omni-agent`. If `~/.local/bin` is not on PATH, it prints the line to add. Re-running is safe; a newer installer upgrades in place. It refuses, without changing anything, if an `onex` it did not install is already in uv's bin directory, and names the file.
 
-**If the output ends with a warning that `~/.local/bin` is not on your PATH** (on a new
-machine it usually does), run this once, then **close the terminal window and open a new one**:
+Supported: macOS Apple Silicon; Linux x86_64 and arm64 (glibc). Not supported yet: Intel Macs, Windows and musl-based Linux such as Alpine; the installer stops with a message on them (see [Supported platforms](supported-platforms.md)).
+
+If you already have `uv`, this line does the same install:
 
 ```bash
-uv tool update-shell
+uv tool install --python 3.12 --no-build omninode-onex
 ```
 
-Check it worked, in the new window:
+`--no-build` installs only prebuilt packages and never compiles anything on your machine.
 
-```bash
-onex --version
-```
+Check with `onex --version`, in a new terminal window if the installer asked you to update PATH.
+**The first `onex` command can take up to a minute** while Python prepares itself; later ones
+start faster.
 
-It prints `onex version 0.47.x` (or newer). **The first `onex` command can take up to a
-minute** while Python prepares itself (36 seconds on a fresh install in our own test); later ones start faster.
+After you install, type `onex` with no arguments in your terminal to open the ONEX app. Inside it,
+use `/config` to set up a model, type a task and press Enter to delegate it, and use `/dashboard`
+to start and open the local dashboard; the rest of the guide shows these steps as separate commands.
 
-What was installed: `omnibase-core` provides the `onex` command, `omnibase-infra` adds its
-`delegate` subcommand, and `omnimarket` provides the node that does the delegating. All three
-must be in the same environment, which is what the one line above does. There is no source
-checkout to clone and no workspace variable to set. The version floors are the oldest
-releases this guide supports; dependency resolution chooses compatible published releases.
-The [public proof index](../reference/public-proof-index.md#published-install-and-plugin) records
-the releases checked for this documentation. It does not pin this floating install command.
-
-To update later: `uv tool upgrade omnibase-core` (it keeps the other two packages).
-
-If you use `pipx` instead of `uv`, the equivalent is
-`pipx install --python 3.12 'omnibase-core>=0.46.8' && pipx inject omnibase-core 'omnibase-infra>=0.38.67' 'omnimarket>=0.4.205'`.
-Do not use `uv run onex ...`: `uv run` uses the environment of whatever project folder you are
-in, so it only works by coincidence. Call the plain `onex` command.
+To update later, run the install command again. Do not use `uv run onex ...`: `uv run` uses the
+environment of whatever project folder you are in, so it only works by coincidence. Call the
+plain `onex` command.
 
 ---
 

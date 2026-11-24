@@ -107,7 +107,7 @@ Treat it like a password. Never type it into a command-line argument, never comm
 uv tool install --python 3.12 --with 'omnibase-infra>=0.38.67' --with 'omnimarket>=0.4.205' 'omnibase-core>=0.46.8'
 ```
 
-Use the [quickstart prerequisites and supported platforms](onex-plugin-quickstart.md#before-you-start), including the Intel Mac source-build steps. Keep `--python 3.12`: package metadata declaring `>=3.12` does not guarantee wheels for every newer interpreter. `uv` can fetch 3.12 for you. The version floors and package roles match the quickstart; see the [public proof index](../reference/public-proof-index.md#published-install-and-plugin) for the checked releases. To update an existing installation, use `uv tool upgrade omnibase-core`.
+Use the [quickstart prerequisites and supported platforms](onex-plugin-quickstart.md#before-you-start); Intel Mac and Windows are not supported yet. Keep `--python 3.12`: package metadata declaring `>=3.12` does not guarantee wheels for every newer interpreter. `uv` can fetch 3.12 for you. The version floors and package roles match the quickstart; see the [public proof index](../reference/public-proof-index.md#published-install-and-plugin) for the checked releases. To update an existing installation, use `uv tool upgrade omnibase-core`.
 
 The `omnimarket` package is what contributes the `cloud` command to the `onex` CLI — it is advertised through an entry-point group and discovered over the installed distributions, not hand-wired. Confirm it registered:
 

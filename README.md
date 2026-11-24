@@ -24,7 +24,7 @@ It is for developers and teams who use coding agents such as Claude Code and wan
 
 **Shipped today**, from public MIT-licensed packages on PyPI, on your own machine, with no OmniNode account:
 
-- a one-line local install of the `onex` command (Apple Silicon Mac and Linux from wheels, Intel Mac from source);
+- a one-line local install of the `onex` command (Apple Silicon Mac and Linux; Intel Mac and Windows are not supported yet);
 - `onex delegate`, to your own model server or your own OpenRouter or GLM key;
 - a receipt for every run, naming the provider or server and the model;
 - `onex metering`, with spend measured against a baseline model;
