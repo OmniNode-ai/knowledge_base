@@ -9,6 +9,21 @@ refs: []
 
 # LLM Routing Architecture
 
+> **Status, 2026-11-24: the registry below was replaced.** omniclaude no longer carries the
+> `LocalLlmEndpointRegistry` or the `LLM_CODER_URL`, `LLM_DEEPSEEK_R1_URL` and `LLM_GLM_URL`
+> variables it read. Local endpoints are resolved from the one routing contract, the omnimarket
+> `bifrost_delegation.yaml`: each local backend names the variable that holds its complete
+> endpoint URL, or carries a literal URL, and the model id a local server answers to is
+> deploy-time configuration
+> (`src/omniclaude/handlers/handler_contract_endpoint_resolver.py`, which replaced the registry
+> on 2026-10-03). The resolver takes the first local backend, in contract order, that declares
+> the capability needed; the endpoint URL comes from the variable the contract names (for example
+> `BIFROST_LOCAL_CODER_ENDPOINT_URL` or `BIFROST_LOCAL_EMBEDDING_ENDPOINT_URL`), and the model id
+> from `LLM_CODER_MODEL_NAME` or `LLM_EMBEDDING_MODEL_NAME`. The purposes, priorities and hardware
+> assignments in the sections below describe the registry as it was and are not the current
+> endpoint inventory. For example, the second GPU named for the `ROUTING` endpoint was removed from
+> the lab in August 2026.
+
 ---
 
 ## Overview
@@ -238,10 +253,10 @@ Model names must be non-empty and non-whitespace (validated by `validate_model_n
 
 | File | Role |
 |------|------|
-| `src/omniclaude/config/model_local_llm_config.py` | `LocalLlmEndpointRegistry`, `LlmEndpointPurpose`, `LlmEndpointConfig` |
+| `src/omniclaude/config/model_local_llm_config.py` | Removed (removed `LocalLlmEndpointRegistry`, `LlmEndpointPurpose` and `LlmEndpointConfig`); see `src/omniclaude/handlers/handler_contract_endpoint_resolver.py` |
 | `plugins/onex/hooks/lib/route_via_events_wrapper.py` | LLM routing pipeline integration (`_route_via_llm`, `_get_llm_routing_url`) |
 | `plugins/onex/hooks/lib/latency_guard.py` | P95 SLO and agreement rate circuit breaker |
-| `delegation_orchestrator.py` | Removed from the tree; see `docs/architecture/DELEGATION_ARCHITECTURE.md` — endpoint selection now happens inside `node_delegate_skill_orchestrator` (omnimarket), invoked via the `/onex:delegate` skill |
+| `delegation_orchestrator.py` | Removed from the tree; see [delegation architecture](delegation-architecture.md) — endpoint selection now happens inside `node_delegate_skill_orchestrator` (omnimarket), invoked via the `/onex:delegate` skill |
 | `src/omniclaude/hooks/topics.py` (`LLM_ROUTING_DECISION`, `LLM_ROUTING_FALLBACK`) | Kafka topic definitions |
 | `src/omniclaude/nodes/node_agent_routing_compute/handler_routing_llm.py` | LLM routing handler (ONEX node) |
 
