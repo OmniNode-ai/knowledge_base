@@ -61,9 +61,8 @@ Introduced across  (transport),  (inference handler),  (embedding node),  (token
          |                                   |
          v                                   v
   Embedding server                   Inference server
-  :8002 (Qwen3-Embedding-8B)         :8000 (Qwen3-Coder-30B)
-                                     :8001 (Qwen3-14B)
-                                     :8101 (DeepSeek-R1)
+  :8100 (Qwen3-Embedding-0.6B)       :8000 (coder slot; model id is
+                                           endpoint configuration)
 ```
 
 The two nodes are structurally independent ONEX Effect nodes with their own contracts, models, registries, and handlers. They share `MixinLlmHttpTransport` as a common base.
@@ -74,12 +73,12 @@ The two nodes are structurally independent ONEX Effect nodes with their own cont
 
 | Endpoint Env Var | Server | Port | Model | Context | Best For |
 |------------------|--------|------|-------|---------|----------|
-| `LLM_CODER_URL` | `<onex-host>` (RTX 5090) | 8000 | Qwen3-Coder-30B-A3B AWQ-4bit | 64K tokens | Long-context code analysis, repo-level tasks |
-| `LLM_CODER_FAST_URL` | `<onex-host>` (RTX 4090) | 8001 | Qwen3-14B-AWQ | 40K tokens | Mid-tier inference, routing classification |
-| `LLM_EMBEDDING_URL` | `<onex-host>` (RTX 4090) | 8002 | Alibaba-NLP/gte-Qwen2-1.5B-instruct | — | Embeddings for RAG and semantic search |
-| `LLM_DEEPSEEK_R1_URL` | `<onex-host>` (M2 Ultra) | 8101 | DeepSeek-R1-Distill-Qwen-32B-bf16 | — | Async reasoning, code review, analysis |
+| `LLM_CODER_URL` | `<onex-host>` (RTX 5090) | 8000 | Set by the endpoint contract, not by this table: the slot has served three different model ids in 2026, so read `GET /v1/models` on the endpoint | 131072 tokens (declared budget) | Long-context code analysis, repo-level tasks |
+| `LLM_CODER_FAST_URL` | none | — | — | — | No dedicated hardware: the GPU behind this slot was removed in August 2026. The variable is still a required runtime key and is set as an alias of `LLM_CODER_URL`, so "fast" and "slow" are the same single-slot endpoint |
+| `LLM_EMBEDDING_URL` | `<onex-host>` | 8100 | Qwen3-Embedding-0.6B (`text-embedding-qwen3`), 1024-dimensional output | 8192 tokens | Embeddings for RAG and semantic search |
+| `LLM_DEEPSEEK_R1_URL` | none | — | — | — | Retired slot: no endpoint is registered |
 
-All endpoints are on the local-network subnet configured via `LLM_ENDPOINT_CIDR_ALLOWLIST` (default CIDR allowlist). Requests to any IP outside this range are rejected before an HTTP call is made.
+All endpoints are on the local-network subnet configured via `LLM_ENDPOINT_CIDR_ALLOWLIST` (required: there is no default). Requests to any IP outside this range are rejected before an HTTP call is made, except for cloud provider hostnames named in `LLM_CLOUD_ENDPOINT_HOST_ALLOWLIST`.
 
 ---
 
@@ -153,7 +152,7 @@ Both security checks run before the retry loop and before any HTTP call. They ar
 ### CIDR Allowlist
 
 ```
-LLM_ENDPOINT_CIDR_ALLOWLIST=<your-lan-cidr>   # default; comma-separate for multiple
+LLM_ENDPOINT_CIDR_ALLOWLIST=<your-lan-cidr>   # required, no default; comma-separate for multiple
 ```
 
 The allowlist is parsed once at **module import time** and stored as `MixinLlmHttpTransport.LOCAL_LLM_CIDRS`. This is intentional: network topology changes require a process restart, which is expected for infrastructure changes.
@@ -265,8 +264,8 @@ handler = HandlerEmbeddingOpenaiCompatible(target_name="qwen3-embedding")
 
 response: ModelLlmEmbeddingResponse = await handler.execute(
     ModelLlmEmbeddingRequest(
-        base_url="http://<onex-host>:8002",
-        model="qwen3-embedding-8b",
+        base_url="http://<onex-host>:8100",
+        model="text-embedding-qwen3",
         texts=("text to embed", "another text"),
         dimensions=1024,           # optional
         correlation_id=uuid4(),
@@ -282,7 +281,7 @@ for embedding in response.embeddings:
 
 Request payload:
 ```json
-{"model": "qwen3-embedding-8b", "input": ["text1", "text2"], "dimensions": 1024}
+{"model": "text-embedding-qwen3", "input": ["text1", "text2"], "dimensions": 1024}
 ```
 
 Expected response:
@@ -392,12 +391,12 @@ All LLM endpoints are configured via environment variables sourced from `.env`. 
 
 ```bash
 # Inference endpoints
-LLM_CODER_URL=http://<onex-host>:8000        # Qwen3-Coder-30B (64K context)
-LLM_CODER_FAST_URL=http://<onex-host>:8001   # Qwen3-14B (40K context)
-LLM_DEEPSEEK_R1_URL=http://<onex-host>:8101  # DeepSeek-R1 (reasoning)
+LLM_CODER_URL=http://<onex-host>:8000        # coder slot (131072-token declared budget)
+LLM_CODER_FAST_URL=http://<onex-host>:8000   # no dedicated hardware: alias of LLM_CODER_URL
+# LLM_DEEPSEEK_R1_URL: retired slot, no endpoint is registered
 
 # Embedding endpoint
-LLM_EMBEDDING_URL=http://<onex-host>:8100    # gte-Qwen2-1.5B embeddings
+LLM_EMBEDDING_URL=http://<onex-host>:8100    # Qwen3-Embedding-0.6B embeddings (1024 dimensions)
 
 # Security
 LOCAL_LLM_SHARED_SECRET=<rotate-regularly>       # HMAC signing key
@@ -408,7 +407,7 @@ LLM_ENDPOINT_CIDR_ALLOWLIST=<your-lan-cidr>      # comma-separated CIDRs
 
 - Parsed once at module import time
 - Multiple CIDRs: comma-separated (e.g. `10.0.0.0/8,172.16.0.0/12`)
-- Malformed entries are logged and skipped; if all are malformed, the allowlist falls back to the configured default CIDR
+- Malformed entries are logged and skipped; if the variable is unset, or all entries are malformed or empty, import raises `RuntimeError` (there is no default CIDR)
 - To change at runtime without restarting: set env var, then call `MixinLlmHttpTransport._reload_cidr_allowlist()`
 
 ---
@@ -419,7 +418,7 @@ To add a new inference target (e.g., a fine-tuned model on a different port):
 
 1. Set the URL in `.env`:
    ```bash
-   LLM_MYMODEL_URL=http://<onex-host>:8100
+   LLM_MYMODEL_URL=http://<onex-host>:8200
    ```
 
 2. Ensure the target IP is within `LLM_ENDPOINT_CIDR_ALLOWLIST`.
