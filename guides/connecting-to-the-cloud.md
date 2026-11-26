@@ -53,7 +53,7 @@ The table preserves the guide authors' reported checks as of 2026-09-23; those r
 | Create an account | **Live, waitlist-gated.** Signing up joins a list; accounts are granted by the OmniNode team, not self-served. |
 | Sign in to the dashboard | **Live.** |
 | Create an API key in the dashboard | **Intended flow described; browser click-through not yet confirmed.** The creation path was recently repaired and the repaired build deployed, but no end-to-end click-through by a signed-in user has been recorded. See the section for what to do if it fails. |
-| Create an API key over the API | **Live.** `POST /v1/api-keys` is advertised by the production API's own OpenAPI document. |
+| Create an API key over the API | As of 2026-11-22 onex-api is retired. Tenant and key creation move to runtime nodes (plan in review). |
 | Install the client and log in | **Live.** The published `omnimarket` package contributes `onex cloud` to the `onex` CLI. Logging in stores a credential locally and contacts nothing. |
 | Reach the API base URL, unauthenticated health check | **Live, verified.** |
 | Authenticate with an API key or a bearer token | **Live, verified** — both header shapes are accepted by the gateway, and unauthenticated calls are refused. |
@@ -338,47 +338,13 @@ Confirm the credential works, whichever shape you chose:
 
 ```bash
 curl -sS -H "x-api-key: $ONEX_API_KEY" "$ONEX_API_BASE/v1/whoami"
-curl -sS -H "x-api-key: $ONEX_API_KEY" "$ONEX_API_BASE/v1/tenants"
 ```
 
-`/v1/whoami` returns your resolved identity. `/v1/tenants` returns a single-element array — your own tenant record. A missing or bad credential returns `401` with `{"detail":"Unauthorized"}` on every `/v1/` route.
+`/v1/whoami` returns your resolved identity. A missing or bad credential returns `401` with `{"detail":"Unauthorized"}` on every `/v1/` route.
 
 ## C. Manage API keys over the API
 
-If you already hold a bearer token for your tenant, you can create a key without the dashboard. This route **is** advertised by the production API:
-
-```bash
-curl -sS -X POST "https://api.omninode.ai/v1/api-keys" \
-  -H "Authorization: Bearer $ONEX_API_BEARER_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "my-first-key"}'
-```
-
-The response carries the plaintext key once:
-
-```json
-{
-  "id": "<uuid>",
-  "name": "my-first-key",
-  "is_active": true,
-  "created_at": "<timestamp>",
-  "last_used_at": null,
-  "plaintext_key": "onxk_..."
-}
-```
-
-Listing and revoking:
-
-```bash
-# List your keys — names and ids only, never the secret
-curl -sS "https://api.omninode.ai/v1/api-keys" -H "x-api-key: $ONEX_API_KEY"
-
-# Revoke one by id
-curl -sS -X DELETE "https://api.omninode.ai/v1/api-keys/<key-id>" \
-  -H "x-api-key: $ONEX_API_KEY"
-```
-
-Revocation returns `{"ok": true}`. Revoking a key you are currently authenticating with is allowed — the key simply stops working afterwards.
+As of 2026-11-22 onex-api is retired. Tenant and key creation move to runtime nodes (plan in review).
 
 ## D. Submit, poll, and fetch a receipt by hand
 
