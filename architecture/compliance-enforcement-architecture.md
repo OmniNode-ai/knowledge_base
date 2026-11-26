@@ -151,6 +151,26 @@ The `ENFORCEMENT_MODE` environment variable controls advisory presentation:
 The `warn` mode is the production default. `block` mode requires explicit opt-in and infrastructure that does not yet exist.
 
 ---
+---
+
+## DACS Pre-Flight Boundary Attestation (External Integration Scope)
+
+While the `PostToolUse` → Kafka → `UserPromptSubmit` loop above is strictly asynchronous and
+informational (`warn` mode) for code-pattern advisories, high-stakes external side effects
+(such as financial execution, custody calls, or cross-domain tool invocations at `Effect`
+boundaries) require deterministic pre-flight enforcement and verifiable receipts.
+
+**DACS** (Distributed Attestation & Consensus System) complements this compliance pipeline as
+an external pre-flight guardrail and attestation boundary:
+
+| Layer | Mechanism | Execution Timing | Scope |
+|-------|-----------|------------------|-------|
+| **OmniNode Compliance Loop** (`omniclaude` + `omniintelligence`) | Async Kafka (`compliance-evaluate.v1` / `compliance-evaluated.v1`) | Post-tool background + next-turn `UserPromptSubmit` | Informational code-pattern advisories (`warn` default; `block` reserved) |
+| **DACS Boundary Guardrail** (External Integration) | Pre-flight mandate & ceiling check + attestation receipt | Synchronous, before external `Effect` / tool execution | Deterministic spend/policy enforcement (e.g., enforcing `dacsMaxAmount` even when `dacsMandate` / `dacsSessionId` are omitted, with contract-call checks scoped explicitly to native `value`) |
+
+**Status boundary (built vs. external):**
+- **Built in OmniNode:** Async `PostToolUse` emit, `omniintelligence` pattern evaluation, `compliance_result_subscriber.py` consumer, and `UserPromptSubmit` advisory injection (`warn` and `silent` modes).
+- **External / Not built into `omniclaude` hooks:** `ENFORCEMENT_MODE=block` remains unimplemented in `omniclaude`, and DACS pre-flight enforcement/attestation operates as an external boundary integration rather than inside the async Kafka advisory loop.
 
 ## Async Compliance Evaluation from Delegation
 
