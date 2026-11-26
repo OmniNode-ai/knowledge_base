@@ -209,7 +209,6 @@ Knowledge base artifacts grouped by type.
 ## Guide
 
 - **[Testing Guide](../guides/omniclaude-testing-guide.md)** — current
-- **[Handler Authoring Guide](../guides/handler-authoring-guide.md)** — current
 - **[MCP Integration Guide](../guides/mcp-integration-guide.md)** — current
 - **[2-Way Registration: A Complete ONEX Example](../guides/registration-example.md)** — current
 - **[Adding a Hook Handler](../guides/adding-a-hook-handler.md)** — current
@@ -239,7 +238,6 @@ Knowledge base artifacts grouped by type.
 - **[OmniMarket Skill-Backing Node Handler Pattern](../guides/omnimarket-skill-backing-node-pattern.md)** — current
 - **[Spawning Sub-Workers from Orchestrator Workers](../guides/spawning-sub-workers-from-orchestrators.md)** — current
 - **[Authoring Governance YAML Artifacts](../guides/authoring-governance-yaml-artifacts.md)** — current
-- **[Build Your First Node](../guides/omnibase-core-first-node.md)** — current
 - **[Installation Guide - omnibase_core](../guides/omnibase-core-installation.md)** — current
 - **[Integration Testing Guide - omnibase_core](../guides/omnibase-core-integration-testing.md)** — current
 - **[Model Validation Demo: Support Ticket Classification](../guides/omnibase-core-model-validation-demo.md)** — current
@@ -291,16 +289,13 @@ Knowledge base artifacts grouped by type.
 - **[Mixin Development Best Practices](../guides/onex-mixin-development-05-best-practices.md)** — current
 - **[Mixin Development Guide](../guides/onex-mixin-development-overview.md)** — current
 - **[Mixin-Subcontract Mapping Guide](../guides/onex-mixin-subcontract-mapping.md)** — current
-- **[What is a Node?](../guides/onex-node-building-01-what-is-a-node.md)** — current
 - **[Node Types](../guides/onex-node-building-02-node-types.md)** — current. Introduces the four fundamental ONEX node types and the handler delegation pattern, where thin node shells leave business logic to handlers. Details each node type's allowed and forbidden outputs, with a decision matrix, flowchart, and service wrapper guidance. For readers learning which node type to use.
-- **[COMPUTE Node Tutorial](../guides/onex-node-building-03-compute-node-tutorial.md)** — current
 - **[EFFECT Node Tutorial: Build a File Backup System](../guides/onex-node-building-04-effect-node-tutorial.md)** — current. A tutorial for building a File Backup Node that performs atomic file operations with transaction support, retry logic, circuit breaker patterns, and rollback handling. Offers the recommended ModelServiceEffect wrapper or the NodeEffect base class, plus testing and troubleshooting. For intermediate developers following the node tutorials.
 - **[REDUCER Node Tutorial: Build a Pure FSM Metrics Aggregator](../guides/onex-node-building-05-reducer-node-tutorial.md)** — current. A tutorial on building a Pure FSM Metrics Aggregator REDUCER node, presented in two approaches: the recommended ModelServiceReducer wrapper and the NodeReducer base class. Explains the FSM-driven architecture, pure state transitions, intent execution, and testing. For intermediate readers who have completed the prerequisites.
 - **[ORCHESTRATOR Node Tutorial: Build a Data Processing Pipeline](../guides/onex-node-building-06-orchestrator-node-tutorial.md)** — current. A tutorial for building a Data Processing Pipeline Orchestrator that coordinates COMPUTE, EFFECT, and REDUCER nodes in workflows. Covers the rule that ORCHESTRATOR nodes emit events and intents but cannot return typed results, plus branching, execution modes, error handling, and testing. Aimed at advanced readers who have finished the other node tutorials.
 - **[Patterns Catalog -- Common ONEX Node Patterns](../guides/onex-node-building-07-patterns-catalog.md)** — current. A catalog of handler-based patterns for building ONEX nodes, where each pattern pairs a YAML contract, a thin node shell, and a handler class holding the business logic. Organized by COMPUTE, EFFECT, REDUCER, and ORCHESTRATOR patterns, plus testing patterns. For developers implementing nodes against the four-node architecture invariants.
 - **[Common Pitfalls - What to Avoid When Building Nodes](../guides/onex-node-building-08-common-pitfalls.md)** — current
 - **[Agent Templates for ONEX Node Development](../guides/onex-node-building-10-agent-templates.md)** — current. Copy-paste-ready templates for NodeCompute, NodeEffect, NodeReducer, and NodeOrchestrator development, formatted to be machine-parseable with explicit parameters. Includes a node type selection matrix, validation checklists, common patterns, and error recovery guidance. For developers or agents scaffolding new nodes.
-- **[Node Building Guide](../guides/onex-node-building-overview.md)** — current
 - **[ORCHESTRATOR Node Template](../guides/onex-orchestrator-node-template.md)** — current
 - **[Pipeline Runner and Hook Registry Guide](../guides/onex-pipeline-hook-registry.md)** — current. Documents the Pipeline Runner and Hook Registry, a declarative system that executes hooks in canonical phase order with dependency management, priority ordering, type validation, and thread safety. Includes a quick start, API reference, testing patterns, and troubleshooting. For developers extending pipeline execution with hooks.
 - **[Cache Tuning for Production Deployment](../guides/onex-production-cache-tuning.md)** — current
@@ -317,6 +312,11 @@ Knowledge base artifacts grouped by type.
 - **[How OmniNode works](../guides/how-omninode-works.md)** — current. A plain-words tour with diagrams for a technical reader who will not read a README: the problem OmniNode is built around, the event bus and the record it leaves, the four node types with one real example each, how buses connect from one machine to a server to a hosted service, how a failing check stops the line, what learning from earlier runs means today, and the delegation plugin as the way in, traced event by event with charts from measured runs. Each part says what is built and what is not.
 - **[Self-hosted quickstart: run OmniNode on one machine](../guides/self-hosted-quickstart.md)** — current. The shortest real path to run OmniNode on one machine you control: a four-command install with no containers, then an optional container stack on the same machine. It lists what each path needs, what was run to check each command, and what is not supported or not built yet.
 - **[Diagrams for every tutorial](../guides/tutorial-diagrams.md)** — current. One Mermaid diagram per interactive tutorial and repository tour, drawn from the tutorial's own node and edge data so that a reader on GitHub sees the picture without opening the animated page. Anything the tutorial marks as not built is drawn dashed and labelled.
+- **[Handler Authoring Guide](../guides/handler-authoring-guide.md)** — current
+- **[Build Your First Node](../guides/omnibase-core-first-node.md)** — current
+- **[What is a Node?](../guides/onex-node-building-01-what-is-a-node.md)** — current
+- **[COMPUTE Node Tutorial](../guides/onex-node-building-03-compute-node-tutorial.md)** — current
+- **[Node Building Guide](../guides/onex-node-building-overview.md)** — current
 
 ## Reference
 

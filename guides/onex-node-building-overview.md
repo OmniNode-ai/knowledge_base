@@ -1,7 +1,7 @@
 ---
 type: guide
 status: current
-date: "2026-09-02"
+date: "2026-11-24"
 title: "Node Building Guide"
 topics:
   - omnibase-core
@@ -64,18 +64,18 @@ Node (thin shell)
 
 For a deep dive into this architecture, see the Handler Architecture Guide.
 
-### Handler Output Constraints
+### Handler Shape
 
-Each node type enforces strict output constraints on what its handler may return:
+Every handler, whatever the node kind, has the same definition-B shape: one method, `handle(self, request: ModelX) -> ModelY`, a typed request in and a typed response out. The runtime adapter owns the event envelope; a handler imports no envelope type and returns no envelope or output wrapper. `onex new node` scaffolds that shape for all four kinds, and each scaffolded contract declares its archetype and purity:
 
-| Node Kind | Allowed Output | Forbidden Output |
-|-----------|---------------|-----------------|
-| **EFFECT** | `events[]` | `intents[]`, `projections[]`, `result` |
-| **COMPUTE** | `result` (required) | `events[]`, `intents[]`, `projections[]` |
-| **REDUCER** | `projections[]` | `events[]`, `intents[]`, `result` |
-| **ORCHESTRATOR** | `events[]`, `intents[]` | `projections[]`, `result` |
+| Node Kind | `--type` | `descriptor.purity` in the scaffold | Role |
+|-----------|----------|-------------------------------------|------|
+| **EFFECT** | `effect` | `impure` | Talks to the external world: files, databases, APIs |
+| **COMPUTE** | `compute` | `pure` | Pure transformation, no I/O |
+| **REDUCER** | `reducer` | `pure` | State aggregation |
+| **ORCHESTRATOR** | `orchestrator` | `impure` | Workflow coordination |
 
-These constraints are enforced at the `ModelHandlerOutput` constructor via Pydantic validators and at runtime.
+The tutorials build a COMPUTE node ([first node](omnibase-core-first-node.md), [COMPUTE tutorial](onex-node-building-03-compute-node-tutorial.md)) and an EFFECT handler ([Handler Authoring Guide](handler-authoring-guide.md)) with `handle(request) -> response`, each executed against `omnibase-core` 0.47.78. The platform's own nodes use the same layout; the public [omnimarket node tree](https://github.com/OmniNode-ai/omnimarket/tree/v0.4.320/src/omnimarket/nodes) holds one `node_<name>_<kind>/` directory per node.
 
 ## What You'll Learn
 

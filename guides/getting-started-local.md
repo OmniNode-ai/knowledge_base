@@ -258,9 +258,16 @@ returns an empty typed response so its wiring can run; the separate node-method
 stub raises `NotImplementedError`. Replace the handler's empty response with your
 actual logic and tests. An empty success does not establish useful application behavior.
 
-Read the contract before editing the handler. To execute your project, make its
-package importable and use the project contract with the appropriate runtime/CLI;
-the two built-in harness workflows above do not discover arbitrary project nodes.
+Read the contract before editing the handler. `onex validate .` passes on the
+scaffold exactly as generated, before you edit anything. To run your project's
+node, make its package importable (from the project root,
+`uv pip install --python ../.venv/bin/python -e .`) and hand the
+node's `contract.yaml` to `RuntimeLocal`, the in-process runtime in
+`omnibase_core.runtime.runtime_local`. On the scaffold as generated, `RuntimeLocal`
+resolves the handler from the contract, calls it, and records `"result": "completed"`
+with an empty handler result in `.onex_state/workflow_result.json`. The [first-node tutorial](omnibase-core-first-node.md#step-8-validate-and-run-the-node)
+shows the run end to end, with the helper script and its output. The two built-in
+harness workflows above do not discover arbitrary project nodes.
 The public [scaffold execution tests](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/tests/unit/cli/test_cli_new_scaffold_runnable.py)
 and [validation tests](https://github.com/OmniNode-ai/omnibase_core/blob/v0.47.49/tests/unit/cli/test_cli_scaffold_validates_clean.py)
 exercise the generated shape. They were source-inspected, not executed during
@@ -280,7 +287,7 @@ for the current authoring/execution boundary.
 | `Error: No such option '--verbose'` | The flag belongs to the `onex` group, not the subcommand. Write `onex --verbose info`, not `onex info --verbose`. |
 | `onex doctor` / `onex health` report failures | Expected on a local-only machine. Both probe full-stack services and local checkouts. Neither is the local health check; step 5 is. A green result from either is not evidence about the local loop either — see step 3. |
 | No row from the `sqlite3` query | You almost certainly ran with the default `:memory:` store, which leaves no file behind. Re-run with `--sqlite-path ./onex-local.db`. |
-| `onex validate` fails on a new project | Expected on an unimplemented scaffold — see the note at the end of step 7. |
+| `onex validate` fails on a new project | It does not fail on a scaffold as generated: `onex validate .` ends with `All validations passed!`. A failure after your edits is a real finding; run `onex --verbose validate .` for the file and the line. One common cause is two model classes in one `model_*.py` file. |
 
 ---
 
