@@ -10,7 +10,7 @@ summary: "How to reach the hosted OmniNode service with the onex cloud client, a
 
 # Connecting to the OmniNode Cloud
 
-> **Not part of the beta.** The beta is the local install in the [quickstart](onex-plugin-quickstart.md), which needs no account and no OmniNode service ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). The hosted service described here is waitlist-gated: you cannot open an account yourself, and its production API does not yet list the delegation routes. Read the [status table](#availability-of-each-step-stated-honestly) before relying on any step below.
+> **Not part of the beta.** The beta is the local install in the [quickstart](onex-plugin-quickstart.md), which needs no account and no OmniNode service ([ADR-0053](../adrs/ADR-0053-beta-scope-local-install-own-keys.md)). The hosted service described here is waitlist-gated: you cannot open an account yourself, and its production API does not yet list the delegation routes. The short path for someone who already holds access is [step 8 of the quickstart](onex-plugin-quickstart.md#step-8--delegate-through-the-omninode-gateway-optional-by-invitation). Read the [status table](#availability-of-each-step-stated-honestly) before relying on any step below.
 >
 > In every mode, OmniNode does not sell inference. Model calls go to a model you run or to a provider on your own key, and you pay that provider directly.
 
@@ -121,8 +121,11 @@ Now store the credential. It is read from stdin; there is no option that takes t
 
 ```bash
 read -rs ONXK && printf '%s' "$ONXK" | \
-  onex cloud login --base-url https://api.omninode.ai --api-key-stdin
+  onex cloud login --base-url https://api.omninode.ai \
+    --tenant-slug <your tenant slug> --api-key-stdin
 ```
+
+`--tenant-slug` is required: it is the short name of the tenant your key belongs to, which the OmniNode team gives you with your account, and `onex cloud login` checks it against the gateway. Without it the command stops with `Missing option '--tenant-slug'`. For a Dev gateway, use its address (for example `https://dev.api.omninode.ai`) in place of the production one.
 
 `https://api.omninode.ai` is the public production address of the ONEX control-plane API. The client has **no built-in default origin** — a default would mean sending a live customer key to whatever host the release happened to ship with — so `--base-url` is how it learns where to go, and it remembers it.
 

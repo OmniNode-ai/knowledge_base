@@ -23,7 +23,7 @@ There are two ways to use it, and both use the same `onex` command-line tool:
 
 - **In a terminal**: `onex delegate "<your task>"`. Steps 1 to 5 set this up and prove it works.
 - **Inside Claude Code**: the `onex@omninode-tools` plugin adds `/onex:delegate`, which runs the
-  same command for you. Step 7 adds it. The plugin ships one skill, `/onex:delegate`, and nothing
+  same command for you. Step 7 adds it. (Step 8 is an optional path for people with gateway access.) The plugin ships one skill, `/onex:delegate`, and nothing
   else: no hooks, no agents.
 
 ---
@@ -34,6 +34,7 @@ There are two ways to use it, and both use the same `onex` command-line tool:
 |----------|---------------|
 | A supported computer | Apple Silicon Mac or Linux (x86_64, arm64) installs from prebuilt wheels. **Intel Mac: supported by building from source**, which needs a few extra steps; read [Supported platforms](supported-platforms.md) before step 1. |
 | A terminal | macOS: the **Terminal** app (Applications → Utilities). Linux: any shell. |
+| `curl`, `ca-certificates` and `git` | A clean Ubuntu or Debian install has none of them, and the `uv` install line below fails with `curl: command not found`. Install them first: `sudo apt-get update && sudo apt-get install -y curl ca-certificates git` (as root, for example in a container, leave out `sudo`). macOS already has `curl`; `git` comes with Apple's developer tools. |
 | `uv` (it can install Python 3.12) | macOS and Linux: run `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see [uv's install page](https://docs.astral.sh/uv/getting-started/installation/) for other systems). If you already use Homebrew, `brew install uv` also works, but on an older macOS it can try to build `uv` from source and stop on outdated Apple command line tools, so the curl installer is the safer first choice. |
 | A model to send work to | **Either** an account with a model provider and an API key from it (OpenRouter is the simplest: [openrouter.ai](https://openrouter.ai), and it has free models), **or** a model server you run yourself that speaks the OpenAI chat-completions API (llama.cpp, vLLM, or similar). |
 | Claude Code (only for step 7) | The [Claude Code CLI](https://claude.com/claude-code), signed in. Steps 1 to 6 do not need it. |
@@ -339,13 +340,65 @@ folder Claude Code was started from, and `onex metering` and `onex dashboard` sh
 
 ---
 
-## The hosted service (not part of the beta)
+## Step 8 — Delegate through the OmniNode gateway (optional, by invitation)
 
-OmniNode also runs a hosted delegation service that uses a dashboard-issued `onxk_` key. It is
-not part of the beta, and nothing in this guide needs it. Its sign-up is a waitlist: signing up
-registers interest, and accounts are granted by the OmniNode team. Its production API does not
-yet list the delegation routes. [Connecting to the OmniNode Cloud](connecting-to-the-cloud.md)
-says which of its steps work today.
+Steps 1 to 7 are the beta and need no account. This step is a second path for someone the
+OmniNode team has given access to the hosted gateway; the hosted service is not yet open to
+outside users and its sign-up is a waitlist. The same `onex` tool you installed in step 1
+reaches it with `onex cloud`, so there is nothing more to install. [Connecting to the OmniNode
+Cloud](connecting-to-the-cloud.md) has the full reference and says which of its steps work today.
+
+You need three things from the OmniNode team, and `onex cloud login` needs all three:
+
+| You need | What it is and where it comes from |
+|----------|------------------------------------|
+| The gateway address | The origin of the gateway you were given, for example `https://dev.api.omninode.ai` for the Dev gateway. The tool has no built-in default, so it never sends your key to a host you did not name. |
+| Your tenant slug | The short name of your tenant (for example `acme`). The OmniNode team gives it to you with your account, and it is the tenant your key belongs to. `onex cloud login` checks it against the gateway and refuses a slug that does not match the key. |
+| An API key | A long string starting `onxk_`, issued for that tenant by the dashboard or by the OmniNode team. |
+
+Store them once. The key is read from standard input, never from an argument, so it does not
+land in your shell history; nothing shows while you paste it:
+
+```bash
+read -rs ONXK && printf '%s' "$ONXK" | \
+  onex cloud login --base-url https://dev.api.omninode.ai \
+    --tenant-slug <your tenant slug> --api-key-stdin
+onex cloud status
+```
+
+`onex cloud login` without `--tenant-slug` stops with `Missing option '--tenant-slug'`.
+`onex cloud status` prints the gateway address, your tenant slug and `api_key: stored by reference (not shown)`.
+
+`onex cloud delegate` then needs two settings, both of which `onex cloud login` has just
+stored: the gateway address (`--base-url`) and the key. It also needs the task class, which you
+pass on the command:
+
+```bash
+onex cloud delegate "say hello in one word" --task-type reasoning
+```
+
+It submits the task, waits for it to finish, prints the answer, and writes the receipt and result under
+`onex-delegations/<workflow id>/` in the folder you ran it from. To use another gateway or a key
+kept in a `0600` file (for a script), pass `--base-url <address>` or `--api-key-file <path>`.
+If the gateway answers `503`, it was unavailable and refused rather than guess; nothing ran.
+Retry in a minute.
+
+### The cloud smoke check
+
+OmniNode also publishes a smoke check, the node `node_cloud_smoke_check_effect` in the
+`omnimarket` package, that runs one delegation through a gateway and reads back the receipt
+for the model that answered. It takes the gateway address from `ONEX_API_BASE_URL` and the key
+from the file named by `ONEX_API_KEY_FILE`, and has no default for either. **No published `omnimarket` release carries it yet.** When this was written the node was on a
+branch of the `omnimarket` repository and not on its main branch, whose version was 0.4.329. It
+is carried by the first `omnimarket` release published after that branch merges, so a release
+newer than 0.4.329 that lists `node_cloud_smoke_check_effect`; until then, the `onex cloud
+delegate` command above is the check.
+
+---
+
+## Not part of the beta: the hosted service
+
+The gateway path in step 8 is by invitation. Its sign-up is a waitlist: signing up registers interest, and accounts are granted by the OmniNode team. Its production API does not yet list the delegation routes.
 
 Whichever way you run it, OmniNode does not sell inference. Your work goes to a model you run or
 to a provider on your own key, and you pay that provider directly.
@@ -366,6 +419,7 @@ registering your own provider key with `onex secret set`, a cloud model you pay 
 
 | What you see | What it means and what to do |
 |--------------|------------------------------|
+| `curl: command not found` (or an error about certificates) when installing `uv` | A clean Ubuntu or Debian has no `curl` or `ca-certificates`. Run `sudo apt-get update && sudo apt-get install -y curl ca-certificates git`, then run the `uv` install line again. |
 | `command not found: uv` | Install it with `curl -LsSf https://astral.sh/uv/install.sh \| sh`, then run `uv tool update-shell` and open a new terminal window. |
 | `command not found: onex` | The install folder is not on your PATH yet. Run `uv tool update-shell`, close the terminal window and open a new one. If that does not fix it, re-run the step 1 install command. |
 | The command in step 3 seems to hang | It is waiting for you to paste the key. Nothing shows while you paste; paste once and press Return. |
